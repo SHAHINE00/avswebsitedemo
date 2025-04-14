@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,12 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				academy: {
+					blue: '#4A55A2',
+					purple: '#7E69AB',
+					lightblue: '#6EC1E4',
+					gray: '#F8F9FA'
 				}
 			},
 			borderRadius: {
@@ -84,11 +91,20 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'float': 'float 5s ease-in-out infinite'
+			},
+			fontFamily: {
+				sans: ['Source Sans Pro', 'sans-serif'],
+				montserrat: ['Montserrat', 'sans-serif']
 			}
 		}
 	},

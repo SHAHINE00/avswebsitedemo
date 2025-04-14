@@ -1,0 +1,35 @@
+
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
+
+const CTASection: React.FC = () => {
+  return (
+    <section className="py-24 bg-gradient-to-br from-academy-blue to-academy-purple text-white">
+      <div className="container mx-auto px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+            Start Your Journey to Becoming an AI Specialist Today
+          </h2>
+          <p className="text-lg md:text-xl opacity-90 mb-10">
+            Join thousands of successful graduates who have transformed their careers with our industry-leading 
+            AI Technician program. Classes are filling up quickly!
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Button className="bg-white text-academy-blue hover:bg-gray-100 font-semibold px-8 py-6 text-lg">
+              Enroll Now <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+            <Button variant="outline" className="border-white text-white hover:bg-white/10 font-semibold px-8 py-6 text-lg">
+              Schedule a Consultation
+            </Button>
+          </div>
+          <p className="mt-6 text-sm opacity-80">
+            Limited seats available. Next cohort starts on June 15, 2025.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default CTASection;
