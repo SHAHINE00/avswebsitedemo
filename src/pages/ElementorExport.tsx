@@ -5,7 +5,6 @@ import HeroSection from '@/components/HeroSection';
 import FeaturesSection from '@/components/FeaturesSection';
 import CurriculumSection from '@/components/CurriculumSection';
 import InstructorsSection from '@/components/InstructorsSection';
-import PricingSection from '@/components/PricingSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
 import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
@@ -27,9 +26,6 @@ const ElementorExport = () => {
       </div>
       <div id="instructors-section" className="elementor-section">
         <InstructorsSection />
-      </div>
-      <div id="pricing-section" className="elementor-section">
-        <PricingSection />
       </div>
       <div id="testimonials-section" className="elementor-section">
         <TestimonialsSection />
