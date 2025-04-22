@@ -22,7 +22,6 @@ const Navbar = () => {
           <a href="#features" className="font-medium hover:text-academy-blue transition-colors">Atouts</a>
           <a href="#curriculum" className="font-medium hover:text-academy-blue transition-colors">Programme</a>
           <a href="#instructors" className="font-medium hover:text-academy-blue transition-colors">Formateurs</a>
-          <a href="#pricing" className="font-medium hover:text-academy-blue transition-colors">Tarifs</a>
           <a href="#testimonials" className="font-medium hover:text-academy-blue transition-colors">Témoignages</a>
           <Button className="ml-4 bg-academy-blue hover:bg-academy-purple">S'inscrire</Button>
         </div>
@@ -42,7 +41,6 @@ const Navbar = () => {
             <a href="#features" className="font-medium" onClick={() => setIsOpen(false)}>Atouts</a>
             <a href="#curriculum" className="font-medium" onClick={() => setIsOpen(false)}>Programme</a>
             <a href="#instructors" className="font-medium" onClick={() => setIsOpen(false)}>Formateurs</a>
-            <a href="#pricing" className="font-medium" onClick={() => setIsOpen(false)}>Tarifs</a>
             <a href="#testimonials" className="font-medium" onClick={() => setIsOpen(false)}>Témoignages</a>
             <Button className="bg-academy-blue hover:bg-academy-purple w-full">S'inscrire</Button>
           </div>

@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="container mx-auto px-6 pt-16 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {/* Column 1 - About */}
           <div>
             <div className="font-montserrat font-bold text-2xl text-white mb-4">
@@ -39,33 +39,13 @@ const Footer: React.FC = () => {
               <li><a href="#features" className="hover:text-academy-blue transition-colors">Atouts</a></li>
               <li><a href="#curriculum" className="hover:text-academy-blue transition-colors">Programme</a></li>
               <li><a href="#instructors" className="hover:text-academy-blue transition-colors">Formateurs</a></li>
-              <li><a href="#pricing" className="hover:text-academy-blue transition-colors">Tarifs</a></li>
               <li><a href="#testimonials" className="hover:text-academy-blue transition-colors">Témoignages</a></li>
               <li><a href="#" className="hover:text-academy-blue transition-colors">Blog</a></li>
               <li><a href="#" className="hover:text-academy-blue transition-colors">Carrières</a></li>
             </ul>
           </div>
           
-          {/* Column 3 - Contact */}
-          <div>
-            <h3 className="text-white font-semibold text-lg mb-4">Contact</h3>
-            <ul className="space-y-3">
-              <li className="flex items-start">
-                <MapPin className="w-5 h-5 text-academy-blue mr-2 mt-0.5 shrink-0" />
-                <span>123 avenue Campus IA, San Francisco, CA 94103, États-Unis</span>
-              </li>
-              <li className="flex items-center">
-                <Phone className="w-5 h-5 text-academy-blue mr-2 shrink-0" />
-                <span>+1 (555) 123-4567</span>
-              </li>
-              <li className="flex items-center">
-                <Mail className="w-5 h-5 text-academy-blue mr-2 shrink-0" />
-                <span>admissions@aiacademy.com</span>
-              </li>
-            </ul>
-          </div>
-          
-          {/* Column 4 - Newsletter */}
+          {/* Column 3 - Newsletter */}
           <div>
             <h3 className="text-white font-semibold text-lg mb-4">Newsletter</h3>
             <p className="mb-4">Abonnez-vous à notre newsletter pour recevoir des actualités IA et offres de formation.</p>
