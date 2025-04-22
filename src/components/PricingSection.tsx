@@ -5,49 +5,49 @@ import { CheckCircle2 } from 'lucide-react';
 
 const pricingPlans = [
   {
-    name: "Basic",
-    price: "$499",
-    description: "Perfect for beginners looking to explore AI fundamentals",
+    name: "Essentiel",
+    price: "499€",
+    description: "Idéal pour débuter et découvrir les principes fondamentaux de l’IA.",
     features: [
-      "6-month course access",
-      "Core curriculum modules",
-      "Community forum access",
-      "Monthly Q&A sessions",
-      "Digital certificate"
+      "Accès au cours 6 mois",
+      "Modules fondamentaux",
+      "Forum communautaire",
+      "Sessions questions/réponses mensuelles",
+      "Certificat numérique"
     ],
-    buttonText: "Get Started",
+    buttonText: "Commencer",
     isPopular: false
   },
   {
-    name: "Professional",
-    price: "$999",
-    description: "Our most popular plan for serious career advancement",
+    name: "Professionnel",
+    price: "999€",
+    description: "Notre plan le plus populaire pour accélérer votre carrière en IA.",
     features: [
-      "Lifetime course access",
-      "All curriculum modules",
-      "1-on-1 mentoring sessions",
-      "Priority support",
-      "Project reviews & feedback",
-      "Job placement assistance",
-      "Industry-recognized certification"
+      "Accès à vie",
+      "Tous les modules",
+      "Mentorat individuel",
+      "Support prioritaire",
+      "Évaluation de projets",
+      "Aide à l’insertion professionnelle",
+      "Certification reconnue"
     ],
-    buttonText: "Enroll Now",
+    buttonText: "S'inscrire",
     isPopular: true
   },
   {
-    name: "Enterprise",
-    price: "Contact Us",
-    description: "Custom training solutions for organizations and teams",
+    name: "Entreprise",
+    price: "Contactez-nous",
+    description: "Solutions personnalisées pour équipes et organisations.",
     features: [
-      "Custom curriculum",
-      "Dedicated instructor",
-      "Team collaboration tools",
-      "Progress tracking",
-      "White-labeled platform",
-      "Corporate reporting",
-      "Bulk enrollment discounts"
+      "Programme sur mesure",
+      "Formateur dédié",
+      "Outils collaboratifs",
+      "Suivi de progression",
+      "Plateforme en marque blanche",
+      "Rapports d’entreprise",
+      "Tarifs préférentiels"
     ],
-    buttonText: "Request Quote",
+    buttonText: "Demander un devis",
     isPopular: false
   }
 ];
@@ -57,10 +57,9 @@ const PricingSection: React.FC = () => {
     <section id="pricing" className="py-20 bg-academy-gray">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Flexible Pricing Plans</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Formules adaptées à vos besoins</h2>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-            Choose the plan that best fits your learning goals and budget.
-            All plans include core AI training materials and exercises.
+            Choisissez le plan adapté à vos objectifs et à votre budget. Tous incluent le socle fondamental IA.
           </p>
         </div>
         
@@ -75,7 +74,7 @@ const PricingSection: React.FC = () => {
               {plan.isPopular && (
                 <div className="absolute top-0 right-0">
                   <div className="bg-academy-blue text-white py-1 px-4 font-medium text-sm transform translate-x-6 rotate-45 origin-bottom-left">
-                    Popular
+                    Populaire
                   </div>
                 </div>
               )}
@@ -83,7 +82,7 @@ const PricingSection: React.FC = () => {
                 <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
                 <div className="mb-4">
                   <span className="text-4xl font-bold">{plan.price}</span>
-                  {plan.price !== "Contact Us" && <span className="text-gray-600"> / one-time</span>}
+                  {plan.price !== "Contactez-nous" && <span className="text-gray-600"> / paiement unique</span>}
                 </div>
                 <p className="text-gray-600 mb-6">{plan.description}</p>
                 <ul className="space-y-3 mb-8">
@@ -110,7 +109,7 @@ const PricingSection: React.FC = () => {
         
         <div className="mt-12 text-center">
           <p className="text-gray-600">
-            Need help choosing the right plan? <a href="#" className="text-academy-blue font-medium hover:underline">Contact our advisors</a>
+            Besoin d’aide pour choisir ? <a href="#" className="text-academy-blue font-medium hover:underline">Contactez nos conseillers</a>
           </p>
         </div>
       </div>

@@ -12,19 +12,19 @@ const Navbar = () => {
         {/* Logo */}
         <div className="flex items-center">
           <span className="font-montserrat font-bold text-2xl">
-            <span className="text-academy-blue">AI</span>
-            <span className="text-academy-purple">Academy</span>
+            <span className="text-academy-blue">IA</span>
+            <span className="text-academy-purple">Académie</span>
           </span>
         </div>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-6">
-          <a href="#features" className="font-medium hover:text-academy-blue transition-colors">Features</a>
-          <a href="#curriculum" className="font-medium hover:text-academy-blue transition-colors">Curriculum</a>
-          <a href="#instructors" className="font-medium hover:text-academy-blue transition-colors">Instructors</a>
-          <a href="#pricing" className="font-medium hover:text-academy-blue transition-colors">Pricing</a>
-          <a href="#testimonials" className="font-medium hover:text-academy-blue transition-colors">Testimonials</a>
-          <Button className="ml-4 bg-academy-blue hover:bg-academy-purple">Enroll Now</Button>
+          <a href="#features" className="font-medium hover:text-academy-blue transition-colors">Atouts</a>
+          <a href="#curriculum" className="font-medium hover:text-academy-blue transition-colors">Programme</a>
+          <a href="#instructors" className="font-medium hover:text-academy-blue transition-colors">Formateurs</a>
+          <a href="#pricing" className="font-medium hover:text-academy-blue transition-colors">Tarifs</a>
+          <a href="#testimonials" className="font-medium hover:text-academy-blue transition-colors">Témoignages</a>
+          <Button className="ml-4 bg-academy-blue hover:bg-academy-purple">S'inscrire</Button>
         </div>
         
         {/* Mobile menu button */}
@@ -39,12 +39,12 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden bg-white absolute w-full left-0 px-6 py-4 shadow-md">
           <div className="flex flex-col space-y-4">
-            <a href="#features" className="font-medium" onClick={() => setIsOpen(false)}>Features</a>
-            <a href="#curriculum" className="font-medium" onClick={() => setIsOpen(false)}>Curriculum</a>
-            <a href="#instructors" className="font-medium" onClick={() => setIsOpen(false)}>Instructors</a>
-            <a href="#pricing" className="font-medium" onClick={() => setIsOpen(false)}>Pricing</a>
-            <a href="#testimonials" className="font-medium" onClick={() => setIsOpen(false)}>Testimonials</a>
-            <Button className="bg-academy-blue hover:bg-academy-purple w-full">Enroll Now</Button>
+            <a href="#features" className="font-medium" onClick={() => setIsOpen(false)}>Atouts</a>
+            <a href="#curriculum" className="font-medium" onClick={() => setIsOpen(false)}>Programme</a>
+            <a href="#instructors" className="font-medium" onClick={() => setIsOpen(false)}>Formateurs</a>
+            <a href="#pricing" className="font-medium" onClick={() => setIsOpen(false)}>Tarifs</a>
+            <a href="#testimonials" className="font-medium" onClick={() => setIsOpen(false)}>Témoignages</a>
+            <Button className="bg-academy-blue hover:bg-academy-purple w-full">S'inscrire</Button>
           </div>
         </div>
       )}

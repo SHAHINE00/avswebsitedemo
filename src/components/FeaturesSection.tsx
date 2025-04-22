@@ -5,33 +5,33 @@ import { Brain, Book, Monitor, Award, Clock, Network } from 'lucide-react';
 const features = [
   {
     icon: <Brain className="w-10 h-10 text-academy-blue" />,
-    title: "AI Fundamentals",
-    description: "Learn the core concepts and mathematics behind machine learning and artificial intelligence."
+    title: "Fondamentaux de l'IA",
+    description: "Découvrez les concepts et mathématiques essentiels derrière le machine learning et l’intelligence artificielle."
   },
   {
     icon: <Monitor className="w-10 h-10 text-academy-blue" />,
-    title: "Hands-On Projects",
-    description: "Build real AI applications with guided projects that enhance your portfolio and skills."
+    title: "Projets Pratiques",
+    description: "Réalisez des applications d’IA concrètes et étoffez votre portfolio grâce à des projets guidés."
   },
   {
     icon: <Award className="w-10 h-10 text-academy-blue" />,
-    title: "Industry Certification",
-    description: "Earn a recognized certification that validates your expertise to potential employers."
+    title: "Certification Reconnu",
+    description: "Obtenez une certification reconnue validant vos compétences auprès des employeurs."
   },
   {
     icon: <Book className="w-10 h-10 text-academy-blue" />,
-    title: "Comprehensive Curriculum",
-    description: "Our curriculum covers everything from basic ML algorithms to advanced neural networks."
+    title: "Programme Complet",
+    description: "Le cursus couvre de la base des algorithmes d’IA jusqu’aux réseaux neuronaux avancés."
   },
   {
     icon: <Network className="w-10 h-10 text-academy-blue" />,
-    title: "Networking Opportunities",
-    description: "Connect with industry professionals and fellow students in our exclusive community."
+    title: "Réseautage",
+    description: "Échangez avec des professionnels du secteur et d'autres apprenants dans notre communauté."
   },
   {
     icon: <Clock className="w-10 h-10 text-academy-blue" />,
-    title: "Flexible Learning",
-    description: "Study at your own pace with lifetime access to course materials and regular updates."
+    title: "Flexibilité",
+    description: "Apprenez à votre rythme avec un accès à vie aux supports et mises à jour régulières."
   }
 ];
 
@@ -40,10 +40,9 @@ const FeaturesSection: React.FC = () => {
     <section id="features" className="py-20 bg-white">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose Our AI Technician Program</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Pourquoi choisir notre formation en IA ?</h2>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-            Our comprehensive program is designed to transform beginners into industry-ready AI specialists 
-            through practical training and expert guidance.
+            Notre programme complet vous transforme débutant en spécialiste IA du secteur à travers des projets concrets et l’accompagnement d’experts.
           </p>
         </div>
         

@@ -5,43 +5,43 @@ import { CheckCircle2 } from 'lucide-react';
 
 const modules = [
   {
-    title: "Module 1: Introduction to AI",
-    description: "Understand the fundamental concepts, history, and applications of AI in modern technology.",
+    title: "Module 1 : Introduction à l'IA",
+    description: "Comprenez les bases, l’historique et les applications actuelles de l’intelligence artificielle.",
     topics: [
-      "History and Evolution of AI",
-      "Types of AI: Narrow vs. General AI",
-      "Key AI Applications in Industry",
-      "Ethical Considerations in AI Development"
+      "Historique et évolution de l’IA",
+      "IA faible vs IA générale",
+      "Applications clés dans l’industrie",
+      "Enjeux éthiques en IA"
     ]
   },
   {
-    title: "Module 2: Machine Learning Fundamentals",
-    description: "Master the core principles of machine learning algorithms and their practical applications.",
+    title: "Module 2 : Fondamentaux du Machine Learning",
+    description: "Maîtrisez les principes fondamentaux des algorithmes d’apprentissage automatique et leurs usages.",
     topics: [
-      "Supervised and Unsupervised Learning",
-      "Regression and Classification",
-      "Model Evaluation and Validation",
-      "Feature Engineering and Selection"
+      "Apprentissage supervisé et non supervisé",
+      "Régression et classification",
+      "Évaluation et validation des modèles",
+      "Ingénierie et sélection des caractéristiques"
     ]
   },
   {
-    title: "Module 3: Deep Learning and Neural Networks",
-    description: "Explore the architecture and applications of neural networks in solving complex problems.",
+    title: "Module 3 : Deep Learning & Réseaux de neurones",
+    description: "Découvrez la structure et l’utilisation avancée des réseaux de neurones dans la résolution de problèmes complexes.",
     topics: [
-      "Neural Network Architecture",
-      "Convolutional Neural Networks",
-      "Recurrent Neural Networks",
-      "Transfer Learning and Fine Tuning"
+      "Architecture des réseaux neuronaux",
+      "Réseaux convolutifs",
+      "Réseaux récurrents",
+      "Transfert de connaissances et fine tuning"
     ]
   },
   {
-    title: "Module 4: AI System Implementation",
-    description: "Learn to deploy, maintain and optimize AI systems in production environments.",
+    title: "Module 4 : Déploiement des systèmes IA",
+    description: "Apprenez à déployer, maintenir et optimiser des systèmes IA en environnement réel.",
     topics: [
-      "Model Deployment Best Practices",
-      "Scaling and Performance Optimization",
-      "Monitoring AI Systems",
-      "Continuous Learning Systems"
+      "Bonnes pratiques de déploiement",
+      "Optimisation performance & passage à l’échelle",
+      "Supervision continue",
+      "Systèmes auto-apprenants"
     ]
   }
 ];
@@ -51,10 +51,9 @@ const CurriculumSection: React.FC = () => {
     <section id="curriculum" className="py-20 bg-academy-gray">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Comprehensive AI Curriculum</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Parcours pédagogique complet</h2>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-            Our structured learning path takes you from AI fundamentals to advanced implementation,
-            preparing you for real-world applications as an AI technician specialist.
+            Un chemin structuré : de l’initiation à l’IA jusqu’à la maîtrise pratique, pour faire de vous un expert terrain.
           </p>
         </div>
         
@@ -77,7 +76,7 @@ const CurriculumSection: React.FC = () => {
         
         <div className="mt-12 text-center">
           <Button className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg">
-            View Full Curriculum
+            Voir le programme complet
           </Button>
         </div>
       </div>
