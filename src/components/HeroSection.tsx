@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { BrainCircuit, GraduationCap, Stars } from 'lucide-react';
+import { BrainCircuit, GraduationCap, Stars, Video } from 'lucide-react';
 
 const HeroSection: React.FC = () => {
   return (
@@ -25,7 +25,8 @@ const HeroSection: React.FC = () => {
               S'inscrire
             </Button>
             <Button variant="outline" className="border-academy-blue text-academy-blue hover:bg-academy-blue/10 font-semibold px-8 py-6 text-lg">
-              Télécharger le programme
+              <Video className="mr-2" />
+              Regarde le video
             </Button>
           </div>
           
