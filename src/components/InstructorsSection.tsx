@@ -4,28 +4,28 @@ import { Linkedin, Twitter } from 'lucide-react';
 
 const instructors = [
   {
-    name: "Dr. Sarah Johnson",
-    title: "Chercheuse experte en IA",
-    bio: "Ancienne responsable de recherche chez Google Brain avec plus de 15 ans d'expérience en deep learning et réseaux neuronaux.",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop"
-  },
-  {
-    name: "Michael Chen",
-    title: "Ingénieur Machine Learning",
-    bio: "Responsable technique chez Amazon AWS, expert du déploiement d’IA à grande échelle et du cloud.",
+    name: "Dr. Ahmed Al-Faisal",
+    title: "Chercheur expert en AI",
+    bio: "Ancien responsable de recherche chez Google Brain avec plus de 15 ans d'expérience en deep learning et réseaux neuronaux.",
     image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop"
   },
   {
-    name: "Dr. Amanda Patel",
-    title: "Spécialiste Éthique IA",
-    bio: "Autrice et consultante, spécialiste en IA responsable et problématiques d’automatisation.",
-    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop"
+    name: "Layla Mahmoud",
+    title: "Ingénieure Machine Learning",
+    bio: "Responsable technique chez Amazon AWS, experte du déploiement d'AI à grande échelle et du cloud.",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop"
   },
   {
-    name: "James Wilson",
-    title: "Expert applications IA",
-    bio: "Ancien CTO de startup IA, expérience multisectorielle : santé, finance, commerce.",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop"
+    name: "Dr. Omar Nasser",
+    title: "Spécialiste Éthique AI",
+    bio: "Auteur et consultant, spécialiste en AI responsable et problématiques d'automatisation.",
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=400&fit=crop"
+  },
+  {
+    name: "Nadia Al-Khatib",
+    title: "Experte applications AI",
+    bio: "Ancienne CTO de startup AI, expérience multisectorielle : santé, finance, commerce.",
+    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop"
   }
 ];
 
@@ -34,9 +34,9 @@ const InstructorsSection: React.FC = () => {
     <section id="instructors" className="py-20 bg-white">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Apprenez auprès d’experts</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Apprenez auprès d'experts</h2>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-            Nos formateurs cumulent des décennies d’expérience dans les entreprises et instituts de recherche leaders en IA.
+            Nos formateurs cumulent des décennies d'expérience dans les entreprises et instituts de recherche leaders en AI.
           </p>
         </div>
         
