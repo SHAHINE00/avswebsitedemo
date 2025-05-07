@@ -14,7 +14,7 @@ const HeroSection: React.FC = () => {
             </span>
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-            Devenez <span className="gradient-text">Spécialiste en AVS AI Course</span>
+            Devenez <span className="gradient-text">expert en intelligence artificielle</span> – Rejoignez notre programme certifié et transformez votre avenir dès aujourd'hui
           </h1>
           <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-lg">
             Maîtrisez les technologies d'AI de pointe grâce à notre formation complète. 
