@@ -4,24 +4,24 @@ import { Star, Quote } from 'lucide-react';
 
 const testimonials = [
   {
-    name: "David Miller",
-    title: "Développeur IA chez Microsoft",
-    testimonial: "Cette formation a transformé ma carrière. Je suis passé de débutant à la mise en œuvre de systèmes IA complexes en 6 mois. Les projets pratiques ont vraiment consolidé mes acquis !",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
+    name: "Yasir Al-Jabri",
+    title: "Développeur AI chez Microsoft",
+    testimonial: "Cette formation a transformé ma carrière. Je suis passé de débutant à la mise en œuvre de systèmes AI complexes en 6 mois. Les projets pratiques ont vraiment consolidé mes acquis !",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
     rating: 5
   },
   {
-    name: "Jessica Zhang",
+    name: "Fatima Al-Zahra",
     title: "Data Scientist chez Netflix",
-    testimonial: "Le cursus m’a apporté théorie et compétences pratiques pour mon travail. Les formateurs sont de vrais experts et le contenu est constamment à jour.",
+    testimonial: "Le cursus m'a apporté théorie et compétences pratiques pour mon travail. Les formateurs sont de vrais experts et le contenu est constamment à jour.",
     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
     rating: 5
   },
   {
-    name: "Marcus Johnson",
+    name: "Khalid Mahmoud",
     title: "Fondateur de startup",
-    testimonial: "Pour intégrer l’IA à ma startup, ce programme était idéal. La partie sur le déploiement IA a été particulièrement précieuse.",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
+    testimonial: "Pour intégrer l'AI à ma startup, ce programme était idéal. La partie sur le déploiement AI a été particulièrement précieuse.",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
     rating: 4
   }
 ];
@@ -33,7 +33,7 @@ const TestimonialsSection: React.FC = () => {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Ils témoignent</h2>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-            Découvrez les retours de nos diplômés qui ont propulsé leur carrière grâce à notre programme IA.
+            Découvrez les retours de nos diplômés qui ont propulsé leur carrière grâce à notre programme AI.
           </p>
         </div>
         
