@@ -10,11 +10,11 @@ const Footer: React.FC = () => {
           {/* Column 1 - About */}
           <div>
             <div className="font-montserrat font-bold text-2xl text-white mb-4">
-              <span className="text-academy-blue">IA</span>
+              <span className="text-academy-blue">AI</span>
               <span className="text-academy-purple">Académie</span>
             </div>
             <p className="mb-4">
-              Offrir à la nouvelle génération des spécialistes IA une formation pratique et une évolution de carrière.
+              Offrir à la nouvelle génération des spécialistes AI une formation pratique et une évolution de carrière.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="hover:text-academy-blue transition-colors">
@@ -48,7 +48,7 @@ const Footer: React.FC = () => {
           {/* Column 3 - Newsletter */}
           <div>
             <h3 className="text-white font-semibold text-lg mb-4">Newsletter</h3>
-            <p className="mb-4">Abonnez-vous à notre newsletter pour recevoir des actualités IA et offres de formation.</p>
+            <p className="mb-4">Abonnez-vous à notre newsletter pour recevoir des actualités AI et offres de formation.</p>
             <form className="space-y-2">
               <input
                 type="email"
@@ -68,7 +68,7 @@ const Footer: React.FC = () => {
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <p>&copy; {new Date().getFullYear()} IA Académie. Tous droits réservés.</p>
+              <p>&copy; {new Date().getFullYear()} AI Académie. Tous droits réservés.</p>
             </div>
             <div className="flex space-x-6">
               <a href="#" className="hover:text-academy-blue transition-colors">Politique de confidentialité</a>

@@ -5,18 +5,18 @@ import { CheckCircle2 } from 'lucide-react';
 
 const modules = [
   {
-    title: "Module 1 : Introduction à l'IA",
-    description: "Comprenez les bases, l’historique et les applications actuelles de l’intelligence artificielle.",
+    title: "Module 1 : Introduction à l'AI",
+    description: "Comprenez les bases, l'historique et les applications actuelles de l'intelligence artificielle.",
     topics: [
-      "Historique et évolution de l’IA",
-      "IA faible vs IA générale",
-      "Applications clés dans l’industrie",
-      "Enjeux éthiques en IA"
+      "Historique et évolution de l'AI",
+      "AI faible vs AI générale",
+      "Applications clés dans l'industrie",
+      "Enjeux éthiques en AI"
     ]
   },
   {
     title: "Module 2 : Fondamentaux du Machine Learning",
-    description: "Maîtrisez les principes fondamentaux des algorithmes d’apprentissage automatique et leurs usages.",
+    description: "Maîtrisez les principes fondamentaux des algorithmes d'apprentissage automatique et leurs usages.",
     topics: [
       "Apprentissage supervisé et non supervisé",
       "Régression et classification",
@@ -26,7 +26,7 @@ const modules = [
   },
   {
     title: "Module 3 : Deep Learning & Réseaux de neurones",
-    description: "Découvrez la structure et l’utilisation avancée des réseaux de neurones dans la résolution de problèmes complexes.",
+    description: "Découvrez la structure et l'utilisation avancée des réseaux de neurones dans la résolution de problèmes complexes.",
     topics: [
       "Architecture des réseaux neuronaux",
       "Réseaux convolutifs",
@@ -35,11 +35,11 @@ const modules = [
     ]
   },
   {
-    title: "Module 4 : Déploiement des systèmes IA",
-    description: "Apprenez à déployer, maintenir et optimiser des systèmes IA en environnement réel.",
+    title: "Module 4 : Déploiement des systèmes AI",
+    description: "Apprenez à déployer, maintenir et optimiser des systèmes AI en environnement réel.",
     topics: [
       "Bonnes pratiques de déploiement",
-      "Optimisation performance & passage à l’échelle",
+      "Optimisation performance & passage à l'échelle",
       "Supervision continue",
       "Systèmes auto-apprenants"
     ]
@@ -53,7 +53,7 @@ const CurriculumSection: React.FC = () => {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Parcours pédagogique complet</h2>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-            Un chemin structuré : de l’initiation à l’IA jusqu’à la maîtrise pratique, pour faire de vous un expert terrain.
+            Un chemin structuré : de l'initiation à l'AI jusqu'à la maîtrise pratique, pour faire de vous un expert terrain.
           </p>
         </div>
         

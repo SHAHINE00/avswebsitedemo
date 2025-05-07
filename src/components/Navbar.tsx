@@ -12,7 +12,7 @@ const Navbar = () => {
         {/* Logo */}
         <div className="flex items-center">
           <span className="font-montserrat font-bold text-2xl">
-            <span className="text-academy-blue">IA</span>
+            <span className="text-academy-blue">AI</span>
             <span className="text-academy-purple">Académie</span>
           </span>
         </div>

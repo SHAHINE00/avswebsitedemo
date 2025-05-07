@@ -14,11 +14,11 @@ const HeroSection: React.FC = () => {
             </span>
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-            Devenez <span className="gradient-text">Spécialiste en IA</span>
+            Devenez <span className="gradient-text">Spécialiste en AVS AI Course</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-lg">
-            Maîtrisez les technologies d'IA de pointe grâce à notre formation complète. 
-            Rejoignez des milliers de diplômés qui ont boosté leur carrière dans l’industrie de l’IA.
+            Maîtrisez les technologies d'AI de pointe grâce à notre formation complète. 
+            Rejoignez des milliers de diplômés qui ont boosté leur carrière dans l'industrie de l'AI.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Button className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg">
@@ -51,7 +51,7 @@ const HeroSection: React.FC = () => {
             <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-academy-purple/10 rounded-full filter blur-xl"></div>
             <img 
               src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158" 
-              alt="Formation IA" 
+              alt="Formation AI" 
               className="relative z-10 rounded-lg shadow-xl w-full h-auto object-cover"
             />
             <div className="absolute -z-10 -bottom-6 -right-6 w-full h-full border-2 border-academy-blue rounded-lg"></div>
