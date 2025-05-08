@@ -14,7 +14,7 @@ const HeroSection: React.FC = () => {
             </span>
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-center md:text-left">
-            <span className="gradient-text">IA & Programmation : Votre Passeport pour le Leadership Technologique</span>
+            <span className="gradient-text">L'Avenir de la Technologie Commence Ici. Explorez, Apprenez, Innovez.</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-lg">
             Maîtrisez les technologies d'AI de pointe grâce à notre formation complète. 
