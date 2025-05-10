@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 
@@ -11,19 +12,21 @@ const Navbar = () => {
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center">
-          <span className="font-montserrat font-bold text-2xl">
+          <Link to="/" className="font-montserrat font-bold text-2xl">
             <span className="text-academy-blue">AI</span>
             <span className="text-academy-purple">Académie</span>
-          </span>
+          </Link>
         </div>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-6">
-          <a href="#features" className="font-medium hover:text-academy-blue transition-colors">Atouts</a>
-          <a href="#curriculum" className="font-medium hover:text-academy-blue transition-colors">Programme</a>
-          <a href="#instructors" className="font-medium hover:text-academy-blue transition-colors">Formateurs</a>
-          <a href="#testimonials" className="font-medium hover:text-academy-blue transition-colors">Témoignages</a>
-          <Button className="ml-4 bg-academy-blue hover:bg-academy-purple">S'inscrire</Button>
+          <Link to="/features" className="font-medium hover:text-academy-blue transition-colors">Atouts</Link>
+          <Link to="/curriculum" className="font-medium hover:text-academy-blue transition-colors">Programme</Link>
+          <Link to="/instructors" className="font-medium hover:text-academy-blue transition-colors">Formateurs</Link>
+          <Link to="/testimonials" className="font-medium hover:text-academy-blue transition-colors">Témoignages</Link>
+          <Button asChild className="ml-4 bg-academy-blue hover:bg-academy-purple">
+            <Link to="/register">S'inscrire</Link>
+          </Button>
         </div>
         
         {/* Mobile menu button */}
@@ -38,11 +41,13 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden bg-white absolute w-full left-0 px-6 py-4 shadow-md">
           <div className="flex flex-col space-y-4">
-            <a href="#features" className="font-medium" onClick={() => setIsOpen(false)}>Atouts</a>
-            <a href="#curriculum" className="font-medium" onClick={() => setIsOpen(false)}>Programme</a>
-            <a href="#instructors" className="font-medium" onClick={() => setIsOpen(false)}>Formateurs</a>
-            <a href="#testimonials" className="font-medium" onClick={() => setIsOpen(false)}>Témoignages</a>
-            <Button className="bg-academy-blue hover:bg-academy-purple w-full">S'inscrire</Button>
+            <Link to="/features" className="font-medium" onClick={() => setIsOpen(false)}>Atouts</Link>
+            <Link to="/curriculum" className="font-medium" onClick={() => setIsOpen(false)}>Programme</Link>
+            <Link to="/instructors" className="font-medium" onClick={() => setIsOpen(false)}>Formateurs</Link>
+            <Link to="/testimonials" className="font-medium" onClick={() => setIsOpen(false)}>Témoignages</Link>
+            <Button asChild className="bg-academy-blue hover:bg-academy-purple w-full">
+              <Link to="/register" onClick={() => setIsOpen(false)}>S'inscrire</Link>
+            </Button>
           </div>
         </div>
       )}

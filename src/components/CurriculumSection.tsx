@@ -1,9 +1,11 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2 } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-const modules = [
+const aiModules = [
   {
     title: "Module 1 : Introduction à l'AI",
     description: "Comprenez les bases, l'historique et les applications actuelles de l'intelligence artificielle.",
@@ -46,39 +48,116 @@ const modules = [
   }
 ];
 
+const programmingModules = [
+  {
+    title: "Module 1 : Fondamentaux de la programmation",
+    description: "Acquérez les bases solides de la logique de programmation et des structures de données.",
+    topics: [
+      "Algorithmes et logique",
+      "Structures de données fondamentales",
+      "Paradigmes de programmation",
+      "Tests et débogage"
+    ]
+  },
+  {
+    title: "Module 2 : Développement web moderne",
+    description: "Maîtrisez les technologies front-end et back-end pour créer des applications web complètes.",
+    topics: [
+      "HTML, CSS et JavaScript avancé",
+      "Frameworks front-end (React, Vue)",
+      "Architecture back-end et APIs",
+      "Bases de données relationnelles et NoSQL"
+    ]
+  },
+  {
+    title: "Module 3 : Programmation orientée objet",
+    description: "Approfondissez vos connaissances avec les principes de conception logicielle robustes.",
+    topics: [
+      "Classes, objets et héritage",
+      "Principes SOLID",
+      "Design patterns",
+      "Architecture logicielle"
+    ]
+  },
+  {
+    title: "Module 4 : DevOps et déploiement",
+    description: "Découvrez le cycle complet de livraison logicielle et les pratiques modernes.",
+    topics: [
+      "Intégration et déploiement continus",
+      "Conteneurisation avec Docker",
+      "Orchestration avec Kubernetes",
+      "Monitoring et logging"
+    ]
+  }
+];
+
 const CurriculumSection: React.FC = () => {
+  const [activeTab, setActiveTab] = useState("ai");
+  
   return (
     <section id="curriculum" className="py-20 bg-academy-gray">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Parcours pédagogique complet</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Parcours pédagogiques complets</h2>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-            Un chemin structuré : de l'initiation à l'AI jusqu'à la maîtrise pratique, pour faire de vous un expert terrain.
+            Des chemins structurés : de l'initiation jusqu'à la maîtrise pratique, pour faire de vous un expert dans votre domaine.
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {modules.map((module, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-              <h3 className="text-xl font-bold mb-3 text-academy-blue">{module.title}</h3>
-              <p className="text-gray-700 mb-4">{module.description}</p>
-              <ul className="space-y-2 mb-5">
-                {module.topics.map((topic, topicIndex) => (
-                  <li key={topicIndex} className="flex items-start">
-                    <CheckCircle2 className="w-5 h-5 text-academy-purple shrink-0 mr-2 mt-0.5" />
-                    <span>{topic}</span>
-                  </li>
-                ))}
-              </ul>
+        <Tabs defaultValue="ai" value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
+            <TabsTrigger value="ai" className="text-lg">Formation AI</TabsTrigger>
+            <TabsTrigger value="programming" className="text-lg">Formation Programmation</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="ai" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {aiModules.map((module, index) => (
+                <div key={index} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                  <h3 className="text-xl font-bold mb-3 text-academy-blue">{module.title}</h3>
+                  <p className="text-gray-700 mb-4">{module.description}</p>
+                  <ul className="space-y-2 mb-5">
+                    {module.topics.map((topic, topicIndex) => (
+                      <li key={topicIndex} className="flex items-start">
+                        <CheckCircle2 className="w-5 h-5 text-academy-purple shrink-0 mr-2 mt-0.5" />
+                        <span>{topic}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        
-        <div className="mt-12 text-center">
-          <Button className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg">
-            Voir le programme complet
-          </Button>
-        </div>
+            <div className="mt-10 text-center">
+              <Button asChild className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg">
+                <Link to="/ai-course">Voir le programme AI complet</Link>
+              </Button>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="programming" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {programmingModules.map((module, index) => (
+                <div key={index} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                  <h3 className="text-xl font-bold mb-3 text-academy-blue">{module.title}</h3>
+                  <p className="text-gray-700 mb-4">{module.description}</p>
+                  <ul className="space-y-2 mb-5">
+                    {module.topics.map((topic, topicIndex) => (
+                      <li key={topicIndex} className="flex items-start">
+                        <CheckCircle2 className="w-5 h-5 text-academy-purple shrink-0 mr-2 mt-0.5" />
+                        <span>{topic}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+            <div className="mt-10 text-center">
+              <Button asChild className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg">
+                <Link to="/programming-course">Voir le programme Programmation complet</Link>
+              </Button>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </section>
   );

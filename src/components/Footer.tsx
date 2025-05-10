@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Linkedin, Instagram, Mail, MapPin, Phone } from 'lucide-react';
 
 const Footer: React.FC = () => {
@@ -9,10 +10,10 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {/* Column 1 - About */}
           <div>
-            <div className="font-montserrat font-bold text-2xl text-white mb-4">
+            <Link to="/" className="font-montserrat font-bold text-2xl text-white mb-4 inline-block">
               <span className="text-academy-blue">AI</span>
               <span className="text-academy-purple">Académie</span>
-            </div>
+            </Link>
             <p className="mb-4">
               Offrir à la nouvelle génération des spécialistes AI une formation pratique et une évolution de carrière.
             </p>
@@ -36,12 +37,12 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="text-white font-semibold text-lg mb-4">Liens rapides</h3>
             <ul className="space-y-2">
-              <li><a href="#features" className="hover:text-academy-blue transition-colors">Atouts</a></li>
-              <li><a href="#curriculum" className="hover:text-academy-blue transition-colors">Programme</a></li>
-              <li><a href="#instructors" className="hover:text-academy-blue transition-colors">Formateurs</a></li>
-              <li><a href="#testimonials" className="hover:text-academy-blue transition-colors">Témoignages</a></li>
-              <li><a href="#" className="hover:text-academy-blue transition-colors">Blog</a></li>
-              <li><a href="#" className="hover:text-academy-blue transition-colors">Carrières</a></li>
+              <li><Link to="/features" className="hover:text-academy-blue transition-colors">Atouts</Link></li>
+              <li><Link to="/curriculum" className="hover:text-academy-blue transition-colors">Programme</Link></li>
+              <li><Link to="/instructors" className="hover:text-academy-blue transition-colors">Formateurs</Link></li>
+              <li><Link to="/testimonials" className="hover:text-academy-blue transition-colors">Témoignages</Link></li>
+              <li><Link to="/blog" className="hover:text-academy-blue transition-colors">Blog</Link></li>
+              <li><Link to="/careers" className="hover:text-academy-blue transition-colors">Carrières</Link></li>
             </ul>
           </div>
           
@@ -71,9 +72,9 @@ const Footer: React.FC = () => {
               <p>&copy; {new Date().getFullYear()} AI Académie. Tous droits réservés.</p>
             </div>
             <div className="flex space-x-6">
-              <a href="#" className="hover:text-academy-blue transition-colors">Politique de confidentialité</a>
-              <a href="#" className="hover:text-academy-blue transition-colors">Conditions d'utilisation</a>
-              <a href="#" className="hover:text-academy-blue transition-colors">Politique cookies</a>
+              <Link to="/privacy-policy" className="hover:text-academy-blue transition-colors">Politique de confidentialité</Link>
+              <Link to="/terms-of-use" className="hover:text-academy-blue transition-colors">Conditions d'utilisation</Link>
+              <Link to="/cookies-policy" className="hover:text-academy-blue transition-colors">Politique cookies</Link>
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 
@@ -15,11 +16,15 @@ const CTASection: React.FC = () => {
             Rejoignez des milliers de diplômés qui ont transformé leur carrière grâce à notre programme phare. Les places partent vite !
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button className="bg-white text-academy-blue hover:bg-gray-100 font-semibold px-8 py-6 text-lg">
-              S'inscrire <ArrowRight className="ml-2 h-5 w-5" />
+            <Button asChild className="bg-white text-academy-blue hover:bg-gray-100 font-semibold px-8 py-6 text-lg">
+              <Link to="/register">
+                S'inscrire <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
             </Button>
-            <Button variant="outline" className="border-white text-white hover:bg-white/10 font-semibold px-8 py-6 text-lg">
-              Prendre rendez-vous
+            <Button asChild variant="outline" className="border-white text-white hover:bg-white/10 font-semibold px-8 py-6 text-lg">
+              <Link to="/contact">
+                Prendre rendez-vous
+              </Link>
             </Button>
           </div>
           <p className="mt-6 text-sm opacity-80">

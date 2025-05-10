@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { BrainCircuit, GraduationCap, Stars, Video } from 'lucide-react';
 
@@ -21,12 +22,14 @@ const HeroSection: React.FC = () => {
             Rejoignez des milliers de diplômés qui ont boosté leur carrière dans l'industrie de l'AI.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg">
-              S'inscrire
+            <Button asChild className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg">
+              <Link to="/register">S'inscrire</Link>
             </Button>
-            <Button variant="outline" className="border-academy-blue text-academy-blue hover:bg-academy-blue/10 font-semibold px-8 py-6 text-lg">
-              <Video className="mr-2" />
-              Regarde le video
+            <Button asChild variant="outline" className="border-academy-blue text-academy-blue hover:bg-academy-blue/10 font-semibold px-8 py-6 text-lg">
+              <Link to="/video">
+                <Video className="mr-2" />
+                Regarde le video
+              </Link>
             </Button>
           </div>
           
