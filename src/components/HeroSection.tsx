@@ -44,7 +44,7 @@ const HeroSection: React.FC = () => {
             </div>
             <div className="flex items-center">
               <Stars className="text-academy-blue mr-2" />
-              <span>Note : 4.8/5</span>
+              <span>5000+ étudiants</span>
             </div>
           </div>
         </div>
@@ -54,8 +54,8 @@ const HeroSection: React.FC = () => {
             <div className="absolute -top-10 -left-10 w-48 h-48 bg-academy-blue/10 rounded-full filter blur-xl"></div>
             <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-academy-purple/10 rounded-full filter blur-xl"></div>
             <img 
-              src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5" 
-              alt="Humain et Intelligence Artificielle" 
+              src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e" 
+              alt="Humain et Robot Intelligence Artificielle" 
               className="relative z-10 rounded-lg shadow-xl w-full h-auto object-cover"
             />
             <div className="absolute -z-10 -bottom-6 -right-6 w-full h-full border-2 border-academy-blue rounded-lg"></div>
