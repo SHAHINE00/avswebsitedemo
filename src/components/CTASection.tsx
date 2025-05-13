@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,7 +5,7 @@ import { ArrowRight } from 'lucide-react';
 
 const CTASection: React.FC = () => {
   return (
-    <section className="py-24 bg-gradient-to-br from-academy-blue to-academy-purple text-white">
+    <section className="py-16 bg-gradient-to-br from-academy-blue to-academy-purple text-white">
       <div className="container mx-auto px-6">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Brain, Book, Monitor, Award, Clock, Network } from 'lucide-react';
 
@@ -37,7 +36,7 @@ const features = [
 
 const FeaturesSection: React.FC = () => {
   return (
-    <section id="features" className="py-20 bg-white">
+    <section id="features" className="py-12 bg-white">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Pourquoi choisir notre formation en IA ?</h2>

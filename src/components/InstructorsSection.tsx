@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Linkedin, Twitter } from 'lucide-react';
 
@@ -31,7 +30,7 @@ const instructors = [
 
 const InstructorsSection: React.FC = () => {
   return (
-    <section id="instructors" className="py-20 bg-white">
+    <section id="instructors" className="py-12 bg-white">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Apprenez auprès d'experts</h2>

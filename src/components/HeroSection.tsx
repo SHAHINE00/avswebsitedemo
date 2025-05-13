@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,7 +5,7 @@ import { BrainCircuit, GraduationCap, Stars, Video } from 'lucide-react';
 
 const HeroSection: React.FC = () => {
   return (
-    <div className="pt-28 pb-16 md:pt-32 md:pb-24 bg-gradient-to-br from-white to-academy-gray">
+    <div className="pt-28 pb-0 md:pt-32 md:pb-0 bg-gradient-to-br from-white to-academy-gray">
       <div className="container mx-auto px-6 flex flex-col md:flex-row items-center">
         <div className="md:w-1/2 mb-10 md:mb-0">
           <div className="flex items-center mb-4">

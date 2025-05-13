@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -95,7 +94,7 @@ const CurriculumSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState("ai");
   
   return (
-    <section id="curriculum" className="py-20 bg-academy-gray">
+    <section id="curriculum" className="py-12 bg-academy-gray">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Parcours pédagogiques complets</h2>
