@@ -18,7 +18,7 @@ const HeroSection: React.FC = () => {
             <span className="gradient-text">L'Avenir de la Technologie Commence Ici. Explorez, Apprenez, Innovez.</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-lg">
-            Maîtrisez les technologies d'AI de pointe grâce à notre formation complète. 
+            AVS l'institut de l'Innovation et de l'Intelligence Artificielle - Maîtrisez les technologies d'AI de pointe grâce à notre formation complète. 
             Rejoignez des milliers de diplômés qui ont boosté leur carrière dans l'industrie de l'AI.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">

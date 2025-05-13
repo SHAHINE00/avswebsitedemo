@@ -11,11 +11,11 @@ const Footer: React.FC = () => {
           {/* Column 1 - About */}
           <div>
             <Link to="/" className="font-montserrat font-bold text-2xl text-white mb-4 inline-block">
-              <span className="text-academy-blue">AI</span>
-              <span className="text-academy-purple">Académie</span>
+              <span className="text-academy-blue">Inn</span>
+              <span className="text-academy-purple">ovia</span>
             </Link>
             <p className="mb-4">
-              Offrir à la nouvelle génération des spécialistes AI une formation pratique et une évolution de carrière.
+              AVS l'institut de l'Innovation et de l'Intelligence Artificielle - Offrir à la nouvelle génération des spécialistes AI une formation pratique et une évolution de carrière.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="hover:text-academy-blue transition-colors">
@@ -69,7 +69,7 @@ const Footer: React.FC = () => {
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <p>&copy; {new Date().getFullYear()} AI Académie. Tous droits réservés.</p>
+              <p>&copy; {new Date().getFullYear()} Innovia. Tous droits réservés.</p>
             </div>
             <div className="flex space-x-6">
               <Link to="/privacy-policy" className="hover:text-academy-blue transition-colors">Politique de confidentialité</Link>
