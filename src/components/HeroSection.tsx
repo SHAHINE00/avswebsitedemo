@@ -35,11 +35,11 @@ const HeroSection: React.FC = () => {
           <div className="mt-10 flex flex-col sm:flex-row gap-6 text-gray-700">
             <div className="flex items-center">
               <GraduationCap className="text-academy-blue mr-2" />
-              <span>5000+ diplômés</span>
+              <span>5000+ étudiants</span>
             </div>
             <div className="flex items-center">
               <BrainCircuit className="text-academy-blue mr-2" />
-              <span>Reconnu par le secteur</span>
+              <span>Certificat international</span>
             </div>
             <div className="flex items-center">
               <Stars className="text-academy-blue mr-2" />
