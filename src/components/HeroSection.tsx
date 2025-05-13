@@ -15,11 +15,10 @@ const HeroSection: React.FC = () => {
             </span>
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-center md:text-left">
-            <span className="gradient-text">L'Avenir de la Technologie Commence Ici. Explorez, Apprenez, Innovez.</span>
+            <span className="gradient-text">L'Avenir de la Technologie Commence Ici. Explorez Apprenez Innovez.</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-lg">
-            AVS l'institut de l'Innovation et de l'Intelligence Artificielle - Maîtrisez les technologies d'AI de pointe grâce à notre formation complète. 
-            Rejoignez des milliers de diplômés qui ont boosté leur carrière dans l'industrie de l'AI.
+            AVS l'institut de l'Innovation et de l'Intelligence Artificielle - Maîtriser les technologies d'IA et de Programmation de pointe grâce à notre formation la plus complète. Rejoignez les milliers de développements qui boostent votre carrière dans l'industrie de l'IA et de la programmation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Button asChild className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg">
