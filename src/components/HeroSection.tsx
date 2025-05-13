@@ -15,7 +15,7 @@ const HeroSection: React.FC = () => {
             </span>
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-center md:text-left">
-            <span className="gradient-text">L'Avenir de la Technologie Commence Ici. Explorez Apprenez Innovez</span>
+            <span className="gradient-text">L'Avenir de la Technologie Commence Ici Explorez Apprenez Innovez</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-lg">
             AVS l'institut de l'Innovation et de l'Intelligence Artificielle - Maîtriser les technologies d'IA et de Programmation de pointe grâce à notre formation la plus complète. Rejoignez les milliers de développements qui boostent votre carrière dans l'industrie de l'IA et de la programmation.
@@ -54,7 +54,7 @@ const HeroSection: React.FC = () => {
             <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-academy-purple/10 rounded-full filter blur-xl"></div>
             <img 
               src="/lovable-uploads/5f417ca9-ec0a-42b3-9e82-56b7ec1866fe.png"
-              alt="Équipe collaborant sur un projet de programmation AI" 
+              alt="Équipe collaborant sur un projet de programmation IA" 
               className="relative z-10 rounded-lg shadow-xl w-full h-auto object-cover"
             />
             <div className="absolute -z-10 -bottom-6 -right-6 w-full h-full border-2 border-academy-blue rounded-lg"></div>

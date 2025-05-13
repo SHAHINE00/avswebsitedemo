@@ -7,13 +7,13 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const aiModules = [
   {
-    title: "Module 1 : Introduction à l'AI",
+    title: "Module 1 : Introduction à l'IA",
     description: "Comprenez les bases, l'historique et les applications actuelles de l'intelligence artificielle.",
     topics: [
-      "Historique et évolution de l'AI",
-      "AI faible vs AI générale",
+      "Historique et évolution de l'IA",
+      "IA faible vs IA générale",
       "Applications clés dans l'industrie",
-      "Enjeux éthiques en AI"
+      "Enjeux éthiques en IA"
     ]
   },
   {
@@ -37,8 +37,8 @@ const aiModules = [
     ]
   },
   {
-    title: "Module 4 : Déploiement des systèmes AI",
-    description: "Apprenez à déployer, maintenir et optimiser des systèmes AI en environnement réel.",
+    title: "Module 4 : Déploiement des systèmes IA",
+    description: "Apprenez à déployer, maintenir et optimiser des systèmes IA en environnement réel.",
     topics: [
       "Bonnes pratiques de déploiement",
       "Optimisation performance & passage à l'échelle",
@@ -106,7 +106,7 @@ const CurriculumSection: React.FC = () => {
         
         <Tabs defaultValue="ai" value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
-            <TabsTrigger value="ai" className="text-lg">Formation AI</TabsTrigger>
+            <TabsTrigger value="ai" className="text-lg">Formation IA</TabsTrigger>
             <TabsTrigger value="programming" className="text-lg">Formation Programmation</TabsTrigger>
           </TabsList>
           
@@ -129,7 +129,7 @@ const CurriculumSection: React.FC = () => {
             </div>
             <div className="mt-10 text-center">
               <Button asChild className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg">
-                <Link to="/ai-course">Voir le programme AI complet</Link>
+                <Link to="/ai-course">Voir le programme IA complet</Link>
               </Button>
             </div>
           </TabsContent>

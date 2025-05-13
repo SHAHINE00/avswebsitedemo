@@ -5,13 +5,13 @@ import { Brain, Book, Monitor, Award, Clock, Network } from 'lucide-react';
 const features = [
   {
     icon: <Brain className="w-10 h-10 text-academy-blue" />,
-    title: "Fondamentaux de l'AI",
+    title: "Fondamentaux de l'IA",
     description: "Découvrez les concepts et mathématiques essentiels derrière le machine learning et l'intelligence artificielle."
   },
   {
     icon: <Monitor className="w-10 h-10 text-academy-blue" />,
     title: "Projets Pratiques",
-    description: "Réalisez des applications d'AI concrètes et étoffez votre portfolio grâce à des projets guidés."
+    description: "Réalisez des applications d'IA concrètes et étoffez votre portfolio grâce à des projets guidés."
   },
   {
     icon: <Award className="w-10 h-10 text-academy-blue" />,
@@ -21,7 +21,7 @@ const features = [
   {
     icon: <Book className="w-10 h-10 text-academy-blue" />,
     title: "Programme Complet",
-    description: "Le cursus couvre de la base des algorithmes d'AI jusqu'aux réseaux neuronaux avancés."
+    description: "Le cursus couvre de la base des algorithmes d'IA jusqu'aux réseaux neuronaux avancés."
   },
   {
     icon: <Network className="w-10 h-10 text-academy-blue" />,
@@ -40,9 +40,9 @@ const FeaturesSection: React.FC = () => {
     <section id="features" className="py-20 bg-white">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Pourquoi choisir notre formation en AI ?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Pourquoi choisir notre formation en IA ?</h2>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-            Notre programme complet vous transforme débutant en spécialiste AI du secteur à travers des projets concrets et l'accompagnement d'experts.
+            Notre programme complet vous transforme débutant en spécialiste IA du secteur à travers des projets concrets et l'accompagnement d'experts.
           </p>
         </div>
         

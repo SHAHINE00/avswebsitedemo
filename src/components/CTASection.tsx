@@ -10,7 +10,7 @@ const CTASection: React.FC = () => {
       <div className="container mx-auto px-6">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
-            Lancez votre parcours de spécialiste AVS AI Course aujourd'hui
+            Lancez votre parcours de spécialiste AVS IA Course aujourd'hui
           </h2>
           <p className="text-lg md:text-xl opacity-90 mb-10">
             Rejoignez des milliers de diplômés qui ont transformé leur carrière grâce à notre programme phare. Les places partent vite !
