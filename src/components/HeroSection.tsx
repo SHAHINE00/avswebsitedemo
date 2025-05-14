@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -34,7 +35,7 @@ const HeroSection: React.FC = () => {
           <div className="mt-10 flex flex-col sm:flex-row gap-6 text-gray-700">
             <div className="flex items-center">
               <GraduationCap className="text-academy-blue mr-2" />
-              <span>5000+ étudiants</span>
+              <span>Diplome national certifié</span>
             </div>
             <div className="flex items-center">
               <BrainCircuit className="text-academy-blue mr-2" />
