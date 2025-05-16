@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { BrainCircuit, GraduationCap, Stars, Video } from 'lucide-react';
+import { BrainCircuit, GraduationCap, Globe, Briefcase } from 'lucide-react';
 
 const HeroSection: React.FC = () => {
   return (
@@ -35,15 +35,15 @@ const HeroSection: React.FC = () => {
           <div className="mt-10 flex flex-col sm:flex-row gap-6 text-gray-700">
             <div className="flex items-center">
               <GraduationCap className="text-academy-blue mr-2" />
-              <span>Diplome national certifié</span>
+              <span>🎓 Formation reconnue par l'État</span>
             </div>
             <div className="flex items-center">
-              <BrainCircuit className="text-academy-blue mr-2" />
-              <span>Certificat international</span>
+              <Globe className="text-academy-blue mr-2" />
+              <span>🌍 Certification valable à l'international</span>
             </div>
             <div className="flex items-center">
-              <Stars className="text-academy-blue mr-2" />
-              <span>5000+ étudiants</span>
+              <Briefcase className="text-academy-blue mr-2" />
+              <span>💼 Métiers tech rémunérateurs</span>
             </div>
           </div>
         </div>
