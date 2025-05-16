@@ -32,15 +32,26 @@ const HeroSection: React.FC = () => {
             </Button>
           </div>
           
-          <div className="mt-10 flex flex-col items-center md:flex-row md:items-center md:justify-center gap-6 text-gray-700 md:w-screen md:-ml-[calc(50vw-50%)]">
-            <div className="flex items-center">
-              <span>🎓 Formation reconnue par l'État</span>
-            </div>
-            <div className="flex items-center">
-              <span>🌍 Certification valable à l'international</span>
-            </div>
-            <div className="flex items-center">
-              <span>💼 Métiers tech rémunérateurs</span>
+          <div className="mt-10 flex flex-col items-center md:flex-row md:items-center md:justify-center gap-8 md:gap-12 text-gray-700">
+            <div className="benefits-container md:max-w-2xl mx-auto flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
+              <div className="flex items-center">
+                <span className="flex items-center bg-white py-2 px-4 rounded-full shadow-md">
+                  <span className="text-xl mr-2">🎓</span>
+                  <span className="font-medium">Formation reconnue par l'État</span>
+                </span>
+              </div>
+              <div className="flex items-center">
+                <span className="flex items-center bg-white py-2 px-4 rounded-full shadow-md">
+                  <span className="text-xl mr-2">🌍</span>
+                  <span className="font-medium">Certification valable à l'international</span>
+                </span>
+              </div>
+              <div className="flex items-center">
+                <span className="flex items-center bg-white py-2 px-4 rounded-full shadow-md">
+                  <span className="text-xl mr-2">💼</span>
+                  <span className="font-medium">Métiers tech rémunérateurs</span>
+                </span>
+              </div>
             </div>
           </div>
         </div>
