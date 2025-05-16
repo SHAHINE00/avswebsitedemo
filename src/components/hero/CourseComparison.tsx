@@ -20,6 +20,12 @@ const CourseComparison: React.FC = () => {
             <p className="text-gray-700 mb-6">
               Plongez dans le monde fascinant de l'intelligence artificielle et apprenez à créer des solutions innovantes.
             </p>
+            
+            {/* Duration badge */}
+            <div className="bg-academy-blue/10 text-academy-blue rounded-lg px-4 py-2 inline-block mb-6">
+              <span className="font-semibold">Durée: 2 ans</span> (théorie et projets pratiques)
+            </div>
+            
             <ul className="space-y-2 mb-8">
               <li className="flex items-start">
                 <span className="text-academy-blue mr-2">✓</span>
@@ -52,6 +58,12 @@ const CourseComparison: React.FC = () => {
             <p className="text-gray-700 mb-6">
               Maîtrisez les langages et technologies les plus demandés pour développer des applications web et mobile modernes.
             </p>
+            
+            {/* Duration badge */}
+            <div className="bg-academy-purple/10 text-academy-purple rounded-lg px-4 py-2 inline-block mb-6">
+              <span className="font-semibold">Durée: 2 ans</span> (théorie et projets pratiques)
+            </div>
+            
             <ul className="space-y-2 mb-8">
               <li className="flex items-start">
                 <span className="text-academy-purple mr-2">✓</span>
