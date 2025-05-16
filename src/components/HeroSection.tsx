@@ -31,24 +31,6 @@ const HeroSection: React.FC = () => {
               </Link>
             </Button>
           </div>
-          
-          <div className="mt-10">
-            <h3 className="text-xl font-semibold mb-4 text-center md:text-left">Nos avantages</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="feature-card bg-white p-4 rounded-lg border border-gray-200 hover:border-academy-blue transition-all flex items-center">
-                <span className="text-2xl mr-3">🎓</span>
-                <span className="font-medium">Formation reconnue par l'État</span>
-              </div>
-              <div className="feature-card bg-white p-4 rounded-lg border border-gray-200 hover:border-academy-blue transition-all flex items-center">
-                <span className="text-2xl mr-3">🌍</span>
-                <span className="font-medium">Certification internationale</span>
-              </div>
-              <div className="feature-card bg-white p-4 rounded-lg border border-gray-200 hover:border-academy-blue transition-all flex items-center">
-                <span className="text-2xl mr-3">💼</span>
-                <span className="font-medium">Métiers tech rémunérateurs</span>
-              </div>
-            </div>
-          </div>
         </div>
         
         <div className="md:w-1/2 md:pl-10 flex justify-center">
@@ -61,6 +43,27 @@ const HeroSection: React.FC = () => {
               className="relative z-10 rounded-lg shadow-xl w-full h-auto object-cover"
             />
             <div className="absolute -z-10 -bottom-6 -right-6 w-full h-full border-2 border-academy-blue rounded-lg"></div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Centered benefits section */}
+      <div className="container mx-auto px-6 mt-16">
+        <div className="max-w-4xl mx-auto">
+          <h3 className="text-2xl font-semibold mb-6 text-center">Nos avantages</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="feature-card bg-white p-5 rounded-lg border border-gray-200 hover:border-academy-blue transition-all flex items-center">
+              <span className="text-3xl mr-4">🎓</span>
+              <span className="font-medium">Formation reconnue par l'État</span>
+            </div>
+            <div className="feature-card bg-white p-5 rounded-lg border border-gray-200 hover:border-academy-blue transition-all flex items-center">
+              <span className="text-3xl mr-4">🌍</span>
+              <span className="font-medium">Certification internationale</span>
+            </div>
+            <div className="feature-card bg-white p-5 rounded-lg border border-gray-200 hover:border-academy-blue transition-all flex items-center">
+              <span className="text-3xl mr-4">💼</span>
+              <span className="font-medium">Métiers tech rémunérateurs</span>
+            </div>
           </div>
         </div>
       </div>
