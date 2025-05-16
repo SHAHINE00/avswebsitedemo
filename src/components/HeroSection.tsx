@@ -32,7 +32,7 @@ const HeroSection: React.FC = () => {
             </Button>
           </div>
           
-          <div className="mt-10 flex flex-col sm:flex-row gap-6 text-gray-700">
+          <div className="mt-10 flex flex-col items-center sm:flex-row sm:justify-center gap-6 text-gray-700">
             <div className="flex items-center">
               <span>🎓 Formation reconnue par l'État</span>
             </div>
