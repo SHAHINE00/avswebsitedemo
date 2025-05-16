@@ -30,7 +30,7 @@ const faqItems = [
   },
   {
     question: "Quelle est la durée de chaque formation ?",
-    answer: "Chaque formation comprend quatre modules intensifs et peut être complétée en 6 mois à temps plein ou 12 mois à temps partiel. Les étudiants ont accès aux supports de cours et à la communauté d'apprenants même après avoir terminé la formation."
+    answer: "Nos formations s'étendent sur une période de 2 ans, combinant enseignement théorique approfondi et application pratique par le biais de projets concrets. Cette durée optimale permet aux étudiants d'acquérir une maîtrise complète des compétences nécessaires pour exceller dans le secteur technologique, tout en développant un portfolio professionnel substantiel."
   }
 ];
 
