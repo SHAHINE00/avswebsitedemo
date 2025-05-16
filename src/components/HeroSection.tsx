@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { BrainCircuit, GraduationCap, Globe, Briefcase } from 'lucide-react';
+import { BrainCircuit, GraduationCap, Globe, Briefcase, Video } from 'lucide-react';
 
 const HeroSection: React.FC = () => {
   return (

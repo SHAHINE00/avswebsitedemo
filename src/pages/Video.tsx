@@ -22,10 +22,14 @@ const Video = () => {
       <main className="flex-grow py-16">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto">
-            <div className="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg shadow-lg mb-8">
-              {/* Video player would be embedded here */}
-              <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500">Vidéo de présentation</p>
+            <div className="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg shadow-lg mb-8 relative overflow-hidden">
+              <div className="absolute inset-0 flex items-center justify-center">
+                {/* Video player placeholder - replace with actual video embed code */}
+                <div className="w-full h-0 pb-[56.25%] relative">
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+                    <p className="text-gray-600 font-medium text-xl">Vidéo de présentation</p>
+                  </div>
+                </div>
               </div>
             </div>
             
