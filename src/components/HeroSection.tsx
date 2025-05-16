@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Video } from 'lucide-react';
+import { Video, BookOpen, Code } from 'lucide-react';
 
 const HeroSection: React.FC = () => {
   return (
@@ -20,7 +20,7 @@ const HeroSection: React.FC = () => {
           <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-lg">
             AVS l'institut de l'Innovation et de l'Intelligence Artificielle - Maîtriser les technologies d'IA et de Programmation de pointe grâce à notre formation la plus complète. Rejoignez les milliers de développements qui boostent votre carrière dans l'industrie de l'IA et de la programmation.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 mb-8">
             <Button asChild className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg">
               <Link to="/register">S'inscrire</Link>
             </Button>
@@ -30,6 +30,24 @@ const HeroSection: React.FC = () => {
                 Regarde le video
               </Link>
             </Button>
+          </div>
+
+          {/* Course Quick Links */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+            <Link to="/ai-course" className="flex items-center p-4 bg-white rounded-lg border border-gray-200 hover:border-academy-blue hover:shadow-md transition-all">
+              <BookOpen className="w-6 h-6 text-academy-blue mr-3" />
+              <div>
+                <h3 className="font-semibold text-lg">Formation IA</h3>
+                <p className="text-sm text-gray-600">Intelligence artificielle</p>
+              </div>
+            </Link>
+            <Link to="/programming-course" className="flex items-center p-4 bg-white rounded-lg border border-gray-200 hover:border-academy-purple hover:shadow-md transition-all">
+              <Code className="w-6 h-6 text-academy-purple mr-3" />
+              <div>
+                <h3 className="font-semibold text-lg">Formation Programmation</h3>
+                <p className="text-sm text-gray-600">Développement web & mobile</p>
+              </div>
+            </Link>
           </div>
         </div>
         
@@ -63,6 +81,147 @@ const HeroSection: React.FC = () => {
             <div className="feature-card bg-white p-5 rounded-lg border border-gray-200 hover:border-academy-blue transition-all flex items-center">
               <span className="text-3xl mr-4">💼</span>
               <span className="font-medium">Métiers tech rémunérateurs</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Course Comparison Section */}
+      <div className="container mx-auto px-6 py-16">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold mb-10 text-center">Choisissez votre parcours</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* IA Course */}
+            <div className="bg-white p-8 rounded-xl shadow-md border border-gray-200 hover:border-academy-blue transition-all">
+              <div className="flex items-center mb-4">
+                <BookOpen className="w-8 h-8 text-academy-blue mr-3" />
+                <h3 className="text-2xl font-bold text-academy-blue">Formation IA</h3>
+              </div>
+              <p className="text-gray-700 mb-6">
+                Plongez dans le monde fascinant de l'intelligence artificielle et apprenez à créer des solutions innovantes.
+              </p>
+              <ul className="space-y-2 mb-8">
+                <li className="flex items-start">
+                  <span className="text-academy-blue mr-2">✓</span>
+                  <span>Machine Learning et Deep Learning</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-academy-blue mr-2">✓</span>
+                  <span>Traitement du langage naturel</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-academy-blue mr-2">✓</span>
+                  <span>Vision par ordinateur</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-academy-blue mr-2">✓</span>
+                  <span>Systèmes de recommandation</span>
+                </li>
+              </ul>
+              <Button asChild className="w-full bg-academy-blue hover:bg-academy-purple">
+                <Link to="/ai-course">Découvrir le programme</Link>
+              </Button>
+            </div>
+            
+            {/* Programming Course */}
+            <div className="bg-white p-8 rounded-xl shadow-md border border-gray-200 hover:border-academy-purple transition-all">
+              <div className="flex items-center mb-4">
+                <Code className="w-8 h-8 text-academy-purple mr-3" />
+                <h3 className="text-2xl font-bold text-academy-purple">Formation Programmation</h3>
+              </div>
+              <p className="text-gray-700 mb-6">
+                Maîtrisez les langages et technologies les plus demandés pour développer des applications web et mobile modernes.
+              </p>
+              <ul className="space-y-2 mb-8">
+                <li className="flex items-start">
+                  <span className="text-academy-purple mr-2">✓</span>
+                  <span>Développement web fullstack</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-academy-purple mr-2">✓</span>
+                  <span>Applications mobiles iOS et Android</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-academy-purple mr-2">✓</span>
+                  <span>Architectures logicielles modernes</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-academy-purple mr-2">✓</span>
+                  <span>DevOps et déploiement</span>
+                </li>
+              </ul>
+              <Button asChild className="w-full bg-academy-purple hover:bg-academy-blue">
+                <Link to="/programming-course">Découvrir le programme</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Career Paths Section */}
+      <div className="container mx-auto px-6 py-16 bg-academy-gray/30">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold mb-3 text-center">Opportunités de carrière</h2>
+          <p className="text-lg text-gray-700 max-w-3xl mx-auto text-center mb-10">
+            Nos formations vous préparent pour les métiers les plus demandés et les mieux rémunérés dans le secteur technologique.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* AI Career Paths */}
+            <div>
+              <h3 className="text-xl font-bold mb-4 text-academy-blue">Après la formation IA</h3>
+              <div className="space-y-4">
+                <div className="bg-white p-4 rounded-lg shadow-sm flex items-center">
+                  <span className="text-xl mr-3">🤖</span>
+                  <div>
+                    <h4 className="font-semibold">Data Scientist</h4>
+                    <p className="text-sm text-gray-600">Analyser des données pour en extraire des insights précieux</p>
+                  </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm flex items-center">
+                  <span className="text-xl mr-3">🧠</span>
+                  <div>
+                    <h4 className="font-semibold">Ingénieur ML</h4>
+                    <p className="text-sm text-gray-600">Créer et déployer des modèles d'apprentissage automatique</p>
+                  </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm flex items-center">
+                  <span className="text-xl mr-3">📊</span>
+                  <div>
+                    <h4 className="font-semibold">Consultant IA</h4>
+                    <p className="text-sm text-gray-600">Conseiller les entreprises sur leurs stratégies d'IA</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Programming Career Paths */}
+            <div>
+              <h3 className="text-xl font-bold mb-4 text-academy-purple">Après la formation Programmation</h3>
+              <div className="space-y-4">
+                <div className="bg-white p-4 rounded-lg shadow-sm flex items-center">
+                  <span className="text-xl mr-3">💻</span>
+                  <div>
+                    <h4 className="font-semibold">Développeur Full Stack</h4>
+                    <p className="text-sm text-gray-600">Créer des applications web complètes de A à Z</p>
+                  </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm flex items-center">
+                  <span className="text-xl mr-3">📱</span>
+                  <div>
+                    <h4 className="font-semibold">Développeur Mobile</h4>
+                    <p className="text-sm text-gray-600">Concevoir des applications iOS et Android performantes</p>
+                  </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm flex items-center">
+                  <span className="text-xl mr-3">🔄</span>
+                  <div>
+                    <h4 className="font-semibold">DevOps Engineer</h4>
+                    <p className="text-sm text-gray-600">Automatiser et optimiser les déploiements d'applications</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
