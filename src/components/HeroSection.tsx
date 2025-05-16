@@ -21,10 +21,10 @@ const HeroSection: React.FC = () => {
             AVS l'institut de l'Innovation et de l'Intelligence Artificielle - Maîtriser les technologies d'IA et de Programmation de pointe grâce à notre formation la plus complète. Rejoignez les milliers de développements qui boostent votre carrière dans l'industrie de l'IA et de la programmation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
-            <Button asChild className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg">
+            <Button asChild className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg rounded-xl">
               <Link to="/register">S'inscrire</Link>
             </Button>
-            <Button asChild variant="outline" className="border-academy-blue text-academy-blue hover:bg-academy-blue/10 font-semibold px-8 py-6 text-lg">
+            <Button asChild variant="outline" className="border-academy-blue text-academy-blue hover:bg-academy-blue/10 font-semibold px-8 py-6 text-lg rounded-xl">
               <Link to="/video">
                 <Video className="mr-2" />
                 Regarde le video
@@ -33,16 +33,16 @@ const HeroSection: React.FC = () => {
           </div>
 
           {/* Course Quick Links */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-            <Link to="/ai-course" className="flex items-center p-4 bg-white rounded-lg border border-gray-200 hover:border-academy-blue hover:shadow-md transition-all">
-              <BookOpen className="w-6 h-6 text-academy-blue mr-3" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-8">
+            <Link to="/ai-course" className="flex items-center p-6 bg-white rounded-2xl border border-gray-200 hover:border-academy-blue hover:shadow-lg transition-all">
+              <BookOpen className="w-7 h-7 text-academy-blue mr-4" />
               <div>
                 <h3 className="font-semibold text-lg">Formation IA</h3>
                 <p className="text-sm text-gray-600">Intelligence artificielle</p>
               </div>
             </Link>
-            <Link to="/programming-course" className="flex items-center p-4 bg-white rounded-lg border border-gray-200 hover:border-academy-purple hover:shadow-md transition-all">
-              <Code className="w-6 h-6 text-academy-purple mr-3" />
+            <Link to="/programming-course" className="flex items-center p-6 bg-white rounded-2xl border border-gray-200 hover:border-academy-purple hover:shadow-lg transition-all">
+              <Code className="w-7 h-7 text-academy-purple mr-4" />
               <div>
                 <h3 className="font-semibold text-lg">Formation Programmation</h3>
                 <p className="text-sm text-gray-600">Développement web & mobile</p>
@@ -91,9 +91,9 @@ const HeroSection: React.FC = () => {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold mb-10 text-center">Choisissez votre parcours</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* IA Course */}
-            <div className="bg-white p-8 rounded-xl shadow-md border border-gray-200 hover:border-academy-blue transition-all">
+            <div className="bg-white p-8 rounded-2xl shadow-md border border-gray-200 hover:border-academy-blue transition-all">
               <div className="flex items-center mb-4">
                 <BookOpen className="w-8 h-8 text-academy-blue mr-3" />
                 <h3 className="text-2xl font-bold text-academy-blue">Formation IA</h3>
@@ -119,13 +119,13 @@ const HeroSection: React.FC = () => {
                   <span>Systèmes de recommandation</span>
                 </li>
               </ul>
-              <Button asChild className="w-full bg-academy-blue hover:bg-academy-purple">
+              <Button asChild className="w-full bg-academy-blue hover:bg-academy-purple rounded-xl">
                 <Link to="/ai-course">Découvrir le programme</Link>
               </Button>
             </div>
             
             {/* Programming Course */}
-            <div className="bg-white p-8 rounded-xl shadow-md border border-gray-200 hover:border-academy-purple transition-all">
+            <div className="bg-white p-8 rounded-2xl shadow-md border border-gray-200 hover:border-academy-purple transition-all">
               <div className="flex items-center mb-4">
                 <Code className="w-8 h-8 text-academy-purple mr-3" />
                 <h3 className="text-2xl font-bold text-academy-purple">Formation Programmation</h3>
@@ -151,7 +151,7 @@ const HeroSection: React.FC = () => {
                   <span>DevOps et déploiement</span>
                 </li>
               </ul>
-              <Button asChild className="w-full bg-academy-purple hover:bg-academy-blue">
+              <Button asChild className="w-full bg-academy-purple hover:bg-academy-blue rounded-xl">
                 <Link to="/programming-course">Découvrir le programme</Link>
               </Button>
             </div>
@@ -172,21 +172,21 @@ const HeroSection: React.FC = () => {
             <div>
               <h3 className="text-xl font-bold mb-4 text-academy-blue">Après la formation IA</h3>
               <div className="space-y-4">
-                <div className="bg-white p-4 rounded-lg shadow-sm flex items-center">
+                <div className="bg-white p-4 rounded-xl shadow-sm flex items-center">
                   <span className="text-xl mr-3">🤖</span>
                   <div>
                     <h4 className="font-semibold">Data Scientist</h4>
                     <p className="text-sm text-gray-600">Analyser des données pour en extraire des insights précieux</p>
                   </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm flex items-center">
+                <div className="bg-white p-4 rounded-xl shadow-sm flex items-center">
                   <span className="text-xl mr-3">🧠</span>
                   <div>
                     <h4 className="font-semibold">Ingénieur ML</h4>
                     <p className="text-sm text-gray-600">Créer et déployer des modèles d'apprentissage automatique</p>
                   </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm flex items-center">
+                <div className="bg-white p-4 rounded-xl shadow-sm flex items-center">
                   <span className="text-xl mr-3">📊</span>
                   <div>
                     <h4 className="font-semibold">Consultant IA</h4>
@@ -200,21 +200,21 @@ const HeroSection: React.FC = () => {
             <div>
               <h3 className="text-xl font-bold mb-4 text-academy-purple">Après la formation Programmation</h3>
               <div className="space-y-4">
-                <div className="bg-white p-4 rounded-lg shadow-sm flex items-center">
+                <div className="bg-white p-4 rounded-xl shadow-sm flex items-center">
                   <span className="text-xl mr-3">💻</span>
                   <div>
                     <h4 className="font-semibold">Développeur Full Stack</h4>
                     <p className="text-sm text-gray-600">Créer des applications web complètes de A à Z</p>
                   </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm flex items-center">
+                <div className="bg-white p-4 rounded-xl shadow-sm flex items-center">
                   <span className="text-xl mr-3">📱</span>
                   <div>
                     <h4 className="font-semibold">Développeur Mobile</h4>
                     <p className="text-sm text-gray-600">Concevoir des applications iOS et Android performantes</p>
                   </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm flex items-center">
+                <div className="bg-white p-4 rounded-xl shadow-sm flex items-center">
                   <span className="text-xl mr-3">🔄</span>
                   <div>
                     <h4 className="font-semibold">DevOps Engineer</h4>
@@ -231,3 +231,4 @@ const HeroSection: React.FC = () => {
 };
 
 export default HeroSection;
+
