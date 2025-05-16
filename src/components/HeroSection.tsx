@@ -32,25 +32,20 @@ const HeroSection: React.FC = () => {
             </Button>
           </div>
           
-          <div className="mt-10 flex flex-col items-center md:flex-row md:items-center md:justify-center gap-8 md:gap-12 text-gray-700">
-            <div className="benefits-container md:max-w-2xl mx-auto flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
-              <div className="flex items-center">
-                <span className="flex items-center bg-white py-2 px-4 rounded-full shadow-md">
-                  <span className="text-xl mr-2">🎓</span>
-                  <span className="font-medium">Formation reconnue par l'État</span>
-                </span>
+          <div className="mt-10">
+            <h3 className="text-xl font-semibold mb-4 text-center md:text-left">Nos avantages</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="feature-card bg-white p-4 rounded-lg border border-gray-200 hover:border-academy-blue transition-all flex items-center">
+                <span className="text-2xl mr-3">🎓</span>
+                <span className="font-medium">Formation reconnue par l'État</span>
               </div>
-              <div className="flex items-center">
-                <span className="flex items-center bg-white py-2 px-4 rounded-full shadow-md">
-                  <span className="text-xl mr-2">🌍</span>
-                  <span className="font-medium">Certification valable à l'international</span>
-                </span>
+              <div className="feature-card bg-white p-4 rounded-lg border border-gray-200 hover:border-academy-blue transition-all flex items-center">
+                <span className="text-2xl mr-3">🌍</span>
+                <span className="font-medium">Certification internationale</span>
               </div>
-              <div className="flex items-center">
-                <span className="flex items-center bg-white py-2 px-4 rounded-full shadow-md">
-                  <span className="text-xl mr-2">💼</span>
-                  <span className="font-medium">Métiers tech rémunérateurs</span>
-                </span>
+              <div className="feature-card bg-white p-4 rounded-lg border border-gray-200 hover:border-academy-blue transition-all flex items-center">
+                <span className="text-2xl mr-3">💼</span>
+                <span className="font-medium">Métiers tech rémunérateurs</span>
               </div>
             </div>
           </div>
