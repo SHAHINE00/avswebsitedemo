@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { BrainCircuit, GraduationCap, Globe, Briefcase, Video } from 'lucide-react';
+import { Video } from 'lucide-react';
 
 const HeroSection: React.FC = () => {
   return (
@@ -34,15 +34,12 @@ const HeroSection: React.FC = () => {
           
           <div className="mt-10 flex flex-col sm:flex-row gap-6 text-gray-700">
             <div className="flex items-center">
-              <GraduationCap className="text-academy-blue mr-2" />
               <span>🎓 Formation reconnue par l'État</span>
             </div>
             <div className="flex items-center">
-              <Globe className="text-academy-blue mr-2" />
               <span>🌍 Certification valable à l'international</span>
             </div>
             <div className="flex items-center">
-              <Briefcase className="text-academy-blue mr-2" />
               <span>💼 Métiers tech rémunérateurs</span>
             </div>
           </div>
