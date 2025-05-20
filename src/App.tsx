@@ -11,7 +11,6 @@ import ProgrammingCourse from "./pages/ProgrammingCourse";
 import Instructors from "./pages/Instructors";
 import Testimonials from "./pages/Testimonials";
 import Register from "./pages/Register";
-import Video from "./pages/Video";
 import Blog from "./pages/Blog";
 import Careers from "./pages/Careers";
 import Contact from "./pages/Contact";
@@ -31,7 +30,6 @@ const App = () => {
         <Route path="/instructors" element={<Instructors />} />
         <Route path="/testimonials" element={<Testimonials />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/video" element={<Video />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/careers" element={<Careers />} />
         <Route path="/contact" element={<Contact />} />

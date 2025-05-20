@@ -27,7 +27,7 @@ const HeroBanner: React.FC = () => {
             <Link to="/register">S'inscrire</Link>
           </Button>
           <Button asChild variant="outline" className="border-academy-purple text-academy-purple hover:bg-academy-purple/10 font-semibold px-6 py-2 sm:px-8 sm:py-6 text-base sm:text-lg rounded-xl transition-all shadow-sm w-full sm:w-auto">
-            <Link to="/video">
+            <Link to="/register">
               <Download className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               📘 Télécharger le guide IA gratuitement
             </Link>
