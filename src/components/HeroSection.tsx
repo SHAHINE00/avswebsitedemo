@@ -7,7 +7,7 @@ import CareerPaths from './hero/CareerPaths';
 
 const HeroSection: React.FC = () => {
   return (
-    <div className="pt-28 pb-0 md:pt-32 md:pb-0 bg-gradient-to-br from-white to-academy-gray">
+    <div className="pt-20 sm:pt-24 md:pt-28 lg:pt-32 pb-0 bg-gradient-to-br from-white to-academy-gray">
       <HeroBanner />
       <AdvantageBadges />
       <CourseComparison />
