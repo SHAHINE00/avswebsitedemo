@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Video, BookOpen, Code } from 'lucide-react';
+import { Download, BookOpen, Code } from 'lucide-react';
 
 const HeroBanner: React.FC = () => {
   return (
@@ -23,10 +23,10 @@ const HeroBanner: React.FC = () => {
           <Button asChild className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg rounded-xl">
             <Link to="/register">S'inscrire</Link>
           </Button>
-          <Button asChild variant="outline" className="border-academy-blue text-academy-blue hover:bg-academy-blue/10 font-semibold px-8 py-6 text-lg rounded-xl">
+          <Button asChild variant="outline" className="border-academy-purple text-academy-purple hover:bg-academy-purple/10 font-semibold px-8 py-6 text-lg rounded-xl transition-all shadow-sm">
             <Link to="/video">
-              <Video className="mr-2" />
-              Regarde le video
+              <Download className="mr-2" />
+              Télécharger l'ebook gratuitement
             </Link>
           </Button>
         </div>
