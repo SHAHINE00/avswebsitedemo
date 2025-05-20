@@ -1,8 +1,8 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2 } from 'lucide-react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const aiModules = [
   {
@@ -103,60 +103,74 @@ const CurriculumSection: React.FC = () => {
           </p>
         </div>
         
-        <Tabs defaultValue="ai" value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
-            <TabsTrigger value="ai" className="text-lg">Formation IA</TabsTrigger>
-            <TabsTrigger value="programming" className="text-lg">Formation Programmation</TabsTrigger>
-          </TabsList>
+        <div className="tab-container mb-8">
+          <button 
+            className={`tab ${activeTab === "ai" ? "active" : ""}`} 
+            onClick={() => setActiveTab("ai")}
+          >
+            Formation IA
+          </button>
+          <button 
+            className={`tab ${activeTab === "programming" ? "active" : ""}`} 
+            onClick={() => setActiveTab("programming")}
+          >
+            Formation Programmation
+          </button>
+        </div>
+        
+        <div className="mt-8">
+          {activeTab === "ai" && (
+            <div className="space-y-4 animate-fade-in">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {aiModules.map((module, index) => (
+                  <div key={index} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                    <h3 className="text-xl font-bold mb-3 text-academy-blue">{module.title}</h3>
+                    <p className="text-gray-700 mb-4">{module.description}</p>
+                    <ul className="space-y-2 mb-5">
+                      {module.topics.map((topic, topicIndex) => (
+                        <li key={topicIndex} className="flex items-start">
+                          <CheckCircle2 className="w-5 h-5 text-academy-purple shrink-0 mr-2 mt-0.5" />
+                          <span>{topic}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-10 text-center">
+                <Button asChild className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg">
+                  <Link to="/ai-course">Voir le programme IA complet</Link>
+                </Button>
+              </div>
+            </div>
+          )}
           
-          <TabsContent value="ai" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {aiModules.map((module, index) => (
-                <div key={index} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                  <h3 className="text-xl font-bold mb-3 text-academy-blue">{module.title}</h3>
-                  <p className="text-gray-700 mb-4">{module.description}</p>
-                  <ul className="space-y-2 mb-5">
-                    {module.topics.map((topic, topicIndex) => (
-                      <li key={topicIndex} className="flex items-start">
-                        <CheckCircle2 className="w-5 h-5 text-academy-purple shrink-0 mr-2 mt-0.5" />
-                        <span>{topic}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+          {activeTab === "programming" && (
+            <div className="space-y-4 animate-fade-in">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {programmingModules.map((module, index) => (
+                  <div key={index} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                    <h3 className="text-xl font-bold mb-3 text-academy-blue">{module.title}</h3>
+                    <p className="text-gray-700 mb-4">{module.description}</p>
+                    <ul className="space-y-2 mb-5">
+                      {module.topics.map((topic, topicIndex) => (
+                        <li key={topicIndex} className="flex items-start">
+                          <CheckCircle2 className="w-5 h-5 text-academy-purple shrink-0 mr-2 mt-0.5" />
+                          <span>{topic}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-10 text-center">
+                <Button asChild className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg">
+                  <Link to="/programming-course">Voir le programme Programmation complet</Link>
+                </Button>
+              </div>
             </div>
-            <div className="mt-10 text-center">
-              <Button asChild className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg">
-                <Link to="/ai-course">Voir le programme IA complet</Link>
-              </Button>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="programming" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {programmingModules.map((module, index) => (
-                <div key={index} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                  <h3 className="text-xl font-bold mb-3 text-academy-blue">{module.title}</h3>
-                  <p className="text-gray-700 mb-4">{module.description}</p>
-                  <ul className="space-y-2 mb-5">
-                    {module.topics.map((topic, topicIndex) => (
-                      <li key={topicIndex} className="flex items-start">
-                        <CheckCircle2 className="w-5 h-5 text-academy-purple shrink-0 mr-2 mt-0.5" />
-                        <span>{topic}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-            <div className="mt-10 text-center">
-              <Button asChild className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg">
-                <Link to="/programming-course">Voir le programme Programmation complet</Link>
-              </Button>
-            </div>
-          </TabsContent>
-        </Tabs>
+          )}
+        </div>
       </div>
     </section>
   );
