@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, BookOpen, Code } from 'lucide-react';
 
 const aiModules = [
   {
@@ -103,17 +103,28 @@ const CurriculumSection: React.FC = () => {
           </p>
         </div>
         
-        <div className="tab-container mb-8">
+        <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
           <button 
-            className={`tab ${activeTab === "ai" ? "active" : ""}`} 
             onClick={() => setActiveTab("ai")}
+            className={`flex items-center justify-center gap-2 px-6 py-3 rounded-full border-2 transition-all duration-300 text-lg font-semibold ${
+              activeTab === "ai" 
+                ? "bg-gradient-to-r from-academy-blue to-academy-purple text-white border-transparent shadow-lg" 
+                : "border-academy-blue text-academy-blue hover:bg-academy-blue/10"
+            }`}
           >
+            <BookOpen className="w-5 h-5" />
             Formation IA
           </button>
+          
           <button 
-            className={`tab ${activeTab === "programming" ? "active" : ""}`} 
             onClick={() => setActiveTab("programming")}
+            className={`flex items-center justify-center gap-2 px-6 py-3 rounded-full border-2 transition-all duration-300 text-lg font-semibold ${
+              activeTab === "programming" 
+                ? "bg-gradient-to-r from-academy-purple to-academy-blue text-white border-transparent shadow-lg" 
+                : "border-academy-purple text-academy-purple hover:bg-academy-purple/10"
+            }`}
           >
+            <Code className="w-5 h-5" />
             Formation Programmation
           </button>
         </div>
