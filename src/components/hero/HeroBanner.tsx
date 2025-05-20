@@ -26,7 +26,7 @@ const HeroBanner: React.FC = () => {
           <Button asChild variant="outline" className="border-academy-purple text-academy-purple hover:bg-academy-purple/10 font-semibold px-8 py-6 text-lg rounded-xl transition-all shadow-sm">
             <Link to="/video">
               <Download className="mr-2" />
-              Télécharger l'ebook gratuitement
+              📘 Télécharger le guide IA gratuitement
             </Link>
           </Button>
         </div>
