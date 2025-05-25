@@ -25,7 +25,7 @@ const Navbar = () => {
             <img 
               src="/lovable-uploads/4de454e0-72f1-4194-b789-e0b545468e2e.png"
               alt="AVS - Institut de l'Innovation et de l'Intelligence Artificielle" 
-              className="h-8 w-auto sm:h-10 md:h-12 object-contain"
+              className="h-10 w-auto sm:h-12 md:h-16 object-contain"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
                 const nextElement = e.currentTarget.nextSibling as HTMLElement;

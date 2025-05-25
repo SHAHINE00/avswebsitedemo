@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
               <img 
                 src="/lovable-uploads/4de454e0-72f1-4194-b789-e0b545468e2e.png"
                 alt="AVS - Institut de l'Innovation et de l'Intelligence Artificielle" 
-                className="h-10 w-auto object-contain filter brightness-0 invert"
+                className="h-14 w-auto object-contain filter brightness-0 invert"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                   const nextElement = e.currentTarget.nextSibling as HTMLElement;
