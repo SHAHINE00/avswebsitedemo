@@ -12,7 +12,7 @@ const Footer: React.FC = () => {
           <div>
             <Link to="/" className="mb-4 inline-block">
               <img 
-                src="/lovable-uploads/fe4e6caa-e99e-4a86-8fc9-54ee8b6b1a95.png"
+                src="/lovable-uploads/5f417ca9-ec0a-42b3-9e82-56b7ec1866fe.png"
                 alt="AVS - Institut de l'Innovation et de l'Intelligence Artificielle" 
                 className="h-10 w-auto object-contain filter brightness-0 invert"
                 onError={(e) => {
