@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -27,7 +28,7 @@ const CTASection: React.FC = () => {
             </Button>
           </div>
           <p className="mt-6 text-sm opacity-80">
-            Places limitées. Prochaine rentrée : 15 juin 2025.
+            Places limitées. Prochaine rentrée : 30 octobre 2025.
           </p>
         </div>
       </div>
