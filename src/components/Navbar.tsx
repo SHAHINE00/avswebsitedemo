@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -28,7 +27,10 @@ const Navbar = () => {
               className="h-8 w-auto sm:h-10 md:h-12 object-contain"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
-                e.currentTarget.nextSibling.style.display = 'block';
+                const nextElement = e.currentTarget.nextSibling as HTMLElement;
+                if (nextElement) {
+                  nextElement.style.display = 'block';
+                }
               }}
             />
             <span 

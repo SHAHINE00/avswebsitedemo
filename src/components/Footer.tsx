@@ -17,7 +17,10 @@ const Footer: React.FC = () => {
                 className="h-10 w-auto object-contain filter brightness-0 invert"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
-                  e.currentTarget.nextSibling.style.display = 'block';
+                  const nextElement = e.currentTarget.nextSibling as HTMLElement;
+                  if (nextElement) {
+                    nextElement.style.display = 'block';
+                  }
                 }}
               />
               <span 
