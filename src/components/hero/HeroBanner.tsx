@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Download, BookOpen, Code } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import OptimizedImage from '@/components/OptimizedImage';
 
 const HeroBanner: React.FC = () => {
   const isMobile = useIsMobile();
@@ -57,10 +58,12 @@ const HeroBanner: React.FC = () => {
         <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md">
           <div className="absolute -top-6 -left-6 sm:-top-10 sm:-left-10 w-36 sm:w-48 h-36 sm:h-48 bg-academy-blue/10 rounded-full filter blur-xl"></div>
           <div className="absolute -bottom-6 -right-6 sm:-bottom-10 sm:-right-10 w-36 sm:w-48 h-36 sm:h-48 bg-academy-purple/10 rounded-full filter blur-xl"></div>
-          <img 
+          <OptimizedImage
             src="/lovable-uploads/5f417ca9-ec0a-42b3-9e82-56b7ec1866fe.png"
             alt="Équipe collaborant sur un projet de programmation IA" 
             className="relative z-10 rounded-lg shadow-xl w-full h-auto object-cover"
+            priority={true}
+            sizes="(max-width: 480px) 320px, (max-width: 768px) 384px, 448px"
           />
           <div className="absolute -z-10 -bottom-4 -right-4 sm:-bottom-6 sm:-right-6 w-full h-full border-2 border-academy-blue rounded-lg"></div>
         </div>

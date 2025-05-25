@@ -1,5 +1,7 @@
+
 import React from 'react';
 import { Linkedin, Twitter } from 'lucide-react';
+import OptimizedImage from '@/components/OptimizedImage';
 
 const instructors = [
   {
@@ -43,10 +45,11 @@ const InstructorsSection: React.FC = () => {
           {instructors.map((instructor, index) => (
             <div key={index} className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
               <div className="h-64 overflow-hidden">
-                <img 
+                <OptimizedImage
                   src={instructor.image} 
                   alt={instructor.name} 
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 />
               </div>
               <div className="p-6">

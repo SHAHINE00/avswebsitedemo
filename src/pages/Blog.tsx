@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import OptimizedImage from '@/components/OptimizedImage';
 
 const blogPosts = [
   {
@@ -59,10 +60,11 @@ const Blog = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
             {blogPosts.map((post, index) => (
               <article key={index} className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-                <img 
+                <OptimizedImage
                   src={post.image} 
                   alt={post.title} 
                   className="w-full h-48 object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 50vw"
                 />
                 <div className="p-6">
                   <div className="flex justify-between items-center text-sm text-gray-500 mb-3">

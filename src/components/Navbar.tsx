@@ -11,6 +11,7 @@ import {
   NavigationMenuTrigger
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
+import OptimizedImage from '@/components/OptimizedImage';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,10 +22,11 @@ const Navbar = () => {
         {/* Logo */}
         <div className="flex items-center">
           <Link to="/" className="flex items-center">
-            <img 
+            <OptimizedImage
               src="/lovable-uploads/4de454e0-72f1-4194-b789-e0b545468e2e.png"
               alt="AVS - Institut de l'Innovation et de l'Intelligence Artificielle" 
               className="h-14 w-auto object-contain"
+              priority={true}
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
                 const nextElement = e.currentTarget.nextSibling as HTMLElement;

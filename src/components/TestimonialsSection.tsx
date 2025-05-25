@@ -1,5 +1,7 @@
+
 import React from 'react';
 import { Star, Quote } from 'lucide-react';
+import OptimizedImage from '@/components/OptimizedImage';
 
 const testimonials = [
   {
@@ -52,10 +54,11 @@ const TestimonialsSection: React.FC = () => {
               </div>
               <p className="text-gray-700 mb-6 relative z-10">"{testimonial.testimonial}"</p>
               <div className="flex items-center">
-                <img 
+                <OptimizedImage
                   src={testimonial.image} 
                   alt={testimonial.name} 
                   className="w-12 h-12 rounded-full object-cover mr-4"
+                  sizes="48px"
                 />
                 <div>
                   <h4 className="font-semibold">{testimonial.name}</h4>
