@@ -75,7 +75,6 @@ const Register = () => {
                   <option value="">Sélectionnez une formation</option>
                   <option value="ai">Formation Intelligence Artificielle</option>
                   <option value="programming">Formation Programmation</option>
-                  <option value="both">Les deux formations</option>
                 </select>
               </div>
               
