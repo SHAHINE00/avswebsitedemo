@@ -26,7 +26,18 @@ const Navbar = () => {
               src="/lovable-uploads/fe4e6caa-e99e-4a86-8fc9-54ee8b6b1a95.png"
               alt="AVS - Institut de l'Innovation et de l'Intelligence Artificielle" 
               className="h-8 w-auto sm:h-10 md:h-12 object-contain"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.nextSibling.style.display = 'block';
+              }}
             />
+            <span 
+              className="font-montserrat font-bold text-2xl hidden"
+              style={{ display: 'none' }}
+            >
+              <span className="text-academy-blue">A</span>
+              <span className="text-academy-purple">VS</span>
+            </span>
           </Link>
         </div>
 

@@ -15,7 +15,18 @@ const Footer: React.FC = () => {
                 src="/lovable-uploads/fe4e6caa-e99e-4a86-8fc9-54ee8b6b1a95.png"
                 alt="AVS - Institut de l'Innovation et de l'Intelligence Artificielle" 
                 className="h-10 w-auto object-contain filter brightness-0 invert"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.nextSibling.style.display = 'block';
+                }}
               />
+              <span 
+                className="font-montserrat font-bold text-2xl text-white hidden"
+                style={{ display: 'none' }}
+              >
+                <span className="text-academy-blue">A</span>
+                <span className="text-academy-purple">VS</span>
+              </span>
             </Link>
             <p className="mb-4">
               AVS l'institut de l'Innovation et de l'Intelligence Artificielle - Offrir à la nouvelle génération des spécialistes AI une formation pratique et une évolution de carrière.
