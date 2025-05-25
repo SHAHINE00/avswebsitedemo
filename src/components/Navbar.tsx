@@ -23,7 +23,7 @@ const Navbar = () => {
         <div className="flex items-center">
           <Link to="/" className="flex items-center">
             <img 
-              src="/lovable-uploads/5f417ca9-ec0a-42b3-9e82-56b7ec1866fe.png"
+              src="/lovable-uploads/4de454e0-72f1-4194-b789-e0b545468e2e.png"
               alt="AVS - Institut de l'Innovation et de l'Intelligence Artificielle" 
               className="h-8 w-auto sm:h-10 md:h-12 object-contain"
               onError={(e) => {
