@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -23,7 +24,7 @@ const Navbar = () => {
         <div className="flex items-center">
           <Link to="/" className="flex items-center">
             <OptimizedImage
-              src="/lovable-uploads/4de454e0-72f1-4194-b789-e0b545468e2e.png"
+              src="/lovable-uploads/0db8713d-35db-40a9-8615-5db99717c56c.png"
               alt="AVS - Institut de l'Innovation et de l'Intelligence Artificielle" 
               className="h-14 w-auto object-contain"
               priority={true}
