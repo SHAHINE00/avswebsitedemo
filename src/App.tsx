@@ -14,6 +14,7 @@ import Register from "./pages/Register";
 import Blog from "./pages/Blog";
 import Careers from "./pages/Careers";
 import Contact from "./pages/Contact";
+import Appointment from "./pages/Appointment";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfUse from "./pages/TermsOfUse";
 import CookiesPolicy from "./pages/CookiesPolicy";
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/blog" element={<Blog />} />
         <Route path="/careers" element={<Careers />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/appointment" element={<Appointment />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-of-use" element={<TermsOfUse />} />
         <Route path="/cookies-policy" element={<CookiesPolicy />} />

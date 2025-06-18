@@ -22,7 +22,7 @@ const CTASection: React.FC = () => {
               </Link>
             </Button>
             <Button asChild variant="outline" className="border-white text-white hover:bg-white/10 font-semibold px-8 py-6 text-lg">
-              <Link to="/contact">
+              <Link to="/appointment">
                 Prendre rendez-vous
               </Link>
             </Button>

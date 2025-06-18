@@ -1,9 +1,9 @@
-
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Mail, MapPin, Phone, Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Contact = () => {
   return (
@@ -145,8 +145,8 @@ const Contact = () => {
                 <p className="text-gray-700 mb-4">
                   Vous préférez discuter avec un conseiller ? Prenez rendez-vous pour un appel ou une visite dans nos locaux.
                 </p>
-                <Button className="bg-academy-blue hover:bg-academy-purple text-white">
-                  Planifier un rendez-vous
+                <Button asChild className="bg-academy-blue hover:bg-academy-purple text-white">
+                  <Link to="/appointment">Planifier un rendez-vous</Link>
                 </Button>
               </div>
             </div>
