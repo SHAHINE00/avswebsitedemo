@@ -1,13 +1,14 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Download, BookOpen, Code } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import OptimizedImage from '@/components/OptimizedImage';
+import DownloadGuidePopup from '@/components/DownloadGuidePopup';
 
 const HeroBanner: React.FC = () => {
   const isMobile = useIsMobile();
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   
   return (
     <div className="container mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center">
@@ -27,11 +28,13 @@ const HeroBanner: React.FC = () => {
           <Button asChild className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-6 py-2 sm:px-8 sm:py-6 text-base sm:text-lg rounded-xl w-full sm:w-auto">
             <Link to="/register">S'inscrire</Link>
           </Button>
-          <Button asChild variant="outline" className="border-academy-purple text-academy-purple hover:bg-academy-purple/10 font-semibold px-6 py-2 sm:px-8 sm:py-6 text-base sm:text-lg rounded-xl transition-all shadow-sm w-full sm:w-auto">
-            <Link to="/register">
-              <Download className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-              📘 Télécharger le guide IA gratuitement
-            </Link>
+          <Button 
+            onClick={() => setIsPopupOpen(true)}
+            variant="outline" 
+            className="border-academy-purple text-academy-purple hover:bg-academy-purple/10 font-semibold px-6 py-2 sm:px-8 sm:py-6 text-base sm:text-lg rounded-xl transition-all shadow-sm w-full sm:w-auto"
+          >
+            <Download className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+            📘 Télécharger le guide IA gratuitement
           </Button>
         </div>
 
@@ -68,6 +71,11 @@ const HeroBanner: React.FC = () => {
           <div className="absolute -z-10 -bottom-4 -right-4 sm:-bottom-6 sm:-right-6 w-full h-full border-2 border-academy-blue rounded-lg"></div>
         </div>
       </div>
+      
+      <DownloadGuidePopup 
+        isOpen={isPopupOpen} 
+        onClose={() => setIsPopupOpen(false)} 
+      />
     </div>
   );
 };
