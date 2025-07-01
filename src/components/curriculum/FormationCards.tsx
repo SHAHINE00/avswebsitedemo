@@ -3,9 +3,9 @@ import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import FormationCard from './FormationCard';
 import { useCourses } from '@/hooks/useCourses';
-import { Brain, Code, Database, Cloud, Target } from 'lucide-react';
+import { Brain, Code, Database, Cloud, Target, type LucideIcon } from 'lucide-react';
 
-const iconMap: { [key: string]: React.ComponentType<any> } = {
+const iconMap: { [key: string]: LucideIcon } = {
   brain: Brain,
   code: Code,
   database: Database,
