@@ -5,6 +5,8 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Mail, MapPin, Phone, Clock, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +19,7 @@ const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
@@ -27,24 +30,43 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    setIsSubmitted(true);
-    setIsSubmitting(false);
-    
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: ''
+    try {
+      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+        body: formData
       });
-    }, 3000);
+
+      if (error) {
+        throw error;
+      }
+
+      setIsSubmitted(true);
+      toast({
+        title: "Message envoyé avec succès",
+        description: "Nous vous répondrons dans les plus brefs délais.",
+      });
+      
+      // Reset form after 3 seconds
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: ''
+        });
+      }, 3000);
+    } catch (error: any) {
+      console.error('Error sending contact form:', error);
+      toast({
+        title: "Erreur lors de l'envoi",
+        description: "Une erreur s'est produite. Veuillez réessayer.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

@@ -1,10 +1,62 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 const Register = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    course: '',
+    password: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const { signUp, user } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    const fullName = `${formData.firstName} ${formData.lastName}`;
+    const { error } = await signUp(formData.email, formData.password, fullName);
+    
+    if (error) {
+      toast({
+        title: "Erreur d'inscription",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Inscription réussie",
+        description: "Vérifiez votre email pour confirmer votre compte.",
+      });
+    }
+    
+    setLoading(false);
+  };
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
@@ -23,54 +75,71 @@ const Register = () => {
           <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
             <h2 className="text-2xl font-bold mb-6">Formulaire d'inscription</h2>
             
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
-                  <input
+                  <Label htmlFor="firstName">Prénom *</Label>
+                  <Input
                     type="text"
                     id="firstName"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-academy-blue"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
                     required
                   />
                 </div>
                 
                 <div>
-                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
-                  <input
+                  <Label htmlFor="lastName">Nom *</Label>
+                  <Input
                     type="text"
                     id="lastName"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-academy-blue"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
                     required
                   />
                 </div>
               </div>
               
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <input
+                <Label htmlFor="email">Email *</Label>
+                <Input
                   type="email"
                   id="email"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-academy-blue"
+                  value={formData.email}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
               
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
-                <input
+                <Label htmlFor="password">Mot de passe *</Label>
+                <Input
+                  type="password"
+                  id="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  required
+                  minLength={6}
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="phone">Téléphone</Label>
+                <Input
                   type="tel"
                   id="phone"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-academy-blue"
+                  value={formData.phone}
+                  onChange={handleInputChange}
                 />
               </div>
               
               <div>
-                <label htmlFor="course" className="block text-sm font-medium text-gray-700 mb-1">Formation</label>
+                <Label htmlFor="course">Formation</Label>
                 <select
                   id="course"
+                  value={formData.course}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-academy-blue"
-                  required
                 >
                   <option value="">Sélectionnez une formation</option>
                   <option value="ai">Formation Intelligence Artificielle</option>
@@ -92,8 +161,12 @@ const Register = () => {
               </div>
               
               <div>
-                <Button type="submit" className="w-full bg-academy-blue hover:bg-academy-purple text-white font-semibold py-3">
-                  S'inscrire maintenant
+                <Button 
+                  type="submit" 
+                  disabled={loading}
+                  className="w-full bg-academy-blue hover:bg-academy-purple text-white font-semibold py-3"
+                >
+                  {loading ? 'Inscription en cours...' : "S'inscrire maintenant"}
                 </Button>
               </div>
             </form>

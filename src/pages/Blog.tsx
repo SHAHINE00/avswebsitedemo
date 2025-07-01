@@ -71,14 +71,14 @@ const Blog = () => {
                     <span className="bg-academy-blue/10 text-academy-blue px-2 py-1 rounded-full">{post.category}</span>
                   </div>
                   <h2 className="text-xl font-bold mb-3 hover:text-academy-blue transition-colors">
-                    <a href="#">{post.title}</a>
+                    <Link to={`/blog/${index + 1}`}>{post.title}</Link>
                   </h2>
                   <p className="text-gray-700 mb-4">{post.excerpt}</p>
                   <div className="flex justify-between items-center mt-4">
                     <span className="text-sm text-gray-600">Par {post.author}</span>
-                    <a href="#" className="text-academy-blue font-medium flex items-center hover:underline">
+                    <Link to={`/blog/${index + 1}`} className="text-academy-blue font-medium flex items-center hover:underline">
                       Lire plus <ArrowRight className="ml-1 w-4 h-4" />
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </article>

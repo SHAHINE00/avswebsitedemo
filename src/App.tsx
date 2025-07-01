@@ -15,6 +15,7 @@ import Instructors from "./pages/Instructors";
 import Testimonials from "./pages/Testimonials";
 import Register from "./pages/Register";
 import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import Careers from "./pages/Careers";
 import Contact from "./pages/Contact";
 import Appointment from "./pages/Appointment";
@@ -44,6 +45,7 @@ const App = () => {
           <Route path="/testimonials" element={<Testimonials />} />
           <Route path="/register" element={<Register />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogPost />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/appointment" element={<Appointment />} />
