@@ -2,9 +2,52 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { BookOpen, Code, ArrowRight, Clock, Users, Award } from 'lucide-react';
+import { BookOpen, Code, ArrowRight, Clock, Users, Award, Brain, Calculator, Database, Cloud, Gavel, Target } from 'lucide-react';
 
 const CurriculumSection: React.FC = () => {
+  const aiKeyAreas = [
+    {
+      icon: Brain,
+      title: "AI Knowledge",
+      description: "Careers, educational pathways, ethics, and governance in AI"
+    },
+    {
+      icon: Calculator,
+      title: "Mathematics & Statistics", 
+      description: "Core math (linear algebra, calculus, probability) and statistical techniques for AI"
+    },
+    {
+      icon: Code,
+      title: "Programming & Algorithms",
+      description: "Python programming, algorithms, and machine learning basics"
+    },
+    {
+      icon: Database,
+      title: "Data Management & Tools",
+      description: "SQL, data preprocessing, and visualization with Python tools (Pandas, Matplotlib)"
+    },
+    {
+      icon: Target,
+      title: "Advanced AI Techniques",
+      description: "Deep learning, NLP, and computer vision"
+    },
+    {
+      icon: Cloud,
+      title: "Cloud & Deployment",
+      description: "Using cloud platforms (AWS, GCP, Azure) and deploying AI models"
+    },
+    {
+      icon: BookOpen,
+      title: "Practical Application",
+      description: "Case studies, projects, and internships to gain hands-on experience"
+    },
+    {
+      icon: Gavel,
+      title: "Legal & Ethical Considerations",
+      description: "Understanding AI's impact on law, ethics, and society"
+    }
+  ];
+
   return (
     <section id="curriculum" className="py-16 bg-academy-gray">
       <div className="container mx-auto px-6">
@@ -54,13 +97,18 @@ const CurriculumSection: React.FC = () => {
               </div>
               
               <div className="mb-6">
-                <h4 className="font-semibold mb-3 text-gray-800">Domaines clés :</h4>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li>• Machine Learning & Deep Learning</li>
-                  <li>• Traitement du langage naturel (NLP)</li>
-                  <li>• Vision par ordinateur</li>
-                  <li>• Déploiement de modèles IA</li>
-                </ul>
+                <h4 className="font-semibold mb-4 text-gray-800">Domaines clés :</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                  {aiKeyAreas.map((area, index) => (
+                    <div key={index} className="flex items-start">
+                      <area.icon className="w-4 h-4 text-academy-blue mr-2 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <span className="font-medium text-gray-800">{area.title}:</span>
+                        <span className="text-gray-600 ml-1">{area.description}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
               
               <Button asChild className="w-full bg-academy-blue hover:bg-academy-purple text-white font-semibold py-3 rounded-xl group-hover:shadow-lg transition-all">
