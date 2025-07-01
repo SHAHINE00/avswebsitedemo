@@ -59,6 +59,24 @@ const gradientOptions = [
   { value: 'from-red-500', label: 'Rouge' },
 ];
 
+// Function to generate slug from title
+const generateSlug = (title: string): string => {
+  return title
+    .toLowerCase()
+    .replace(/[àáâãäå]/g, 'a')
+    .replace(/[èéêë]/g, 'e')
+    .replace(/[ìíîï]/g, 'i')
+    .replace(/[òóôõö]/g, 'o')
+    .replace(/[ùúûü]/g, 'u')
+    .replace(/[ýÿ]/g, 'y')
+    .replace(/[ñ]/g, 'n')
+    .replace(/[ç]/g, 'c')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim();
+};
+
 const CourseFormDialog: React.FC<CourseFormDialogProps> = ({
   open,
   onOpenChange,
@@ -97,6 +115,17 @@ const CourseFormDialog: React.FC<CourseFormDialogProps> = ({
     },
   });
 
+  const watchedTitle = watch('title');
+  const watchedLinkTo = watch('link_to');
+
+  // Auto-generate link when title changes (only for new courses)
+  React.useEffect(() => {
+    if (!isEditing && watchedTitle && !watchedLinkTo) {
+      const slug = generateSlug(watchedTitle);
+      setValue('link_to', `/course/${slug}`);
+    }
+  }, [watchedTitle, watchedLinkTo, isEditing, setValue]);
+
   React.useEffect(() => {
     if (course) {
       Object.entries(course).forEach(([key, value]) => {
@@ -107,8 +136,36 @@ const CourseFormDialog: React.FC<CourseFormDialogProps> = ({
     }
   }, [course, setValue, reset]);
 
+  const validateAndFormatLink = (link: string): string => {
+    if (!link) return '';
+    
+    // Remove any existing /course/ prefix to avoid duplication
+    let cleanLink = link.replace(/^\/course\//, '').replace(/^\//, '');
+    
+    // If it's empty after cleaning, return empty
+    if (!cleanLink) return '';
+    
+    // Generate slug from the link
+    const slug = generateSlug(cleanLink);
+    
+    // Return formatted link
+    return `/course/${slug}`;
+  };
+
   const onSubmit = async (data: CourseFormData) => {
     try {
+      // Validate and format the link
+      const formattedLink = data.link_to ? validateAndFormatLink(data.link_to) : '';
+      
+      if (data.link_to && !formattedLink) {
+        toast({
+          title: 'Erreur',
+          description: 'Le lien fourni n\'est pas valide',
+          variant: 'destructive',
+        });
+        return;
+      }
+
       // Prepare the data for database insertion/update
       const courseData = {
         title: data.title,
@@ -124,7 +181,7 @@ const CourseFormDialog: React.FC<CourseFormDialogProps> = ({
         button_text_color: data.button_text_color,
         floating_color1: data.floating_color1,
         floating_color2: data.floating_color2,
-        link_to: data.link_to || null,
+        link_to: formattedLink || null,
         status: data.status,
         display_order: data.display_order,
       };
@@ -250,12 +307,20 @@ const CourseFormDialog: React.FC<CourseFormDialogProps> = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="link_to">Lien vers</Label>
+            <Label htmlFor="link_to">Lien vers le cours</Label>
             <Input
               id="link_to"
               {...register('link_to')}
-              placeholder="ex: /ai-course"
+              placeholder="Le lien sera auto-généré à partir du titre"
             />
+            <p className="text-sm text-gray-500">
+              Format automatique: /course/nom-du-cours (laissez vide pour auto-génération)
+            </p>
+            {watchedLinkTo && (
+              <p className="text-sm text-blue-600">
+                Aperçu: {validateAndFormatLink(watchedLinkTo) || 'Lien invalide'}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">

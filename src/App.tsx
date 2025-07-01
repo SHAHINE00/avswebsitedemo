@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
@@ -11,6 +10,7 @@ import Curriculum from "./pages/Curriculum";
 import AICourse from "./pages/AICourse";
 import ProgrammingCourse from "./pages/ProgrammingCourse";
 import CybersecurityCourse from "./pages/CybersecurityCourse";
+import GenericCourse from "./pages/GenericCourse";
 import Instructors from "./pages/Instructors";
 import Testimonials from "./pages/Testimonials";
 import Register from "./pages/Register";
@@ -34,9 +34,12 @@ const App = () => {
           <Route path="/admin/courses" element={<AdminCourses />} />
           <Route path="/features" element={<Features />} />
           <Route path="/curriculum" element={<Curriculum />} />
+          {/* Legacy course routes - keep for backward compatibility */}
           <Route path="/ai-course" element={<AICourse />} />
           <Route path="/programming-course" element={<ProgrammingCourse />} />
           <Route path="/cybersecurity-course" element={<CybersecurityCourse />} />
+          {/* Dynamic course route - handles all new courses automatically */}
+          <Route path="/course/:slug" element={<GenericCourse />} />
           <Route path="/instructors" element={<Instructors />} />
           <Route path="/testimonials" element={<Testimonials />} />
           <Route path="/register" element={<Register />} />
