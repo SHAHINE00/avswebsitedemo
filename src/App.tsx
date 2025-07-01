@@ -24,6 +24,7 @@ import TermsOfUse from "./pages/TermsOfUse";
 import CookiesPolicy from "./pages/CookiesPolicy";
 import Auth from "./pages/Auth";
 import AdminCourses from "./pages/AdminCourses";
+import AdminTest from "./pages/AdminTest";
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/admin/courses" element={<AdminCourses />} />
+          <Route path="/admin/test" element={<AdminTest />} />
           <Route path="/features" element={<Features />} />
           <Route path="/curriculum" element={<Curriculum />} />
           {/* Legacy course routes - keep for backward compatibility */}
