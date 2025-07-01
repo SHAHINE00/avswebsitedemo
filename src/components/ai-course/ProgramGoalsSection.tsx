@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 const ProgramGoalsSection = () => {
   const programGoals = [
     {
-      id: "III.1",
+      id: "1",
       title: "Efficacité Professionnelle",
       description: "Rendre la personne efficace dans l'exercice d'une profession.",
       icon: TrendingUp,
@@ -14,7 +14,7 @@ const ProgramGoalsSection = () => {
       details: "Développer les compétences techniques et pratiques nécessaires pour exceller dans le domaine de l'IA"
     },
     {
-      id: "III.2", 
+      id: "2", 
       title: "Intégration Professionnelle",
       description: "Assurer l'intégration de la personne à la vie professionnelle.",
       icon: Users2,
@@ -22,7 +22,7 @@ const ProgramGoalsSection = () => {
       details: "Faciliter l'insertion dans les équipes et environnements de travail spécialisés en IA"
     },
     {
-      id: "III.3",
+      id: "3",
       title: "Évolution des Savoirs",
       description: "Favoriser l'évolution et l'approfondissement des savoirs professionnels.",
       icon: Lightbulb,
@@ -30,7 +30,7 @@ const ProgramGoalsSection = () => {
       details: "Encourager l'apprentissage continu et l'adaptation aux nouvelles technologies"
     },
     {
-      id: "III.4",
+      id: "4",
       title: "Mobilité Professionnelle",
       description: "Assurer la mobilité professionnelle.",
       icon: Briefcase,
