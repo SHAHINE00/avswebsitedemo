@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, LogOut, Settings } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -10,11 +11,48 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger
 } from "@/components/ui/navigation-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import OptimizedImage from '@/components/OptimizedImage';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const { user, signOut } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      checkAdminStatus();
+    }
+  }, [user]);
+
+  const checkAdminStatus = async () => {
+    if (!user) return;
+    
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+      setIsAdmin(data?.role === 'admin');
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+    }
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   return (
     <nav className="bg-white py-4 px-6 shadow-sm fixed w-full top-0 z-50">
@@ -108,9 +146,38 @@ const Navbar = () => {
           
           <Link to="/instructors" className="font-medium hover:text-academy-blue transition-colors">Formateurs</Link>
           <Link to="/testimonials" className="font-medium hover:text-academy-blue transition-colors">Témoignages</Link>
-          <Button asChild className="ml-4 bg-academy-blue hover:bg-academy-purple">
-            <Link to="/register">S'inscrire</Link>
-          </Button>
+          
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="ml-4">
+                  {user.email}
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {isAdmin && (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin/courses">
+                        <Settings className="mr-2 h-4 w-4" />
+                        Administration
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Déconnexion
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button asChild className="ml-4 bg-academy-blue hover:bg-academy-purple">
+              <Link to="/auth">Se connecter</Link>
+            </Button>
+          )}
         </div>
         
         {/* Mobile menu button */}
@@ -145,9 +212,23 @@ const Navbar = () => {
             </div>
             <Link to="/instructors" className="font-medium" onClick={() => setIsOpen(false)}>Formateurs</Link>
             <Link to="/testimonials" className="font-medium" onClick={() => setIsOpen(false)}>Témoignages</Link>
-            <Button asChild className="bg-academy-blue hover:bg-academy-purple w-full">
-              <Link to="/register" onClick={() => setIsOpen(false)}>S'inscrire</Link>
-            </Button>
+            
+            {user ? (
+              <div className="space-y-2">
+                {isAdmin && (
+                  <Link to="/admin/courses" className="block font-medium text-academy-blue" onClick={() => setIsOpen(false)}>
+                    Administration
+                  </Link>
+                )}
+                <Button variant="outline" onClick={handleSignOut} className="w-full">
+                  Déconnexion
+                </Button>
+              </div>
+            ) : (
+              <Button asChild className="bg-academy-blue hover:bg-academy-purple w-full">
+                <Link to="/auth" onClick={() => setIsOpen(false)}>Se connecter</Link>
+              </Button>
+            )}
           </div>
         </div>
       )}

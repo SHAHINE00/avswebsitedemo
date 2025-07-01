@@ -1,5 +1,7 @@
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { Toaster } from "@/components/ui/toaster";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ElementorExport from "./pages/ElementorExport";
@@ -18,29 +20,36 @@ import Appointment from "./pages/Appointment";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfUse from "./pages/TermsOfUse";
 import CookiesPolicy from "./pages/CookiesPolicy";
+import Auth from "./pages/Auth";
+import AdminCourses from "./pages/AdminCourses";
 
 const App = () => {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/features" element={<Features />} />
-        <Route path="/curriculum" element={<Curriculum />} />
-        <Route path="/ai-course" element={<AICourse />} />
-        <Route path="/programming-course" element={<ProgrammingCourse />} />
-        <Route path="/instructors" element={<Instructors />} />
-        <Route path="/testimonials" element={<Testimonials />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/careers" element={<Careers />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/appointment" element={<Appointment />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/terms-of-use" element={<TermsOfUse />} />
-        <Route path="/cookies-policy" element={<CookiesPolicy />} />
-        <Route path="/elementor-export" element={<WordPressGuide />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/admin/courses" element={<AdminCourses />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/curriculum" element={<Curriculum />} />
+          <Route path="/ai-course" element={<AICourse />} />
+          <Route path="/programming-course" element={<ProgrammingCourse />} />
+          <Route path="/instructors" element={<Instructors />} />
+          <Route path="/testimonials" element={<Testimonials />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/appointment" element={<Appointment />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-use" element={<TermsOfUse />} />
+          <Route path="/cookies-policy" element={<CookiesPolicy />} />
+          <Route path="/elementor-export" element={<WordPressGuide />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Toaster />
+      </AuthProvider>
     </Router>
   );
 };

@@ -9,7 +9,102 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      courses: {
+        Row: {
+          button_text_color: string | null
+          created_at: string | null
+          created_by: string | null
+          diploma: string | null
+          display_order: number | null
+          duration: string | null
+          feature1: string | null
+          feature2: string | null
+          floating_color1: string | null
+          floating_color2: string | null
+          gradient_from: string | null
+          gradient_to: string | null
+          icon: string | null
+          id: string
+          link_to: string | null
+          modules: string | null
+          status: Database["public"]["Enums"]["course_status"] | null
+          subtitle: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          button_text_color?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          diploma?: string | null
+          display_order?: number | null
+          duration?: string | null
+          feature1?: string | null
+          feature2?: string | null
+          floating_color1?: string | null
+          floating_color2?: string | null
+          gradient_from?: string | null
+          gradient_to?: string | null
+          icon?: string | null
+          id?: string
+          link_to?: string | null
+          modules?: string | null
+          status?: Database["public"]["Enums"]["course_status"] | null
+          subtitle?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          button_text_color?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          diploma?: string | null
+          display_order?: number | null
+          duration?: string | null
+          feature1?: string | null
+          feature2?: string | null
+          floating_color1?: string | null
+          floating_color2?: string | null
+          gradient_from?: string | null
+          gradient_to?: string | null
+          icon?: string | null
+          id?: string
+          link_to?: string | null
+          modules?: string | null
+          status?: Database["public"]["Enums"]["course_status"] | null
+          subtitle?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string
+          role: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id: string
+          role?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          role?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +113,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      course_status: "draft" | "published" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +228,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      course_status: ["draft", "published", "archived"],
+    },
   },
 } as const
