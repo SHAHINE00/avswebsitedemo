@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import { 
   Server, 
   Database, 
@@ -13,14 +14,14 @@ import {
   XCircle,
   HardDrive,
   Users,
-  Clock
+  RefreshCw
 } from 'lucide-react';
 import { useSystemHealth } from '@/hooks/useSystemHealth';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
 const SystemMonitoring = () => {
-  const { health, loading, error } = useSystemHealth();
+  const { health, loading, error, refetch } = useSystemHealth();
 
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
@@ -36,29 +37,25 @@ const SystemMonitoring = () => {
     return { status: 'critical', color: 'text-red-600', icon: XCircle };
   };
 
+  const handleRefresh = () => {
+    refetch();
+  };
+
   if (loading) {
-    return <div className="flex items-center justify-center p-8">Chargement des métriques système...</div>;
-  }
-
-  if (error) {
     return (
-      <Alert variant="destructive">
-        <AlertTriangle className="h-4 w-4" />
-        <AlertDescription>Erreur lors du chargement des métriques: {error}</AlertDescription>
-      </Alert>
+      <div className="flex items-center justify-center p-8">
+        <div className="flex items-center space-x-2">
+          <RefreshCw className="h-4 w-4 animate-spin" />
+          <span>Chargement des métriques système...</span>
+        </div>
+      </div>
     );
   }
 
-  if (!health) {
-    return (
-      <Alert>
-        <AlertTriangle className="h-4 w-4" />
-        <AlertDescription>Aucune donnée de santé système disponible</AlertDescription>
-      </Alert>
-    );
-  }
+  // Show error alert but still try to display available data
+  const hasError = error || (health?.error);
 
-  const connectionStatus = getConnectionStatus(health.active_connections);
+  const connectionStatus = getConnectionStatus(health?.active_connections || 0);
   const StatusIcon = connectionStatus.icon;
 
   return (
@@ -69,19 +66,41 @@ const SystemMonitoring = () => {
             <Server className="w-6 h-6" />
             Surveillance Système
           </h2>
-          <p className="text-muted-foreground">
-            Dernière mise à jour: {formatDistanceToNow(new Date(health.last_updated), { 
-              addSuffix: true, 
-              locale: fr 
-            })}
-          </p>
+          {health?.last_updated && (
+            <p className="text-muted-foreground">
+              Dernière mise à jour: {formatDistanceToNow(new Date(health.last_updated), { 
+                addSuffix: true, 
+                locale: fr 
+              })}
+            </p>
+          )}
         </div>
-        <Badge variant={connectionStatus.status === 'good' ? 'default' : connectionStatus.status === 'warning' ? 'secondary' : 'destructive'}>
-          <StatusIcon className="w-4 h-4 mr-1" />
-          {connectionStatus.status === 'good' ? 'Système Sain' : 
-           connectionStatus.status === 'warning' ? 'Attention' : 'Critique'}
-        </Badge>
+        <div className="flex items-center space-x-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleRefresh}
+            disabled={loading}
+          >
+            <RefreshCw className="w-4 h-4 mr-1" />
+            Actualiser
+          </Button>
+          <Badge variant={hasError ? 'destructive' : connectionStatus.status === 'good' ? 'default' : connectionStatus.status === 'warning' ? 'secondary' : 'destructive'}>
+            <StatusIcon className="w-4 h-4 mr-1" />
+            {hasError ? 'Erreur' : connectionStatus.status === 'good' ? 'Système Sain' : 
+             connectionStatus.status === 'warning' ? 'Attention' : 'Critique'}
+          </Badge>
+        </div>
       </div>
+
+      {hasError && (
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            {error || health?.error || 'Une erreur est survenue lors du chargement des métriques'}
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* System Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -91,7 +110,9 @@ const SystemMonitoring = () => {
             <Database className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatBytes(health.database_size)}</div>
+            <div className="text-2xl font-bold">
+              {health?.database_size ? formatBytes(health.database_size) : 'N/A'}
+            </div>
             <p className="text-xs text-muted-foreground">
               Espace utilisé total
             </p>
@@ -105,7 +126,7 @@ const SystemMonitoring = () => {
           </CardHeader>
           <CardContent>
             <div className={`text-2xl font-bold ${connectionStatus.color}`}>
-              {health.active_connections}
+              {health?.active_connections ?? 'N/A'}
             </div>
             <div className="flex items-center space-x-2 text-xs text-muted-foreground">
               <StatusIcon className="w-3 h-3" />
@@ -120,10 +141,12 @@ const SystemMonitoring = () => {
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">Optimal</div>
-            <Progress value={85} className="mt-2" />
+            <div className="text-2xl font-bold text-green-600">
+              {hasError ? 'Dégradée' : 'Optimal'}
+            </div>
+            <Progress value={hasError ? 60 : 85} className="mt-2" />
             <p className="text-xs text-muted-foreground mt-1">
-              85% de performance
+              {hasError ? '60%' : '85%'} de performance
             </p>
           </CardContent>
         </Card>
@@ -142,23 +165,31 @@ const SystemMonitoring = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {Object.entries(health.table_stats || {}).map(([tableName, stats]) => (
-              <div key={tableName} className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex-1">
-                  <h4 className="font-medium">{tableName}</h4>
-                  <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                    <span>{stats.rows} opérations</span>
-                    <span>{formatBytes(stats.size)}</span>
+            {health?.table_stats && Object.keys(health.table_stats).length > 0 ? (
+              Object.entries(health.table_stats).map(([tableName, stats]) => (
+                <div key={tableName} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex-1">
+                    <h4 className="font-medium">{tableName}</h4>
+                    <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                      <span>{stats.rows} opérations</span>
+                      <span>{formatBytes(stats.size)}</span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm font-medium">
+                      {health.database_size ? 
+                        ((stats.size / health.database_size) * 100).toFixed(1) : '0'}%
+                    </div>
+                    <div className="text-xs text-muted-foreground">de la DB</div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-sm font-medium">
-                    {((stats.size / health.database_size) * 100).toFixed(1)}%
-                  </div>
-                  <div className="text-xs text-muted-foreground">de la DB</div>
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                <HardDrive className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <p>Aucune statistique de table disponible</p>
               </div>
-            ))}
+            )}
           </div>
         </CardContent>
       </Card>
@@ -173,7 +204,16 @@ const SystemMonitoring = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {health.active_connections > 15 && (
+            {hasError && (
+              <Alert variant="destructive">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>
+                  Erreur de surveillance système détectée. Certaines métriques peuvent être indisponibles.
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {health?.active_connections && health.active_connections > 15 && (
               <Alert variant="destructive">
                 <AlertTriangle className="h-4 w-4" />
                 <AlertDescription>
@@ -183,7 +223,7 @@ const SystemMonitoring = () => {
               </Alert>
             )}
             
-            {health.database_size > 1000000000 && (
+            {health?.database_size && health.database_size > 1000000000 && (
               <Alert>
                 <AlertTriangle className="h-4 w-4" />
                 <AlertDescription>
@@ -192,7 +232,8 @@ const SystemMonitoring = () => {
               </Alert>
             )}
 
-            {health.active_connections <= 15 && health.database_size <= 1000000000 && (
+            {!hasError && health?.active_connections && health.active_connections <= 15 && 
+             (!health.database_size || health.database_size <= 1000000000) && (
               <Alert>
                 <CheckCircle className="h-4 w-4" />
                 <AlertDescription>
