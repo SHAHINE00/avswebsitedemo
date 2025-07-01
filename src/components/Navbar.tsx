@@ -22,11 +22,13 @@ import { cn } from "@/lib/utils";
 import OptimizedImage from '@/components/OptimizedImage';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { useCourses } from '@/hooks/useCourses';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const { user, signOut } = useAuth();
+  const { courses, loading: coursesLoading } = useCourses();
 
   useEffect(() => {
     if (user) {
@@ -110,12 +112,15 @@ const Navbar = () => {
                         </Link>
                       </NavigationMenuLink>
                     </li>
-                    <ListItem href="/ai-course" title="Formation IA">
-                      Intelligence Artificielle, Machine Learning et Deep Learning
-                    </ListItem>
-                    <ListItem href="/programming-course" title="Formation Programmation">
-                      Développement web, mobile et logiciel
-                    </ListItem>
+                    {!coursesLoading && courses.map((course) => (
+                      <ListItem 
+                        key={course.id}
+                        href={course.link_to || '#'} 
+                        title={course.title}
+                      >
+                        {course.subtitle || ''}
+                      </ListItem>
+                    ))}
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
@@ -197,8 +202,16 @@ const Navbar = () => {
               Formations <ChevronDown size={16} className="inline ml-1" />
               <div className="pl-4 mt-2 space-y-2">
                 <Link to="/curriculum" className="block py-1" onClick={() => setIsOpen(false)}>Programmes complets</Link>
-                <Link to="/ai-course" className="block py-1" onClick={() => setIsOpen(false)}>Formation IA</Link>
-                <Link to="/programming-course" className="block py-1" onClick={() => setIsOpen(false)}>Formation Programmation</Link>
+                {!coursesLoading && courses.map((course) => (
+                  <Link 
+                    key={course.id}
+                    to={course.link_to || '#'} 
+                    className="block py-1" 
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {course.title}
+                  </Link>
+                ))}
               </div>
             </div>
             <div className="font-medium">
