@@ -28,7 +28,7 @@ const CurriculumSection: React.FC<CurriculumSectionProps> = ({ year, modules }) 
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
-            {isFirstYear ? 'V. Curriculum 1ère Année' : 'VI. Curriculum 2ème Année'}
+            {isFirstYear ? 'Curriculum 1ère Année' : 'Curriculum 2ème Année'}
           </h2>
           <div className={`w-32 h-1 bg-gradient-to-r ${colorScheme} mx-auto rounded-full mb-6`}></div>
           <p className="text-xl text-gray-600">
