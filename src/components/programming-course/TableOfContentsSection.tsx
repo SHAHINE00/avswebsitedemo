@@ -5,13 +5,13 @@ import { Card, CardContent } from '@/components/ui/card';
 
 const TableOfContentsSection = () => {
   const tableOfContents = [
-    { section: "I", title: "Présentation du Programme de Formation", anchor: "presentation", icon: BookOpen },
-    { section: "II", title: "Synthèse du Programme de Formation", anchor: "synthese", icon: Target },
-    { section: "III", title: "Buts du Programme de Formation", anchor: "buts", icon: Award },
-    { section: "IV", title: "Objectifs Généraux", anchor: "objectifs", icon: Code },
-    { section: "V", title: "Curriculum 1ère Année", anchor: "curriculum", icon: Code },
-    { section: "VI", title: "Curriculum 2ème Année", anchor: "curriculum2", icon: Database },
-    { section: "VII", title: "Stratégies Pédagogiques et Système d'Évaluation", anchor: "strategies", icon: GraduationCap }
+    { title: "Présentation du Programme de Formation", anchor: "presentation", icon: BookOpen },
+    { title: "Synthèse du Programme de Formation", anchor: "synthese", icon: Target },
+    { title: "Buts du Programme de Formation", anchor: "buts", icon: Award },
+    { title: "Objectifs Généraux", anchor: "objectifs", icon: Code },
+    { title: "Curriculum 1ère Année", anchor: "curriculum", icon: Code },
+    { title: "Curriculum 2ème Année", anchor: "curriculum2", icon: Database },
+    { title: "Stratégies Pédagogiques et Système d'Évaluation", anchor: "strategies", icon: GraduationCap }
   ];
 
   return (
@@ -43,9 +43,6 @@ const TableOfContentsSection = () => {
                       </div>
                       <div className="flex-grow">
                         <div className="flex items-center mb-2">
-                          <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-academy-purple to-academy-blue text-white font-bold text-sm mr-3">
-                            {item.section}
-                          </span>
                           <span className="text-sm text-gray-500 font-medium">SECTION</span>
                         </div>
                         <h3 className="font-bold text-lg text-gray-900 group-hover:text-academy-purple transition-colors duration-300 leading-tight">

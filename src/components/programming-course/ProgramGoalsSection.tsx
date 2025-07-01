@@ -6,7 +6,6 @@ import { Card, CardContent } from '@/components/ui/card';
 const ProgramGoalsSection = () => {
   const programGoals = [
     {
-      id: "III.1",
       title: "Efficacité Professionnelle",
       description: "Rendre la personne efficace dans l'exercice d'une profession.",
       icon: TrendingUp,
@@ -14,7 +13,6 @@ const ProgramGoalsSection = () => {
       details: "Développer les compétences techniques et pratiques nécessaires pour exceller dans le développement logiciel"
     },
     {
-      id: "III.2", 
       title: "Intégration Professionnelle",
       description: "Assurer l'intégration de la personne à la vie professionnelle.",
       icon: Users2,
@@ -22,7 +20,6 @@ const ProgramGoalsSection = () => {
       details: "Faciliter l'insertion dans les équipes et environnements de travail spécialisés en développement"
     },
     {
-      id: "III.3",
       title: "Évolution des Savoirs",
       description: "Favoriser l'évolution et l'approfondissement des savoirs professionnels.",
       icon: Lightbulb,
@@ -30,7 +27,6 @@ const ProgramGoalsSection = () => {
       details: "Encourager l'apprentissage continu et l'adaptation aux nouvelles technologies de programmation"
     },
     {
-      id: "III.4",
       title: "Mobilité Professionnelle",
       description: "Assurer la mobilité professionnelle.",
       icon: Briefcase,
@@ -61,11 +57,6 @@ const ProgramGoalsSection = () => {
                       <goal.icon className="w-8 h-8 text-white" />
                     </div>
                     <div className="flex-grow">
-                      <div className="flex items-center mb-3">
-                        <span className="bg-gradient-to-r from-academy-purple to-academy-blue text-white px-3 py-1 rounded-lg text-sm font-bold mr-3">
-                          {goal.id}
-                        </span>
-                      </div>
                       <h3 className="text-2xl font-bold mb-3 text-gray-900 group-hover:text-academy-purple transition-colors duration-300">
                         {goal.title}
                       </h3>
