@@ -1,38 +1,20 @@
+
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Brain, Code, Database, Cloud, Target, Shield } from 'lucide-react';
 import type { Course } from '@/hooks/useCourses';
-
-const courseSchema = z.object({
-  title: z.string().min(1, 'Le titre est requis'),
-  subtitle: z.string().optional(),
-  modules: z.string().optional(),
-  duration: z.string().optional(),
-  diploma: z.string().optional(),
-  feature1: z.string().optional(),
-  feature2: z.string().optional(),
-  icon: z.string().default('brain'),
-  gradient_from: z.string().default('from-academy-blue'),
-  gradient_to: z.string().default('to-academy-purple'),
-  button_text_color: z.string().default('text-academy-blue'),
-  floating_color1: z.string().default('bg-academy-lightblue/20'),
-  floating_color2: z.string().default('bg-white/10'),
-  link_to: z.string().optional(),
-  status: z.enum(['draft', 'published', 'archived']).default('draft'),
-  display_order: z.number().default(0),
-});
-
-type CourseFormData = z.infer<typeof courseSchema>;
+import { courseSchema, CourseFormData } from './course-form/types';
+import { generateSlug, validateAndFormatLink } from './course-form/utils';
+import BasicInfoFields from './course-form/BasicInfoFields';
+import CourseDetailsFields from './course-form/CourseDetailsFields';
+import FeaturesFields from './course-form/FeaturesFields';
+import LinkField from './course-form/LinkField';
+import StyleFields from './course-form/StyleFields';
+import DisplayOrderField from './course-form/DisplayOrderField';
+import CourseFormActions from './course-form/CourseFormActions';
 
 interface CourseFormDialogProps {
   open: boolean;
@@ -40,42 +22,6 @@ interface CourseFormDialogProps {
   course?: Course | null;
   onSuccess: () => void;
 }
-
-const iconOptions = [
-  { value: 'brain', label: 'Cerveau', icon: Brain },
-  { value: 'code', label: 'Code', icon: Code },
-  { value: 'database', label: 'Base de données', icon: Database },
-  { value: 'cloud', label: 'Cloud', icon: Cloud },
-  { value: 'target', label: 'Cible', icon: Target },
-  { value: 'shield', label: 'Bouclier', icon: Shield },
-];
-
-const gradientOptions = [
-  { value: 'from-academy-blue', label: 'Bleu Academy' },
-  { value: 'from-academy-purple', label: 'Violet Academy' },
-  { value: 'from-blue-500', label: 'Bleu' },
-  { value: 'from-purple-500', label: 'Violet' },
-  { value: 'from-green-500', label: 'Vert' },
-  { value: 'from-red-500', label: 'Rouge' },
-];
-
-// Function to generate slug from title
-const generateSlug = (title: string): string => {
-  return title
-    .toLowerCase()
-    .replace(/[àáâãäå]/g, 'a')
-    .replace(/[èéêë]/g, 'e')
-    .replace(/[ìíîï]/g, 'i')
-    .replace(/[òóôõö]/g, 'o')
-    .replace(/[ùúûü]/g, 'u')
-    .replace(/[ýÿ]/g, 'y')
-    .replace(/[ñ]/g, 'n')
-    .replace(/[ç]/g, 'c')
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .trim();
-};
 
 const CourseFormDialog: React.FC<CourseFormDialogProps> = ({
   open,
@@ -135,22 +81,6 @@ const CourseFormDialog: React.FC<CourseFormDialogProps> = ({
       reset();
     }
   }, [course, setValue, reset]);
-
-  const validateAndFormatLink = (link: string): string => {
-    if (!link) return '';
-    
-    // Remove any existing /course/ prefix to avoid duplication
-    let cleanLink = link.replace(/^\/course\//, '').replace(/^\//, '');
-    
-    // If it's empty after cleaning, return empty
-    if (!cleanLink) return '';
-    
-    // Generate slug from the link
-    const slug = generateSlug(cleanLink);
-    
-    // Return formatted link
-    return `/course/${slug}`;
-  };
 
   const onSubmit = async (data: CourseFormData) => {
     try {
@@ -234,185 +164,17 @@ const CourseFormDialog: React.FC<CourseFormDialogProps> = ({
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="title">Titre *</Label>
-              <Input
-                id="title"
-                {...register('title')}
-                placeholder="Titre du cours"
-              />
-              {errors.title && (
-                <p className="text-sm text-red-600">{errors.title.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="subtitle">Sous-titre</Label>
-              <Input
-                id="subtitle"
-                {...register('subtitle')}
-                placeholder="Sous-titre du cours"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="modules">Modules</Label>
-              <Input
-                id="modules"
-                {...register('modules')}
-                placeholder="ex: 27 modules"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="duration">Durée</Label>
-              <Input
-                id="duration"
-                {...register('duration')}
-                placeholder="ex: 18 mois"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="diploma">Diplôme</Label>
-              <Input
-                id="diploma"
-                {...register('diploma')}
-                placeholder="ex: Diplôme certifié"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="feature1">Caractéristique 1</Label>
-              <Input
-                id="feature1"
-                {...register('feature1')}
-                placeholder="ex: Machine Learning"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="feature2">Caractéristique 2</Label>
-              <Input
-                id="feature2"
-                {...register('feature2')}
-                placeholder="ex: Big Data"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="link_to">Lien vers le cours</Label>
-            <Input
-              id="link_to"
-              {...register('link_to')}
-              placeholder="Le lien sera auto-généré à partir du titre"
-            />
-            <p className="text-sm text-gray-500">
-              Format automatique: /course/nom-du-cours (laissez vide pour auto-génération)
-            </p>
-            {watchedLinkTo && (
-              <p className="text-sm text-blue-600">
-                Aperçu: {validateAndFormatLink(watchedLinkTo) || 'Lien invalide'}
-              </p>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Icône</Label>
-              <Select value={watch('icon')} onValueChange={(value) => setValue('icon', value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {iconOptions.map((option) => {
-                    const IconComponent = option.icon;
-                    return (
-                      <SelectItem key={option.value} value={option.value}>
-                        <div className="flex items-center gap-2">
-                          <IconComponent className="w-4 h-4" />
-                          {option.label}
-                        </div>
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Statut</Label>
-              <Select value={watch('status')} onValueChange={(value) => setValue('status', value as any)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="draft">Brouillon</SelectItem>
-                  <SelectItem value="published">Publié</SelectItem>
-                  <SelectItem value="archived">Archivé</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Gradient de départ</Label>
-              <Select value={watch('gradient_from')} onValueChange={(value) => setValue('gradient_from', value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {gradientOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Gradient de fin</Label>
-              <Select value={watch('gradient_to')} onValueChange={(value) => setValue('gradient_to', value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {gradientOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value.replace('from-', 'to-')}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="display_order">Ordre d'affichage</Label>
-            <Input
-              id="display_order"
-              type="number"
-              {...register('display_order', { valueAsNumber: true })}
-              placeholder="0"
-            />
-          </div>
-
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Sauvegarde...' : isEditing ? 'Mettre à jour' : 'Créer'}
-            </Button>
-          </div>
+          <BasicInfoFields register={register} errors={errors} />
+          <CourseDetailsFields register={register} />
+          <FeaturesFields register={register} />
+          <LinkField register={register} watch={watch} />
+          <StyleFields watch={watch} setValue={setValue} />
+          <DisplayOrderField register={register} />
+          <CourseFormActions 
+            onCancel={() => onOpenChange(false)}
+            isSubmitting={isSubmitting}
+            isEditing={isEditing}
+          />
         </form>
       </DialogContent>
     </Dialog>
