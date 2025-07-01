@@ -39,6 +39,39 @@ export type Database = {
         }
         Relationships: []
       }
+      analytics_data: {
+        Row: {
+          created_at: string
+          date: string
+          hour: number | null
+          id: string
+          metadata: Json | null
+          metric_name: string
+          metric_type: string
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          hour?: number | null
+          id?: string
+          metadata?: Json | null
+          metric_name: string
+          metric_type: string
+          value: number
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          hour?: number | null
+          id?: string
+          metadata?: Json | null
+          metric_name?: string
+          metric_type?: string
+          value?: number
+        }
+        Relationships: []
+      }
       courses: {
         Row: {
           button_text_color: string | null
@@ -141,6 +174,39 @@ export type Database = {
         }
         Relationships: []
       }
+      report_templates: {
+        Row: {
+          config: Json
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_public: boolean | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          config: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       system_analytics: {
         Row: {
           created_at: string
@@ -165,6 +231,39 @@ export type Database = {
           metric_data?: Json | null
           metric_name?: string
           metric_value?: number
+        }
+        Relationships: []
+      }
+      system_monitoring: {
+        Row: {
+          created_at: string
+          id: string
+          metadata: Json | null
+          metric_name: string
+          status: string | null
+          threshold_critical: number | null
+          threshold_warning: number | null
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          metric_name: string
+          status?: string | null
+          threshold_critical?: number | null
+          threshold_warning?: number | null
+          value: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          metric_name?: string
+          status?: string | null
+          threshold_critical?: number | null
+          threshold_warning?: number | null
+          value?: number
         }
         Relationships: []
       }
@@ -207,7 +306,25 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      get_advanced_analytics: {
+        Args: {
+          p_start_date?: string
+          p_end_date?: string
+          p_metric_types?: string[]
+        }
+        Returns: {
+          date: string
+          metric_type: string
+          metric_name: string
+          value: number
+          metadata: Json
+        }[]
+      }
       get_dashboard_metrics: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      get_system_health: {
         Args: Record<PropertyKey, never>
         Returns: Json
       }

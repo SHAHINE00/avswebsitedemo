@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -13,6 +12,8 @@ import CourseFormDialog from '@/components/admin/CourseFormDialog';
 import DashboardOverview from '@/components/admin/dashboard/DashboardOverview';
 import EnhancedCourseManagement from '@/components/admin/dashboard/EnhancedCourseManagement';
 import ComprehensiveUserManagement from '@/components/admin/dashboard/ComprehensiveUserManagement';
+import AdvancedAnalytics from '@/components/admin/dashboard/AdvancedAnalytics';
+import SystemMonitoring from '@/components/admin/dashboard/SystemMonitoring';
 import type { Course } from '@/hooks/useCourses';
 
 const AdminCourses = () => {
@@ -160,10 +161,12 @@ const AdminCourses = () => {
           </div>
 
           <Tabs defaultValue="dashboard" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="dashboard">Tableau de Bord</TabsTrigger>
               <TabsTrigger value="courses">Gestion des Cours</TabsTrigger>
               <TabsTrigger value="users">Gestion des Utilisateurs</TabsTrigger>
+              <TabsTrigger value="analytics">Analyses Avancées</TabsTrigger>
+              <TabsTrigger value="monitoring">Surveillance Système</TabsTrigger>
             </TabsList>
 
             <TabsContent value="dashboard" className="space-y-6">
@@ -181,6 +184,14 @@ const AdminCourses = () => {
 
             <TabsContent value="users">
               <ComprehensiveUserManagement />
+            </TabsContent>
+
+            <TabsContent value="analytics">
+              <AdvancedAnalytics />
+            </TabsContent>
+
+            <TabsContent value="monitoring">
+              <SystemMonitoring />
             </TabsContent>
           </Tabs>
         </div>
