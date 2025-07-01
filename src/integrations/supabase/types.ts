@@ -9,6 +9,36 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admin_activity_logs: {
+        Row: {
+          action: string
+          admin_id: string
+          created_at: string
+          details: Json | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+        }
+        Relationships: []
+      }
       courses: {
         Row: {
           button_text_color: string | null
@@ -25,12 +55,14 @@ export type Database = {
           gradient_to: string | null
           icon: string | null
           id: string
+          last_viewed_at: string | null
           link_to: string | null
           modules: string | null
           status: Database["public"]["Enums"]["course_status"] | null
           subtitle: string | null
           title: string
           updated_at: string | null
+          view_count: number | null
         }
         Insert: {
           button_text_color?: string | null
@@ -47,12 +79,14 @@ export type Database = {
           gradient_to?: string | null
           icon?: string | null
           id?: string
+          last_viewed_at?: string | null
           link_to?: string | null
           modules?: string | null
           status?: Database["public"]["Enums"]["course_status"] | null
           subtitle?: string | null
           title: string
           updated_at?: string | null
+          view_count?: number | null
         }
         Update: {
           button_text_color?: string | null
@@ -69,12 +103,14 @@ export type Database = {
           gradient_to?: string | null
           icon?: string | null
           id?: string
+          last_viewed_at?: string | null
           link_to?: string | null
           modules?: string | null
           status?: Database["public"]["Enums"]["course_status"] | null
           subtitle?: string | null
           title?: string
           updated_at?: string | null
+          view_count?: number | null
         }
         Relationships: []
       }
@@ -105,6 +141,63 @@ export type Database = {
         }
         Relationships: []
       }
+      system_analytics: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          metric_data: Json | null
+          metric_name: string
+          metric_value: number
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          id?: string
+          metric_data?: Json | null
+          metric_name: string
+          metric_value: number
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          metric_data?: Json | null
+          metric_name?: string
+          metric_value?: number
+        }
+        Relationships: []
+      }
+      user_activity_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          id: string
+          ip_address: unknown | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -113,6 +206,19 @@ export type Database = {
       check_admin_role: {
         Args: Record<PropertyKey, never>
         Returns: boolean
+      }
+      get_dashboard_metrics: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      log_admin_activity: {
+        Args: {
+          p_action: string
+          p_entity_type: string
+          p_entity_id?: string
+          p_details?: Json
+        }
+        Returns: undefined
       }
     }
     Enums: {
