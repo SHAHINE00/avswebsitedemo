@@ -109,10 +109,30 @@ const CourseFormDialog: React.FC<CourseFormDialogProps> = ({
 
   const onSubmit = async (data: CourseFormData) => {
     try {
+      // Prepare the data for database insertion/update
+      const courseData = {
+        title: data.title,
+        subtitle: data.subtitle || null,
+        modules: data.modules || null,
+        duration: data.duration || null,
+        diploma: data.diploma || null,
+        feature1: data.feature1 || null,
+        feature2: data.feature2 || null,
+        icon: data.icon,
+        gradient_from: data.gradient_from,
+        gradient_to: data.gradient_to,
+        button_text_color: data.button_text_color,
+        floating_color1: data.floating_color1,
+        floating_color2: data.floating_color2,
+        link_to: data.link_to || null,
+        status: data.status,
+        display_order: data.display_order,
+      };
+
       if (isEditing) {
         const { error } = await supabase
           .from('courses')
-          .update(data)
+          .update(courseData)
           .eq('id', course.id);
 
         if (error) throw error;
@@ -124,7 +144,7 @@ const CourseFormDialog: React.FC<CourseFormDialogProps> = ({
       } else {
         const { error } = await supabase
           .from('courses')
-          .insert([data]);
+          .insert([courseData]);
 
         if (error) throw error;
 
