@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -82,6 +81,28 @@ const Navbar = () => {
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
+              
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="font-medium hover:text-academy-blue transition-colors bg-transparent">
+                  Services
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[300px] gap-3 p-4">
+                    <ListItem href="/blog" title="Blog">
+                      Articles et actualités sur l'IA et la technologie
+                    </ListItem>
+                    <ListItem href="/careers" title="Carrières">
+                      Opportunités de carrière et conseils professionnels
+                    </ListItem>
+                    <ListItem href="/contact" title="Contact">
+                      Contactez notre équipe pour plus d'informations
+                    </ListItem>
+                    <ListItem href="/appointment" title="Rendez-vous">
+                      Planifiez un entretien personnalisé
+                    </ListItem>
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
           
@@ -111,6 +132,15 @@ const Navbar = () => {
                 <Link to="/curriculum" className="block py-1" onClick={() => setIsOpen(false)}>Programmes complets</Link>
                 <Link to="/ai-course" className="block py-1" onClick={() => setIsOpen(false)}>Formation IA</Link>
                 <Link to="/programming-course" className="block py-1" onClick={() => setIsOpen(false)}>Formation Programmation</Link>
+              </div>
+            </div>
+            <div className="font-medium">
+              Services <ChevronDown size={16} className="inline ml-1" />
+              <div className="pl-4 mt-2 space-y-2">
+                <Link to="/blog" className="block py-1" onClick={() => setIsOpen(false)}>Blog</Link>
+                <Link to="/careers" className="block py-1" onClick={() => setIsOpen(false)}>Carrières</Link>
+                <Link to="/contact" className="block py-1" onClick={() => setIsOpen(false)}>Contact</Link>
+                <Link to="/appointment" className="block py-1" onClick={() => setIsOpen(false)}>Rendez-vous</Link>
               </div>
             </div>
             <Link to="/instructors" className="font-medium" onClick={() => setIsOpen(false)}>Formateurs</Link>
