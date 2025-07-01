@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { CheckCircle2, ChevronRight, GraduationCap, BookMarked, TestTube, PresentationChart, UserCheck } from 'lucide-react';
+import { CheckCircle2, ChevronRight, GraduationCap, BookMarked, TestTube, Presentation, UserCheck } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 const TeachingStrategiesSection = () => {
@@ -21,7 +20,7 @@ const TeachingStrategiesSection = () => {
     },
     {
       title: "Outils & Technologies",
-      icon: PresentationChart,
+      icon: Presentation,
       color: "from-emerald-500 to-cyan-600",
       content: "Utilisation d'environnements de développement modernes, plateformes cloud, et outils collaboratifs pour simuler les conditions réelles de travail en entreprise.",
       features: ["Environnements cloud", "Outils collaboratifs", "Plateformes modernes", "Simulation entreprise"]
