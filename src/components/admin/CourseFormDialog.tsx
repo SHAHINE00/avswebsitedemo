@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -11,7 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Brain, Code, Database, Cloud, Target } from 'lucide-react';
+import { Brain, Code, Database, Cloud, Target, Shield } from 'lucide-react';
 import type { Course } from '@/hooks/useCourses';
 
 const courseSchema = z.object({
@@ -48,6 +47,7 @@ const iconOptions = [
   { value: 'database', label: 'Base de données', icon: Database },
   { value: 'cloud', label: 'Cloud', icon: Cloud },
   { value: 'target', label: 'Cible', icon: Target },
+  { value: 'shield', label: 'Bouclier', icon: Shield },
 ];
 
 const gradientOptions = [

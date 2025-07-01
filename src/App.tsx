@@ -10,6 +10,7 @@ import Features from "./pages/Features";
 import Curriculum from "./pages/Curriculum";
 import AICourse from "./pages/AICourse";
 import ProgrammingCourse from "./pages/ProgrammingCourse";
+import CybersecurityCourse from "./pages/CybersecurityCourse";
 import Instructors from "./pages/Instructors";
 import Testimonials from "./pages/Testimonials";
 import Register from "./pages/Register";
@@ -35,6 +36,7 @@ const App = () => {
           <Route path="/curriculum" element={<Curriculum />} />
           <Route path="/ai-course" element={<AICourse />} />
           <Route path="/programming-course" element={<ProgrammingCourse />} />
+          <Route path="/cybersecurity-course" element={<CybersecurityCourse />} />
           <Route path="/instructors" element={<Instructors />} />
           <Route path="/testimonials" element={<Testimonials />} />
           <Route path="/register" element={<Register />} />
