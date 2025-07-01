@@ -14,7 +14,8 @@ import {
   XCircle,
   HardDrive,
   Users,
-  RefreshCw
+  RefreshCw,
+  Shield
 } from 'lucide-react';
 import { useSystemHealth } from '@/hooks/useSystemHealth';
 import { formatDistanceToNow } from 'date-fns';
@@ -52,8 +53,32 @@ const SystemMonitoring = () => {
     );
   }
 
-  // Show error alert but still try to display available data
+  // Check for authentication errors specifically
+  const isAuthError = error && error.includes('Admin access required');
   const hasError = error || (health?.error);
+
+  if (isAuthError) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Server className="w-6 h-6" />
+              Surveillance Système
+            </h2>
+          </div>
+        </div>
+
+        <Alert variant="destructive">
+          <Shield className="h-4 w-4" />
+          <AlertDescription>
+            Accès administrateur requis pour consulter les métriques système. 
+            Veuillez vous connecter avec un compte administrateur.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
 
   const connectionStatus = getConnectionStatus(health?.active_connections || 0);
   const StatusIcon = connectionStatus.icon;
@@ -93,7 +118,7 @@ const SystemMonitoring = () => {
         </div>
       </div>
 
-      {hasError && (
+      {hasError && !isAuthError && (
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>

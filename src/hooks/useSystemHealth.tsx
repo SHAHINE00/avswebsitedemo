@@ -20,28 +20,54 @@ export const useSystemHealth = (refreshInterval = 30000) => {
       setError(null);
       console.log('Fetching system health...');
       
-      const { data, error } = await supabase.rpc('get_system_health');
+      const { data, error: rpcError } = await supabase.rpc('get_system_health');
       
-      if (error) {
-        console.error('Supabase RPC error:', error);
-        throw error;
+      if (rpcError) {
+        console.error('Supabase RPC error:', rpcError);
+        throw rpcError;
       }
       
       console.log('System health data received:', data);
       
-      // Handle the case where the function returns error info
-      if (data && data.error) {
-        console.warn('System health function returned error:', data.error);
-        setError(`Database function error: ${data.error}`);
-        // Still set the data with fallback values
-        setHealth(data as SystemHealth);
+      // Safely handle the JSON response with proper type checking
+      if (data && typeof data === 'object' && !Array.isArray(data)) {
+        const response = data as Record<string, any>;
+        
+        // Handle the case where the function returns error info
+        if (response.error) {
+          console.warn('System health function returned error:', response.error);
+          setError(`Database function error: ${response.error}`);
+          
+          // Set fallback data to prevent UI from breaking
+          setHealth({
+            database_size: response.database_size || 0,
+            active_connections: response.active_connections || 0,
+            table_stats: response.table_stats || {},
+            last_updated: response.last_updated || new Date().toISOString(),
+            error: response.error
+          });
+        } else {
+          // Convert the response to SystemHealth interface
+          setHealth({
+            database_size: response.database_size || 0,
+            active_connections: response.active_connections || 0,
+            table_stats: response.table_stats || {},
+            last_updated: response.last_updated || new Date().toISOString()
+          });
+        }
       } else {
-        setHealth(data as SystemHealth);
+        throw new Error('Invalid response format from system health function');
       }
     } catch (err) {
       console.error('Error fetching system health:', err);
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-      setError(`Failed to fetch system health: ${errorMessage}`);
+      
+      // Check if it's an authentication error
+      if (errorMessage.includes('Access denied') || errorMessage.includes('Admin role required')) {
+        setError('Admin access required to view system health metrics');
+      } else {
+        setError(`Failed to fetch system health: ${errorMessage}`);
+      }
       
       // Set fallback data to prevent UI from breaking
       setHealth({
