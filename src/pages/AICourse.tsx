@@ -1,8 +1,7 @@
-
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { CheckCircle2, ArrowRight, BookOpen, Target, Users, Award } from 'lucide-react';
+import { CheckCircle2, ArrowRight, BookOpen, Target, Users, Award, Sparkles, Brain, Code, Database, Cloud, Shield, Zap, GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -42,61 +41,139 @@ const AICourse = () => {
   ];
 
   const tableOfContents = [
-    { section: "I.", title: "Présentation du Programme de Formation", anchor: "presentation" },
-    { section: "II.", title: "Synthèse du Programme de Formation", anchor: "synthese" },
-    { section: "III.", title: "Buts du Programme de Formation", anchor: "buts" },
-    { section: "IV.", title: "Objectifs Généraux", anchor: "objectifs" },
-    { section: "V.", title: "Curriculum 1ère Année", anchor: "curriculum" },
-    { section: "VI.", title: "Curriculum 2ème Année", anchor: "curriculum2" },
-    { section: "IX.", title: "Stratégies Pédagogiques et Système d'Évaluation", anchor: "strategies" },
-    { section: "X.", title: "Bibliographie", anchor: "bibliographie" }
+    { section: "I", title: "Présentation du Programme de Formation", anchor: "presentation", icon: BookOpen },
+    { section: "II", title: "Synthèse du Programme de Formation", anchor: "synthese", icon: Target },
+    { section: "III", title: "Buts du Programme de Formation", anchor: "buts", icon: Award },
+    { section: "IV", title: "Objectifs Généraux", anchor: "objectifs", icon: Brain },
+    { section: "V", title: "Curriculum 1ère Année", anchor: "curriculum", icon: Code },
+    { section: "VI", title: "Curriculum 2ème Année", anchor: "curriculum2", icon: Database },
+    { section: "IX", title: "Stratégies Pédagogiques et Système d'Évaluation", anchor: "strategies", icon: GraduationCap },
+    { section: "X", title: "Bibliographie", anchor: "bibliographie", icon: Shield }
+  ];
+
+  const keyAreas = [
+    { title: "Connaissances IA", description: "Carrières, formations, éthique et gouvernance", icon: Brain, color: "from-blue-500 to-purple-600" },
+    { title: "Math & Statistiques", description: "Algèbre linéaire, calcul et probabilités", icon: Target, color: "from-purple-500 to-pink-600" },
+    { title: "Programmation", description: "Python, algorithmes et ML basics", icon: Code, color: "from-green-500 to-blue-600" },
+    { title: "Gestion de Données", description: "SQL, preprocessing et visualisation", icon: Database, color: "from-orange-500 to-red-600" },
+    { title: "IA Avancée", description: "Deep learning, NLP et computer vision", icon: Zap, color: "from-teal-500 to-cyan-600" },
+    { title: "Cloud & Déploiement", description: "AWS, GCP, Azure et modèles IA", icon: Cloud, color: "from-indigo-500 to-purple-600" }
   ];
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
       
-      {/* Hero Section */}
-      <div className="pt-24 pb-16 bg-gradient-to-br from-academy-blue to-academy-purple text-white">
-        <div className="container mx-auto px-6">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Programme de Formation en Intelligence Artificielle</h1>
-          <p className="text-xl opacity-90 max-w-3xl">
-            Bienvenue dans notre programme de formation en Intelligence Artificielle. Découvrez les détails du cursus qui vous préparera à exceller dans le domaine de l'IA.
-          </p>
+      {/* Enhanced Hero Section */}
+      <div className="pt-24 pb-20 bg-gradient-to-br from-academy-blue via-academy-purple to-academy-lightblue text-white relative overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 left-10 w-20 h-20 bg-white rounded-full animate-float"></div>
+          <div className="absolute top-40 right-20 w-16 h-16 bg-white rounded-full animate-float" style={{animationDelay: '1s'}}></div>
+          <div className="absolute bottom-20 left-1/3 w-12 h-12 bg-white rounded-full animate-float" style={{animationDelay: '2s'}}></div>
+        </div>
+        
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-6">
+              <Sparkles className="w-5 h-5 mr-2" />
+              <span className="text-sm font-medium">Programme d'Excellence</span>
+            </div>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+              Formation Complète en
+              <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
+                Intelligence Artificielle
+              </span>
+            </h1>
+            <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto mb-8 leading-relaxed">
+              Transformez votre carrière avec notre programme innovant conçu pour former les experts IA de demain
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button asChild className="bg-white text-academy-blue hover:bg-gray-100 font-semibold px-8 py-6 text-lg rounded-xl">
+                <Link to="/register">
+                  Commencer maintenant <ArrowRight className="ml-2" />
+                </Link>
+              </Button>
+              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-academy-blue font-semibold px-8 py-6 text-lg rounded-xl">
+                Télécharger le programme
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
       
       <main className="flex-grow">
-        {/* Table of Contents */}
-        <section className="py-16 bg-gray-50">
+        {/* Key Areas Section */}
+        <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
           <div className="container mx-auto px-6">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4 text-gray-900">Sommaire</h2>
-              <div className="w-24 h-1 bg-academy-blue mx-auto rounded-full"></div>
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">Domaines Clés</h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                Maîtrisez les compétences essentielles pour exceller dans l'intelligence artificielle
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+              {keyAreas.map((area, index) => (
+                <Card key={index} className="group relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                  <div className={`absolute inset-0 bg-gradient-to-br ${area.color} opacity-5 group-hover:opacity-10 transition-opacity duration-300`}></div>
+                  <CardContent className="p-8 relative z-10">
+                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${area.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                      <area.icon className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-3 text-gray-900 group-hover:text-academy-blue transition-colors duration-300">
+                      {area.title}
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed">
+                      {area.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Enhanced Table of Contents */}
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-6">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">Sommaire du Programme</h2>
+              <div className="w-32 h-1 bg-gradient-to-r from-academy-blue to-academy-purple mx-auto rounded-full mb-6"></div>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Explorez chaque section de notre programme complet
+              </p>
             </div>
             
             <div className="max-w-6xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {tableOfContents.map((item, index) => (
-                  <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md hover:shadow-xl hover:-translate-y-1">
-                    <CardContent className="p-0">
+                  <Card key={index} className="group relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
+                    <div className="absolute inset-0 bg-gradient-to-br from-academy-blue/5 to-academy-purple/5 group-hover:from-academy-blue/10 group-hover:to-academy-purple/10 transition-all duration-300"></div>
+                    <CardContent className="p-0 relative z-10">
                       <a 
                         href={`#${item.anchor}`} 
-                        className="block p-6 h-full hover:bg-gradient-to-r hover:from-academy-blue/5 hover:to-academy-purple/5 transition-all duration-300"
+                        className="block p-8 h-full"
                       >
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-6">
                           <div className="flex-shrink-0">
-                            <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-academy-blue to-academy-purple text-white font-bold text-lg">
-                              {item.section.replace('.', '')}
-                            </span>
+                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-academy-blue to-academy-purple flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                              <item.icon className="w-8 h-8 text-white" />
+                            </div>
                           </div>
                           <div className="flex-grow">
-                            <h3 className="font-semibold text-gray-900 group-hover:text-academy-blue transition-colors duration-300 leading-tight">
+                            <div className="flex items-center mb-2">
+                              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-academy-blue to-academy-purple text-white font-bold text-sm mr-3">
+                                {item.section}
+                              </span>
+                              <span className="text-sm text-gray-500 font-medium">SECTION</span>
+                            </div>
+                            <h3 className="font-bold text-lg text-gray-900 group-hover:text-academy-blue transition-colors duration-300 leading-tight">
                               {item.title}
                             </h3>
                           </div>
                           <div className="flex-shrink-0">
-                            <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-academy-blue transition-colors duration-300 transform group-hover:translate-x-1" />
+                            <ArrowRight className="w-6 h-6 text-gray-400 group-hover:text-academy-blue transition-all duration-300 transform group-hover:translate-x-1" />
                           </div>
                         </div>
                       </a>
@@ -108,68 +185,79 @@ const AICourse = () => {
           </div>
         </section>
 
-        {/* Program Presentation */}
-        <section id="presentation" className="py-16">
+        {/* Enhanced Program Presentation */}
+        <section id="presentation" className="py-20 bg-gradient-to-br from-gray-50 to-white">
           <div className="container mx-auto px-6">
-            <h2 className="text-3xl font-bold mb-8">I. Présentation du Programme de Formation</h2>
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">I. Présentation du Programme</h2>
+              <div className="w-32 h-1 bg-gradient-to-r from-academy-blue to-academy-purple mx-auto rounded-full"></div>
+            </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <BookOpen className="w-6 h-6 mr-2 text-academy-blue" />
-                    Programme de formation professionnelle
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+              <Card className="group border-0 shadow-lg hover:shadow-2xl transition-all duration-500">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center text-2xl">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mr-4">
+                      <BookOpen className="w-6 h-6 text-white" />
+                    </div>
+                    Programme Professionnel
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-gray-700">
-                    Notre programme de formation en Intelligence Artificielle est conçu pour former des professionnels compétents 
-                    capables de maîtriser les technologies IA les plus avancées et de les appliquer dans des contextes professionnels variés.
+                <CardContent className="pt-0">
+                  <p className="text-gray-700 leading-relaxed text-lg">
+                    Formation complète en Intelligence Artificielle conçue pour développer une expertise technique 
+                    et pratique dans les technologies IA les plus avancées du marché.
                   </p>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Target className="w-6 h-6 mr-2 text-academy-blue" />
-                    Buts de la formation
+              <Card className="group border-0 shadow-lg hover:shadow-2xl transition-all duration-500">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center text-2xl">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mr-4">
+                      <Target className="w-6 h-6 text-white" />
+                    </div>
+                    Objectifs de Formation
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-gray-700">
-                    Former des spécialistes en IA capables de concevoir, développer et déployer des solutions d'intelligence artificielle 
-                    innovantes répondant aux besoins du marché du travail actuel et futur.
+                <CardContent className="pt-0">
+                  <p className="text-gray-700 leading-relaxed text-lg">
+                    Former des spécialistes capables de concevoir, développer et déployer des solutions IA 
+                    innovantes répondant aux défis technologiques actuels et futurs.
                   </p>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Award className="w-6 h-6 mr-2 text-academy-blue" />
-                    Compétences
+              <Card className="group border-0 shadow-lg hover:shadow-2xl transition-all duration-500">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center text-2xl">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center mr-4">
+                      <Award className="w-6 h-6 text-white" />
+                    </div>
+                    Compétences Acquises
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-gray-700">
-                    Développement de compétences techniques et transversales en programmation Python, machine learning, 
-                    deep learning, traitement de données, et déploiement de modèles IA.
+                <CardContent className="pt-0">
+                  <p className="text-gray-700 leading-relaxed text-lg">
+                    Maîtrise complète des outils et techniques : Python, ML/DL, traitement de données, 
+                    déploiement cloud et gestion de projets IA.
                   </p>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Users className="w-6 h-6 mr-2 text-academy-blue" />
+              <Card className="group border-0 shadow-lg hover:shadow-2xl transition-all duration-500">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center text-2xl">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mr-4">
+                      <Users className="w-6 h-6 text-white" />
+                    </div>
                     Public Cible
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-gray-700">
-                    Étudiants diplômés, professionnels en reconversion, ingénieurs souhaitant se spécialiser en IA, 
-                    et toute personne passionnée par les technologies d'intelligence artificielle.
+                <CardContent className="pt-0">
+                  <p className="text-gray-700 leading-relaxed text-lg">
+                    Professionnels en reconversion, ingénieurs, étudiants diplômés et passionnés de technologie 
+                    souhaitant se spécialiser en IA.
                   </p>
                 </CardContent>
               </Card>
@@ -178,7 +266,7 @@ const AICourse = () => {
         </section>
 
         {/* Program Synthesis */}
-        <section id="synthese" className="py-16 bg-academy-gray">
+        <section id="synthese" className="py-20 bg-academy-gray">
           <div className="container mx-auto px-6">
             <h2 className="text-3xl font-bold mb-8">II. Synthèse du Programme de Formation</h2>
             
@@ -217,7 +305,7 @@ const AICourse = () => {
         </section>
 
         {/* Program Goals */}
-        <section id="buts" className="py-16">
+        <section id="buts" className="py-20">
           <div className="container mx-auto px-6">
             <h2 className="text-3xl font-bold mb-8">III. Buts du Programme de Formation</h2>
             
@@ -254,7 +342,7 @@ const AICourse = () => {
         </section>
 
         {/* General Objectives */}
-        <section id="objectifs" className="py-16 bg-academy-gray">
+        <section id="objectifs" className="py-20 bg-academy-gray">
           <div className="container mx-auto px-6">
             <Card className="max-w-4xl mx-auto">
               <CardHeader>
@@ -273,22 +361,30 @@ const AICourse = () => {
           </div>
         </section>
 
-        {/* First Year Curriculum */}
-        <section id="curriculum" className="py-16">
+        {/* Enhanced First Year Curriculum */}
+        <section id="curriculum" className="py-20 bg-white">
           <div className="container mx-auto px-6">
-            <h2 className="text-3xl font-bold mb-8">V. Curriculum 1ère Année (10 mois)</h2>
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">V. Curriculum 1ère Année</h2>
+              <div className="w-32 h-1 bg-gradient-to-r from-academy-blue to-academy-purple mx-auto rounded-full mb-6"></div>
+              <p className="text-xl text-gray-600">Fondamentaux et bases techniques - 10 mois intensifs</p>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
               {firstYearModules.map((module, index) => (
-                <Card key={index} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex items-center mb-2">
-                      <span className="bg-academy-blue text-white px-2 py-1 rounded text-xs font-semibold mr-2">
+                <Card key={index} className="group border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
+                  <CardContent className="p-6">
+                    <div className="flex items-center mb-4">
+                      <span className="bg-gradient-to-r from-academy-blue to-academy-purple text-white px-3 py-1 rounded-lg text-sm font-bold mr-3">
                         {module.code}
                       </span>
-                      <span className="text-xs text-gray-600">{module.duration}</span>
+                      <span className="text-sm text-gray-500 font-medium bg-gray-100 px-2 py-1 rounded-lg">
+                        {module.duration}
+                      </span>
                     </div>
-                    <h3 className="text-sm font-bold text-academy-blue leading-tight">{module.title}</h3>
+                    <h3 className="text-sm font-bold text-gray-900 leading-tight group-hover:text-academy-blue transition-colors duration-300">
+                      {module.title}
+                    </h3>
                   </CardContent>
                 </Card>
               ))}
@@ -296,22 +392,30 @@ const AICourse = () => {
           </div>
         </section>
 
-        {/* Second Year Curriculum */}
-        <section id="curriculum2" className="py-16 bg-academy-gray">
+        {/* Enhanced Second Year Curriculum */}
+        <section id="curriculum2" className="py-20 bg-gradient-to-br from-gray-50 to-white">
           <div className="container mx-auto px-6">
-            <h2 className="text-3xl font-bold mb-8">VI. Curriculum 2ème Année (10 mois)</h2>
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">VI. Curriculum 2ème Année</h2>
+              <div className="w-32 h-1 bg-gradient-to-r from-academy-purple to-academy-lightblue mx-auto rounded-full mb-6"></div>
+              <p className="text-xl text-gray-600">Spécialisation avancée et projets professionnels - 10 mois</p>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
               {secondYearModules.map((module, index) => (
-                <Card key={index} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex items-center mb-2">
-                      <span className="bg-academy-purple text-white px-2 py-1 rounded text-xs font-semibold mr-2">
+                <Card key={index} className="group border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
+                  <CardContent className="p-6">
+                    <div className="flex items-center mb-4">
+                      <span className="bg-gradient-to-r from-academy-purple to-academy-lightblue text-white px-3 py-1 rounded-lg text-sm font-bold mr-3">
                         {module.code}
                       </span>
-                      <span className="text-xs text-gray-600">{module.duration}</span>
+                      <span className="text-sm text-gray-500 font-medium bg-gray-100 px-2 py-1 rounded-lg">
+                        {module.duration}
+                      </span>
                     </div>
-                    <h3 className="text-sm font-bold text-academy-purple leading-tight">{module.title}</h3>
+                    <h3 className="text-sm font-bold text-gray-900 leading-tight group-hover:text-academy-purple transition-colors duration-300">
+                      {module.title}
+                    </h3>
                   </CardContent>
                 </Card>
               ))}
@@ -320,7 +424,7 @@ const AICourse = () => {
         </section>
 
         {/* Teaching Strategies */}
-        <section id="strategies" className="py-16">
+        <section id="strategies" className="py-20">
           <div className="container mx-auto px-6">
             <Card className="max-w-4xl mx-auto">
               <CardHeader>
@@ -351,7 +455,7 @@ const AICourse = () => {
         </section>
 
         {/* Bibliography */}
-        <section id="bibliographie" className="py-16 bg-academy-gray">
+        <section id="bibliographie" className="py-20 bg-academy-gray">
           <div className="container mx-auto px-6">
             <Card className="max-w-4xl mx-auto">
               <CardHeader>
@@ -372,23 +476,41 @@ const AICourse = () => {
           </div>
         </section>
 
-        {/* Call to Action */}
-        <section className="py-16">
-          <div className="container mx-auto px-6">
-            <Card className="max-w-4xl mx-auto text-center">
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-bold mb-4">Prêt à démarrer votre parcours en IA ?</h3>
-                <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
-                  Rejoignez notre programme de formation en Intelligence Artificielle et transformez votre carrière 
-                  avec les compétences les plus demandées du marché.
-                </p>
-                <Button asChild className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-8 py-6 text-lg">
+        {/* Enhanced Call to Action */}
+        <section className="py-20 bg-gradient-to-br from-academy-blue via-academy-purple to-academy-lightblue text-white relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-10 right-10 w-32 h-32 bg-white rounded-full animate-float"></div>
+            <div className="absolute bottom-20 left-20 w-24 h-24 bg-white rounded-full animate-float" style={{animationDelay: '1.5s'}}></div>
+          </div>
+          
+          <div className="container mx-auto px-6 relative z-10">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-6">
+                <Sparkles className="w-5 h-5 mr-2" />
+                <span className="text-sm font-medium">Rejoignez l'Excellence</span>
+              </div>
+              <h3 className="text-4xl md:text-6xl font-bold mb-6">
+                Prêt à Transformer
+                <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
+                  Votre Carrière ?
+                </span>
+              </h3>
+              <p className="text-xl md:text-2xl opacity-90 mb-8 max-w-3xl mx-auto leading-relaxed">
+                Rejoignez notre programme d'excellence et devenez un expert recherché en Intelligence Artificielle
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button asChild className="bg-white text-academy-blue hover:bg-gray-100 font-bold px-10 py-6 text-lg rounded-xl shadow-2xl">
                   <Link to="/register">
                     S'inscrire maintenant <ArrowRight className="ml-2" />
                   </Link>
                 </Button>
-              </CardContent>
-            </Card>
+                <Button asChild variant="outline" className="border-white text-white hover:bg-white hover:text-academy-blue font-bold px-10 py-6 text-lg rounded-xl">
+                  <Link to="/contact">
+                    Nous contacter
+                  </Link>
+                </Button>
+              </div>
+            </div>
           </div>
         </section>
       </main>
