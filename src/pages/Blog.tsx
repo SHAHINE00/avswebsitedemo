@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -12,7 +11,7 @@ const blogPosts = [
     excerpt: "Comprendre les bases qui ont révolutionné le monde de la technologie ces dernières années.",
     image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=500&fit=crop",
     date: "10 avril 2025",
-    author: "Dr. Ahmed Al-Faisal",
+    author: "Dr. Youssef Bennani",
     category: "Intelligence Artificielle"
   },
   {
@@ -20,7 +19,7 @@ const blogPosts = [
     excerpt: "Les étapes essentielles pour commencer votre parcours en programmation et devenir développeur.",
     image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=500&fit=crop",
     date: "28 mars 2025",
-    author: "Nadia Al-Khatib",
+    author: "Fatima Zahra Alami",
     category: "Programmation"
   },
   {
@@ -28,7 +27,7 @@ const blogPosts = [
     excerpt: "Découvrez les avancées récentes dans le domaine du deep learning et leur impact sur l'industrie.",
     image: "https://images.unsplash.com/photo-1526378722484-bd91ca387e72?w=800&h=500&fit=crop",
     date: "15 mars 2025",
-    author: "Dr. Omar Nasser",
+    author: "Dr. Hassan Cherkaoui",
     category: "Deep Learning"
   },
   {
@@ -36,7 +35,7 @@ const blogPosts = [
     excerpt: "Quelles sont les compétences recherchées par les entreprises et comment s'y préparer ?",
     image: "https://images.unsplash.com/photo-1523961131990-5ea7c61b2107?w=800&h=500&fit=crop",
     date: "5 mars 2025",
-    author: "Layla Mahmoud",
+    author: "Aicha Bourhim",
     category: "Carrière"
   }
 ];
