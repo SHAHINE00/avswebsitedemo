@@ -241,21 +241,34 @@ const AdminTest = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle>Actions disponibles</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="w-5 h-5" />
+                  Actions rapides
+                </CardTitle>
+                <CardDescription>Accès direct aux fonctionnalités d'administration</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Button asChild variant="outline">
-                    <a href="/admin/courses">Gérer les cours</a>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <Button asChild className="h-auto p-4 flex-col gap-2">
+                    <a href="/admin/courses">
+                      <Database className="w-6 h-6" />
+                      <span className="font-medium">Gérer les cours</span>
+                      <span className="text-xs opacity-70">Administration des formations</span>
+                    </a>
                   </Button>
-                  <Button asChild variant="outline">
-                    <a href="/auth">Page d'authentification</a>
+                  <Button asChild variant="outline" className="h-auto p-4 flex-col gap-2">
+                    <a href="/curriculum">
+                      <User className="w-6 h-6" />
+                      <span className="font-medium">Formations publiques</span>
+                      <span className="text-xs opacity-70">Vue utilisateur</span>
+                    </a>
                   </Button>
-                  <Button asChild variant="outline">
-                    <a href="/curriculum">Voir les formations</a>
-                  </Button>
-                  <Button asChild variant="outline">
-                    <a href="/contact">Formulaire de contact</a>
+                  <Button asChild variant="outline" className="h-auto p-4 flex-col gap-2">
+                    <a href="/contact">
+                      <Settings className="w-6 h-6" />
+                      <span className="font-medium">Contact</span>
+                      <span className="text-xs opacity-70">Formulaire de contact</span>
+                    </a>
                   </Button>
                 </div>
               </CardContent>
