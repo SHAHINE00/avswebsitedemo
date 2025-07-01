@@ -47,8 +47,7 @@ const AICourse = () => {
     { section: "IV", title: "Objectifs Généraux", anchor: "objectifs", icon: Brain },
     { section: "V", title: "Curriculum 1ère Année", anchor: "curriculum", icon: Code },
     { section: "VI", title: "Curriculum 2ème Année", anchor: "curriculum2", icon: Database },
-    { section: "IX", title: "Stratégies Pédagogiques et Système d'Évaluation", anchor: "strategies", icon: GraduationCap },
-    { section: "X", title: "Bibliographie", anchor: "bibliographie", icon: Shield }
+    { section: "IX", title: "Stratégies Pédagogiques et Système d'Évaluation", anchor: "strategies", icon: GraduationCap }
   ];
 
   const keyAreas = [
@@ -449,28 +448,6 @@ const AICourse = () => {
                     </p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
-        {/* Bibliography */}
-        <section id="bibliographie" className="py-20 bg-academy-gray">
-          <div className="container mx-auto px-6">
-            <Card className="max-w-4xl mx-auto">
-              <CardHeader>
-                <CardTitle className="text-3xl font-bold">X. Bibliographie</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-700 mb-4">
-                  Les références bibliographiques incluent les ouvrages de référence en intelligence artificielle, 
-                  machine learning, et deep learning, ainsi que les publications scientifiques récentes et les 
-                  ressources en ligne spécialisées.
-                </p>
-                <p className="text-sm text-gray-600">
-                  Une bibliographie détaillée sera fournie au début de chaque module avec les ressources spécifiques 
-                  nécessaires pour approfondir les sujets traités.
-                </p>
               </CardContent>
             </Card>
           </div>
