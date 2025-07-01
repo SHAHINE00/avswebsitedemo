@@ -2,129 +2,58 @@
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { CheckCircle2, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import HeroSection from '@/components/programming-course/HeroSection';
+import KeyAreasSection from '@/components/programming-course/KeyAreasSection';
+import TableOfContentsSection from '@/components/programming-course/TableOfContentsSection';
+import PresentationSection from '@/components/programming-course/PresentationSection';
+import SynthesisSection from '@/components/programming-course/SynthesisSection';
+import ProgramGoalsSection from '@/components/programming-course/ProgramGoalsSection';
+import ObjectivesSection from '@/components/programming-course/ObjectivesSection';
+import CurriculumSection from '@/components/programming-course/CurriculumSection';
+import TeachingStrategiesSection from '@/components/programming-course/TeachingStrategiesSection';
+import CTASection from '@/components/programming-course/CTASection';
 
 const ProgrammingCourse = () => {
-  const modules = [
-    {
-      title: "Module 1 : Fondamentaux de la programmation",
-      description: "Acquérez les bases solides de la logique de programmation et des structures de données.",
-      topics: [
-        "Algorithmes et logique",
-        "Structures de données fondamentales",
-        "Paradigmes de programmation",
-        "Tests et débogage"
-      ],
-      duration: "6 semaines",
-      projects: ["Implémentation d'algorithmes de tri", "Création d'une structure de données personnalisée"]
-    },
-    {
-      title: "Module 2 : Développement web moderne",
-      description: "Maîtrisez les technologies front-end et back-end pour créer des applications web complètes.",
-      topics: [
-        "HTML, CSS et JavaScript avancé",
-        "Frameworks front-end (React, Vue)",
-        "Architecture back-end et APIs",
-        "Bases de données relationnelles et NoSQL"
-      ],
-      duration: "8 semaines",
-      projects: ["Application web complète avec authentification", "API RESTful avec base de données"]
-    },
-    {
-      title: "Module 3 : Programmation orientée objet",
-      description: "Approfondissez vos connaissances avec les principes de conception logicielle robustes.",
-      topics: [
-        "Classes, objets et héritage",
-        "Principes SOLID",
-        "Design patterns",
-        "Architecture logicielle"
-      ],
-      duration: "6 semaines",
-      projects: ["Bibliothèque orientée objet", "Refactoring d'une application existante"]
-    },
-    {
-      title: "Module 4 : DevOps et déploiement",
-      description: "Découvrez le cycle complet de livraison logicielle et les pratiques modernes.",
-      topics: [
-        "Intégration et déploiement continus",
-        "Conteneurisation avec Docker",
-        "Orchestration avec Kubernetes",
-        "Monitoring et logging"
-      ],
-      duration: "4 semaines",
-      projects: ["Pipeline CI/CD pour une application", "Déploiement conteneurisé sur le cloud"]
-    }
+  const firstYearModules = [
+    { code: "M01", title: "INTRODUCTION À LA PROGRAMMATION", duration: "2 semaines" },
+    { code: "M02", title: "ALGORITHMES ET STRUCTURES DE DONNÉES", duration: "3 semaines" },
+    { code: "M03", title: "PROGRAMMATION ORIENTÉE OBJET", duration: "3 semaines" },
+    { code: "M04", title: "INTRODUCTION AUX BASES DE DONNÉES", duration: "2 semaines" },
+    { code: "M05", title: "DÉVELOPPEMENT WEB FRONT-END (HTML, CSS, JAVASCRIPT)", duration: "4 semaines" },
+    { code: "M06", title: "DÉVELOPPEMENT WEB BACK-END (NODE.JS, PHP, MYSQL)", duration: "4 semaines" },
+    { code: "M07", title: "DÉVELOPPEMENT MOBILE (ANDROID, SWIFT)", duration: "3 semaines" },
+    { code: "M08", title: "MÉTHODOLOGIES DE DÉVELOPPEMENT AGILE", duration: "2 semaines" },
+    { code: "M09", title: "PROJET PRATIQUE DE PROGRAMMATION", duration: "4 semaines" }
+  ];
+
+  const secondYearModules = [
+    { code: "M10", title: "FRAMEWORKS ET BIBLIOTHÈQUES DE DÉVELOPPEMENT (REACT, ANGULAR)", duration: "4 semaines" },
+    { code: "M11", title: "DÉVELOPPEMENT DE JEUX VIDÉO AVEC UNITY", duration: "3 semaines" },
+    { code: "M12", title: "ARCHITECTURE DES APPLICATIONS WEB", duration: "3 semaines" },
+    { code: "M13", title: "CYBERSÉCURITÉ ET SÉCURISATION DES APPLICATIONS", duration: "3 semaines" },
+    { code: "M14", title: "INTRODUCTION À L'INTELLIGENCE ARTIFICIELLE EN PROGRAMMATION", duration: "3 semaines" },
+    { code: "M15", title: "DEVOPS ET INTÉGRATION CONTINUE", duration: "3 semaines" },
+    { code: "M16", title: "DÉPLOIEMENT ET HÉBERGEMENT DES APPLICATIONS", duration: "2 semaines" },
+    { code: "M17", title: "ANALYSE DES PERFORMANCES ET OPTIMISATION DES APPLICATIONS", duration: "2 semaines" },
+    { code: "M18", title: "PROJET FINAL DE DÉVELOPPEMENT D'APPLICATION", duration: "6 semaines" }
   ];
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
-      
-      <div className="pt-24 pb-16 bg-gradient-to-br from-academy-purple to-academy-blue text-white">
-        <div className="container mx-auto px-6">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Formation Complète en Programmation</h1>
-          <p className="text-xl opacity-90 max-w-3xl">
-            Maîtrisez l'art de la programmation moderne avec notre programme complet axé sur les technologies les plus demandées du marché.
-          </p>
-        </div>
-      </div>
+      <HeroSection />
       
       <main className="flex-grow">
-        <section className="py-16">
-          <div className="container mx-auto px-6">
-            <h2 className="text-3xl font-bold mb-8 text-center">Programme de la formation Programmation</h2>
-            
-            <div className="space-y-12">
-              {modules.map((module, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg p-8 shadow-sm hover:shadow-md transition-shadow">
-                  <h3 className="text-2xl font-bold mb-3 text-academy-purple">{module.title}</h3>
-                  <p className="text-lg mb-6">{module.description}</p>
-                  
-                  <div className="grid md:grid-cols-3 gap-8">
-                    <div>
-                      <h4 className="font-semibold mb-3 text-gray-700">Thèmes abordés</h4>
-                      <ul className="space-y-2">
-                        {module.topics.map((topic, topicIndex) => (
-                          <li key={topicIndex} className="flex items-start">
-                            <CheckCircle2 className="w-5 h-5 text-academy-blue shrink-0 mr-2 mt-0.5" />
-                            <span>{topic}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    
-                    <div>
-                      <h4 className="font-semibold mb-3 text-gray-700">Durée</h4>
-                      <p>{module.duration}</p>
-                    </div>
-                    
-                    <div>
-                      <h4 className="font-semibold mb-3 text-gray-700">Projets</h4>
-                      <ul className="space-y-2">
-                        {module.projects.map((project, projectIndex) => (
-                          <li key={projectIndex} className="flex items-start">
-                            <CheckCircle2 className="w-5 h-5 text-academy-blue shrink-0 mr-2 mt-0.5" />
-                            <span>{project}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <div className="mt-12 text-center">
-              <Button asChild className="bg-academy-purple hover:bg-academy-blue text-white font-semibold px-8 py-6 text-lg">
-                <Link to="/register">
-                  S'inscrire à la formation Programmation <ArrowRight className="ml-2" />
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </section>
+        <KeyAreasSection />
+        <TableOfContentsSection />
+        <PresentationSection />
+        <SynthesisSection />
+        <ProgramGoalsSection />
+        <ObjectivesSection />
+        <CurriculumSection year={1} modules={firstYearModules} />
+        <CurriculumSection year={2} modules={secondYearModules} />
+        <TeachingStrategiesSection />
+        <CTASection />
       </main>
       
       <Footer />
