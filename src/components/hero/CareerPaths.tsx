@@ -1,106 +1,132 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Brain, Code, Rocket, TrendingUp } from 'lucide-react';
 
 const CareerPaths: React.FC = () => {
   return (
     <section className="career-opportunities">
-      <div className="container mx-auto px-6 py-16 bg-academy-gray/30">
+      <div className="container mx-auto px-6 py-16 bg-gradient-to-b from-white to-academy-gray/50">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold mb-3 text-center">Opportunités de Carrière en IA et Programmation</h2>
-          <p className="text-lg text-gray-700 max-w-4xl mx-auto text-center mb-12">
-            Explorez des carrières passionnantes dans le domaine de l'Intelligence Artificielle et de la Programmation. Ces secteurs en pleine expansion offrent une multitude d'opportunités professionnelles et d'entrepreneuriat pour ceux qui sont prêts à innover et à transformer le monde.
-          </p>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4 gradient-text">Opportunités de Carrière</h2>
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+              Découvrez des carrières passionnantes en IA et Programmation dans des secteurs en croissance de <strong>25% par an</strong>
+            </p>
+          </div>
           
-          <div className="career-categories grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            <div className="category bg-white p-6 rounded-xl shadow-sm">
-              <h3 className="text-xl font-bold mb-4 text-academy-blue">Carrières en Intelligence Artificielle</h3>
-              <ul className="space-y-2 mb-4">
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-academy-blue rounded-full mr-3"></span>
-                  Ingénieur en IA
-                </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-academy-blue rounded-full mr-3"></span>
-                  Data Scientist
-                </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-academy-blue rounded-full mr-3"></span>
-                  Développeur de Machine Learning
-                </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-academy-blue rounded-full mr-3"></span>
-                  Ingénieur en Vision par Ordinateur
-                </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-academy-blue rounded-full mr-3"></span>
-                  Éthicien en IA
-                </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-academy-blue rounded-full mr-3"></span>
-                  Architecte de Solutions IA
-                </li>
-              </ul>
-              <p className="text-sm text-gray-600">
-                Les professionnels de l'IA créent des systèmes capables d'apprendre, d'analyser et de résoudre des problèmes complexes, ouvrant ainsi des opportunités dans divers secteurs comme la santé, la finance, et l'automobile.
+          {/* Statistics */}
+          <div className="flex justify-center gap-8 mb-12">
+            <div className="text-center bg-white rounded-xl p-4 shadow-sm">
+              <div className="text-2xl font-bold text-academy-blue">85%</div>
+              <div className="text-sm text-gray-600">Taux de placement</div>
+            </div>
+            <div className="text-center bg-white rounded-xl p-4 shadow-sm">
+              <div className="text-2xl font-bold text-academy-purple">€45k+</div>
+              <div className="text-sm text-gray-600">Salaire moyen</div>
+            </div>
+            <div className="text-center bg-white rounded-xl p-4 shadow-sm">
+              <div className="text-2xl font-bold text-academy-blue">25%</div>
+              <div className="text-sm text-gray-600">Croissance annuelle</div>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            {/* IA Career Card */}
+            <div className="group bg-gradient-to-br from-white to-academy-blue/5 p-8 rounded-2xl shadow-lg border border-academy-blue/20 hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <div className="flex items-center mb-6">
+                <div className="bg-academy-blue/10 p-3 rounded-xl mr-4">
+                  <Brain className="w-8 h-8 text-academy-blue" />
+                </div>
+                <h3 className="text-2xl font-bold text-academy-blue">Intelligence Artificielle</h3>
+              </div>
+              
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center text-gray-700">
+                  <TrendingUp className="w-4 h-4 text-academy-blue mr-2" />
+                  <span>Data Scientist</span>
+                </div>
+                <div className="flex items-center text-gray-700">
+                  <TrendingUp className="w-4 h-4 text-academy-blue mr-2" />
+                  <span>Ingénieur Machine Learning</span>
+                </div>
+                <div className="flex items-center text-gray-700">
+                  <TrendingUp className="w-4 h-4 text-academy-blue mr-2" />
+                  <span>Architecte Solutions IA</span>
+                </div>
+              </div>
+              
+              <p className="text-gray-600 mb-4">
+                Créez des systèmes intelligents qui transforment les industries de la santé, finance et automobile.
               </p>
+              
+              <div className="bg-academy-blue/10 text-academy-blue rounded-lg px-3 py-1 text-sm inline-block">
+                Secteur en forte demande
+              </div>
             </div>
             
-            <div className="category bg-white p-6 rounded-xl shadow-sm">
-              <h3 className="text-xl font-bold mb-4 text-academy-purple">Carrières en Programmation</h3>
-              <ul className="space-y-2 mb-4">
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-academy-purple rounded-full mr-3"></span>
-                  Développeur Logiciel
-                </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-academy-purple rounded-full mr-3"></span>
-                  Développeur Web
-                </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-academy-purple rounded-full mr-3"></span>
-                  Développeur Mobile
-                </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-academy-purple rounded-full mr-3"></span>
-                  Ingénieur DevOps
-                </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-academy-purple rounded-full mr-3"></span>
-                  Analyste Système
-                </li>
-              </ul>
-              <p className="text-sm text-gray-600">
-                Les développeurs sont essentiels pour créer des logiciels, des applications mobiles, et des systèmes de gestion qui transforment l'expérience numérique dans tous les secteurs.
+            {/* Programming Career Card */}
+            <div className="group bg-gradient-to-br from-white to-academy-purple/5 p-8 rounded-2xl shadow-lg border border-academy-purple/20 hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <div className="flex items-center mb-6">
+                <div className="bg-academy-purple/10 p-3 rounded-xl mr-4">
+                  <Code className="w-8 h-8 text-academy-purple" />
+                </div>
+                <h3 className="text-2xl font-bold text-academy-purple">Programmation</h3>
+              </div>
+              
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center text-gray-700">
+                  <TrendingUp className="w-4 h-4 text-academy-purple mr-2" />
+                  <span>Développeur Full Stack</span>
+                </div>
+                <div className="flex items-center text-gray-700">
+                  <TrendingUp className="w-4 h-4 text-academy-purple mr-2" />
+                  <span>Développeur Mobile</span>
+                </div>
+                <div className="flex items-center text-gray-700">
+                  <TrendingUp className="w-4 h-4 text-academy-purple mr-2" />
+                  <span>Ingénieur DevOps</span>
+                </div>
+              </div>
+              
+              <p className="text-gray-600 mb-4">
+                Développez des applications web et mobile qui révolutionnent l'expérience utilisateur.
               </p>
+              
+              <div className="bg-academy-purple/10 text-academy-purple rounded-lg px-3 py-1 text-sm inline-block">
+                Opportunités globales
+              </div>
             </div>
           </div>
 
-          <div className="entrepreneurship-opportunities bg-gradient-to-r from-academy-purple to-academy-blue p-8 rounded-xl text-white">
-            <h3 className="text-2xl font-bold mb-4 text-center">Créez Votre Propre Entreprise</h3>
-            <p className="text-lg mb-6 opacity-90">
-              Au-delà des carrières traditionnelles, l'IA et la programmation offrent des opportunités exceptionnelles pour lancer vos propres projets entrepreneuriaux. Que vous souhaitiez créer des <strong>startups technologiques</strong>, développer des <strong>applications mobiles</strong>, ou bâtir des <strong>solutions d'IA sur mesure</strong>, le monde est à votre portée.
+          {/* Entrepreneurship Section */}
+          <div className="bg-gradient-to-r from-academy-purple via-academy-blue to-academy-lightblue p-8 rounded-2xl text-white text-center mb-8">
+            <div className="flex justify-center mb-4">
+              <div className="bg-white/20 p-3 rounded-xl">
+                <Rocket className="w-8 h-8 text-white" />
+              </div>
+            </div>
+            <h3 className="text-2xl font-bold mb-4">Créez Votre Startup Tech</h3>
+            <p className="text-lg opacity-90 mb-6 max-w-2xl mx-auto">
+              Lancez votre propre entreprise avec nos formations et rejoignez l'écosystème entrepreneurial technologique.
             </p>
-            <ul className="space-y-3 mb-6">
-              <li className="flex items-start">
-                <span className="w-2 h-2 bg-white rounded-full mr-3 mt-2 flex-shrink-0"></span>
-                Création d'applications ou de services basés sur l'IA
-              </li>
-              <li className="flex items-start">
-                <span className="w-2 h-2 bg-white rounded-full mr-3 mt-2 flex-shrink-0"></span>
-                Lancer une entreprise de développement web ou mobile
-              </li>
-              <li className="flex items-start">
-                <span className="w-2 h-2 bg-white rounded-full mr-3 mt-2 flex-shrink-0"></span>
-                Créer une plateforme d'analyse de données ou de services cloud
-              </li>
-              <li className="flex items-start">
-                <span className="w-2 h-2 bg-white rounded-full mr-3 mt-2 flex-shrink-0"></span>
-                Développer des outils de cybersécurité ou d'automatisation
-              </li>
-            </ul>
-            <p className="opacity-90">
-              Les compétences acquises dans ces formations vous permettent de démarrer votre propre projet en tant qu'indépendant ou fondateur d'une entreprise technologique, avec la possibilité de travailler sur des solutions innovantes et de résoudre des défis mondiaux.
-            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+              <div className="bg-white/10 rounded-lg p-3 text-sm">Applications IA</div>
+              <div className="bg-white/10 rounded-lg p-3 text-sm">Plateformes Web</div>
+              <div className="bg-white/10 rounded-lg p-3 text-sm">Solutions Cloud</div>
+              <div className="bg-white/10 rounded-lg p-3 text-sm">Outils Automation</div>
+            </div>
+          </div>
+          
+          {/* Call to Action */}
+          <div className="text-center">
+            <Button asChild size="lg" className="bg-academy-blue hover:bg-academy-purple text-white px-8 py-4 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all">
+              <Link to="/careers">
+                Voir toutes les opportunités
+              </Link>
+            </Button>
+            <p className="text-gray-600 mt-3">Découvrez les détails des carrières et postes disponibles</p>
           </div>
         </div>
       </div>
