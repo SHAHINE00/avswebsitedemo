@@ -146,12 +146,18 @@ const GenericCourse = () => {
                 Rejoignez notre programme de formation et développez vos compétences avec nos experts.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="bg-academy-blue text-white px-8 py-3 rounded-lg font-semibold hover:bg-academy-purple transition-colors">
+                <a 
+                  href="/contact"
+                  className="bg-academy-blue text-white px-8 py-3 rounded-lg font-semibold hover:bg-academy-purple transition-colors inline-block"
+                >
                   S'inscrire maintenant
-                </button>
-                <button className="border border-academy-blue text-academy-blue px-8 py-3 rounded-lg font-semibold hover:bg-academy-blue hover:text-white transition-colors">
+                </a>
+                <a 
+                  href="/contact"
+                  className="border border-academy-blue text-academy-blue px-8 py-3 rounded-lg font-semibold hover:bg-academy-blue hover:text-white transition-colors inline-block"
+                >
                   Plus d'informations
-                </button>
+                </a>
               </div>
             </div>
           </div>
