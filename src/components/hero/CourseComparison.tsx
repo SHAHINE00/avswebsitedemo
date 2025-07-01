@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Code } from 'lucide-react';
+import EnrollmentButton from '@/components/curriculum/EnrollmentButton';
 
 const CourseComparison: React.FC = () => {
   return (
@@ -44,9 +45,12 @@ const CourseComparison: React.FC = () => {
                 <span>Systèmes de recommandation</span>
               </li>
             </ul>
-            <Button asChild className="w-full bg-academy-blue hover:bg-academy-purple rounded-xl">
-              <Link to="/ai-course">Découvrir le programme</Link>
-            </Button>
+            
+            <div className="space-y-3">
+              <Button asChild className="w-full bg-academy-blue hover:bg-academy-purple rounded-xl">
+                <Link to="/ai-course">Découvrir le programme</Link>
+              </Button>
+            </div>
           </div>
           
           {/* Programming Course */}
@@ -82,9 +86,12 @@ const CourseComparison: React.FC = () => {
                 <span>DevOps et déploiement</span>
               </li>
             </ul>
-            <Button asChild className="w-full bg-academy-purple hover:bg-academy-blue rounded-xl">
-              <Link to="/programming-course">Découvrir le programme</Link>
-            </Button>
+            
+            <div className="space-y-3">
+              <Button asChild className="w-full bg-academy-purple hover:bg-academy-blue rounded-xl">
+                <Link to="/programming-course">Découvrir le programme</Link>
+              </Button>
+            </div>
           </div>
         </div>
       </div>

@@ -1,55 +1,36 @@
 
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, LogOut, Settings } from "lucide-react";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger
-} from "@/components/ui/navigation-menu";
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, User, LogOut, Settings } from 'lucide-react';
+import { Button } from './ui/button';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
-import OptimizedImage from '@/components/OptimizedImage';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { useCourses } from '@/hooks/useCourses';
+} from './ui/dropdown-menu';
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
   const { user, signOut } = useAuth();
-  const { courses, loading: coursesLoading } = useCourses();
 
-  useEffect(() => {
-    if (user) {
-      checkAdminStatus();
-    }
-  }, [user]);
+  const navigation = [
+    { name: 'Accueil', href: '/' },
+    { name: 'Formations', href: '/curriculum' },
+    { name: 'Fonctionnalités', href: '/features' },
+    { name: 'Formateurs', href: '/instructors' },
+    { name: 'Témoignages', href: '/testimonials' },
+    { name: 'Carrières', href: '/careers' },
+    { name: 'Blog', href: '/blog' },
+    { name: 'Contact', href: '/contact' },
+  ];
 
-  const checkAdminStatus = async () => {
-    if (!user) return;
-    
-    try {
-      const { data } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single();
-
-      setIsAdmin(data?.role === 'admin');
-    } catch (error) {
-      console.error('Error checking admin status:', error);
-    }
+  const isActive = (path: string) => {
+    if (path === '/' && location.pathname === '/') return true;
+    return path !== '/' && location.pathname.startsWith(path);
   };
 
   const handleSignOut = async () => {
@@ -57,224 +38,143 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white py-4 px-6 shadow-sm fixed w-full top-0 z-50">
-      <div className="container mx-auto flex justify-between items-center">
-        {/* Logo */}
-        <div className="flex items-center">
-          <Link to="/" className="flex items-center">
-            <OptimizedImage
-              src="/lovable-uploads/0db8713d-35db-40a9-8615-5db99717c56c.png"
-              alt="AVS - Institut de l'Innovation et de l'Intelligence Artificielle" 
-              className="h-14 w-auto object-contain"
-              priority={true}
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-                const nextElement = e.currentTarget.nextSibling as HTMLElement;
-                if (nextElement) {
-                  nextElement.style.display = 'block';
-                }
-              }}
-            />
-            <span 
-              className="font-montserrat font-bold text-2xl hidden"
-              style={{ display: 'none' }}
-            >
-              <span className="text-academy-blue">A</span>
-              <span className="text-academy-purple">VS</span>
-            </span>
+    <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-50 top-0">
+      <div className="container mx-auto px-6">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-gradient-to-r from-academy-blue to-academy-purple rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">CA</span>
+            </div>
+            <span className="text-xl font-bold text-gray-900">CodeAcademy</span>
           </Link>
-        </div>
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex items-center space-x-6">
-          <Link to="/features" className="font-medium hover:text-academy-blue transition-colors">Atouts</Link>
-          
-          <NavigationMenu>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="font-medium hover:text-academy-blue transition-colors bg-transparent">
-                  Formations
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
-                    <li className="row-span-3">
-                      <NavigationMenuLink asChild>
-                        <Link
-                          className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-academy-purple/20 to-academy-blue/20 p-6 no-underline outline-none focus:shadow-md"
-                          to="/curriculum"
-                        >
-                          <div className="mb-2 mt-4 text-lg font-medium text-academy-blue">
-                            Programmes complets
-                          </div>
-                          <p className="text-sm leading-tight text-muted-foreground">
-                            Découvrez notre programme complet de formations en IA et en programmation.
-                          </p>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
-                    {!coursesLoading && courses.map((course) => (
-                      <ListItem 
-                        key={course.id}
-                        href={course.link_to || '#'} 
-                        title={course.title}
-                      >
-                        {course.subtitle || ''}
-                      </ListItem>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-              
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="font-medium hover:text-academy-blue transition-colors bg-transparent">
-                  Services
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[300px] gap-3 p-4">
-                    <ListItem href="/blog" title="Blog">
-                      Articles et actualités sur l'IA et la technologie
-                    </ListItem>
-                    <ListItem href="/careers" title="Carrières">
-                      Opportunités de carrière et conseils professionnels
-                    </ListItem>
-                    <ListItem href="/contact" title="Contact">
-                      Contactez notre équipe pour plus d'informations
-                    </ListItem>
-                    <ListItem href="/appointment" title="Rendez-vous">
-                      Planifiez un entretien personnalisé
-                    </ListItem>
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-          
-          <Link to="/instructors" className="font-medium hover:text-academy-blue transition-colors">Formateurs</Link>
-          <Link to="/testimonials" className="font-medium hover:text-academy-blue transition-colors">Témoignages</Link>
-          
-          {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="ml-4">
-                  {user.email}
-                  <ChevronDown className="ml-2 h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {isAdmin && (
-                  <>
-                    <DropdownMenuItem asChild>
-                      <Link to="/admin/courses">
-                        <Settings className="mr-2 h-4 w-4" />
-                        Administration
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                  </>
-                )}
-                <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Déconnexion
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Button asChild className="ml-4 bg-academy-blue hover:bg-academy-purple">
-              <Link to="/auth">Se connecter</Link>
-            </Button>
-          )}
-        </div>
-        
-        {/* Mobile menu button */}
-        <div className="md:hidden">
-          <button onClick={() => setIsOpen(!isOpen)} className="focus:outline-none">
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-      </div>
-      
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div className="md:hidden bg-white absolute w-full left-0 px-6 py-4 shadow-md">
-          <div className="flex flex-col space-y-4">
-            <Link to="/features" className="font-medium" onClick={() => setIsOpen(false)}>Atouts</Link>
-            <div className="font-medium">
-              Formations <ChevronDown size={16} className="inline ml-1" />
-              <div className="pl-4 mt-2 space-y-2">
-                <Link to="/curriculum" className="block py-1" onClick={() => setIsOpen(false)}>Programmes complets</Link>
-                {!coursesLoading && courses.map((course) => (
-                  <Link 
-                    key={course.id}
-                    to={course.link_to || '#'} 
-                    className="block py-1" 
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {course.title}
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <div className="font-medium">
-              Services <ChevronDown size={16} className="inline ml-1" />
-              <div className="pl-4 mt-2 space-y-2">
-                <Link to="/blog" className="block py-1" onClick={() => setIsOpen(false)}>Blog</Link>
-                <Link to="/careers" className="block py-1" onClick={() => setIsOpen(false)}>Carrières</Link>
-                <Link to="/contact" className="block py-1" onClick={() => setIsOpen(false)}>Contact</Link>
-                <Link to="/appointment" className="block py-1" onClick={() => setIsOpen(false)}>Rendez-vous</Link>
-              </div>
-            </div>
-            <Link to="/instructors" className="font-medium" onClick={() => setIsOpen(false)}>Formateurs</Link>
-            <Link to="/testimonials" className="font-medium" onClick={() => setIsOpen(false)}>Témoignages</Link>
-            
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center space-x-8">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`text-sm font-medium transition-colors duration-200 ${
+                  isActive(item.href)
+                    ? 'text-academy-blue'
+                    : 'text-gray-700 hover:text-academy-blue'
+                }`}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
+
+          {/* Auth Section */}
+          <div className="hidden lg:flex items-center space-x-4">
             {user ? (
-              <div className="space-y-2">
-                {isAdmin && (
-                  <Link to="/admin/courses" className="block font-medium text-academy-blue" onClick={() => setIsOpen(false)}>
-                    Administration
-                  </Link>
-                )}
-                <Button variant="outline" onClick={handleSignOut} className="w-full">
-                  Déconnexion
-                </Button>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    {user.email?.split('@')[0]}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard" className="flex items-center gap-2">
+                      <Settings className="w-4 h-4" />
+                      Tableau de bord
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="flex items-center gap-2 text-red-600">
+                    <LogOut className="w-4 h-4" />
+                    Déconnexion
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
-              <Button asChild className="bg-academy-blue hover:bg-academy-purple w-full">
-                <Link to="/auth" onClick={() => setIsOpen(false)}>Se connecter</Link>
-              </Button>
+              <>
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/auth">Connexion</Link>
+                </Button>
+                <Button asChild size="sm" className="bg-academy-blue hover:bg-academy-purple">
+                  <Link to="/appointment">Prendre RDV</Link>
+                </Button>
+              </>
             )}
           </div>
+
+          {/* Mobile menu button */}
+          <div className="lg:hidden">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+          </div>
         </div>
-      )}
+
+        {/* Mobile Navigation */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
+                    isActive(item.href)
+                      ? 'text-academy-blue bg-academy-blue/10'
+                      : 'text-gray-700 hover:text-academy-blue hover:bg-gray-50'
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+              {user ? (
+                <>
+                  <Link
+                    to="/dashboard"
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-academy-blue hover:bg-gray-50"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Tableau de bord
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleSignOut();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-gray-50"
+                  >
+                    Déconnexion
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/auth"
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-academy-blue hover:bg-gray-50"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Connexion
+                  </Link>
+                  <Link
+                    to="/appointment"
+                    className="block px-3 py-2 rounded-md text-base font-medium bg-academy-blue text-white hover:bg-academy-purple"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Prendre RDV
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </nav>
   );
 };
-
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a"> & {
-    title: string;
-  }
->(({ className, title, children, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <a
-          ref={ref}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </a>
-      </NavigationMenuLink>
-    </li>
-  );
-});
-ListItem.displayName = "ListItem";
 
 export default Navbar;

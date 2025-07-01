@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
@@ -25,6 +26,7 @@ import CookiesPolicy from "./pages/CookiesPolicy";
 import Auth from "./pages/Auth";
 import AdminCourses from "./pages/AdminCourses";
 import AdminTest from "./pages/AdminTest";
+import Dashboard from "./pages/Dashboard";
 
 const App = () => {
   return (
@@ -33,6 +35,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/admin/courses" element={<AdminCourses />} />
           <Route path="/admin/test" element={<AdminTest />} />
           <Route path="/features" element={<Features />} />

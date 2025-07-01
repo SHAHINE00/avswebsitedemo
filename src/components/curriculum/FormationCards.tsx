@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import FormationCard from './FormationCard';
@@ -49,6 +50,7 @@ const FormationCards: React.FC = () => {
         return (
           <FormationCard
             key={course.id}
+            id={course.id}
             title={course.title}
             subtitle={course.subtitle || ''}
             modules={course.modules || ''}

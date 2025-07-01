@@ -72,6 +72,98 @@ export type Database = {
         }
         Relationships: []
       }
+      appointments: {
+        Row: {
+          appointment_date: string
+          appointment_time: string
+          appointment_type: string
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          message: string | null
+          phone: string
+          status: string
+          subject: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          appointment_date: string
+          appointment_time: string
+          appointment_type: string
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          message?: string | null
+          phone: string
+          status?: string
+          subject?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          appointment_date?: string
+          appointment_time?: string
+          appointment_type?: string
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          message?: string | null
+          phone?: string
+          status?: string
+          subject?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      course_enrollments: {
+        Row: {
+          completion_date: string | null
+          course_id: string
+          enrolled_at: string
+          id: string
+          last_accessed_at: string | null
+          progress_percentage: number | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          completion_date?: string | null
+          course_id: string
+          enrolled_at?: string
+          id?: string
+          last_accessed_at?: string | null
+          progress_percentage?: number | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          completion_date?: string | null
+          course_id?: string
+          enrolled_at?: string
+          id?: string
+          last_accessed_at?: string | null
+          progress_percentage?: number | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_enrollments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       courses: {
         Row: {
           button_text_color: string | null
@@ -306,6 +398,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      enroll_in_course: {
+        Args: { p_course_id: string }
+        Returns: string
+      }
       get_advanced_analytics: {
         Args: {
           p_start_date?: string
@@ -335,6 +431,10 @@ export type Database = {
           p_entity_id?: string
           p_details?: Json
         }
+        Returns: undefined
+      }
+      update_appointment_status: {
+        Args: { appointment_id: string; new_status: string }
         Returns: undefined
       }
     }
