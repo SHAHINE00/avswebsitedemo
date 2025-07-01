@@ -3,36 +3,106 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Brain, Code, Rocket, TrendingUp, Users, Building, Star, ArrowRight, CheckCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-const jobOpenings = [
+const aiCareers = [
   {
-    title: "Formateur en Intelligence Artificielle",
-    department: "Éducation",
-    type: "Temps plein",
-    location: "Paris",
-    description: "Nous recherchons un expert en Intelligence Artificielle pour rejoindre notre équipe de formateurs et partager ses connaissances avec nos étudiants."
+    title: "Ingénieur en Intelligence Artificielle",
+    salary: "€50k - €80k",
+    description: "Développez des systèmes d'IA avancés pour des applications industrielles.",
+    skills: ["Python", "TensorFlow", "Machine Learning", "Deep Learning"],
+    growth: "Croissance de 30% par an",
+    companies: ["Google", "Microsoft", "Airbus"]
   },
+  {
+    title: "Data Scientist",
+    salary: "€45k - €70k", 
+    description: "Analysez les données pour extraire des insights business stratégiques.",
+    skills: ["Python", "R", "SQL", "Statistiques", "Visualisation"],
+    growth: "Croissance de 28% par an",
+    companies: ["Amazon", "Netflix", "BNP Paribas"]
+  },
+  {
+    title: "Ingénieur Machine Learning",
+    salary: "€55k - €85k",
+    description: "Créez des modèles prédictifs pour optimiser les processus métier.",
+    skills: ["Python", "Scikit-learn", "PyTorch", "MLOps"],
+    growth: "Croissance de 35% par an", 
+    companies: ["Tesla", "Uber", "Spotify"]
+  },
+  {
+    title: "Architecte Solutions IA",
+    salary: "€65k - €95k",
+    description: "Concevez l'architecture technique des projets d'IA d'entreprise.",
+    skills: ["Cloud Computing", "Architecture", "Leadership", "Strategy"],
+    growth: "Croissance de 25% par an",
+    companies: ["IBM", "Accenture", "Capgemini"]
+  }
+];
+
+const programmingCareers = [
   {
     title: "Développeur Full Stack",
-    department: "Technique",
-    type: "Temps plein",
-    location: "Remote",
-    description: "Rejoignez notre équipe technique pour développer et améliorer notre plateforme d'apprentissage en ligne."
+    salary: "€40k - €65k",
+    description: "Maîtrisez le développement front-end et back-end des applications web.",
+    skills: ["React", "Node.js", "JavaScript", "Databases"],
+    growth: "Croissance de 22% par an",
+    companies: ["Facebook", "Airbnb", "Shopify"]
   },
   {
-    title: "Responsable Marketing Digital",
-    department: "Marketing",
-    type: "Temps plein",
-    location: "Lyon",
-    description: "Nous cherchons un responsable marketing digital pour promouvoir nos formations et attirer de nouveaux étudiants."
+    title: "Développeur Mobile",
+    salary: "€42k - €68k", 
+    description: "Créez des applications mobiles innovantes pour iOS et Android.",
+    skills: ["React Native", "Flutter", "Swift", "Kotlin"],
+    growth: "Croissance de 24% par an",
+    companies: ["Apple", "Samsung", "Snapchat"]
   },
   {
-    title: "Coach Pédagogique (temps partiel)",
-    department: "Éducation",
-    type: "Temps partiel",
-    location: "Marseille / Remote",
-    description: "Accompagnez nos étudiants dans leur parcours d'apprentissage et aidez-les à réussir leurs projets."
+    title: "Ingénieur DevOps",
+    salary: "€48k - €75k",
+    description: "Automatisez les déploiements et optimisez l'infrastructure cloud.",
+    skills: ["Docker", "Kubernetes", "AWS", "CI/CD"],
+    growth: "Croissance de 27% par an",
+    companies: ["Amazon", "Netflix", "Docker"]
+  },
+  {
+    title: "Développeur Web Frontend",
+    salary: "€38k - €60k",
+    description: "Créez des interfaces utilisateur modernes et intuitives.",
+    skills: ["React", "Vue.js", "TypeScript", "Design Systems"],
+    growth: "Croissance de 20% par an",
+    companies: ["Google", "Adobe", "Figma"]
   }
+];
+
+const entrepreneurshipOpportunities = [
+  {
+    title: "Startup IA Personnalisée",
+    description: "Solutions d'IA sur mesure pour PME",
+    market: "€2.5B marché européen",
+    examples: ["Chatbots intelligents", "Analyse prédictive", "Automatisation RH"]
+  },
+  {
+    title: "Applications Mobile Innovantes", 
+    description: "Apps résolvant des problèmes du quotidien",
+    market: "€180B marché mondial",
+    examples: ["FinTech", "HealthTech", "EdTech"]
+  },
+  {
+    title: "Plateformes SaaS",
+    description: "Outils cloud pour entreprises",
+    market: "€130B marché SaaS",
+    examples: ["Gestion projet", "CRM intelligent", "Analytics"]
+  }
+];
+
+const successStats = [
+  { value: "85%", label: "Taux de placement", description: "de nos diplômés trouvent un emploi" },
+  { value: "€52k", label: "Salaire moyen", description: "salaire de départ moyen" },
+  { value: "25%", label: "Croissance annuelle", description: "du secteur tech en France" },
+  { value: "300+", label: "Entreprises partenaires", description: "qui recrutent nos diplômés" }
 ];
 
 const Careers = () => {
@@ -40,46 +110,281 @@ const Careers = () => {
     <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
       
-      <div className="pt-24 pb-16 bg-gradient-to-br from-academy-purple to-academy-blue text-white">
-        <div className="container mx-auto px-6">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Carrières</h1>
-          <p className="text-xl opacity-90 max-w-3xl">
-            Rejoignez notre équipe et participez à la formation de la prochaine génération d'experts en technologie.
-          </p>
+      {/* Hero Section */}
+      <div className="pt-24 pb-16 bg-gradient-to-br from-academy-purple via-academy-blue to-academy-lightblue text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="flex justify-center mb-6">
+              <div className="bg-white/20 p-4 rounded-2xl">
+                <TrendingUp className="w-12 h-12 text-white" />
+              </div>
+            </div>
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              Opportunités de Carrière en IA et Programmation
+            </h1>
+            <p className="text-xl md:text-2xl opacity-90 mb-8 max-w-3xl mx-auto">
+              Découvrez des carrières passionnantes dans les secteurs technologiques les plus dynamiques. 
+              Transformez votre passion en expertise professionnelle.
+            </p>
+            
+            {/* Hero Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
+              {successStats.map((stat, index) => (
+                <div key={index} className="bg-white/10 rounded-xl p-4 backdrop-blur-sm">
+                  <div className="text-3xl font-bold mb-1">{stat.value}</div>
+                  <div className="text-lg font-semibold mb-1">{stat.label}</div>
+                  <div className="text-sm opacity-80">{stat.description}</div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
       
       <main className="flex-grow py-16">
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-8">Postes disponibles</h2>
+          <div className="max-w-7xl mx-auto">
             
-            <div className="space-y-6">
-              {jobOpenings.map((job, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
-                  <h3 className="text-xl font-bold mb-2">{job.title}</h3>
-                  <div className="flex flex-wrap gap-3 mb-4">
-                    <span className="bg-academy-blue/10 text-academy-blue px-3 py-1 rounded-full text-sm">{job.department}</span>
-                    <span className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">{job.type}</span>
-                    <span className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">{job.location}</span>
+            {/* AI Careers Section */}
+            <section className="mb-20">
+              <div className="text-center mb-12">
+                <div className="flex justify-center mb-4">
+                  <div className="bg-academy-blue/10 p-3 rounded-xl">
+                    <Brain className="w-8 h-8 text-academy-blue" />
                   </div>
-                  <p className="text-gray-700 mb-6">{job.description}</p>
-                  <Button className="bg-academy-blue hover:bg-academy-purple text-white">
-                    Postuler maintenant
-                  </Button>
                 </div>
-              ))}
-            </div>
-            
-            <div className="mt-16 bg-academy-gray rounded-lg p-8 text-center">
-              <h2 className="text-2xl font-bold mb-4">Vous ne trouvez pas le poste qui vous convient ?</h2>
-              <p className="text-gray-700 mb-6">
-                Envoyez-nous une candidature spontanée et parlez-nous de vous et de ce que vous pourriez apporter à notre équipe.
+                <h2 className="text-4xl font-bold mb-4 gradient-text">Carrières en Intelligence Artificielle</h2>
+                <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+                  L'IA révolutionne tous les secteurs. Rejoignez cette transformation technologique majeure.
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {aiCareers.map((career, index) => (
+                  <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-academy-blue/20 hover:border-academy-blue/40">
+                    <CardHeader>
+                      <div className="flex justify-between items-start mb-2">
+                        <CardTitle className="text-xl text-academy-blue group-hover:text-academy-purple transition-colors">
+                          {career.title}
+                        </CardTitle>
+                        <div className="bg-academy-blue/10 text-academy-blue px-3 py-1 rounded-full text-sm font-semibold">
+                          {career.salary}
+                        </div>
+                      </div>
+                      <CardDescription className="text-gray-700">
+                        {career.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-semibold text-gray-800 mb-2">Compétences clés:</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {career.skills.map((skill, skillIndex) => (
+                              <span key={skillIndex} className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md text-sm">
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between pt-4 border-t">
+                          <div className="flex items-center text-green-600">
+                            <TrendingUp className="w-4 h-4 mr-1" />
+                            <span className="text-sm font-medium">{career.growth}</span>
+                          </div>
+                          <div className="flex items-center text-gray-600">
+                            <Building className="w-4 h-4 mr-1" />
+                            <span className="text-sm">{career.companies.length} entreprises</span>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+
+            {/* Programming Careers Section */}
+            <section className="mb-20">
+              <div className="text-center mb-12">
+                <div className="flex justify-center mb-4">
+                  <div className="bg-academy-purple/10 p-3 rounded-xl">
+                    <Code className="w-8 h-8 text-academy-purple" />
+                  </div>
+                </div>
+                <h2 className="text-4xl font-bold mb-4 gradient-text">Carrières en Programmation</h2>
+                <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+                  Le développement logiciel est au cœur de la transformation digitale mondiale.
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {programmingCareers.map((career, index) => (
+                  <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-academy-purple/20 hover:border-academy-purple/40">
+                    <CardHeader>
+                      <div className="flex justify-between items-start mb-2">
+                        <CardTitle className="text-xl text-academy-purple group-hover:text-academy-blue transition-colors">
+                          {career.title}
+                        </CardTitle>
+                        <div className="bg-academy-purple/10 text-academy-purple px-3 py-1 rounded-full text-sm font-semibold">
+                          {career.salary}
+                        </div>
+                      </div>
+                      <CardDescription className="text-gray-700">
+                        {career.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-semibold text-gray-800 mb-2">Compétences clés:</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {career.skills.map((skill, skillIndex) => (
+                              <span key={skillIndex} className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md text-sm">
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between pt-4 border-t">
+                          <div className="flex items-center text-green-600">
+                            <TrendingUp className="w-4 h-4 mr-1" />
+                            <span className="text-sm font-medium">{career.growth}</span>
+                          </div>
+                          <div className="flex items-center text-gray-600">
+                            <Building className="w-4 h-4 mr-1" />
+                            <span className="text-sm">{career.companies.length} entreprises</span>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+
+            {/* Entrepreneurship Section */}
+            <section className="mb-20">
+              <div className="bg-gradient-to-r from-academy-purple via-academy-blue to-academy-lightblue rounded-3xl p-12 text-white text-center mb-12">
+                <div className="flex justify-center mb-6">
+                  <div className="bg-white/20 p-4 rounded-2xl">
+                    <Rocket className="w-12 h-12 text-white" />
+                  </div>
+                </div>
+                <h2 className="text-4xl font-bold mb-6">Créez Votre Startup Tech</h2>
+                <p className="text-xl opacity-90 mb-8 max-w-3xl mx-auto">
+                  L'entrepreneuriat technologique offre des opportunités illimitées. 
+                  Transformez vos idées en solutions innovantes.
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                  {entrepreneurshipOpportunities.map((opportunity, index) => (
+                    <div key={index} className="bg-white/10 rounded-2xl p-6 backdrop-blur-sm">
+                      <h3 className="text-xl font-bold mb-3">{opportunity.title}</h3>
+                      <p className="text-white/90 mb-4">{opportunity.description}</p>
+                      <div className="text-academy-lightblue font-semibold mb-4">{opportunity.market}</div>
+                      <div className="space-y-2">
+                        {opportunity.examples.map((example, exampleIndex) => (
+                          <div key={exampleIndex} className="flex items-center text-sm">
+                            <CheckCircle className="w-4 h-4 mr-2 text-green-300" />
+                            <span>{example}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* Success Stories Section */}
+            <section className="mb-20">
+              <div className="text-center mb-12">
+                <h2 className="text-4xl font-bold mb-4 gradient-text">Témoignages de Réussite</h2>
+                <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+                  Découvrez comment nos diplômés ont transformé leur carrière
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <Card className="text-center hover:shadow-lg transition-shadow">
+                  <CardContent className="p-8">
+                    <div className="w-16 h-16 bg-academy-blue/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Star className="w-8 h-8 text-academy-blue" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">Sarah M.</h3>
+                    <p className="text-academy-blue font-semibold mb-2">Data Scientist chez Amazon</p>
+                    <p className="text-gray-700 text-sm mb-4">"Formation complète qui m'a permis de décrocher mon poste de rêve en 6 mois"</p>
+                    <div className="text-2xl font-bold text-green-600">€65k</div>
+                    <div className="text-sm text-gray-600">Salaire de départ</div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="text-center hover:shadow-lg transition-shadow">
+                  <CardContent className="p-8">
+                    <div className="w-16 h-16 bg-academy-purple/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Star className="w-8 h-8 text-academy-purple" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">Marc L.</h3>
+                    <p className="text-academy-purple font-semibold mb-2">CTO de sa startup</p>
+                    <p className="text-gray-700 text-sm mb-4">"J'ai lancé ma startup tech grâce aux compétences acquises. Levée de fonds réussie!"</p>
+                    <div className="text-2xl font-bold text-green-600">€2M</div>
+                    <div className="text-sm text-gray-600">Levée de fonds</div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="text-center hover:shadow-lg transition-shadow">
+                  <CardContent className="p-8">
+                    <div className="w-16 h-16 bg-academy-lightblue/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Star className="w-8 h-8 text-academy-lightblue" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">Julie R.</h3>
+                    <p className="text-academy-lightblue font-semibold mb-2">Développeur Full Stack chez Google</p>
+                    <p className="text-gray-700 text-sm mb-4">"Transition réussie depuis le marketing. Les formateurs sont exceptionnels!"</p>
+                    <div className="text-2xl font-bold text-green-600">€78k</div>
+                    <div className="text-sm text-gray-600">Salaire actuel</div>
+                  </CardContent>
+                </Card>
+              </div>
+            </section>
+
+            {/* Call to Action */}
+            <section className="text-center bg-academy-gray rounded-3xl p-12">
+              <h2 className="text-4xl font-bold mb-6">Prêt à Transformer Votre Carrière ?</h2>
+              <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
+                Rejoignez des milliers d'étudiants qui ont déjà fait le premier pas vers une carrière tech passionnante.
               </p>
-              <Button className="bg-academy-blue hover:bg-academy-purple text-white">
-                Candidature spontanée
-              </Button>
-            </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <Button asChild size="lg" className="bg-academy-blue hover:bg-academy-purple text-white px-8 py-4 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  <Link to="/register">
+                    Commencer ma formation
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="lg" className="border-academy-blue text-academy-blue hover:bg-academy-blue hover:text-white px-8 py-4 text-lg rounded-xl">
+                  <Link to="/curriculum">
+                    Découvrir les programmes
+                  </Link>
+                </Button>
+              </div>
+              
+              <div className="mt-8 flex justify-center items-center space-x-6 text-sm text-gray-600">
+                <div className="flex items-center">
+                  <CheckCircle className="w-4 h-4 mr-1 text-green-600" />
+                  <span>Pas d'engagement</span>
+                </div>
+                <div className="flex items-center">
+                  <CheckCircle className="w-4 h-4 mr-1 text-green-600" />
+                  <span>Garantie emploi</span>
+                </div>
+                <div className="flex items-center">
+                  <CheckCircle className="w-4 h-4 mr-1 text-green-600" />
+                  <span>Support 24/7</span>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </main>
