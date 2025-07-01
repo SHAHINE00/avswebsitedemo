@@ -41,6 +41,17 @@ const AICourse = () => {
     { code: "M27", title: "PROJET DE FIN D'ÉTUDES EN INTELLIGENCE ARTIFICIELLE", duration: "6 semaines" }
   ];
 
+  const tableOfContents = [
+    { section: "I.", title: "Présentation du Programme de Formation", anchor: "presentation" },
+    { section: "II.", title: "Synthèse du Programme de Formation", anchor: "synthese" },
+    { section: "III.", title: "Buts du Programme de Formation", anchor: "buts" },
+    { section: "IV.", title: "Objectifs Généraux", anchor: "objectifs" },
+    { section: "V.", title: "Curriculum 1ère Année", anchor: "curriculum" },
+    { section: "VI.", title: "Curriculum 2ème Année", anchor: "curriculum2" },
+    { section: "IX.", title: "Stratégies Pédagogiques et Système d'Évaluation", anchor: "strategies" },
+    { section: "X.", title: "Bibliographie", anchor: "bibliographie" }
+  ];
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
@@ -57,41 +68,43 @@ const AICourse = () => {
       
       <main className="flex-grow">
         {/* Table of Contents */}
-        <section className="py-12 bg-academy-gray">
+        <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-6">
-            <Card className="max-w-4xl mx-auto">
-              <CardHeader>
-                <CardTitle className="text-2xl font-bold text-center">Sommaire</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <nav className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <a href="#presentation" className="flex items-center p-3 rounded-lg hover:bg-academy-gray transition-colors">
-                    <span className="font-medium">I. Présentation du Programme de Formation</span>
-                  </a>
-                  <a href="#synthese" className="flex items-center p-3 rounded-lg hover:bg-academy-gray transition-colors">
-                    <span className="font-medium">II. Synthèse du Programme de Formation</span>
-                  </a>
-                  <a href="#buts" className="flex items-center p-3 rounded-lg hover:bg-academy-gray transition-colors">
-                    <span className="font-medium">III. Buts du Programme de Formation</span>
-                  </a>
-                  <a href="#objectifs" className="flex items-center p-3 rounded-lg hover:bg-academy-gray transition-colors">
-                    <span className="font-medium">IV. Objectifs Généraux</span>
-                  </a>
-                  <a href="#curriculum" className="flex items-center p-3 rounded-lg hover:bg-academy-gray transition-colors">
-                    <span className="font-medium">V. Curriculum 1ère Année</span>
-                  </a>
-                  <a href="#curriculum2" className="flex items-center p-3 rounded-lg hover:bg-academy-gray transition-colors">
-                    <span className="font-medium">VI. Curriculum 2ème Année</span>
-                  </a>
-                  <a href="#strategies" className="flex items-center p-3 rounded-lg hover:bg-academy-gray transition-colors">
-                    <span className="font-medium">IX. Stratégies Pédagogiques et Système d'Évaluation</span>
-                  </a>
-                  <a href="#bibliographie" className="flex items-center p-3 rounded-lg hover:bg-academy-gray transition-colors">
-                    <span className="font-medium">X. Bibliographie</span>
-                  </a>
-                </nav>
-              </CardContent>
-            </Card>
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold mb-4 text-gray-900">Sommaire</h2>
+              <div className="w-24 h-1 bg-academy-blue mx-auto rounded-full"></div>
+            </div>
+            
+            <div className="max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {tableOfContents.map((item, index) => (
+                  <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md hover:shadow-xl hover:-translate-y-1">
+                    <CardContent className="p-0">
+                      <a 
+                        href={`#${item.anchor}`} 
+                        className="block p-6 h-full hover:bg-gradient-to-r hover:from-academy-blue/5 hover:to-academy-purple/5 transition-all duration-300"
+                      >
+                        <div className="flex items-center space-x-4">
+                          <div className="flex-shrink-0">
+                            <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-academy-blue to-academy-purple text-white font-bold text-lg">
+                              {item.section.replace('.', '')}
+                            </span>
+                          </div>
+                          <div className="flex-grow">
+                            <h3 className="font-semibold text-gray-900 group-hover:text-academy-blue transition-colors duration-300 leading-tight">
+                              {item.title}
+                            </h3>
+                          </div>
+                          <div className="flex-shrink-0">
+                            <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-academy-blue transition-colors duration-300 transform group-hover:translate-x-1" />
+                          </div>
+                        </div>
+                      </a>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
