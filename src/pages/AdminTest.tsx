@@ -47,21 +47,21 @@ const AdminTest = () => {
     setLoading(true);
     const testResults: TestResult[] = [];
 
-    // Test 1: Authentication Status
+    // Authentication Status
     testResults.push({
       name: 'Authentification utilisateur',
       status: user ? 'success' : 'error',
       message: user ? `Connecté en tant que: ${user.email}` : 'Utilisateur non connecté'
     });
 
-    // Test 2: Admin Role Check
+    // Admin Role Check
     testResults.push({
       name: 'Vérification rôle administrateur',
       status: isAdmin ? 'success' : 'error',
       message: isAdmin ? 'Rôle administrateur confirmé' : 'Accès administrateur requis'
     });
 
-    // Test 3: Database Connection
+    // Database Connection
     try {
       const { data, error } = await supabase.from('courses').select('count').limit(1);
       testResults.push({
@@ -77,7 +77,7 @@ const AdminTest = () => {
       });
     }
 
-    // Test 4: Courses Data
+    // Courses Data
     try {
       const { data: courses, error } = await supabase.from('courses').select('*');
       testResults.push({
@@ -93,7 +93,7 @@ const AdminTest = () => {
       });
     }
 
-    // Test 5: User Profiles
+    // User Profiles
     if (isAdmin) {
       try {
         const { data: profiles, error } = await supabase.from('profiles').select('*');
@@ -111,7 +111,7 @@ const AdminTest = () => {
       }
     }
 
-    // Test 6: Admin Functions
+    // Admin Functions
     if (isAdmin) {
       try {
         const { data, error } = await supabase.rpc('get_dashboard_metrics');
