@@ -24,7 +24,8 @@ export const useDashboardMetrics = () => {
       
       if (error) throw error;
       
-      setMetrics(data);
+      // Type assertion to ensure proper typing from Json to DashboardMetrics
+      setMetrics(data as DashboardMetrics);
     } catch (err) {
       console.error('Error fetching dashboard metrics:', err);
       setError('Failed to fetch dashboard metrics');

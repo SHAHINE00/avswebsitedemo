@@ -22,6 +22,8 @@ export interface Course {
   display_order: number;
   created_at: string;
   updated_at: string;
+  view_count: number | null;
+  last_viewed_at: string | null;
 }
 
 export const useCourses = () => {
