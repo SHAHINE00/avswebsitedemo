@@ -2,131 +2,147 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Brain, Code, Rocket, TrendingUp } from 'lucide-react';
+import { Brain, Code, Rocket, TrendingUp, ArrowRight } from 'lucide-react';
 
 const CareerPaths: React.FC = () => {
   return (
-    <section className="career-opportunities">
-      <div className="container mx-auto px-6 py-16 bg-gradient-to-b from-white to-academy-gray/50">
+    <section className="career-opportunities py-12 bg-gradient-to-b from-white to-academy-gray/30">
+      <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4 gradient-text">Opportunités de Carrière</h2>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-              Découvrez des carrières passionnantes en IA et Programmation dans des secteurs en croissance de <strong>25% par an</strong>
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-3 gradient-text">Opportunités de Carrière</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Découvrez des carrières passionnantes en IA et Programmation
             </p>
           </div>
           
-          {/* Statistics */}
-          <div className="flex justify-center gap-8 mb-12">
-            <div className="text-center bg-white rounded-xl p-4 shadow-sm">
-              <div className="text-2xl font-bold text-academy-blue">85%</div>
-              <div className="text-sm text-gray-600">Taux de placement</div>
+          {/* Quick Stats */}
+          <div className="flex justify-center gap-6 mb-8">
+            <div className="text-center">
+              <div className="text-xl font-bold text-academy-blue">85%</div>
+              <div className="text-xs text-gray-500">Placement</div>
             </div>
-            <div className="text-center bg-white rounded-xl p-4 shadow-sm">
-              <div className="text-2xl font-bold text-academy-purple">€45k+</div>
-              <div className="text-sm text-gray-600">Salaire moyen</div>
+            <div className="text-center">
+              <div className="text-xl font-bold text-academy-purple">€52k</div>
+              <div className="text-xs text-gray-500">Salaire moyen</div>
             </div>
-            <div className="text-center bg-white rounded-xl p-4 shadow-sm">
-              <div className="text-2xl font-bold text-academy-blue">25%</div>
-              <div className="text-sm text-gray-600">Croissance annuelle</div>
+            <div className="text-center">
+              <div className="text-xl font-bold text-academy-lightblue">25%</div>
+              <div className="text-xs text-gray-500">Croissance</div>
             </div>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            {/* IA Career Card */}
-            <div className="group bg-gradient-to-br from-white to-academy-blue/5 p-8 rounded-2xl shadow-lg border border-academy-blue/20 hover:shadow-xl hover:scale-105 transition-all duration-300">
-              <div className="flex items-center mb-6">
-                <div className="bg-academy-blue/10 p-3 rounded-xl mr-4">
-                  <Brain className="w-8 h-8 text-academy-blue" />
+          {/* Career Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {/* AI Career */}
+            <div className="group relative bg-white rounded-2xl p-6 shadow-lg border border-academy-blue/10 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <div className="absolute top-4 right-4 w-2 h-2 bg-academy-blue rounded-full animate-pulse"></div>
+              <div className="flex items-center mb-4">
+                <div className="bg-academy-blue/10 p-2 rounded-lg mr-3">
+                  <Brain className="w-5 h-5 text-academy-blue" />
                 </div>
-                <h3 className="text-2xl font-bold text-academy-blue">Intelligence Artificielle</h3>
+                <h3 className="text-lg font-bold text-academy-blue">Intelligence Artificielle</h3>
               </div>
               
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center text-gray-700">
-                  <TrendingUp className="w-4 h-4 text-academy-blue mr-2" />
+              <div className="space-y-2 text-sm text-gray-600 mb-4">
+                <div className="flex items-center">
+                  <div className="w-1 h-1 bg-academy-blue rounded-full mr-2"></div>
                   <span>Data Scientist</span>
                 </div>
-                <div className="flex items-center text-gray-700">
-                  <TrendingUp className="w-4 h-4 text-academy-blue mr-2" />
-                  <span>Ingénieur Machine Learning</span>
+                <div className="flex items-center">
+                  <div className="w-1 h-1 bg-academy-blue rounded-full mr-2"></div>
+                  <span>Ingénieur ML</span>
                 </div>
-                <div className="flex items-center text-gray-700">
-                  <TrendingUp className="w-4 h-4 text-academy-blue mr-2" />
-                  <span>Architecte Solutions IA</span>
+                <div className="flex items-center">
+                  <div className="w-1 h-1 bg-academy-blue rounded-full mr-2"></div>
+                  <span>Architecte IA</span>
                 </div>
               </div>
               
-              <p className="text-gray-600 mb-4">
-                Créez des systèmes intelligents qui transforment les industries de la santé, finance et automobile.
-              </p>
-              
-              <div className="bg-academy-blue/10 text-academy-blue rounded-lg px-3 py-1 text-sm inline-block">
-                Secteur en forte demande
+              <div className="flex justify-between items-center">
+                <div className="bg-academy-blue/10 text-academy-blue rounded-full px-3 py-1 text-xs font-medium">
+                  €45k - €85k
+                </div>
+                <TrendingUp className="w-4 h-4 text-green-500" />
               </div>
             </div>
             
-            {/* Programming Career Card */}
-            <div className="group bg-gradient-to-br from-white to-academy-purple/5 p-8 rounded-2xl shadow-lg border border-academy-purple/20 hover:shadow-xl hover:scale-105 transition-all duration-300">
-              <div className="flex items-center mb-6">
-                <div className="bg-academy-purple/10 p-3 rounded-xl mr-4">
-                  <Code className="w-8 h-8 text-academy-purple" />
+            {/* Programming Career */}
+            <div className="group relative bg-white rounded-2xl p-6 shadow-lg border border-academy-purple/10 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <div className="absolute top-4 right-4 w-2 h-2 bg-academy-purple rounded-full animate-pulse"></div>
+              <div className="flex items-center mb-4">
+                <div className="bg-academy-purple/10 p-2 rounded-lg mr-3">
+                  <Code className="w-5 h-5 text-academy-purple" />
                 </div>
-                <h3 className="text-2xl font-bold text-academy-purple">Programmation</h3>
+                <h3 className="text-lg font-bold text-academy-purple">Programmation</h3>
               </div>
               
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center text-gray-700">
-                  <TrendingUp className="w-4 h-4 text-academy-purple mr-2" />
+              <div className="space-y-2 text-sm text-gray-600 mb-4">
+                <div className="flex items-center">
+                  <div className="w-1 h-1 bg-academy-purple rounded-full mr-2"></div>
                   <span>Développeur Full Stack</span>
                 </div>
-                <div className="flex items-center text-gray-700">
-                  <TrendingUp className="w-4 h-4 text-academy-purple mr-2" />
+                <div className="flex items-center">
+                  <div className="w-1 h-1 bg-academy-purple rounded-full mr-2"></div>
                   <span>Développeur Mobile</span>
                 </div>
-                <div className="flex items-center text-gray-700">
-                  <TrendingUp className="w-4 h-4 text-academy-purple mr-2" />
+                <div className="flex items-center">
+                  <div className="w-1 h-1 bg-academy-purple rounded-full mr-2"></div>
                   <span>Ingénieur DevOps</span>
                 </div>
               </div>
               
-              <p className="text-gray-600 mb-4">
-                Développez des applications web et mobile qui révolutionnent l'expérience utilisateur.
-              </p>
-              
-              <div className="bg-academy-purple/10 text-academy-purple rounded-lg px-3 py-1 text-sm inline-block">
-                Opportunités globales
+              <div className="flex justify-between items-center">
+                <div className="bg-academy-purple/10 text-academy-purple rounded-full px-3 py-1 text-xs font-medium">
+                  €40k - €75k
+                </div>
+                <TrendingUp className="w-4 h-4 text-green-500" />
               </div>
             </div>
-          </div>
 
-          {/* Entrepreneurship Section */}
-          <div className="bg-gradient-to-r from-academy-purple via-academy-blue to-academy-lightblue p-8 rounded-2xl text-white text-center mb-8">
-            <div className="flex justify-center mb-4">
-              <div className="bg-white/20 p-3 rounded-xl">
-                <Rocket className="w-8 h-8 text-white" />
+            {/* Entrepreneurship */}
+            <div className="group relative bg-gradient-to-br from-academy-lightblue to-academy-blue rounded-2xl p-6 text-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <div className="absolute top-4 right-4 w-2 h-2 bg-white rounded-full animate-pulse"></div>
+              <div className="flex items-center mb-4">
+                <div className="bg-white/20 p-2 rounded-lg mr-3">
+                  <Rocket className="w-5 h-5 text-white" />
+                </div>
+                <h3 className="text-lg font-bold">Entrepreneuriat</h3>
               </div>
-            </div>
-            <h3 className="text-2xl font-bold mb-4">Créez Votre Startup Tech</h3>
-            <p className="text-lg opacity-90 mb-6 max-w-2xl mx-auto">
-              Lancez votre propre entreprise avec nos formations et rejoignez l'écosystème entrepreneurial technologique.
-            </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
-              <div className="bg-white/10 rounded-lg p-3 text-sm">Applications IA</div>
-              <div className="bg-white/10 rounded-lg p-3 text-sm">Plateformes Web</div>
-              <div className="bg-white/10 rounded-lg p-3 text-sm">Solutions Cloud</div>
-              <div className="bg-white/10 rounded-lg p-3 text-sm">Outils Automation</div>
+              
+              <div className="space-y-2 text-sm mb-4 opacity-90">
+                <div className="flex items-center">
+                  <div className="w-1 h-1 bg-white rounded-full mr-2"></div>
+                  <span>Startup IA</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-1 h-1 bg-white rounded-full mr-2"></div>
+                  <span>App Mobile</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-1 h-1 bg-white rounded-full mr-2"></div>
+                  <span>Plateforme SaaS</span>
+                </div>
+              </div>
+              
+              <div className="flex justify-between items-center">
+                <div className="bg-white/20 text-white rounded-full px-3 py-1 text-xs font-medium">
+                  Potentiel illimité
+                </div>
+                <Rocket className="w-4 h-4 text-white" />
+              </div>
             </div>
           </div>
           
           {/* Call to Action */}
           <div className="text-center">
-            <Button asChild size="lg" className="bg-academy-blue hover:bg-academy-purple text-white px-8 py-4 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all">
-              <Link to="/careers">
+            <Button asChild size="lg" className="bg-academy-blue hover:bg-academy-purple text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all group">
+              <Link to="/careers" className="flex items-center">
                 Voir toutes les opportunités
+                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>
-            <p className="text-gray-600 mt-3">Découvrez les détails des carrières et postes disponibles</p>
           </div>
         </div>
       </div>
