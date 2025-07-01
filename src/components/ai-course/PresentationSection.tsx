@@ -8,7 +8,7 @@ const PresentationSection = () => {
     <section id="presentation" className="py-20 bg-gradient-to-br from-gray-50 to-white">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">I. Présentation du Programme</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">Présentation du Programme</h2>
           <div className="w-32 h-1 bg-gradient-to-r from-academy-blue to-academy-purple mx-auto rounded-full"></div>
         </div>
         

@@ -43,7 +43,7 @@ const ProgramGoalsSection = () => {
     <section id="buts" className="py-20 bg-white">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">III. Buts du Programme de Formation</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">Buts du Programme de Formation</h2>
           <div className="w-32 h-1 bg-gradient-to-r from-academy-blue to-academy-purple mx-auto rounded-full mb-6"></div>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Quatre piliers fondamentaux pour votre réussite professionnelle en Intelligence Artificielle

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { CheckCircle2, ChevronRight, GraduationCap, BookMarked, TestTube, Presentation, UserCheck } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -38,7 +39,7 @@ const TeachingStrategiesSection = () => {
     <section id="strategies" className="py-20 bg-white">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">IX. Stratégies Pédagogiques et Système d'Évaluation</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">Stratégies Pédagogiques et Système d'Évaluation</h2>
           <div className="w-32 h-1 bg-gradient-to-r from-academy-blue to-academy-purple mx-auto rounded-full mb-6"></div>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Méthodes innovantes et évaluation adaptée pour une formation d'excellence

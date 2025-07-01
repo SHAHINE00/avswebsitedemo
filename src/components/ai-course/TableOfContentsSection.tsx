@@ -11,7 +11,7 @@ const TableOfContentsSection = () => {
     { section: "IV", title: "Objectifs Généraux", anchor: "objectifs", icon: Brain },
     { section: "V", title: "Curriculum 1ère Année", anchor: "curriculum", icon: Code },
     { section: "VI", title: "Curriculum 2ème Année", anchor: "curriculum2", icon: Database },
-    { section: "IX", title: "Stratégies Pédagogiques et Système d'Évaluation", anchor: "strategies", icon: GraduationCap }
+    { section: "VII", title: "Stratégies Pédagogiques et Système d'Évaluation", anchor: "strategies", icon: GraduationCap }
   ];
 
   return (
