@@ -5,13 +5,13 @@ import { Card, CardContent } from '@/components/ui/card';
 
 const TableOfContentsSection = () => {
   const tableOfContents = [
-    { section: "I", title: "Présentation du Programme de Formation", anchor: "presentation", icon: BookOpen },
-    { section: "II", title: "Synthèse du Programme de Formation", anchor: "synthese", icon: Target },
-    { section: "III", title: "Buts du Programme de Formation", anchor: "buts", icon: Award },
-    { section: "IV", title: "Objectifs Généraux", anchor: "objectifs", icon: Brain },
-    { section: "V", title: "Curriculum 1ère Année", anchor: "curriculum", icon: Code },
-    { section: "VI", title: "Curriculum 2ème Année", anchor: "curriculum2", icon: Database },
-    { section: "VII", title: "Stratégies Pédagogiques et Système d'Évaluation", anchor: "strategies", icon: GraduationCap }
+    { section: "1", title: "Présentation du Programme de Formation", anchor: "presentation", icon: BookOpen },
+    { section: "2", title: "Synthèse du Programme de Formation", anchor: "synthese", icon: Target },
+    { section: "3", title: "Buts du Programme de Formation", anchor: "buts", icon: Award },
+    { section: "4", title: "Objectifs Généraux", anchor: "objectifs", icon: Brain },
+    { section: "5", title: "Curriculum 1ère Année", anchor: "curriculum", icon: Code },
+    { section: "6", title: "Curriculum 2ème Année", anchor: "curriculum2", icon: Database },
+    { section: "7", title: "Stratégies Pédagogiques et Système d'Évaluation", anchor: "strategies", icon: GraduationCap }
   ];
 
   return (
