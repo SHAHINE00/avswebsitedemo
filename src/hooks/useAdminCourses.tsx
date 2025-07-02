@@ -9,6 +9,7 @@ export const useAdminCourses = () => {
   const { user } = useAuth();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
 
@@ -35,12 +36,16 @@ export const useAdminCourses = () => {
 
   const fetchAllCourses = async () => {
     try {
+      setLoading(true);
+      setError(null);
+      
       const { data, error } = await supabase
         .from('courses')
         .select('*')
         .order('display_order');
 
       if (error) {
+        setError(error.message);
         toast({
           title: "Erreur",
           description: "Impossible de charger les cours",
@@ -52,8 +57,67 @@ export const useAdminCourses = () => {
       setCourses(data || []);
     } catch (error) {
       console.error('Error fetching courses:', error);
+      setError('Erreur lors du chargement des cours');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const createCourse = async (courseData: any) => {
+    try {
+      const { data, error } = await supabase
+        .from('courses')
+        .insert([courseData])
+        .select()
+        .single();
+
+      if (error) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de créer le cours",
+          variant: "destructive",
+        });
+        throw error;
+      }
+
+      toast({
+        title: "Succès",
+        description: "Cours créé avec succès",
+      });
+
+      await fetchAllCourses();
+      return data;
+    } catch (error) {
+      console.error('Error creating course:', error);
+      throw error;
+    }
+  };
+
+  const updateCourse = async (courseId: string, courseData: any) => {
+    try {
+      const { error } = await supabase
+        .from('courses')
+        .update(courseData)
+        .eq('id', courseId);
+
+      if (error) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de mettre à jour le cours",
+          variant: "destructive",
+        });
+        throw error;
+      }
+
+      toast({
+        title: "Succès",
+        description: "Cours mis à jour avec succès",
+      });
+
+      await fetchAllCourses();
+    } catch (error) {
+      console.error('Error updating course:', error);
+      throw error;
     }
   };
 
@@ -96,8 +160,11 @@ export const useAdminCourses = () => {
   return {
     courses,
     loading,
+    error,
     isAdmin,
-    fetchAllCourses,
+    refetch: fetchAllCourses,
+    createCourse,
+    updateCourse,
     deleteCourse
   };
 };

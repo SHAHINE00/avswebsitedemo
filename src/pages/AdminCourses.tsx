@@ -11,7 +11,7 @@ import { useAdminCourses } from '@/hooks/useAdminCourses';
 import type { Course } from '@/hooks/useCourses';
 
 const AdminCourses = () => {
-  const { courses, loading, error, refetch, createCourse, updateCourse, deleteCourse } = useAdminCourses();
+  const { courses, loading, error, isAdmin, refetch, createCourse, updateCourse, deleteCourse } = useAdminCourses();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
 
@@ -45,6 +45,11 @@ const AdminCourses = () => {
   const handleCancel = () => {
     setDialogOpen(false);
     setEditingCourse(null);
+  };
+
+  const handleCreateCourse = () => {
+    setEditingCourse(null);
+    setDialogOpen(true);
   };
 
   if (loading) {
@@ -82,6 +87,21 @@ const AdminCourses = () => {
     );
   }
 
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-red-600 mb-4">Accès refusé</h1>
+            <p className="text-gray-600">Vous n'avez pas les permissions d'administrateur.</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <ErrorBoundary>
       <AdminAccessControl>
@@ -92,6 +112,7 @@ const AdminCourses = () => {
             <AdminHeader 
               title="Administration des Cours" 
               description="Gérez les cours, utilisateurs et analytics de votre plateforme"
+              onCreateCourse={handleCreateCourse}
             />
             
             <div className="container mx-auto px-6 py-8">
@@ -106,7 +127,7 @@ const AdminCourses = () => {
 
           <CourseFormDialog
             open={dialogOpen}
-            onClose={handleCancel}
+            onOpenChange={setDialogOpen}
             onSubmit={handleSubmit}
             editingCourse={editingCourse}
           />

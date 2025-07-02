@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -44,7 +43,15 @@ const AppointmentManagement: React.FC = () => {
         .order('appointment_time', { ascending: true });
 
       if (error) throw error;
-      setAppointments(data || []);
+      
+      // Type cast the data to ensure TypeScript compatibility
+      const typedAppointments = (data || []).map(appointment => ({
+        ...appointment,
+        appointment_type: appointment.appointment_type as 'phone' | 'video' | 'office',
+        status: appointment.status as 'pending' | 'confirmed' | 'cancelled' | 'completed'
+      }));
+      
+      setAppointments(typedAppointments);
     } catch (error) {
       console.error('Error fetching appointments:', error);
       toast({
