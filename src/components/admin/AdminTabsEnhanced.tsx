@@ -2,14 +2,10 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardOverview from '@/components/admin/dashboard/DashboardOverview';
-import EnhancedCourseManagement from '@/components/admin/dashboard/EnhancedCourseManagement';
-import ComprehensiveUserManagement from '@/components/admin/dashboard/ComprehensiveUserManagement';
-import CourseContentManagement from '@/components/admin/dashboard/CourseContentManagement';
-import AdvancedAnalytics from '@/components/admin/dashboard/AdvancedAnalytics';
+import CourseManagementSection from '@/components/admin/dashboard/CourseManagementSection';
+import UserManagementSection from '@/components/admin/dashboard/UserManagementSection';
+import AnalyticsSection from '@/components/admin/dashboard/AnalyticsSection';
 import SystemMonitoring from '@/components/admin/dashboard/SystemMonitoring';
-import AppointmentManagement from '@/components/admin/dashboard/AppointmentManagement';
-import EnrollmentAnalytics from '@/components/admin/dashboard/EnrollmentAnalytics';
-import CoursePerformanceMetrics from '@/components/admin/dashboard/CoursePerformanceMetrics';
 import type { Course } from '@/hooks/useCourses';
 
 interface AdminTabsEnhancedProps {
@@ -27,24 +23,20 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
 }) => {
   return (
     <Tabs defaultValue="dashboard" className="w-full">
-      <TabsList className="grid w-full grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-1 mb-6">
-        <TabsTrigger value="dashboard" className="text-xs lg:text-sm">Tableau de Bord</TabsTrigger>
-        <TabsTrigger value="courses" className="text-xs lg:text-sm">Cours</TabsTrigger>
-        <TabsTrigger value="content" className="text-xs lg:text-sm">Contenu</TabsTrigger>
-        <TabsTrigger value="users" className="text-xs lg:text-sm">Utilisateurs</TabsTrigger>
-        <TabsTrigger value="appointments" className="text-xs lg:text-sm">Rendez-vous</TabsTrigger>
-        <TabsTrigger value="enrollments" className="text-xs lg:text-sm">Inscriptions</TabsTrigger>
-        <TabsTrigger value="performance" className="text-xs lg:text-sm">Performance</TabsTrigger>
-        <TabsTrigger value="analytics" className="text-xs lg:text-sm">Analyses</TabsTrigger>
-        <TabsTrigger value="monitoring" className="text-xs lg:text-sm">Système</TabsTrigger>
+      <TabsList className="flex w-full justify-start overflow-x-auto gap-2 mb-6 p-1 bg-muted rounded-lg">
+        <TabsTrigger value="dashboard" className="flex-shrink-0 px-4 py-2">Vue d'ensemble</TabsTrigger>
+        <TabsTrigger value="courses" className="flex-shrink-0 px-4 py-2">Gestion des Cours</TabsTrigger>
+        <TabsTrigger value="users" className="flex-shrink-0 px-4 py-2">Utilisateurs</TabsTrigger>
+        <TabsTrigger value="analytics" className="flex-shrink-0 px-4 py-2">Analytics & Rapports</TabsTrigger>
+        <TabsTrigger value="system" className="flex-shrink-0 px-4 py-2">Système</TabsTrigger>
       </TabsList>
 
       <TabsContent value="dashboard" className="space-y-6">
         <DashboardOverview />
       </TabsContent>
 
-      <TabsContent value="courses" className="space-y-6">
-        <EnhancedCourseManagement
+      <TabsContent value="courses">
+        <CourseManagementSection
           courses={courses}
           onRefresh={onRefresh}
           onEdit={onEdit}
@@ -52,31 +44,15 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
         />
       </TabsContent>
 
-      <TabsContent value="content">
-        <CourseContentManagement />
-      </TabsContent>
-
       <TabsContent value="users">
-        <ComprehensiveUserManagement />
+        <UserManagementSection />
       </TabsContent>
 
-      <TabsContent value="appointments">
-        <AppointmentManagement />
+      <TabsContent value="analytics">
+        <AnalyticsSection />
       </TabsContent>
 
-      <TabsContent value="enrollments">
-        <EnrollmentAnalytics />
-      </TabsContent>
-
-      <TabsContent value="performance">
-        <CoursePerformanceMetrics />
-      </TabsContent>
-
-      <TabsContent value="analytics" className="space-y-6">
-        <AdvancedAnalytics />
-      </TabsContent>
-
-      <TabsContent value="monitoring">
+      <TabsContent value="system">
         <SystemMonitoring />
       </TabsContent>
     </Tabs>
