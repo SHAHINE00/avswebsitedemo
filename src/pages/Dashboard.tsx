@@ -21,6 +21,7 @@ import DashboardNotifications from '@/components/dashboard/DashboardNotification
 import DashboardAchievements from '@/components/dashboard/DashboardAchievements';
 import DashboardProfile from '@/components/dashboard/DashboardProfile';
 import DashboardStats from '@/components/dashboard/DashboardStats';
+import GamificationDashboard from '@/components/gamification/GamificationDashboard';
 
 interface Enrollment {
   id: string;
@@ -199,9 +200,10 @@ const Dashboard = () => {
           <DashboardStats enrollments={enrollments} appointments={appointments} />
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
               <TabsTrigger value="courses">Formations</TabsTrigger>
+              <TabsTrigger value="gamification">Récompenses</TabsTrigger>
               <TabsTrigger value="notifications" className="relative">
                 Notifications
                 {unreadCount > 0 && (
@@ -222,6 +224,11 @@ const Dashboard = () => {
             {/* Courses Tab */}
             <TabsContent value="courses" className="space-y-6">
               <DashboardCourses enrollments={enrollments} />
+            </TabsContent>
+
+            {/* Gamification Tab */}
+            <TabsContent value="gamification" className="space-y-6">
+              <GamificationDashboard />
             </TabsContent>
 
             {/* Notifications Tab */}
