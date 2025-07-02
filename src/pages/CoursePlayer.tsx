@@ -10,7 +10,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Play, CheckCircle, Clock, FileText, Bell, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Play, CheckCircle, Clock, FileText, Bell, ArrowLeft, ArrowRight, Brain, StickyNote, MessageSquare } from 'lucide-react';
+import QuizPlayer from '@/components/enhanced-learning/QuizPlayer';
+import NotesPanel from '@/components/enhanced-learning/NotesPanel';
+import DiscussionPanel from '@/components/enhanced-learning/DiscussionPanel';
 
 const CoursePlayer = () => {
   const { slug } = useParams<{ slug: string }>();
