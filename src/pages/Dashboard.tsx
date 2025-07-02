@@ -6,19 +6,21 @@ import { useToast } from '@/hooks/use-toast';
 import { useAppointmentBooking } from '@/hooks/useAppointmentBooking';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, BookOpen, Clock, CheckCircle, User, Settings, LogOut, Bell, Trophy, Heart } from 'lucide-react';
+import { Settings, LogOut } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 import ErrorBoundary from '@/components/ui/error-boundary';
-import UserProfileCard from '@/components/user/UserProfileCard';
-import CourseProgressCard from '@/components/user/CourseProgressCard';
 import { useNotifications } from '@/hooks/useNotifications';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useCourseInteractions } from '@/hooks/useCourseInteractions';
+import DashboardOverview from '@/components/dashboard/DashboardOverview';
+import DashboardCourses from '@/components/dashboard/DashboardCourses';
+import DashboardNotifications from '@/components/dashboard/DashboardNotifications';
+import DashboardAchievements from '@/components/dashboard/DashboardAchievements';
+import DashboardProfile from '@/components/dashboard/DashboardProfile';
+import DashboardStats from '@/components/dashboard/DashboardStats';
 
 interface Enrollment {
   id: string;
@@ -194,47 +196,7 @@ const Dashboard = () => {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Formations inscrites
-                </CardTitle>
-                <BookOpen className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{enrollments.length}</div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Rendez-vous programmés
-                </CardTitle>
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {appointments.filter(apt => apt.status === 'pending' || apt.status === 'confirmed').length}
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Formations complétées
-                </CardTitle>
-                <CheckCircle className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {enrollments.filter(e => e.status === 'completed').length}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <DashboardStats enrollments={enrollments} appointments={appointments} />
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <TabsList className="grid w-full grid-cols-5">
@@ -254,242 +216,27 @@ const Dashboard = () => {
 
             {/* Overview Tab */}
             <TabsContent value="overview" className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2 space-y-6">
-                  {/* Recent Courses */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Formations en cours</CardTitle>
-                      <CardDescription>
-                        Continuez votre progression
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      {enrollments.filter(e => e.status === 'active').length === 0 ? (
-                        <div className="text-center py-8">
-                          <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                          <p className="text-gray-500 mb-4">
-                            Aucune formation en cours.
-                          </p>
-                          <Button asChild>
-                            <a href="/curriculum">Découvrir nos formations</a>
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="grid gap-4">
-                          {enrollments.filter(e => e.status === 'active').slice(0, 3).map((enrollment) => (
-                            <CourseProgressCard key={enrollment.id} enrollment={enrollment} />
-                          ))}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-
-                  {/* Upcoming Appointments */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Prochains rendez-vous</CardTitle>
-                      <CardDescription>
-                        Vos consultations programmées
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      {appointments.filter(a => a.status !== 'cancelled').length === 0 ? (
-                        <div className="text-center py-6">
-                          <Calendar className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                          <p className="text-gray-500 mb-3">
-                            Aucun rendez-vous programmé.
-                          </p>
-                          <Button size="sm" asChild>
-                            <a href="/appointment">Prendre rendez-vous</a>
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="space-y-3">
-                          {appointments.filter(a => a.status !== 'cancelled').slice(0, 3).map((appointment) => (
-                            <div key={appointment.id} className="flex items-center justify-between p-3 border rounded-lg">
-                              <div>
-                                <p className="font-medium">{appointment.subject}</p>
-                                <p className="text-sm text-muted-foreground">
-                                  {new Date(appointment.appointment_date).toLocaleDateString()} à {appointment.appointment_time}
-                                </p>
-                              </div>
-                              <Badge variant={
-                                appointment.status === 'confirmed' ? 'default' : 'secondary'
-                              }>
-                                {appointment.status === 'confirmed' ? 'Confirmé' : 'En attente'}
-                              </Badge>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Profile Sidebar */}
-                <div>
-                  <UserProfileCard />
-                </div>
-              </div>
+              <DashboardOverview enrollments={enrollments} appointments={appointments} />
             </TabsContent>
 
             {/* Courses Tab */}
             <TabsContent value="courses" className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                {enrollments.length === 0 ? (
-                  <div className="col-span-full text-center py-12">
-                    <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Aucune formation</h3>
-                    <p className="text-gray-500 mb-6">
-                      Vous n'êtes inscrit à aucune formation pour le moment.
-                    </p>
-                    <Button asChild>
-                      <a href="/curriculum">Découvrir nos formations</a>
-                    </Button>
-                  </div>
-                ) : (
-                  enrollments.map((enrollment) => (
-                    <CourseProgressCard key={enrollment.id} enrollment={enrollment} />
-                  ))
-                )}
-              </div>
+              <DashboardCourses enrollments={enrollments} />
             </TabsContent>
 
             {/* Notifications Tab */}
             <TabsContent value="notifications" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Bell className="h-5 w-5" />
-                    Notifications
-                  </CardTitle>
-                  <CardDescription>
-                    Restez informé de vos activités
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {notifications.length === 0 ? (
-                    <div className="text-center py-8">
-                      <Bell className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-500">Aucune notification</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {notifications.map((notification) => (
-                        <div 
-                          key={notification.id}
-                          className={`p-4 rounded-lg border ${!notification.is_read ? 'bg-accent/20 border-primary/20' : ''}`}
-                        >
-                          <div className="flex items-start justify-between mb-2">
-                            <h4 className="font-medium">{notification.title}</h4>
-                            <span className="text-sm text-muted-foreground">
-                              {new Date(notification.created_at).toLocaleDateString()}
-                            </span>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-2">
-                            {notification.message}
-                          </p>
-                          {!notification.is_read && (
-                            <Button 
-                              size="sm" 
-                              variant="ghost"
-                              onClick={() => markAsRead(notification.id)}
-                            >
-                              Marquer comme lu
-                            </Button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+              <DashboardNotifications notifications={notifications} markAsRead={markAsRead} />
             </TabsContent>
 
             {/* Achievements Tab */}
             <TabsContent value="achievements" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Trophy className="h-5 w-5" />
-                    Succès et Réalisations
-                  </CardTitle>
-                  <CardDescription>
-                    Vos accomplissements dans vos formations
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {achievements.length === 0 ? (
-                    <div className="text-center py-8">
-                      <Trophy className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-500">Aucun succès débloqué pour le moment</p>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {achievements.map((achievement) => (
-                        <div key={achievement.id} className="p-4 rounded-lg border bg-accent/10">
-                          <div className="flex items-center gap-3 mb-2">
-                            <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center">
-                              <Trophy className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                              <h4 className="font-semibold">{achievement.achievement_title}</h4>
-                              <p className="text-sm text-muted-foreground">
-                                {new Date(achievement.achieved_at).toLocaleDateString()}
-                              </p>
-                            </div>
-                          </div>
-                          {achievement.achievement_description && (
-                            <p className="text-sm text-muted-foreground">
-                              {achievement.achievement_description}
-                            </p>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+              <DashboardAchievements achievements={achievements} />
             </TabsContent>
 
             {/* Profile Tab */}
             <TabsContent value="profile" className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <UserProfileCard />
-                
-                {/* Bookmarked Courses */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Heart className="h-5 w-5" />
-                      Formations favorites
-                    </CardTitle>
-                    <CardDescription>
-                      Vos formations mises en favoris
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {bookmarks.length === 0 ? (
-                      <div className="text-center py-6">
-                        <Heart className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                        <p className="text-gray-500">Aucune formation favorite</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        {bookmarks.slice(0, 5).map((bookmark) => (
-                          <div key={bookmark.id} className="p-3 rounded-lg border">
-                            <p className="font-medium">Formation {bookmark.course_id}</p>
-                            <p className="text-sm text-muted-foreground">
-                              Ajouté le {new Date(bookmark.created_at).toLocaleDateString()}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
+              <DashboardProfile bookmarks={bookmarks} />
             </TabsContent>
           </Tabs>
         </div>
