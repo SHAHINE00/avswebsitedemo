@@ -185,7 +185,7 @@ const Dashboard = () => {
               </p>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => setActiveTab('profile')}>
                 <Settings className="w-4 h-4 mr-2" />
                 Paramètres
               </Button>
