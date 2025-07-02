@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { supabase } from '@/integrations/supabase/client';
 
 interface AnnouncementFormDialogProps {
   open: boolean;
@@ -28,8 +29,15 @@ const AnnouncementFormDialog = ({ open, onOpenChange, courseId, onSuccess }: Ann
     setLoading(true);
 
     try {
-      // Here you would create the announcement
-      // For now, we'll just close the dialog
+      const { error } = await supabase
+        .from('course_announcements')
+        .insert({
+          ...formData,
+          course_id: courseId,
+          created_by: (await supabase.auth.getUser()).data.user?.id,
+        });
+
+      if (error) throw error;
       onSuccess();
     } catch (error) {
       console.error('Error saving announcement:', error);

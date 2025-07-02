@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
+import { supabase } from '@/integrations/supabase/client';
 
 interface MaterialFormDialogProps {
   open: boolean;
@@ -28,8 +29,14 @@ const MaterialFormDialog = ({ open, onOpenChange, courseId, onSuccess }: Materia
     setLoading(true);
 
     try {
-      // Here you would typically upload the file and create the material
-      // For now, we'll just close the dialog
+      const { error } = await supabase
+        .from('course_materials')
+        .insert({
+          ...formData,
+          course_id: courseId,
+        });
+
+      if (error) throw error;
       onSuccess();
     } catch (error) {
       console.error('Error saving material:', error);

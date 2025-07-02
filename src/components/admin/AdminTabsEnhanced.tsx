@@ -27,16 +27,16 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
 }) => {
   return (
     <Tabs defaultValue="dashboard" className="w-full">
-      <TabsList className="grid w-full grid-cols-8">
-        <TabsTrigger value="dashboard">Tableau de Bord</TabsTrigger>
-        <TabsTrigger value="courses">Cours</TabsTrigger>
-        <TabsTrigger value="content">Contenu</TabsTrigger>
-        <TabsTrigger value="users">Utilisateurs</TabsTrigger>
-        <TabsTrigger value="appointments">Rendez-vous</TabsTrigger>
-        <TabsTrigger value="enrollments">Inscriptions</TabsTrigger>
-        <TabsTrigger value="performance">Performance</TabsTrigger>
-        <TabsTrigger value="analytics">Analyses</TabsTrigger>
-        <TabsTrigger value="monitoring">Système</TabsTrigger>
+      <TabsList className="grid w-full grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-1">
+        <TabsTrigger value="dashboard" className="text-xs lg:text-sm">Tableau de Bord</TabsTrigger>
+        <TabsTrigger value="courses" className="text-xs lg:text-sm">Cours</TabsTrigger>
+        <TabsTrigger value="content" className="text-xs lg:text-sm">Contenu</TabsTrigger>
+        <TabsTrigger value="users" className="text-xs lg:text-sm">Utilisateurs</TabsTrigger>
+        <TabsTrigger value="appointments" className="text-xs lg:text-sm">Rendez-vous</TabsTrigger>
+        <TabsTrigger value="enrollments" className="text-xs lg:text-sm">Inscriptions</TabsTrigger>
+        <TabsTrigger value="performance" className="text-xs lg:text-sm">Performance</TabsTrigger>
+        <TabsTrigger value="analytics" className="text-xs lg:text-sm">Analyses</TabsTrigger>
+        <TabsTrigger value="monitoring" className="text-xs lg:text-sm">Système</TabsTrigger>
       </TabsList>
 
       <TabsContent value="dashboard" className="space-y-6">

@@ -3,12 +3,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, BookOpen, FileText, Bell, Play, Edit, Trash2 } from 'lucide-react';
+import { Plus, BookOpen, FileText, Bell, Play, Edit, Trash2, ArrowUpDown } from 'lucide-react';
 import { useCourseContent, CourseLesson, CourseMaterial, CourseAnnouncement } from '@/hooks/useCourseContent';
 import { useAdminCourses } from '@/hooks/useAdminCourses';
 import LessonFormDialog from './course-content/LessonFormDialog';
 import MaterialFormDialog from './course-content/MaterialFormDialog';
 import AnnouncementFormDialog from './course-content/AnnouncementFormDialog';
+import LessonReorderDialog from './course-content/LessonReorderDialog';
 
 const CourseContentManagement = () => {
   const { courses } = useAdminCourses();
@@ -27,6 +28,7 @@ const CourseContentManagement = () => {
   const [lessonDialogOpen, setLessonDialogOpen] = useState(false);
   const [materialDialogOpen, setMaterialDialogOpen] = useState(false);
   const [announcementDialogOpen, setAnnouncementDialogOpen] = useState(false);
+  const [reorderDialogOpen, setReorderDialogOpen] = useState(false);
   const [editingLesson, setEditingLesson] = useState<CourseLesson | null>(null);
 
   useEffect(() => {
@@ -136,16 +138,27 @@ const CourseContentManagement = () => {
         <TabsContent value="lessons" className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">Leçons du cours</h3>
-            <Button
-              onClick={() => {
-                setEditingLesson(null);
-                setLessonDialogOpen(true);
-              }}
-              className="flex items-center gap-2"
-            >
-              <Plus className="w-4 h-4" />
-              Nouvelle leçon
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setReorderDialogOpen(true)}
+                className="flex items-center gap-2"
+                disabled={lessons.length < 2}
+              >
+                <ArrowUpDown className="w-4 h-4" />
+                Réorganiser
+              </Button>
+              <Button
+                onClick={() => {
+                  setEditingLesson(null);
+                  setLessonDialogOpen(true);
+                }}
+                className="flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Nouvelle leçon
+              </Button>
+            </div>
           </div>
 
           <div className="grid gap-4">
@@ -369,6 +382,17 @@ const CourseContentManagement = () => {
         onSuccess={() => {
           refreshContent();
           setAnnouncementDialogOpen(false);
+        }}
+      />
+
+      <LessonReorderDialog
+        open={reorderDialogOpen}
+        onOpenChange={setReorderDialogOpen}
+        courseId={selectedCourseId}
+        lessons={lessons}
+        onSuccess={() => {
+          refreshContent();
+          setReorderDialogOpen(false);
         }}
       />
     </div>
