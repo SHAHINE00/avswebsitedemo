@@ -1153,6 +1153,16 @@ export type Database = {
         Args: { p_notification_id: string }
         Returns: undefined
       }
+      track_analytics: {
+        Args: {
+          p_metric_type: string
+          p_metric_name: string
+          p_value: number
+          p_metadata?: Json
+          p_date?: string
+        }
+        Returns: undefined
+      }
       update_appointment_status: {
         Args: { appointment_id: string; new_status: string }
         Returns: undefined
