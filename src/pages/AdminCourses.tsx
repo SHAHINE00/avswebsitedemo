@@ -94,7 +94,7 @@ const AdminCourses = () => {
 
   return (
     <ErrorBoundary>
-      <AdminAccessControl isAdmin={isAdmin} loading={loading}>
+      <AdminAccessControl>
         <div className="min-h-screen bg-gray-50">
           <Navbar />
           
