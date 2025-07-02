@@ -10,9 +10,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, BookOpen, Clock, CheckCircle, User, Settings, LogOut } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Calendar, BookOpen, Clock, CheckCircle, User, Settings, LogOut, Bell, Trophy, Heart } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 import ErrorBoundary from '@/components/ui/error-boundary';
+import UserProfileCard from '@/components/user/UserProfileCard';
+import CourseProgressCard from '@/components/user/CourseProgressCard';
+import { useNotifications } from '@/hooks/useNotifications';
+import { useUserProfile } from '@/hooks/useUserProfile';
+import { useCourseInteractions } from '@/hooks/useCourseInteractions';
 
 interface Enrollment {
   id: string;
@@ -40,11 +46,15 @@ const Dashboard = () => {
   const { user, signOut } = useAuth();
   const { toast } = useToast();
   const { getUserAppointments } = useAppointmentBooking();
+  const { notifications, unreadCount, markAsRead } = useNotifications();
+  const { achievements } = useUserProfile();
+  const { bookmarks } = useCourseInteractions();
   
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
     if (!user) {
@@ -226,20 +236,112 @@ const Dashboard = () => {
             </Card>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Enrollments */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Mes Formations</CardTitle>
-                <CardDescription>
-                  Suivez votre progression dans vos formations
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
+              <TabsTrigger value="courses">Formations</TabsTrigger>
+              <TabsTrigger value="notifications" className="relative">
+                Notifications
+                {unreadCount > 0 && (
+                  <Badge variant="destructive" className="ml-1 h-4 w-4 p-0 text-xs">
+                    {unreadCount}
+                  </Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="achievements">Succès</TabsTrigger>
+              <TabsTrigger value="profile">Profil</TabsTrigger>
+            </TabsList>
+
+            {/* Overview Tab */}
+            <TabsContent value="overview" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 space-y-6">
+                  {/* Recent Courses */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Formations en cours</CardTitle>
+                      <CardDescription>
+                        Continuez votre progression
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      {enrollments.filter(e => e.status === 'active').length === 0 ? (
+                        <div className="text-center py-8">
+                          <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                          <p className="text-gray-500 mb-4">
+                            Aucune formation en cours.
+                          </p>
+                          <Button asChild>
+                            <a href="/curriculum">Découvrir nos formations</a>
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="grid gap-4">
+                          {enrollments.filter(e => e.status === 'active').slice(0, 3).map((enrollment) => (
+                            <CourseProgressCard key={enrollment.id} enrollment={enrollment} />
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Upcoming Appointments */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Prochains rendez-vous</CardTitle>
+                      <CardDescription>
+                        Vos consultations programmées
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      {appointments.filter(a => a.status !== 'cancelled').length === 0 ? (
+                        <div className="text-center py-6">
+                          <Calendar className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                          <p className="text-gray-500 mb-3">
+                            Aucun rendez-vous programmé.
+                          </p>
+                          <Button size="sm" asChild>
+                            <a href="/appointment">Prendre rendez-vous</a>
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          {appointments.filter(a => a.status !== 'cancelled').slice(0, 3).map((appointment) => (
+                            <div key={appointment.id} className="flex items-center justify-between p-3 border rounded-lg">
+                              <div>
+                                <p className="font-medium">{appointment.subject}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {new Date(appointment.appointment_date).toLocaleDateString()} à {appointment.appointment_time}
+                                </p>
+                              </div>
+                              <Badge variant={
+                                appointment.status === 'confirmed' ? 'default' : 'secondary'
+                              }>
+                                {appointment.status === 'confirmed' ? 'Confirmé' : 'En attente'}
+                              </Badge>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Profile Sidebar */}
+                <div>
+                  <UserProfileCard />
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Courses Tab */}
+            <TabsContent value="courses" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {enrollments.length === 0 ? (
-                  <div className="text-center py-8">
-                    <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-500 mb-4">
+                  <div className="col-span-full text-center py-12">
+                    <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">Aucune formation</h3>
+                    <p className="text-gray-500 mb-6">
                       Vous n'êtes inscrit à aucune formation pour le moment.
                     </p>
                     <Button asChild>
@@ -247,97 +349,149 @@ const Dashboard = () => {
                     </Button>
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    {enrollments.map((enrollment) => (
-                      <div key={enrollment.id} className="border rounded-lg p-4">
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <h3 className="font-semibold">
-                              {enrollment.courses.title}
-                            </h3>
-                            <p className="text-sm text-gray-600">
-                              {enrollment.courses.subtitle}
-                            </p>
-                          </div>
-                          <Badge variant={enrollment.status === 'active' ? 'default' : 'secondary'}>
-                            {enrollment.status === 'active' ? 'En cours' : 
-                             enrollment.status === 'completed' ? 'Terminé' : 
-                             enrollment.status}
-                          </Badge>
-                        </div>
-                        <div className="mb-2">
-                          <div className="flex justify-between text-sm mb-1">
-                            <span>Progression</span>
-                            <span>{enrollment.progress_percentage}%</span>
-                          </div>
-                          <Progress value={enrollment.progress_percentage} className="h-2" />
-                        </div>
-                        <div className="flex justify-between items-center text-sm text-gray-500">
-                          <span>Durée: {enrollment.courses.duration}</span>
-                          <span>Inscrit le {new Date(enrollment.enrolled_at).toLocaleDateString()}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  enrollments.map((enrollment) => (
+                    <CourseProgressCard key={enrollment.id} enrollment={enrollment} />
+                  ))
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </TabsContent>
 
-            {/* Appointments */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Mes Rendez-vous</CardTitle>
-                <CardDescription>
-                  Vos consultations programmées
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {appointments.length === 0 ? (
-                  <div className="text-center py-8">
-                    <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-500 mb-4">
-                      Aucun rendez-vous programmé.
-                    </p>
-                    <Button asChild>
-                      <a href="/appointment">Prendre rendez-vous</a>
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {appointments.slice(0, 5).map((appointment) => (
-                      <div key={appointment.id} className="border rounded-lg p-4">
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <h3 className="font-semibold">{appointment.subject}</h3>
-                            <p className="text-sm text-gray-600">
-                              {appointment.appointment_type === 'phone' ? 'Téléphone' :
-                               appointment.appointment_type === 'video' ? 'Visioconférence' :
-                               'Au bureau'}
+            {/* Notifications Tab */}
+            <TabsContent value="notifications" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Bell className="h-5 w-5" />
+                    Notifications
+                  </CardTitle>
+                  <CardDescription>
+                    Restez informé de vos activités
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {notifications.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Bell className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-500">Aucune notification</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {notifications.map((notification) => (
+                        <div 
+                          key={notification.id}
+                          className={`p-4 rounded-lg border ${!notification.is_read ? 'bg-accent/20 border-primary/20' : ''}`}
+                        >
+                          <div className="flex items-start justify-between mb-2">
+                            <h4 className="font-medium">{notification.title}</h4>
+                            <span className="text-sm text-muted-foreground">
+                              {new Date(notification.created_at).toLocaleDateString()}
+                            </span>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-2">
+                            {notification.message}
+                          </p>
+                          {!notification.is_read && (
+                            <Button 
+                              size="sm" 
+                              variant="ghost"
+                              onClick={() => markAsRead(notification.id)}
+                            >
+                              Marquer comme lu
+                            </Button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Achievements Tab */}
+            <TabsContent value="achievements" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Trophy className="h-5 w-5" />
+                    Succès et Réalisations
+                  </CardTitle>
+                  <CardDescription>
+                    Vos accomplissements dans vos formations
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {achievements.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Trophy className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-500">Aucun succès débloqué pour le moment</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {achievements.map((achievement) => (
+                        <div key={achievement.id} className="p-4 rounded-lg border bg-accent/10">
+                          <div className="flex items-center gap-3 mb-2">
+                            <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center">
+                              <Trophy className="h-5 w-5 text-primary" />
+                            </div>
+                            <div>
+                              <h4 className="font-semibold">{achievement.achievement_title}</h4>
+                              <p className="text-sm text-muted-foreground">
+                                {new Date(achievement.achieved_at).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                          {achievement.achievement_description && (
+                            <p className="text-sm text-muted-foreground">
+                              {achievement.achievement_description}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Profile Tab */}
+            <TabsContent value="profile" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <UserProfileCard />
+                
+                {/* Bookmarked Courses */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Heart className="h-5 w-5" />
+                      Formations favorites
+                    </CardTitle>
+                    <CardDescription>
+                      Vos formations mises en favoris
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {bookmarks.length === 0 ? (
+                      <div className="text-center py-6">
+                        <Heart className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                        <p className="text-gray-500">Aucune formation favorite</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {bookmarks.slice(0, 5).map((bookmark) => (
+                          <div key={bookmark.id} className="p-3 rounded-lg border">
+                            <p className="font-medium">Formation {bookmark.course_id}</p>
+                            <p className="text-sm text-muted-foreground">
+                              Ajouté le {new Date(bookmark.created_at).toLocaleDateString()}
                             </p>
                           </div>
-                          <Badge variant={
-                            appointment.status === 'confirmed' ? 'default' :
-                            appointment.status === 'pending' ? 'secondary' :
-                            appointment.status === 'cancelled' ? 'destructive' :
-                            'outline'
-                          }>
-                            {appointment.status === 'confirmed' ? 'Confirmé' :
-                             appointment.status === 'pending' ? 'En attente' :
-                             appointment.status === 'cancelled' ? 'Annulé' :
-                             appointment.status}
-                          </Badge>
-                        </div>
-                        <div className="flex items-center text-sm text-gray-500">
-                          <Clock className="w-4 h-4 mr-1" />
-                          {new Date(appointment.appointment_date).toLocaleDateString()} à {appointment.appointment_time}
-                        </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
         
         <Footer />

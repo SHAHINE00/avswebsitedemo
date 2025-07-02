@@ -123,6 +123,27 @@ export type Database = {
         }
         Relationships: []
       }
+      course_bookmarks: {
+        Row: {
+          course_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       course_enrollments: {
         Row: {
           completion_date: string | null
@@ -163,6 +184,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      course_reviews: {
+        Row: {
+          course_id: string
+          created_at: string
+          id: string
+          rating: number
+          review_text: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          id?: string
+          rating: number
+          review_text?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          id?: string
+          rating?: number
+          review_text?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       courses: {
         Row: {
@@ -236,6 +287,45 @@ export type Database = {
           title?: string
           updated_at?: string | null
           view_count?: number | null
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          action_url: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_read: boolean
+          message: string
+          read_at: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          action_url?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_read?: boolean
+          message: string
+          read_at?: string | null
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          action_url?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_read?: boolean
+          message?: string
+          read_at?: string | null
+          title?: string
+          type?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -359,6 +449,36 @@ export type Database = {
         }
         Relationships: []
       }
+      user_achievements: {
+        Row: {
+          achieved_at: string
+          achievement_description: string | null
+          achievement_title: string
+          achievement_type: string
+          id: string
+          metadata: Json | null
+          user_id: string
+        }
+        Insert: {
+          achieved_at?: string
+          achievement_description?: string | null
+          achievement_title: string
+          achievement_type: string
+          id?: string
+          metadata?: Json | null
+          user_id: string
+        }
+        Update: {
+          achieved_at?: string
+          achievement_description?: string | null
+          achievement_title?: string
+          achievement_type?: string
+          id?: string
+          metadata?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_activity_logs: {
         Row: {
           action: string
@@ -389,6 +509,45 @@ export type Database = {
         }
         Relationships: []
       }
+      user_preferences: {
+        Row: {
+          achievement_notifications: boolean
+          appointment_reminders: boolean
+          course_reminders: boolean
+          created_at: string
+          email_notifications: boolean
+          id: string
+          newsletter_subscription: boolean
+          push_notifications: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_notifications?: boolean
+          appointment_reminders?: boolean
+          course_reminders?: boolean
+          created_at?: string
+          email_notifications?: boolean
+          id?: string
+          newsletter_subscription?: boolean
+          push_notifications?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_notifications?: boolean
+          appointment_reminders?: boolean
+          course_reminders?: boolean
+          created_at?: string
+          email_notifications?: boolean
+          id?: string
+          newsletter_subscription?: boolean
+          push_notifications?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -397,6 +556,16 @@ export type Database = {
       check_admin_role: {
         Args: Record<PropertyKey, never>
         Returns: boolean
+      }
+      create_notification: {
+        Args: {
+          p_user_id: string
+          p_title: string
+          p_message: string
+          p_type?: string
+          p_action_url?: string
+        }
+        Returns: string
       }
       enroll_in_course: {
         Args: { p_course_id: string }
@@ -424,6 +593,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
+      get_user_statistics: {
+        Args: { p_user_id: string }
+        Returns: Json
+      }
       log_admin_activity: {
         Args: {
           p_action: string
@@ -431,6 +604,10 @@ export type Database = {
           p_entity_id?: string
           p_details?: Json
         }
+        Returns: undefined
+      }
+      mark_notification_read: {
+        Args: { p_notification_id: string }
         Returns: undefined
       }
       update_appointment_status: {
