@@ -27,7 +27,7 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
 }) => {
   return (
     <Tabs defaultValue="dashboard" className="w-full">
-      <TabsList className="grid w-full grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-1">
+      <TabsList className="grid w-full grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-1 mb-6">
         <TabsTrigger value="dashboard" className="text-xs lg:text-sm">Tableau de Bord</TabsTrigger>
         <TabsTrigger value="courses" className="text-xs lg:text-sm">Cours</TabsTrigger>
         <TabsTrigger value="content" className="text-xs lg:text-sm">Contenu</TabsTrigger>
@@ -72,7 +72,7 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
         <CoursePerformanceMetrics />
       </TabsContent>
 
-      <TabsContent value="analytics">
+      <TabsContent value="analytics" className="space-y-6">
         <AdvancedAnalytics />
       </TabsContent>
 

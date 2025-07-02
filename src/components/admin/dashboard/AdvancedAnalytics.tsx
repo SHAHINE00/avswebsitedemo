@@ -9,6 +9,7 @@ import { useAdvancedAnalytics } from '@/hooks/useAdvancedAnalytics';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { format, subDays } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import ErrorBoundary from '@/components/ui/error-boundary';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#00ff00'];
 
@@ -26,41 +27,46 @@ const AdvancedAnalytics = () => {
   );
 
   const processDataForCharts = () => {
-    if (!data.length) return { lineData: [], barData: [], pieData: [] };
+    try {
+      if (!data.length) return { lineData: [], barData: [], pieData: [] };
 
-    // Group data by date for line chart
-    const dateGroups = data.reduce((acc, item) => {
-      const date = item.date;
-      if (!acc[date]) acc[date] = {};
-      acc[date][item.metric_name] = item.value;
-      return acc;
-    }, {} as Record<string, Record<string, number>>);
+      // Group data by date for line chart
+      const dateGroups = data.reduce((acc, item) => {
+        const date = item.date;
+        if (!acc[date]) acc[date] = {};
+        acc[date][item.metric_name] = item.value;
+        return acc;
+      }, {} as Record<string, Record<string, number>>);
 
-    const lineData = Object.entries(dateGroups).map(([date, metrics]) => ({
-      date: format(new Date(date), 'dd/MM', { locale: fr }),
-      ...metrics
-    }));
+      const lineData = Object.entries(dateGroups).map(([date, metrics]) => ({
+        date: format(new Date(date), 'dd/MM', { locale: fr }),
+        ...metrics
+      }));
 
-    // Group data by metric type for bar chart
-    const metricGroups = data.reduce((acc, item) => {
-      if (!acc[item.metric_type]) acc[item.metric_type] = 0;
-      acc[item.metric_type] += item.value;
-      return acc;
-    }, {} as Record<string, number>);
+      // Group data by metric type for bar chart
+      const metricGroups = data.reduce((acc, item) => {
+        if (!acc[item.metric_type]) acc[item.metric_type] = 0;
+        acc[item.metric_type] += item.value;
+        return acc;
+      }, {} as Record<string, number>);
 
-    const barData = Object.entries(metricGroups).map(([type, value]) => ({
-      type,
-      value
-    }));
+      const barData = Object.entries(metricGroups).map(([type, value]) => ({
+        type,
+        value
+      }));
 
-    // Create pie data from recent metrics
-    const pieData = Object.entries(metricGroups).map(([type, value], index) => ({
-      name: type,
-      value,
-      color: COLORS[index % COLORS.length]
-    }));
+      // Create pie data from recent metrics
+      const pieData = Object.entries(metricGroups).map(([type, value], index) => ({
+        name: type,
+        value,
+        color: COLORS[index % COLORS.length]
+      }));
 
-    return { lineData, barData, pieData };
+      return { lineData, barData, pieData };
+    } catch (error) {
+      console.error('Error processing chart data:', error);
+      return { lineData: [], barData: [], pieData: [] };
+    }
   };
 
   const { lineData, barData, pieData } = processDataForCharts();
@@ -88,10 +94,37 @@ const AdvancedAnalytics = () => {
     return <div className="text-red-600 p-4">Erreur: {error}</div>;
   }
 
+  // Empty state when no data is available
+  if (!data.length) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="w-5 h-5" />
+              Analyses Avancées
+            </CardTitle>
+            <CardDescription>
+              Visualisations interactives et analyses détaillées des données
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center py-12">
+            <BarChart3 className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Aucune donnée disponible</h3>
+            <p className="text-muted-foreground">
+              Les données d'analyse apparaîtront ici une fois qu'il y aura de l'activité sur la plateforme.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6">
-      {/* Controls */}
-      <Card>
+    <ErrorBoundary>
+      <div className="space-y-6">
+        {/* Controls */}
+        <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BarChart3 className="w-5 h-5" />
@@ -159,7 +192,7 @@ const AdvancedAnalytics = () => {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  {Object.keys(lineData[0] || {}).filter(key => key !== 'date').map((key, index) => (
+                  {lineData.length > 0 && Object.keys(lineData[0]).filter(key => key !== 'date').map((key, index) => (
                     <Line
                       key={key}
                       type="monotone"
@@ -225,6 +258,7 @@ const AdvancedAnalytics = () => {
         </TabsContent>
       </Tabs>
     </div>
+    </ErrorBoundary>
   );
 };
 
