@@ -26,20 +26,10 @@ const AdminCourses = () => {
     await deleteCourse(courseId);
   };
 
-  const handleSubmit = async (formData: any) => {
-    try {
-      if (editingCourse) {
-        console.log('Updating course:', editingCourse.id, formData);
-        await updateCourse(editingCourse.id, formData);
-      } else {
-        console.log('Creating new course:', formData);
-        await createCourse(formData);
-      }
-      setDialogOpen(false);
-      setEditingCourse(null);
-    } catch (error) {
-      console.error('Error submitting course:', error);
-    }
+  const handleSuccess = () => {
+    refetch();
+    setDialogOpen(false);
+    setEditingCourse(null);
   };
 
   const handleCancel = () => {
@@ -104,7 +94,7 @@ const AdminCourses = () => {
 
   return (
     <ErrorBoundary>
-      <AdminAccessControl>
+      <AdminAccessControl isAdmin={isAdmin} loading={loading}>
         <div className="min-h-screen bg-gray-50">
           <Navbar />
           
@@ -128,8 +118,8 @@ const AdminCourses = () => {
           <CourseFormDialog
             open={dialogOpen}
             onOpenChange={setDialogOpen}
-            onSubmit={handleSubmit}
-            editingCourse={editingCourse}
+            course={editingCourse}
+            onSuccess={handleSuccess}
           />
         </div>
       </AdminAccessControl>
