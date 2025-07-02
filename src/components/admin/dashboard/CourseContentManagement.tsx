@@ -53,9 +53,15 @@ const CourseContentManagement = () => {
       fetchLessons(selectedCourseId);
       fetchMaterials(selectedCourseId);
       fetchAnnouncements(selectedCourseId);
-      loadQuizzes();
     }
   }, [selectedCourseId, fetchLessons, fetchMaterials, fetchAnnouncements]);
+
+  // Load quizzes after lessons are loaded
+  useEffect(() => {
+    if (selectedCourseId && lessons.length > 0) {
+      loadQuizzes();
+    }
+  }, [selectedCourseId, lessons]);
 
   const selectedCourse = courses.find(c => c.id === selectedCourseId);
 
