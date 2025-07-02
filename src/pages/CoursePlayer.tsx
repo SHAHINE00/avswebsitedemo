@@ -295,6 +295,46 @@ const CoursePlayer = () => {
                       />
                     </div>
 
+                    {/* Enhanced Learning Features */}
+                    <div className="mt-8 pt-6 border-t">
+                      <Tabs defaultValue="quiz" className="w-full">
+                        <TabsList className="grid w-full grid-cols-3">
+                          <TabsTrigger value="quiz" className="flex items-center gap-2">
+                            <Brain className="w-4 h-4" />
+                            Quiz
+                          </TabsTrigger>
+                          <TabsTrigger value="notes" className="flex items-center gap-2">
+                            <StickyNote className="w-4 h-4" />
+                            Notes
+                          </TabsTrigger>
+                          <TabsTrigger value="discussions" className="flex items-center gap-2">
+                            <MessageSquare className="w-4 h-4" />
+                            Discussions
+                          </TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="quiz" className="mt-6">
+                          <QuizPlayer 
+                            lessonId={selectedLesson.id}
+                            onQuizComplete={() => {
+                              // Refresh progress after quiz completion
+                              if (course.id) {
+                                fetchUserProgress(course.id);
+                              }
+                            }}
+                          />
+                        </TabsContent>
+
+                        <TabsContent value="notes" className="mt-6">
+                          <NotesPanel lessonId={selectedLesson.id} />
+                        </TabsContent>
+
+                        <TabsContent value="discussions" className="mt-6">
+                          <DiscussionPanel lessonId={selectedLesson.id} />
+                        </TabsContent>
+                      </Tabs>
+                    </div>
+
                     <div className="flex items-center justify-between mt-8 pt-6 border-t">
                       <Button
                         variant="outline"

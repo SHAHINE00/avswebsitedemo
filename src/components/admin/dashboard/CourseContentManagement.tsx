@@ -3,16 +3,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, BookOpen, FileText, Bell, Play, Edit, Trash2, ArrowUpDown } from 'lucide-react';
+import { Plus, BookOpen, FileText, Bell, Play, Edit, Trash2, ArrowUpDown, Brain } from 'lucide-react';
 import { useCourseContent, CourseLesson, CourseMaterial, CourseAnnouncement } from '@/hooks/useCourseContent';
 import { useAdminCourses } from '@/hooks/useAdminCourses';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import LessonFormDialog from './course-content/LessonFormDialog';
 import MaterialFormDialog from './course-content/MaterialFormDialog';
 import AnnouncementFormDialog from './course-content/AnnouncementFormDialog';
 import LessonReorderDialog from './course-content/LessonReorderDialog';
+import QuizFormDialog from './course-content/QuizFormDialog';
+import { useEnhancedLearning, Quiz } from '@/hooks/useEnhancedLearning';
 
 const CourseContentManagement = () => {
   const { courses } = useAdminCourses();
+  const { toast } = useToast();
   const {
     lessons,
     materials,
@@ -23,6 +28,9 @@ const CourseContentManagement = () => {
     fetchAnnouncements,
     deleteLesson,
   } = useCourseContent();
+  
+  const { fetchQuizzes } = useEnhancedLearning();
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
 
   const [selectedCourseId, setSelectedCourseId] = useState<string>('');
   const [lessonDialogOpen, setLessonDialogOpen] = useState(false);
@@ -30,6 +38,9 @@ const CourseContentManagement = () => {
   const [announcementDialogOpen, setAnnouncementDialogOpen] = useState(false);
   const [reorderDialogOpen, setReorderDialogOpen] = useState(false);
   const [editingLesson, setEditingLesson] = useState<CourseLesson | null>(null);
+  const [quizDialogOpen, setQuizDialogOpen] = useState(false);
+  const [editingQuiz, setEditingQuiz] = useState<Quiz | null>(null);
+  const [selectedLessonForQuiz, setSelectedLessonForQuiz] = useState<string>('');
 
   useEffect(() => {
     if (courses.length > 0 && !selectedCourseId) {
@@ -42,6 +53,7 @@ const CourseContentManagement = () => {
       fetchLessons(selectedCourseId);
       fetchMaterials(selectedCourseId);
       fetchAnnouncements(selectedCourseId);
+      loadQuizzes();
     }
   }, [selectedCourseId, fetchLessons, fetchMaterials, fetchAnnouncements]);
 
@@ -61,11 +73,31 @@ const CourseContentManagement = () => {
     }
   };
 
+  const loadQuizzes = async () => {
+    if (!selectedCourseId) return;
+    
+    // Get all lesson IDs for this course
+    const lessonIds = lessons.map(lesson => lesson.id);
+    if (lessonIds.length === 0) return;
+
+    try {
+      const allQuizzes: Quiz[] = [];
+      for (const lessonId of lessonIds) {
+        const lessonQuizzes = await fetchQuizzes(lessonId);
+        allQuizzes.push(...lessonQuizzes);
+      }
+      setQuizzes(allQuizzes);
+    } catch (error) {
+      console.error('Error loading quizzes:', error);
+    }
+  };
+
   const refreshContent = () => {
     if (selectedCourseId) {
       fetchLessons(selectedCourseId);
       fetchMaterials(selectedCourseId);
       fetchAnnouncements(selectedCourseId);
+      loadQuizzes();
     }
   };
 
@@ -124,6 +156,10 @@ const CourseContentManagement = () => {
           <TabsTrigger value="lessons" className="flex items-center gap-2">
             <Play className="w-4 h-4" />
             Leçons
+          </TabsTrigger>
+          <TabsTrigger value="quizzes" className="flex items-center gap-2">
+            <Brain className="w-4 h-4" />
+            Quiz
           </TabsTrigger>
           <TabsTrigger value="materials" className="flex items-center gap-2">
             <FileText className="w-4 h-4" />
@@ -228,6 +264,133 @@ const CourseContentManagement = () => {
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Créer une leçon
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="quizzes" className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">Quiz du cours</h3>
+            <Button
+              onClick={() => {
+                if (lessons.length > 0) {
+                  setSelectedLessonForQuiz(lessons[0].id);
+                  setEditingQuiz(null);
+                  setQuizDialogOpen(true);
+                } else {
+                  toast({
+                    title: "Aucune leçon disponible",
+                    description: "Créez d'abord des leçons avant d'ajouter des quiz",
+                    variant: "destructive",
+                  });
+                }
+              }}
+              className="flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              Nouveau quiz
+            </Button>
+          </div>
+
+          <div className="grid gap-4">
+            {quizzes.map((quiz) => {
+              const lesson = lessons.find(l => l.id === quiz.lesson_id);
+              return (
+                <Card key={quiz.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-semibold">{quiz.title}</h4>
+                          <Badge variant={quiz.is_active ? 'default' : 'secondary'}>
+                            {quiz.is_active ? 'Actif' : 'Inactif'}
+                          </Badge>
+                        </div>
+                        {quiz.description && (
+                          <p className="text-sm text-muted-foreground mb-2">
+                            {quiz.description}
+                          </p>
+                        )}
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          <span>Leçon: {lesson?.title}</span>
+                          <span>Score requis: {quiz.passing_score}%</span>
+                          <span>Tentatives: {quiz.max_attempts}</span>
+                          {quiz.time_limit_minutes && (
+                            <span>Temps: {quiz.time_limit_minutes} min</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setEditingQuiz(quiz);
+                            setSelectedLessonForQuiz(quiz.lesson_id);
+                            setQuizDialogOpen(true);
+                          }}
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={async () => {
+                            if (confirm('Êtes-vous sûr de vouloir supprimer ce quiz ?')) {
+                              try {
+                                const { error } = await supabase
+                                  .from('quizzes')
+                                  .delete()
+                                  .eq('id', quiz.id);
+                                if (error) throw error;
+                                refreshContent();
+                                toast({
+                                  title: "Quiz supprimé",
+                                  description: "Le quiz a été supprimé avec succès",
+                                });
+                              } catch (error) {
+                                console.error('Error deleting quiz:', error);
+                                toast({
+                                  title: "Erreur",
+                                  description: "Impossible de supprimer le quiz",
+                                  variant: "destructive",
+                                });
+                              }
+                            }
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+
+            {quizzes.length === 0 && (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <Brain className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">Aucun quiz</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Créez des quiz pour évaluer vos étudiants.
+                  </p>
+                  <Button
+                    onClick={() => {
+                      if (lessons.length > 0) {
+                        setSelectedLessonForQuiz(lessons[0].id);
+                        setEditingQuiz(null);
+                        setQuizDialogOpen(true);
+                      }
+                    }}
+                    disabled={lessons.length === 0}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Créer un quiz
                   </Button>
                 </CardContent>
               </Card>
@@ -393,6 +556,18 @@ const CourseContentManagement = () => {
         onSuccess={() => {
           refreshContent();
           setReorderDialogOpen(false);
+        }}
+      />
+
+      <QuizFormDialog
+        open={quizDialogOpen}
+        onOpenChange={setQuizDialogOpen}
+        lessonId={selectedLessonForQuiz}
+        quiz={editingQuiz}
+        onSuccess={() => {
+          refreshContent();
+          setQuizDialogOpen(false);
+          setEditingQuiz(null);
         }}
       />
     </div>
