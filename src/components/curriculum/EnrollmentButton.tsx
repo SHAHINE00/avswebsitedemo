@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useEnrollment } from '@/hooks/useEnrollment';
-import { CheckCircle, BookOpen } from 'lucide-react';
+import { CheckCircle, BookOpen, Loader2 } from 'lucide-react';
 
 interface EnrollmentButtonProps {
   courseId: string;
@@ -18,10 +18,23 @@ const EnrollmentButton: React.FC<EnrollmentButtonProps> = ({ courseId, linkTo })
 
   useEffect(() => {
     const checkStatus = async () => {
+      console.log('Checking enrollment status for:', courseId);
+      setCheckingStatus(true);
+      
       if (user && courseId) {
-        const enrolled = await checkEnrollmentStatus(courseId);
-        setIsEnrolled(enrolled);
+        try {
+          const enrolled = await checkEnrollmentStatus(courseId);
+          console.log('Enrollment status result:', enrolled);
+          setIsEnrolled(enrolled);
+        } catch (error) {
+          console.error('Error in useEffect checkStatus:', error);
+          setIsEnrolled(false);
+        }
+      } else {
+        console.log('No user or courseId, setting enrolled to false');
+        setIsEnrolled(false);
       }
+      
       setCheckingStatus(false);
     };
 
@@ -30,12 +43,16 @@ const EnrollmentButton: React.FC<EnrollmentButtonProps> = ({ courseId, linkTo })
 
   const handleEnrollment = async () => {
     if (!user) {
+      console.log('No user, redirecting to auth');
       window.location.href = '/auth';
       return;
     }
 
+    console.log('Starting enrollment process for course:', courseId);
     const success = await enrollInCourse(courseId);
+    
     if (success) {
+      console.log('Enrollment successful, updating UI');
       setIsEnrolled(true);
     }
   };
@@ -43,6 +60,7 @@ const EnrollmentButton: React.FC<EnrollmentButtonProps> = ({ courseId, linkTo })
   if (checkingStatus) {
     return (
       <Button disabled className="w-full">
+        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
         Vérification...
       </Button>
     );
@@ -69,8 +87,17 @@ const EnrollmentButton: React.FC<EnrollmentButtonProps> = ({ courseId, linkTo })
         disabled={loading}
         className="w-full"
       >
-        <BookOpen className="w-4 h-4 mr-2" />
-        {loading ? 'Inscription...' : 'S\'inscrire à la formation'}
+        {loading ? (
+          <>
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            Inscription...
+          </>
+        ) : (
+          <>
+            <BookOpen className="w-4 h-4 mr-2" />
+            S'inscrire à la formation
+          </>
+        )}
       </Button>
       {linkTo && linkTo !== '#' && (
         <Button 
