@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardOverview from '@/components/admin/dashboard/DashboardOverview';
 import EnhancedCourseManagement from '@/components/admin/dashboard/EnhancedCourseManagement';
 import ComprehensiveUserManagement from '@/components/admin/dashboard/ComprehensiveUserManagement';
+import CourseContentManagement from '@/components/admin/dashboard/CourseContentManagement';
 import AdvancedAnalytics from '@/components/admin/dashboard/AdvancedAnalytics';
 import SystemMonitoring from '@/components/admin/dashboard/SystemMonitoring';
 import AppointmentManagement from '@/components/admin/dashboard/AppointmentManagement';
@@ -29,6 +30,7 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
       <TabsList className="grid w-full grid-cols-8">
         <TabsTrigger value="dashboard">Tableau de Bord</TabsTrigger>
         <TabsTrigger value="courses">Cours</TabsTrigger>
+        <TabsTrigger value="content">Contenu</TabsTrigger>
         <TabsTrigger value="users">Utilisateurs</TabsTrigger>
         <TabsTrigger value="appointments">Rendez-vous</TabsTrigger>
         <TabsTrigger value="enrollments">Inscriptions</TabsTrigger>
@@ -48,6 +50,10 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
           onEdit={onEdit}
           onDelete={onDelete}
         />
+      </TabsContent>
+
+      <TabsContent value="content">
+        <CourseContentManagement />
       </TabsContent>
 
       <TabsContent value="users">

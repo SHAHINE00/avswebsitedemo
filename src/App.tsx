@@ -12,6 +12,7 @@ import AICourse from "./pages/AICourse";
 import ProgrammingCourse from "./pages/ProgrammingCourse";
 import CybersecurityCourse from "./pages/CybersecurityCourse";
 import GenericCourse from "./pages/GenericCourse";
+import CoursePlayer from "./pages/CoursePlayer";
 import Instructors from "./pages/Instructors";
 import Testimonials from "./pages/Testimonials";
 import Register from "./pages/Register";
@@ -46,6 +47,7 @@ const App = () => {
           <Route path="/cybersecurity-course" element={<CybersecurityCourse />} />
           {/* Dynamic course route - handles all new courses automatically */}
           <Route path="/course/:slug" element={<GenericCourse />} />
+          <Route path="/learn/:slug" element={<CoursePlayer />} />
           <Route path="/instructors" element={<Instructors />} />
           <Route path="/testimonials" element={<Testimonials />} />
           <Route path="/register" element={<Register />} />
