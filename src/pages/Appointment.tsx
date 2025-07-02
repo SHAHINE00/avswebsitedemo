@@ -35,7 +35,13 @@ const Appointment = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const success = await bookAppointment(formData);
+    // Ensure appointmentType is properly typed
+    const appointmentData = {
+      ...formData,
+      appointmentType: formData.appointmentType as 'phone' | 'video' | 'office'
+    };
+    
+    const success = await bookAppointment(appointmentData);
     
     if (success) {
       setIsSubmitted(true);
