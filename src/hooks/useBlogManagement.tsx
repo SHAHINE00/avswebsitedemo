@@ -17,11 +17,11 @@ export interface BlogPost {
   created_at: string;
   updated_at: string;
   view_count: number;
-  blog_categories: {
+  blog_categories?: {
     name: string;
     slug: string;
   };
-  profiles: {
+  profiles?: {
     full_name: string;
   };
 }
@@ -56,13 +56,33 @@ export const useBlogManagement = () => {
   const fetchPosts = async (status?: string) => {
     try {
       setLoading(true);
-      // Placeholder implementation - will work once database migration is executed
-      setPosts([]);
+      let query = supabase
+        .from('blog_posts')
+        .select(`
+          *,
+          blog_categories (
+            name,
+            slug
+          ),
+          profiles (
+            full_name
+          )
+        `)
+        .order('created_at', { ascending: false });
+
+      if (status) {
+        query = query.eq('status', status);
+      }
+
+      const { data, error } = await query;
+
+      if (error) throw error;
+      setPosts((data as unknown as BlogPost[]) || []);
     } catch (error) {
       console.error('Error fetching posts:', error);
       toast({
         title: "Erreur",
-        description: "Impossible de charger les articles - Migration de base de données requise",
+        description: "Impossible de charger les articles",
         variant: "destructive",
       });
     } finally {
@@ -76,8 +96,13 @@ export const useBlogManagement = () => {
 
   const fetchCategories = async () => {
     try {
-      // Placeholder implementation - will work once database migration is executed
-      setCategories([]);
+      const { data, error } = await supabase
+        .from('blog_categories')
+        .select('*')
+        .order('name');
+
+      if (error) throw error;
+      setCategories(data || []);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
@@ -85,31 +110,142 @@ export const useBlogManagement = () => {
 
   const createPost = async (postData: Partial<BlogPost>) => {
     if (!user) return;
-    // Placeholder implementation - will work once database migration is executed
-    toast({
-      title: "Info",
-      description: "Fonctionnalité disponible après migration de base de données",
-    });
+    
+    try {
+      const insertData = {
+        title: postData.title!,
+        content: postData.content!,
+        excerpt: postData.excerpt!,
+        slug: postData.slug!,
+        category_id: postData.category_id!,
+        author_id: user.id,
+        featured_image_url: postData.featured_image_url || null,
+        status: postData.status || 'draft',
+        published_at: postData.status === 'published' ? new Date().toISOString() : null
+      };
+
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .insert(insertData)
+        .select()
+        .single();
+
+      if (error) throw error;
+      
+      await fetchPosts();
+      toast({
+        title: "Succès",
+        description: "Article créé avec succès",
+      });
+    } catch (error) {
+      console.error('Error creating post:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de créer l'article",
+        variant: "destructive",
+      });
+    }
   };
 
   const updatePost = async (postId: string, updates: Partial<BlogPost>) => {
-    // Placeholder - will work after migration
-    toast({ title: "Info", description: "Migration requise", });
+    try {
+      const updateData: Partial<BlogPost> = {
+        title: updates.title,
+        content: updates.content,
+        excerpt: updates.excerpt,
+        slug: updates.slug,
+        category_id: updates.category_id,
+        featured_image_url: updates.featured_image_url,
+        status: updates.status,
+        published_at: updates.status === 'published' && !updates.published_at 
+          ? new Date().toISOString() 
+          : updates.published_at
+      };
+
+      // Remove undefined values
+      Object.keys(updateData).forEach(key => {
+        if (updateData[key as keyof BlogPost] === undefined) {
+          delete updateData[key as keyof BlogPost];
+        }
+      });
+
+      const { error } = await supabase
+        .from('blog_posts')
+        .update(updateData)
+        .eq('id', postId);
+
+      if (error) throw error;
+      
+      await fetchPosts();
+      toast({
+        title: "Succès",
+        description: "Article mis à jour avec succès",
+      });
+    } catch (error) {
+      console.error('Error updating post:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de mettre à jour l'article",
+        variant: "destructive",
+      });
+    }
   };
 
   const deletePost = async (postId: string) => {
-    // Placeholder - will work after migration
-    toast({ title: "Info", description: "Migration requise", });
+    try {
+      const { error } = await supabase
+        .from('blog_posts')
+        .delete()
+        .eq('id', postId);
+
+      if (error) throw error;
+      
+      await fetchPosts();
+      toast({
+        title: "Succès",
+        description: "Article supprimé avec succès",
+      });
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer l'article",
+        variant: "destructive",
+      });
+    }
   };
 
   const publishPost = async (postId: string) => {
-    // Placeholder - will work after migration
-    toast({ title: "Info", description: "Migration requise", });
+    await updatePost(postId, { 
+      status: 'published', 
+      published_at: new Date().toISOString() 
+    });
   };
 
   const getPostBySlug = async (slug: string) => {
-    // Placeholder - will work after migration
-    return null;
+    try {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select(`
+          *,
+          blog_categories (
+            name,
+            slug
+          ),
+          profiles (
+            full_name
+          )
+        `)
+        .eq('slug', slug)
+        .eq('status', 'published')
+        .single();
+
+      if (error) throw error;
+      return data as unknown as BlogPost;
+    } catch (error) {
+      console.error('Error fetching post by slug:', error);
+      return null;
+    }
   };
 
   useEffect(() => {
