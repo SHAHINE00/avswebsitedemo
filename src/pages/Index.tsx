@@ -3,7 +3,7 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import FeaturesSection from '@/components/FeaturesSection';
-import CurriculumSection from '@/components/CurriculumSection';
+
 import InstructorsSection from '@/components/InstructorsSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
 import CourseSelectionGuide from '@/components/CourseSelectionGuide';
@@ -17,7 +17,7 @@ const Index = () => {
       <Navbar />
       <HeroSection />
       <FeaturesSection />
-      <CurriculumSection />
+      
       <CourseSelectionGuide />
       <InstructorsSection />
       <TestimonialsSection />
