@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Download, Sparkles, Network, Brain } from 'lucide-react';
+import { Download, Sparkles } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import DownloadGuidePopup from '@/components/DownloadGuidePopup';
 import CourseUniverseShowcase from './CourseUniverseShowcase';
@@ -39,13 +39,6 @@ const HeroBanner: React.FC = () => {
           <span className="block text-gray-800">Commence Ici</span>
         </h1>
 
-        {/* Decorative Elements */}
-        <div className="flex items-center justify-center gap-4 mb-8 animate-fade-in" style={{animationDelay: '0.4s'}}>
-          <div className="flex gap-2">
-            <Brain className="w-6 h-6 text-academy-blue" />
-            <Network className="w-6 h-6 text-academy-purple" />
-          </div>
-        </div>
 
         {/* Subtitle */}
         <p className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in" style={{animationDelay: '0.6s'}}>
