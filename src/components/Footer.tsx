@@ -12,18 +12,9 @@ const Footer: React.FC = () => {
           {/* Column 1 - About */}
           <div>
             <Link to="/" className="mb-4 inline-block">
-              <OptimizedImage
-                src="/lovable-uploads/f3c7543c-fddb-40be-aa1c-7e6b6891bccb.png"
-                alt="AVS Innovation Institute" 
-                className="h-14 w-auto object-contain filter brightness-0 invert"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  const nextElement = e.currentTarget.nextSibling as HTMLElement;
-                  if (nextElement) {
-                    nextElement.style.display = 'block';
-                  }
-                }}
-              />
+              <div className="h-14 flex items-center">
+                <span className="text-2xl font-bold text-white">TechAcademy</span>
+              </div>
               <span 
                 className="font-montserrat font-bold text-2xl text-white hidden"
                 style={{ display: 'none' }}
