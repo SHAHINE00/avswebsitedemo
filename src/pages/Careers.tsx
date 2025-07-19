@@ -26,11 +26,11 @@ const Careers = () => {
               </div>
             </div>
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Opportunités de Carrière Digitales & Technologiques
+              31+ Spécialisations Certifiées Internationalement
             </h1>
             <p className="text-xl md:text-2xl opacity-90 mb-8 max-w-3xl mx-auto">
-              Découvrez 27+ carrières certifiées dans l'IA, la programmation et le marketing digital. 
-              Obtenez votre certification internationale et transformez votre avenir professionnel.
+              Découvrez nos 31+ spécialisations certifiées par MIT, Google, Microsoft, IBM, Harvard, Stanford et bien plus. 
+              Obtenez votre certification internationale en 3-8 semaines et transformez votre carrière.
             </p>
             
             <HeroStatsGrid stats={successStats} />
@@ -44,8 +44,8 @@ const Careers = () => {
             
             {/* AI & Data Science Careers Section */}
             <CareerSection
-              title="Carrières en IA & Data Science"
-              description="L'intelligence artificielle révolutionne tous les secteurs. Obtenez votre certification internationale et rejoignez cette transformation technologique majeure."
+              title="Spécialisations IA & Science des Données"
+              description="L'intelligence artificielle révolutionne tous les secteurs. 10+ spécialisations certifiées par MIT, Google, Microsoft, IBM, Harvard et Stanford pour maîtriser l'IA générative, le machine learning et l'analyse de données."
               icon={<Brain className="w-8 h-8 text-academy-blue" />}
               careers={aiCareers}
               colorScheme="blue"
@@ -53,17 +53,17 @@ const Careers = () => {
 
             {/* Programming & Tech Infrastructure Section */}
             <CareerSection
-              title="Carrières en Programmation & Infrastructure"
-              description="Le développement logiciel et l'architecture cloud sont au cœur de la transformation digitale. Maîtrisez les technologies les plus demandées."
+              title="Spécialisations Programmation & Infrastructure Tech"
+              description="Le développement logiciel et l'architecture cloud sont au cœur de la transformation digitale. 10+ spécialisations certifiées par Google, Microsoft, AWS, IBM et Unity pour maîtriser les technologies les plus demandées."
               icon={<Code className="w-8 h-8 text-academy-purple" />}
               careers={programmingCareers}
               colorScheme="purple"
             />
 
-            {/* Digital Marketing & Content Creation Section */}
+            {/* Digital Marketing & Creative Section */}
             <CareerSection
-              title="Carrières en Marketing Digital & Création"
-              description="Le marketing digital alimenté par l'IA offre des opportunités exceptionnelles. Créez du contenu innovant et gérez la présence digitale des marques."
+              title="Spécialisations Marketing Digital & Création"
+              description="Le marketing digital alimenté par l'IA et la création de contenu offrent des opportunités exceptionnelles. 12+ spécialisations certifiées par Google, Meta, Adobe, Stanford et PMI pour dominer l'économie créative."
               icon={<Megaphone className="w-8 h-8 text-academy-lightblue" />}
               careers={digitalMarketingCareers}
               colorScheme="green"
