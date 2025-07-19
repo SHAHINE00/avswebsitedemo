@@ -88,22 +88,22 @@ const PartnersSection: React.FC = () => {
         </div>
 
         {/* Stats Below */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mt-8 sm:mt-10 md:mt-12 max-w-4xl mx-auto">
-          <div className="text-center border-0">
-            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2 border-0">11+</div>
-            <div className="text-gray-600 text-xs sm:text-sm border-0">Partenaires prestigieux</div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mt-8 sm:mt-10 md:mt-12 max-w-4xl mx-auto border-none">
+          <div className="text-center border-none">
+            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2 border-none">11+</div>
+            <div className="text-gray-600 text-xs sm:text-sm border-none">Partenaires prestigieux</div>
           </div>
-          <div className="text-center border-0">
-            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2 border-0">100%</div>
-            <div className="text-gray-600 text-xs sm:text-sm border-0">Certifications reconnues</div>
+          <div className="text-center border-none">
+            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2 border-none">100%</div>
+            <div className="text-gray-600 text-xs sm:text-sm border-none">Certifications reconnues</div>
           </div>
-          <div className="text-center border-0">
-            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2 border-0">26+</div>
-            <div className="text-gray-600 text-xs sm:text-sm border-0">Formations certifiées</div>
+          <div className="text-center border-none">
+            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2 border-none">26+</div>
+            <div className="text-gray-600 text-xs sm:text-sm border-none">Formations certifiées</div>
           </div>
-          <div className="text-center border-0">
-            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2 border-0">∞</div>
-            <div className="text-gray-600 text-xs sm:text-sm border-0">Opportunités</div>
+          <div className="text-center border-none">
+            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2 border-none">∞</div>
+            <div className="text-gray-600 text-xs sm:text-sm border-none">Opportunités</div>
           </div>
         </div>
       </div>

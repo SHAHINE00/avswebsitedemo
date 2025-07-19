@@ -20,10 +20,6 @@ const HeroBanner: React.FC = () => {
         <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-academy-blue/20 to-academy-purple/20 rounded-full blur-xl animate-float"></div>
         <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-academy-purple/20 to-academy-lightblue/20 rounded-full blur-xl animate-float" style={{animationDelay: '2s'}}></div>
         <div className="absolute bottom-20 left-1/4 w-20 h-20 bg-gradient-to-br from-academy-lightblue/20 to-academy-blue/20 rounded-full blur-xl animate-float" style={{animationDelay: '4s'}}></div>
-        
-        {/* Decorative Lines */}
-        <div className="absolute top-1/3 left-0 w-full h-px bg-gradient-to-r from-transparent via-academy-blue/30 to-transparent"></div>
-        <div className="absolute bottom-1/3 left-0 w-full h-px bg-gradient-to-r from-transparent via-academy-purple/30 to-transparent"></div>
       </div>
 
       {/* Main Content - Centered */}
@@ -45,12 +41,10 @@ const HeroBanner: React.FC = () => {
 
         {/* Decorative Elements */}
         <div className="flex items-center justify-center gap-4 mb-8 animate-fade-in" style={{animationDelay: '0.4s'}}>
-          <div className="h-px w-16 bg-gradient-to-r from-transparent to-academy-blue"></div>
           <div className="flex gap-2">
             <Brain className="w-6 h-6 text-academy-blue" />
             <Zap className="w-6 h-6 text-academy-purple" />
           </div>
-          <div className="h-px w-16 bg-gradient-to-l from-transparent to-academy-purple"></div>
         </div>
 
         {/* Subtitle */}
