@@ -105,24 +105,6 @@ const PartnersSection: React.FC = () => {
           <div className="absolute top-0 right-0 w-12 sm:w-16 md:w-24 h-full bg-gradient-to-l from-gray-50/50 to-transparent pointer-events-none"></div>
         </div>
 
-        {/* Progress Indicator */}
-        <div className="flex justify-center mt-6">
-          <div className="flex gap-2">
-            {[...Array(5)].map((_, index) => (
-              <div
-                key={index}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  index === 0 ? 'bg-academy-blue' : 'bg-gray-300'
-                }`}
-                style={{
-                  animationDelay: `${index * 0.5}s`,
-                  animation: 'progress-pulse 2.5s infinite'
-                }}
-              ></div>
-            ))}
-          </div>
-        </div>
-
         {/* Stats Below */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mt-8 sm:mt-10 md:mt-12 max-w-4xl mx-auto border-none">
           <div className="text-center border-none">
