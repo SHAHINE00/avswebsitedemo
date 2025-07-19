@@ -1,4 +1,3 @@
-
 import { Brain, Code, Rocket, TrendingUp, Users, Building, Star, ArrowRight, CheckCircle, Eye, MessageSquare, Shield, Gamepad2, Cloud, Cpu, Database, TestTube, Layers, Zap, BarChart3, PieChart, Monitor, Smartphone, Globe, Video, Camera, Megaphone, ShoppingCart, Hash, Palette, Search, FileText, Trophy, Settings, Briefcase, PenTool, Lightbulb, Target, Award } from 'lucide-react';
 import { Career } from '@/components/careers/CareerCard';
 
@@ -14,7 +13,7 @@ export const aiCareers: Career[] = [
     experience: "2-5 سنوات",
     icon: Brain,
     applications: ["إنشاء المحتوى", "الأتمتة", "التصميم", "الكتابة"],
-    certification: "شهادات AVS + MIT/Google/Microsoft في الذكاء الاصطناعي التوليدي",
+    certification: "شهادة AVS المعتمدة + شهادة MIT في الذكاء الاصطناعي التوليدي + شهادة Google AI المتقدمة",
     duration: "6 أسابيع",
     modules: "12 وحدة متخصصة",
     relatedCourses: ["الذكاء الاصطناعي التوليدي", "هندسة التعليمات المتقدمة"],
@@ -31,11 +30,11 @@ export const aiCareers: Career[] = [
     experience: "3-7 سنوات",
     icon: Briefcase,
     applications: ["الاستشارة الاستراتيجية", "التحول الرقمي", "التحسين", "الابتكار"],
-    certification: "شهادات AVS + MIT/Google/Microsoft في الذكاء الاصطناعي للأعمال",
+    certification: "شهادة AVS المعتمدة + شهادة Harvard Business School في الذكاء الاصطناعي للأعمال + شهادة MIT Sloan",
     duration: "5 أسابيع",
     modules: "10 وحدات أعمال",
     relatedCourses: ["الذكاء الاصطناعي للأعمال", "استراتيجية الذكاء الاصطناعي"],
-    certifyingPartners: ["MIT", "Google", "Microsoft"]
+    certifyingPartners: ["Harvard", "MIT", "Stanford"]
   },
   {
     title: "إنشاء المحتوى بالذكاء الاصطناعي",
@@ -48,11 +47,11 @@ export const aiCareers: Career[] = [
     experience: "1-4 سنوات",
     icon: PenTool,
     applications: ["التسويق", "وسائل التواصل الاجتماعي", "الإعلان", "التعلم الإلكتروني"],
-    certification: "شهادات AVS + Google في إنشاء المحتوى بالذكاء الاصطناعي",
+    certification: "شهادة AVS المعتمدة + شهادة Google في إنشاء المحتوى بالذكاء الاصطناعي + شهادة Adobe Creative",
     duration: "4 أسابيع",
     modules: "8 وحدات إبداعية",
     relatedCourses: ["إنشاء المحتوى بالذكاء الاصطناعي", "التسويق الرقمي بالذكاء الاصطناعي"],
-    certifyingPartners: ["Google"]
+    certifyingPartners: ["Google", "Adobe"]
   },
   {
     title: "معالجة الصور والرؤية الحاسوبية",
@@ -65,11 +64,11 @@ export const aiCareers: Career[] = [
     experience: "3-6 سنوات",
     icon: Eye,
     applications: ["السيارات", "الأمن", "الصحة", "الصناعة 4.0"],
-    certification: "شهادات AVS + IBM في معالجة الصور والرؤية الحاسوبية",
+    certification: "شهادة AVS المعتمدة + شهادة IBM في معالجة الصور والرؤية الحاسوبية + شهادة Stanford AI",
     duration: "7 أسابيع",
     modules: "14 وحدة تقنية",
     relatedCourses: ["الرؤية الحاسوبية", "التعلم العميق"],
-    certifyingPartners: ["IBM"]
+    certifyingPartners: ["IBM", "Stanford"]
   },
   {
     title: "معالجة اللغة الطبيعية",
@@ -82,11 +81,11 @@ export const aiCareers: Career[] = [
     experience: "3-6 سنوات",
     icon: MessageSquare,
     applications: ["روبوتات المحادثة", "الترجمة", "تحليل المشاعر", "المساعد الذكي"],
-    certification: "شهادات AVS + Harvard في معالجة اللغة الطبيعية",
+    certification: "شهادة AVS المعتمدة + شهادة Harvard في معالجة اللغة الطبيعية + شهادة Google NLP",
     duration: "6 أسابيع",
     modules: "12 وحدة معالجة لغة طبيعية",
     relatedCourses: ["معالجة اللغة الطبيعية المتقدمة", "روبوتات المحادثة الذكية"],
-    certifyingPartners: ["Harvard"]
+    certifyingPartners: ["Harvard", "Google"]
   },
   {
     title: "أخلاقيات وحوكمة الذكاء الاصطناعي",
@@ -99,11 +98,11 @@ export const aiCareers: Career[] = [
     experience: "4-8 سنوات",
     icon: Shield,
     applications: ["الحوكمة", "الامتثال", "الأخلاقيات", "التنظيم"],
-    certification: "شهادات AVS + Stanford في أخلاقيات وحوكمة الذكاء الاصطناعي",
+    certification: "شهادة AVS المعتمدة + شهادة Stanford في أخلاقيات وحوكمة الذكاء الاصطناعي + شهادة MIT Ethics",
     duration: "4 أسابيع",
     modules: "8 وحدات أخلاقية",
     relatedCourses: ["أخلاقيات الذكاء الاصطناعي", "الحوكمة التكنولوجية"],
-    certifyingPartners: ["Stanford"]
+    certifyingPartners: ["Stanford", "MIT"]
   },
   {
     title: "البرمجة بلغة Python للذكاء الاصطناعي",
@@ -116,11 +115,11 @@ export const aiCareers: Career[] = [
     experience: "2-5 سنوات",
     icon: Code,
     applications: ["هندسة التعلم الآلي", "معالجة البيانات", "تطوير واجهات البرمجة", "الأتمتة"],
-    certification: "شهادات AVS + Google في البرمجة بلغة Python للذكاء الاصطناعي",
+    certification: "شهادة AVS المعتمدة + شهادة Google في البرمجة بلغة Python للذكاء الاصطناعي + شهادة Microsoft Python",
     duration: "5 أسابيع",
     modules: "10 وحدات Python",
     relatedCourses: ["Python المتقدم", "التعلم الآلي بـ Python"],
-    certifyingPartners: ["Google"]
+    certifyingPartners: ["Google", "Microsoft"]
   },
   {
     title: "علم البيانات (Data Science)",
@@ -133,11 +132,11 @@ export const aiCareers: Career[] = [
     experience: "2-5 سنوات",
     icon: BarChart3,
     applications: ["التحليلات", "التنبؤ", "ذكاء الأعمال", "البحث"],
-    certification: "شهادات AVS + Microsoft في علم البيانات",
+    certification: "شهادة AVS المعتمدة + شهادة Microsoft في علم البيانات + شهادة IBM Data Science",
     duration: "6 أسابيع",
     modules: "12 وحدة بيانات",
     relatedCourses: ["علم البيانات", "التحليل التنبؤي"],
-    certifyingPartners: ["Microsoft"]
+    certifyingPartners: ["Microsoft", "IBM"]
   },
   {
     title: "تعلم الآلة (Machine Learning)",
@@ -150,11 +149,11 @@ export const aiCareers: Career[] = [
     experience: "3-6 سنوات",
     icon: Cpu,
     applications: ["التنبؤ", "التصنيف", "التوصية", "التحسين"],
-    certification: "شهادات AVS + IBM في تعلم الآلة",
+    certification: "شهادة AVS المعتمدة + شهادة IBM في تعلم الآلة + شهادة Google ML Engineer",
     duration: "7 أسابيع",
     modules: "14 وحدة تعلم آلي",
     relatedCourses: ["التعلم الآلي", "التعلم العميق"],
-    certifyingPartners: ["IBM"]
+    certifyingPartners: ["IBM", "Google"]
   },
   {
     title: "هندسة التعليمات المتقدمة (Prompt Engineering)",
@@ -167,11 +166,28 @@ export const aiCareers: Career[] = [
     experience: "1-3 سنوات",
     icon: Lightbulb,
     applications: ["الأتمتة", "إنشاء المحتوى", "دعم العملاء", "التدريب"],
-    certification: "شهادات AVS + MIT في هندسة التعليمات المتقدمة",
+    certification: "شهادة AVS المعتمدة + شهادة MIT في هندسة التعليمات المتقدمة + شهادة OpenAI",
     duration: "3 أسابيع",
     modules: "6 وحدات تعليمات",
     relatedCourses: ["هندسة التعليمات", "الذكاء الاصطناعي التوليدي"],
-    certifyingPartners: ["MIT"]
+    certifyingPartners: ["MIT", "OpenAI"]
+  },
+  {
+    title: "روبوتات المحادثة الذكية (Chatbots)",
+    salary: "€44k - €69k",
+    level: "متوسط",
+    description: "تطوير روبوتات محادثة ذكية ومخصصة لخدمة العملاء والدعم التقني.",
+    skills: ["معالجة اللغة الطبيعية", "DialogFlow", "Rasa", "ChatGPT API", "تصميم المحادثة", "تحليل المشاعر"],
+    growth: "نمو 43% سنوياً",
+    companies: ["Microsoft", "Google", "IBM", "Salesforce", "Zendesk"],
+    experience: "2-4 سنوات",
+    icon: MessageSquare,
+    applications: ["خدمة العملاء", "الدعم التقني", "المبيعات", "التدريب"],
+    certification: "شهادة AVS المعتمدة + شهادة Google في روبوتات المحادثة الذكية + شهادة Microsoft Bot Framework",
+    duration: "5 أسابيع",
+    modules: "10 وحدات محادثة",
+    relatedCourses: ["روبوتات المحادثة", "معالجة اللغة الطبيعية"],
+    certifyingPartners: ["Google", "Microsoft"]
   }
 ];
 
@@ -187,7 +203,7 @@ export const programmingCareers: Career[] = [
     experience: "1-3 سنوات",
     icon: PieChart,
     applications: ["التحليل المالي", "التقارير", "ذكاء الأعمال", "التدقيق"],
-    certification: "شهادات AVS + Microsoft في تحليل البيانات باستخدام Excel الاحترافي",
+    certification: "شهادة AVS المعتمدة + شهادة Microsoft في تحليل البيانات باستخدام Excel الاحترافي + شهادة Microsoft Office Specialist",
     duration: "4 أسابيع",
     modules: "8 وحدات Excel",
     relatedCourses: ["Excel المتقدم", "تحليل البيانات"],
@@ -204,11 +220,11 @@ export const programmingCareers: Career[] = [
     experience: "2-4 سنوات",
     icon: TrendingUp,
     applications: ["التمويل", "الاستثمار", "تحليل المخاطر", "إدارة المحافظ"],
-    certification: "شهادات AVS + Google في تحليل البيانات المالية",
+    certification: "شهادة AVS المعتمدة + شهادة Google في تحليل البيانات المالية + شهادة Bloomberg Market Concepts",
     duration: "5 أسابيع",
     modules: "10 وحدات مالية",
     relatedCourses: ["التمويل الكمي", "تحليل المخاطر"],
-    certifyingPartners: ["Google"]
+    certifyingPartners: ["Google", "Bloomberg"]
   },
   {
     title: "تطوير الويب الكامل (Full Stack Web Development)",
@@ -221,7 +237,7 @@ export const programmingCareers: Career[] = [
     experience: "2-5 سنوات",
     icon: Code,
     applications: ["تطبيقات الويب", "التجارة الإلكترونية", "SaaS", "المنصات"],
-    certification: "شهادات AVS + Google/Microsoft في تطوير الويب الكامل",
+    certification: "شهادة AVS المعتمدة + شهادة Google في تطوير الويب الكامل + شهادة Microsoft Azure Developer",
     duration: "8 أسابيع",
     modules: "16 وحدة تطوير",
     relatedCourses: ["تطوير الويب", "JavaScript المتقدم"],
@@ -238,11 +254,11 @@ export const programmingCareers: Career[] = [
     experience: "2-5 سنوات",
     icon: Smartphone,
     applications: ["تطبيقات الهاتف", "التجارة الإلكترونية", "الاجتماعية", "الألعاب"],
-    certification: "شهادات AVS + Google في تطوير تطبيقات الهاتف المحمول",
+    certification: "شهادة AVS المعتمدة + شهادة Google في تطوير تطبيقات الهاتف المحمول + شهادة Apple Developer",
     duration: "7 أسابيع",
     modules: "14 وحدة هاتف محمول",
     relatedCourses: ["تطوير الهاتف المحمول", "React Native"],
-    certifyingPartners: ["Google"]
+    certifyingPartners: ["Google", "Apple"]
   },
   {
     title: "تصميم UX/UI",
@@ -255,11 +271,11 @@ export const programmingCareers: Career[] = [
     experience: "2-4 سنوات",
     icon: Palette,
     applications: ["تصميم الويب", "تصميم التطبيقات", "تصميم المنتجات", "العلامة التجارية"],
-    certification: "شهادات AVS + Google في تصميم UX/UI",
+    certification: "شهادة AVS المعتمدة + شهادة Google في تصميم UX/UI + شهادة Adobe Certified Expert",
     duration: "6 أسابيع",
     modules: "12 وحدة تصميم",
     relatedCourses: ["تصميم UX/UI", "التفكير التصميمي"],
-    certifyingPartners: ["Google"]
+    certifyingPartners: ["Google", "Adobe"]
   },
   {
     title: "الأمن السيبراني",
@@ -272,11 +288,11 @@ export const programmingCareers: Career[] = [
     experience: "3-6 سنوات",
     icon: Shield,
     applications: ["أمن الشبكات", "تدقيق الأمان", "الطب الشرعي", "الامتثال"],
-    certification: "شهادات AVS + IBM في الأمن السيبراني",
+    certification: "شهادة AVS المعتمدة + شهادة IBM في الأمن السيبراني + شهادة Cisco CCNA Security",
     duration: "6 أسابيع",
     modules: "12 وحدة أمنية",
     relatedCourses: ["الأمن السيبراني", "القرصنة الأخلاقية"],
-    certifyingPartners: ["IBM"]
+    certifyingPartners: ["IBM", "Cisco"]
   },
   {
     title: "الحوسبة السحابية",
@@ -289,11 +305,11 @@ export const programmingCareers: Career[] = [
     experience: "4-7 سنوات",
     icon: Cloud,
     applications: ["البنية التحتية", "قابلية التوسع", "الهجرة السحابية", "DevOps"],
-    certification: "شهادات AVS + AWS في الحوسبة السحابية",
+    certification: "شهادة AVS المعتمدة + شهادة AWS Certified Solutions Architect + شهادة Microsoft Azure Solutions Architect",
     duration: "5 أسابيع",
     modules: "10 وحدات سحابية",
     relatedCourses: ["AWS", "هندسة السحابة"],
-    certifyingPartners: ["Amazon AWS"]
+    certifyingPartners: ["AWS", "Microsoft", "Google Cloud"]
   },
   {
     title: "DevOps وإدارة التطوير",
@@ -306,11 +322,11 @@ export const programmingCareers: Career[] = [
     experience: "3-6 سنوات",
     icon: Settings,
     applications: ["CI/CD", "الأتمتة", "البنية التحتية", "المراقبة"],
-    certification: "شهادات AVS + Microsoft في DevOps وإدارة التطوير",
+    certification: "شهادة AVS المعتمدة + شهادة Microsoft في DevOps وإدارة التطوير + شهادة Docker Certified Associate",
     duration: "6 أسابيع",
     modules: "12 وحدة DevOps",
     relatedCourses: ["DevOps", "أتمتة البنية التحتية"],
-    certifyingPartners: ["Microsoft"]
+    certifyingPartners: ["Microsoft", "Docker", "Kubernetes"]
   },
   {
     title: "تطوير الألعاب (Game Development)",
@@ -323,11 +339,11 @@ export const programmingCareers: Career[] = [
     experience: "2-5 سنوات",
     icon: Gamepad2,
     applications: ["ألعاب الهاتف", "ألعاب الكمبيوتر", "VR/AR", "الألعاب الجدية"],
-    certification: "شهادات AVS + Unity في تطوير الألعاب",
+    certification: "شهادة AVS المعتمدة + شهادة Unity Certified Developer + شهادة Epic Games Unreal Engine",
     duration: "8 أسابيع",
     modules: "16 وحدة ألعاب",
     relatedCourses: ["تطوير الألعاب", "Unity 3D"],
-    certifyingPartners: ["Unity"]
+    certifyingPartners: ["Unity", "Epic Games"]
   },
   {
     title: "إنترنت الأشياء (IoT)",
@@ -340,11 +356,28 @@ export const programmingCareers: Career[] = [
     experience: "3-6 سنوات",
     icon: Cpu,
     applications: ["المدن الذكية", "الصناعة 4.0", "المنزل الذكي", "الزراعة المتصلة"],
-    certification: "شهادات AVS + Microsoft في إنترنت الأشياء",
+    certification: "شهادة AVS المعتمدة + شهادة Microsoft في إنترنت الأشياء + شهادة IBM IoT Foundation",
     duration: "5 أسابيع",
     modules: "10 وحدات إنترنت الأشياء",
     relatedCourses: ["إنترنت الأشياء", "الأنظمة المدمجة"],
-    certifyingPartners: ["Microsoft"]
+    certifyingPartners: ["Microsoft", "IBM"]
+  },
+  {
+    title: "إدارة قواعد البيانات",
+    salary: "€44k - €67k",
+    level: "متوسط",
+    description: "تصميم وإدارة قواعد البيانات الضخمة وتحسين الأداء.",
+    skills: ["SQL", "PostgreSQL", "MongoDB", "Oracle", "تحسين الاستعلامات", "النسخ الاحتياطي"],
+    growth: "نمو 27% سنوياً",
+    companies: ["Oracle", "Microsoft", "IBM", "Google", "Amazon"],
+    experience: "2-5 سنوات",
+    icon: Database,
+    applications: ["إدارة البيانات", "النسخ الاحتياطي", "التحليلات", "الأداء"],
+    certification: "شهادة AVS المعتمدة + شهادة Oracle Database Administrator + شهادة Microsoft SQL Server",
+    duration: "4 أسابيع",
+    modules: "8 وحدات قواعد بيانات",
+    relatedCourses: ["قواعد البيانات", "SQL المتقدم"],
+    certifyingPartners: ["Oracle", "Microsoft"]
   }
 ];
 
@@ -360,11 +393,11 @@ export const digitalMarketingCareers: Career[] = [
     experience: "2-4 سنوات",
     icon: Megaphone,
     applications: ["الإعلان بالذكاء الاصطناعي", "الأتمتة", "التخصيص", "الإسناد"],
-    certification: "شهادات AVS + Google في التسويق الرقمي بالذكاء الاصطناعي",
+    certification: "شهادة AVS المعتمدة + شهادة Google في التسويق الرقمي بالذكاء الاصطناعي + شهادة Meta Blueprint",
     duration: "5 أسابيع",
     modules: "10 وحدات تسويق",
     relatedCourses: ["التسويق الرقمي بالذكاء الاصطناعي", "نمو القرصنة"],
-    certifyingPartners: ["Google"]
+    certifyingPartners: ["Google", "Meta"]
   },
   {
     title: "صناعة المحتوى الرقمي",
@@ -377,11 +410,11 @@ export const digitalMarketingCareers: Career[] = [
     experience: "1-3 سنوات",
     icon: Camera,
     applications: ["وسائل التواصل الاجتماعي", "التأثير", "محتوى العلامة التجارية", "التسويق الفيروسي"],
-    certification: "شهادات AVS + Meta في صناعة المحتوى الرقمي",
+    certification: "شهادة AVS المعتمدة + شهادة Meta في صناعة المحتوى الرقمي + شهادة YouTube Creator",
     duration: "4 أسابيع",
     modules: "8 وحدات إبداعية",
     relatedCourses: ["إنشاء المحتوى", "وسائل التواصل الاجتماعي"],
-    certifyingPartners: ["Meta"]
+    certifyingPartners: ["Meta", "YouTube"]
   },
   {
     title: "التجارة الإلكترونية",
@@ -394,11 +427,11 @@ export const digitalMarketingCareers: Career[] = [
     experience: "2-4 سنوات",
     icon: ShoppingCart,
     applications: ["التجارة الإلكترونية", "السوق", "الدروب شيبينغ", "التجزئة"],
-    certification: "شهادات AVS + Google في التجارة الإلكترونية",
+    certification: "شهادة AVS المعتمدة + شهادة Google في التجارة الإلكترونية + شهادة Shopify Partner",
     duration: "4 أسابيع",
     modules: "8 وحدات تجارة إلكترونية",
     relatedCourses: ["التجارة الإلكترونية", "Shopify"],
-    certifyingPartners: ["Google"]
+    certifyingPartners: ["Google", "Shopify"]
   },
   {
     title: "تحسين محركات البحث (SEO)",
@@ -411,7 +444,7 @@ export const digitalMarketingCareers: Career[] = [
     experience: "2-4 سنوات",
     icon: Search,
     applications: ["الفهرسة", "تدقيق SEO", "تسويق المحتوى", "SEO المحلي"],
-    certification: "شهادات AVS + Google في تحسين محركات البحث",
+    certification: "شهادة AVS المعتمدة + شهادة Google في تحسين محركات البحث + شهادة Google Analytics 4",
     duration: "4 أسابيع",
     modules: "8 وحدات SEO",
     relatedCourses: ["SEO المتقدم", "التسويق الرقمي"],
@@ -428,7 +461,7 @@ export const digitalMarketingCareers: Career[] = [
     experience: "1-3 سنوات",
     icon: Users,
     applications: ["إدارة العلامة التجارية", "التواصل الأزمات", "التأثير", "السمعة"],
-    certification: "شهادات AVS + Meta/Google في العلاقات العامة الرقمية",
+    certification: "شهادة AVS المعتمدة + شهادة Meta في العلاقات العامة الرقمية + شهادة Google Digital Marketing",
     duration: "3 أسابيع",
     modules: "6 وحدات علاقات عامة",
     relatedCourses: ["العلاقات العامة الرقمية", "التواصل"],
@@ -445,11 +478,11 @@ export const digitalMarketingCareers: Career[] = [
     experience: "2-4 سنوات",
     icon: Video,
     applications: ["التسويق بالفيديو", "التدريب", "الترفيه", "الشركات"],
-    certification: "شهادات AVS + Meta في إنتاج وتحرير الفيديو",
+    certification: "شهادة AVS المعتمدة + شهادة Adobe في إنتاج وتحرير الفيديو + شهادة Meta Video Creator",
     duration: "5 أسابيع",
     modules: "10 وحدات فيديو",
     relatedCourses: ["إنتاج الفيديو", "تصميم الحركة"],
-    certifyingPartners: ["Meta"]
+    certifyingPartners: ["Adobe", "Meta"]
   },
   {
     title: "ريادة الأعمال التقنية",
@@ -462,11 +495,11 @@ export const digitalMarketingCareers: Career[] = [
     experience: "3-10 سنوات",
     icon: Rocket,
     applications: ["الشركات الناشئة", "الابتكار", "التكنولوجيا المالية", "SaaS"],
-    certification: "شهادات AVS + Stanford في ريادة الأعمال التقنية",
+    certification: "شهادة AVS المعتمدة + شهادة Stanford في ريادة الأعمال التقنية + شهادة Harvard Business School",
     duration: "6 أسابيع",
     modules: "12 وحدة ريادة أعمال",
     relatedCourses: ["ريادة الأعمال", "الابتكار"],
-    certifyingPartners: ["Stanford"]
+    certifyingPartners: ["Stanford", "Harvard"]
   },
   {
     title: "إدارة المشاريع الرقمية",
@@ -479,11 +512,11 @@ export const digitalMarketingCareers: Career[] = [
     experience: "3-6 سنوات",
     icon: Target,
     applications: ["التحول الرقمي", "مشاريع تكنولوجيا المعلومات", "إطلاق المنتجات", "إدارة التغيير"],
-    certification: "شهادات AVS + PMI في إدارة المشاريع الرقمية",
+    certification: "شهادة AVS المعتمدة + شهادة PMI في إدارة المشاريع الرقمية + شهادة Scrum Master",
     duration: "5 أسابيع",
     modules: "10 وحدات مشروع",
     relatedCourses: ["إدارة المشاريع", "المنهجيات الرشيقة"],
-    certifyingPartners: ["PMI"]
+    certifyingPartners: ["PMI", "Scrum Alliance"]
   },
   {
     title: "إدارة المنتجات التقنية",
@@ -496,11 +529,11 @@ export const digitalMarketingCareers: Career[] = [
     experience: "3-6 سنوات",
     icon: Layers,
     applications: ["تطوير المنتجات", "الاستراتيجية", "الابتكار", "النمو"],
-    certification: "شهادات AVS + Google في إدارة المنتجات التقنية",
+    certification: "شهادة AVS المعتمدة + شهادة Google في إدارة المنتجات التقنية + شهادة Stanford Product Management",
     duration: "5 أسابيع",
     modules: "10 وحدات منتج",
     relatedCourses: ["إدارة المنتجات", "الاستراتيجية"],
-    certifyingPartners: ["Google"]
+    certifyingPartners: ["Google", "Stanford"]
   },
   {
     title: "التصميم الجرافيكي الاحترافي",
@@ -513,7 +546,7 @@ export const digitalMarketingCareers: Career[] = [
     experience: "1-4 سنوات",
     icon: Palette,
     applications: ["تصميم العلامة التجارية", "التسويق", "تصميم الويب", "الطباعة"],
-    certification: "شهادات AVS + Adobe في التصميم الجرافيكي الاحترافي",
+    certification: "شهادة AVS المعتمدة + شهادة Adobe في التصميم الجرافيكي الاحترافي + شهادة Adobe Certified Expert",
     duration: "5 أسابيع",
     modules: "10 وحدات تصميم",
     relatedCourses: ["التصميم الجرافيكي", "Adobe Creative"],
@@ -530,11 +563,11 @@ export const digitalMarketingCareers: Career[] = [
     experience: "2-5 سنوات",
     icon: Lightbulb,
     applications: ["الابتكار", "تصميم المنتجات", "تصميم الخدمات", "الاستراتيجية"],
-    certification: "شهادات AVS + Stanford في التفكير التصميمي",
+    certification: "شهادة AVS المعتمدة + شهادة Stanford في التفكير التصميمي + شهادة IDEO Design Thinking",
     duration: "4 أسابيع",
     modules: "8 وحدات ابتكار",
     relatedCourses: ["التفكير التصميمي", "الابتكار"],
-    certifyingPartners: ["Stanford"]
+    certifyingPartners: ["Stanford", "IDEO"]
   },
   {
     title: "القيادة الرقمية",
@@ -547,11 +580,11 @@ export const digitalMarketingCareers: Career[] = [
     experience: "5-10 سنوات",
     icon: Award,
     applications: ["الإدارة", "التحول", "الابتكار", "الاستراتيجية"],
-    certification: "شهادات AVS + Harvard في القيادة الرقمية",
+    certification: "شهادة AVS المعتمدة + شهادة Harvard في القيادة الرقمية + شهادة MIT Leadership Certificate",
     duration: "4 أسابيع",
     modules: "8 وحدات قيادة",
     relatedCourses: ["القيادة", "الإدارة"],
-    certifyingPartners: ["Harvard"]
+    certifyingPartners: ["Harvard", "MIT"]
   }
 ];
 
