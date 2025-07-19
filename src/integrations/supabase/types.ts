@@ -492,6 +492,9 @@ export type Database = {
       courses: {
         Row: {
           button_text_color: string | null
+          certification_provider_logo: string | null
+          certification_provider_name: string | null
+          certification_recognition: string | null
           created_at: string | null
           created_by: string | null
           diploma: string | null
@@ -516,6 +519,9 @@ export type Database = {
         }
         Insert: {
           button_text_color?: string | null
+          certification_provider_logo?: string | null
+          certification_provider_name?: string | null
+          certification_recognition?: string | null
           created_at?: string | null
           created_by?: string | null
           diploma?: string | null
@@ -540,6 +546,9 @@ export type Database = {
         }
         Update: {
           button_text_color?: string | null
+          certification_provider_logo?: string | null
+          certification_provider_name?: string | null
+          certification_recognition?: string | null
           created_at?: string | null
           created_by?: string | null
           diploma?: string | null

@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Clock, BookOpen, Award, CheckCircle, Brain, Code, Database, Cloud, Target, Shield } from 'lucide-react';
+import { Clock, BookOpen, Award, CheckCircle, Brain, Code, Database, Cloud, Target, Shield, Star } from 'lucide-react';
 import EnrollmentButton from './EnrollmentButton';
 import type { Course } from '@/hooks/useCourses';
 import type { LucideIcon } from 'lucide-react';
@@ -88,6 +88,42 @@ const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
               </div>
             )}
           </div>
+
+          {/* Certification Provider */}
+          {course.certification_provider_name && (
+            <div className="space-y-3">
+              <h4 className="font-semibold text-gray-900 flex items-center space-x-2">
+                <Star className="w-5 h-5 text-yellow-500" />
+                <span>Certification & Accréditation</span>
+              </h4>
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-100">
+                <div className="flex items-center space-x-4">
+                  {course.certification_provider_logo && (
+                    <div className="flex-shrink-0">
+                      <img 
+                        src={course.certification_provider_logo} 
+                        alt={`${course.certification_provider_name} logo`}
+                        className="w-12 h-12 object-contain rounded-lg bg-white p-1 shadow-sm"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <h5 className="font-medium text-gray-900 mb-1">
+                      {course.certification_provider_name}
+                    </h5>
+                    {course.certification_recognition && (
+                      <p className="text-sm text-gray-600 leading-relaxed">
+                        {course.certification_recognition}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Features */}
           {(course.feature1 || course.feature2) && (

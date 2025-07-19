@@ -24,6 +24,9 @@ export interface Course {
   updated_at: string;
   view_count: number | null;
   last_viewed_at: string | null;
+  certification_provider_name: string | null;
+  certification_provider_logo: string | null;
+  certification_recognition: string | null;
 }
 
 export const useCourses = () => {
