@@ -13,7 +13,7 @@ const Curriculum = () => {
         <div className="container mx-auto px-6">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Programme</h1>
           <p className="text-xl text-gray-700 max-w-3xl">
-            Explorez nos parcours pédagogiques complets en Intelligence Artificielle et en Programmation.
+            Accédez à des certifications de classe mondiale grâce à nos partenariats d'excellence avec les plus grandes universités (Harvard, MIT, Stanford) et entreprises technologiques (Google, Microsoft, IBM). Explorez nos trois piliers de formation : IA & Data Science, Programmation & Infrastructure, et Marketing Digital & Créatif.
           </p>
         </div>
       </div>
