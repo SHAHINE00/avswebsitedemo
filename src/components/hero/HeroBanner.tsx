@@ -52,7 +52,7 @@ const HeroBanner: React.FC = () => {
           <span className="font-semibold text-academy-blue">AVS Institut de l'Innovation et de l'Intelligence Artificielle</span>
           <br className="block" />
           <br className="block" />
-          est un institut leader en formation technologique et numérique, reconnu pour son excellence académique et son réseau de partenaires internationaux prestigieux. Voici une présentation enrichie de ses atouts majeurs :
+          est un institut leader en formation technologique et numérique, reconnu pour son excellence académique et son réseau de partenaires internationaux prestigieux. Voici une présentation enrichie de ses atouts majeurs
         </p>
 
         {/* CTA Buttons */}
