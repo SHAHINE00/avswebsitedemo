@@ -89,21 +89,21 @@ const PartnersSection: React.FC = () => {
 
         {/* Stats Below */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mt-8 sm:mt-10 md:mt-12 max-w-4xl mx-auto">
-          <div className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2">11+</div>
-            <div className="text-gray-600 text-xs sm:text-sm">Partenaires prestigieux</div>
+          <div className="text-center border-0">
+            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2 border-0">11+</div>
+            <div className="text-gray-600 text-xs sm:text-sm border-0">Partenaires prestigieux</div>
           </div>
-          <div className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2">100%</div>
-            <div className="text-gray-600 text-xs sm:text-sm">Certifications reconnues</div>
+          <div className="text-center border-0">
+            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2 border-0">100%</div>
+            <div className="text-gray-600 text-xs sm:text-sm border-0">Certifications reconnues</div>
           </div>
-          <div className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2">26+</div>
-            <div className="text-gray-600 text-xs sm:text-sm">Formations certifiées</div>
+          <div className="text-center border-0">
+            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2 border-0">26+</div>
+            <div className="text-gray-600 text-xs sm:text-sm border-0">Formations certifiées</div>
           </div>
-          <div className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2">∞</div>
-            <div className="text-gray-600 text-xs sm:text-sm">Opportunités</div>
+          <div className="text-center border-0">
+            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2 border-0">∞</div>
+            <div className="text-gray-600 text-xs sm:text-sm border-0">Opportunités</div>
           </div>
         </div>
       </div>
