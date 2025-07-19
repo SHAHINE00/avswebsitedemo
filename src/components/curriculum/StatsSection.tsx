@@ -5,8 +5,8 @@ const StatsSection: React.FC = () => {
   return (
     <div className="flex justify-center gap-8 mb-10">
       <div className="text-center">
-        <div className="text-2xl font-bold text-academy-blue">18</div>
-        <div className="text-sm text-gray-500">mois de formation</div>
+        <div className="text-2xl font-bold text-academy-blue">26</div>
+        <div className="text-sm text-gray-500">formation</div>
       </div>
       <div className="text-center">
         <div className="text-2xl font-bold text-academy-purple">95%</div>
@@ -14,7 +14,7 @@ const StatsSection: React.FC = () => {
       </div>
       <div className="text-center">
         <div className="text-2xl font-bold text-academy-lightblue">500+</div>
-        <div className="text-sm text-gray-500">diplômés</div>
+        <div className="text-sm text-gray-500">diplômés/certifiés</div>
       </div>
     </div>
   );
