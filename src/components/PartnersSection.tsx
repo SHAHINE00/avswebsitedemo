@@ -1,4 +1,5 @@
 import React from 'react';
+// Updated with AVS Innovation Institute logo and bigger sizes
 
 const PartnersSection: React.FC = () => {
   const partners = [
