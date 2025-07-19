@@ -6,6 +6,7 @@ import { Download, Sparkles, Zap, Brain } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import DownloadGuidePopup from '@/components/DownloadGuidePopup';
 import CourseUniverseShowcase from './CourseUniverseShowcase';
+import PartnersSection from '../PartnersSection';
 
 const HeroBanner: React.FC = () => {
   const isMobile = useIsMobile();
@@ -76,6 +77,11 @@ const HeroBanner: React.FC = () => {
             Guide IA Gratuit
           </Button>
         </div>
+      </div>
+
+      {/* Partners Section */}
+      <div className="relative z-10 w-full">
+        <PartnersSection />
       </div>
 
       {/* Course Universe Showcase */}
