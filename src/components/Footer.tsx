@@ -12,9 +12,11 @@ const Footer: React.FC = () => {
           {/* Column 1 - About */}
           <div>
             <Link to="/" className="mb-4 inline-block">
-              <div className="h-14 flex items-center">
-                <span className="text-2xl font-bold text-white">TechAcademy</span>
-              </div>
+              <img
+                src="/lovable-uploads/6b248e94-27d0-4f3f-b198-b751ca00a896.png"
+                alt="AVS Innovation Institute" 
+                className="h-14 w-auto object-contain filter brightness-0 invert"
+              />
               <span 
                 className="font-montserrat font-bold text-2xl text-white hidden"
                 style={{ display: 'none' }}
