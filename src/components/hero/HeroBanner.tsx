@@ -1,9 +1,9 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Download, BookOpen, Code } from 'lucide-react';
+import { Download, BookOpen, Code, Sparkles, Zap, Brain } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import OptimizedImage from '@/components/OptimizedImage';
 import DownloadGuidePopup from '@/components/DownloadGuidePopup';
 
 const HeroBanner: React.FC = () => {
@@ -11,64 +11,100 @@ const HeroBanner: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   
   return (
-    <div className="container mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center">
-      <div className="md:w-1/2 mb-10 md:mb-0">
-        <div className="flex items-center justify-center md:justify-start mb-4">
-          <span className="inline-block px-3 py-1 bg-academy-blue/10 text-academy-blue rounded-full text-sm font-medium">
-            Inscriptions ouvertes
-          </span>
+    <div className="container mx-auto px-4 sm:px-6 relative min-h-[80vh] flex items-center justify-center">
+      {/* Sophisticated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Geometric Patterns */}
+        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-academy-blue/20 to-academy-purple/20 rounded-full blur-xl animate-float"></div>
+        <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-academy-purple/20 to-academy-lightblue/20 rounded-full blur-xl animate-float" style={{animationDelay: '2s'}}></div>
+        <div className="absolute bottom-20 left-1/4 w-20 h-20 bg-gradient-to-br from-academy-lightblue/20 to-academy-blue/20 rounded-full blur-xl animate-float" style={{animationDelay: '4s'}}></div>
+        
+        {/* Decorative Lines */}
+        <div className="absolute top-1/3 left-0 w-full h-px bg-gradient-to-r from-transparent via-academy-blue/30 to-transparent"></div>
+        <div className="absolute bottom-1/3 left-0 w-full h-px bg-gradient-to-r from-transparent via-academy-purple/30 to-transparent"></div>
+      </div>
+
+      {/* Main Content - Centered */}
+      <div className="relative z-10 text-center max-w-5xl mx-auto">
+        {/* Status Badge */}
+        <div className="flex items-center justify-center mb-8 animate-fade-in">
+          <div className="inline-flex items-center px-6 py-3 bg-white/90 backdrop-blur-sm border border-academy-blue/20 rounded-full shadow-lg">
+            <Sparkles className="w-5 h-5 text-academy-blue mr-2" />
+            <span className="text-sm font-semibold text-academy-blue">Inscriptions ouvertes</span>
+          </div>
         </div>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-center md:text-left">
-          <span className="gradient-text">L'Avenir de la Technologie Commence Ici Explorez Apprenez Innovez</span>
+
+        {/* Main Headline */}
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-8 animate-fade-in" style={{animationDelay: '0.2s'}}>
+          <span className="block mb-2">L'Avenir de la</span>
+          <span className="gradient-text block mb-2">Technologie</span>
+          <span className="block text-gray-800">Commence Ici</span>
         </h1>
-        <p className="text-base sm:text-lg md:text-xl text-gray-700 mb-8 max-w-lg mx-auto md:mx-0 text-center md:text-left">
-          AVS l'institut de l'Innovation et de l'Intelligence Artificielle - Maîtriser les technologies d'IA et de Programmation de pointe grâce à notre formation la plus complète. Rejoignez les milliers de développements qui boostent votre carrière dans l'industrie de l'IA et de la programmation.
+
+        {/* Decorative Elements */}
+        <div className="flex items-center justify-center gap-4 mb-8 animate-fade-in" style={{animationDelay: '0.4s'}}>
+          <div className="h-px w-16 bg-gradient-to-r from-transparent to-academy-blue"></div>
+          <div className="flex gap-2">
+            <Brain className="w-6 h-6 text-academy-blue" />
+            <Zap className="w-6 h-6 text-academy-purple" />
+          </div>
+          <div className="h-px w-16 bg-gradient-to-l from-transparent to-academy-purple"></div>
+        </div>
+
+        {/* Subtitle */}
+        <p className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in" style={{animationDelay: '0.6s'}}>
+          <span className="font-semibold text-academy-blue">AVS Institut de l'Innovation et de l'Intelligence Artificielle</span>
+          <br className="hidden sm:block" />
+          Maîtrisez les technologies d'IA et de Programmation de pointe grâce à notre formation la plus complète. 
+          <br className="hidden md:block" />
+          Rejoignez les milliers de développeurs qui boostent leur carrière dans l'industrie de l'IA et de la programmation.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-center md:justify-start">
-          <Button asChild className="bg-academy-blue hover:bg-academy-purple text-white font-semibold px-6 py-2 sm:px-8 sm:py-6 text-base sm:text-lg rounded-xl w-full sm:w-auto">
-            <Link to="/register">S'inscrire</Link>
+
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row gap-6 mb-16 justify-center animate-fade-in" style={{animationDelay: '0.8s'}}>
+          <Button asChild className="bg-gradient-to-r from-academy-blue to-academy-purple hover:from-academy-purple hover:to-academy-blue text-white font-bold px-10 py-4 text-lg rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+            <Link to="/register">
+              Commencer Maintenant
+              <Sparkles className="ml-2 h-5 w-5" />
+            </Link>
           </Button>
           <Button 
             onClick={() => setIsPopupOpen(true)}
             variant="outline" 
-            className="border-academy-purple text-academy-purple hover:bg-academy-purple/10 font-semibold px-6 py-2 sm:px-8 sm:py-6 text-base sm:text-lg rounded-xl transition-all shadow-sm w-full sm:w-auto"
+            className="border-2 border-academy-purple text-academy-purple hover:bg-academy-purple hover:text-white font-bold px-10 py-4 text-lg rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-white/90 backdrop-blur-sm"
           >
-            <Download className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-            📘 Télécharger le guide IA gratuitement
+            <Download className="mr-2 h-5 w-5" />
+            Guide IA Gratuit
           </Button>
         </div>
 
-        {/* Course Quick Links */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mt-8">
-          <Link to="/ai-course" className="flex items-center p-4 sm:p-6 bg-white rounded-2xl border border-gray-200 hover:border-academy-blue hover:shadow-lg transition-all">
-            <BookOpen className="w-6 h-6 sm:w-7 sm:h-7 text-academy-blue mr-3 sm:mr-4" />
-            <div>
-              <h3 className="font-semibold text-base sm:text-lg">Formation IA</h3>
-              <p className="text-xs sm:text-sm text-gray-600">Intelligence artificielle</p>
+        {/* Course Quick Links - Enhanced Design */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-2xl mx-auto animate-fade-in" style={{animationDelay: '1s'}}>
+          <Link to="/ai-course" className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-academy-blue/20 to-academy-purple/20 rounded-3xl blur-lg group-hover:blur-xl transition-all duration-300"></div>
+            <div className="relative flex items-center p-8 bg-white/95 backdrop-blur-sm rounded-3xl border border-gray-200/50 hover:border-academy-blue/30 shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:scale-105">
+              <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-academy-blue to-academy-purple rounded-2xl mr-6 group-hover:scale-110 transition-transform duration-300">
+                <BookOpen className="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <h3 className="font-bold text-xl text-gray-800 group-hover:text-academy-blue transition-colors">Formation IA</h3>
+                <p className="text-gray-600 font-medium">Intelligence Artificielle</p>
+              </div>
             </div>
           </Link>
-          <Link to="/programming-course" className="flex items-center p-4 sm:p-6 bg-white rounded-2xl border border-gray-200 hover:border-academy-purple hover:shadow-lg transition-all">
-            <Code className="w-6 h-6 sm:w-7 sm:h-7 text-academy-purple mr-3 sm:mr-4" />
-            <div>
-              <h3 className="font-semibold text-base sm:text-lg">Formation Programmation</h3>
-              <p className="text-xs sm:text-sm text-gray-600">Développement web & mobile</p>
+
+          <Link to="/programming-course" className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-academy-purple/20 to-academy-lightblue/20 rounded-3xl blur-lg group-hover:blur-xl transition-all duration-300"></div>
+            <div className="relative flex items-center p-8 bg-white/95 backdrop-blur-sm rounded-3xl border border-gray-200/50 hover:border-academy-purple/30 shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:scale-105">
+              <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-academy-purple to-academy-lightblue rounded-2xl mr-6 group-hover:scale-110 transition-transform duration-300">
+                <Code className="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <h3 className="font-bold text-xl text-gray-800 group-hover:text-academy-purple transition-colors">Formation Programmation</h3>
+                <p className="text-gray-600 font-medium">Développement Web & Mobile</p>
+              </div>
             </div>
           </Link>
-        </div>
-      </div>
-      
-      <div className="md:w-1/2 md:pl-6 lg:pl-10 flex justify-center">
-        <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md">
-          <div className="absolute -top-6 -left-6 sm:-top-10 sm:-left-10 w-36 sm:w-48 h-36 sm:h-48 bg-academy-blue/10 rounded-full filter blur-xl"></div>
-          <div className="absolute -bottom-6 -right-6 sm:-bottom-10 sm:-right-10 w-36 sm:w-48 h-36 sm:h-48 bg-academy-purple/10 rounded-full filter blur-xl"></div>
-          <OptimizedImage
-            src="/lovable-uploads/5f417ca9-ec0a-42b3-9e82-56b7ec1866fe.png"
-            alt="Équipe collaborant sur un projet de programmation IA" 
-            className="relative z-10 rounded-lg shadow-xl w-full h-auto object-cover"
-            priority={true}
-            sizes="(max-width: 480px) 320px, (max-width: 768px) 384px, 448px"
-          />
-          <div className="absolute -z-10 -bottom-4 -right-4 sm:-bottom-6 sm:-right-6 w-full h-full border-2 border-academy-blue rounded-lg"></div>
         </div>
       </div>
       
