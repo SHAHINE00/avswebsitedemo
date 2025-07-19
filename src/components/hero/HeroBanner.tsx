@@ -56,9 +56,7 @@ const HeroBanner: React.FC = () => {
         <p className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in" style={{animationDelay: '0.6s'}}>
           <span className="font-semibold text-academy-blue">AVS Institut de l'Innovation et de l'Intelligence Artificielle</span>
           <br className="hidden sm:block" />
-          Maîtrisez les technologies d'IA et de Programmation de pointe grâce à notre formation la plus complète. 
-          <br className="hidden md:block" />
-          Rejoignez les milliers de développeurs qui boostent leur carrière dans l'industrie de l'IA et de la programmation.
+          Propulsez votre avenir grâce à AVS Innovation, l'institut de référence en technologies de pointe et compétences numériques. Notre offre englobe l'intelligence artificielle, la cybersécurité, la programmation avancée, la data science et bien plus—avec des certifications internationales reconnues, délivrées en partenariat avec les plus grandes universités et entreprises mondiales.
         </p>
 
         {/* CTA Buttons */}
