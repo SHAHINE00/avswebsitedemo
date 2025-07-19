@@ -10,32 +10,67 @@ const SpecialtyPillars: React.FC = () => {
   const { courses, loading } = useCourses();
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
-  // Improved course categorization with case-insensitive and more precise logic
+  // Improved course categorization based on exact recommendations
   const aiCourses = courses.filter(course => {
     const title = course.title.toLowerCase();
-    // AI & Data Science - focus on artificial intelligence, data analysis, and machine learning
+    
+    // Exact title matches for AI & Data Science
+    const exactMatches = [
+      'formation ia',
+      'ai & machine learning engineering',
+      'business intelligence',
+      'ai for business',
+      'ai for decision making',
+      'computer vision with opencv',
+      'ethical ai & governance',
+      'data science for business',
+      'data science with scikit-learn',
+      'ai applications in industries',
+      'financial data analysis',
+      'python for ai & programming' // cross-listed foundation course
+    ];
+    
+    if (exactMatches.some(match => title.includes(match))) {
+      return true;
+    }
+    
+    // Additional keyword matching for AI & Data Science
     return title.includes('ia') || 
-           title.includes('intelligence') ||
-           title.includes('data science') ||
+           title.includes('intelligence artificielle') ||
            title.includes('machine learning') ||
            title.includes('deep learning') ||
-           title.includes('ai') ||
            title.includes('computer vision') ||
            title.includes('opencv') ||
            title.includes('ethical ai') ||
-           title.includes('business intelligence') ||
            title.includes('scikit-learn') ||
-           // Data analysis courses (not just any data course)
-           (title.includes('data') && (title.includes('analysis') || title.includes('analytics') || title.includes('science'))) ||
-           // Financial data analysis is data analysis, not marketing
-           (title.includes('financial') && title.includes('data')) ||
-           // Python when used for data science/AI contexts
-           (title.includes('python') && (title.includes('data') || title.includes('analysis') || title.includes('ai') || title.includes('machine')));
+           // Data science specific (not just any data course)
+           (title.includes('data science') || (title.includes('data') && title.includes('science'))) ||
+           // Financial data analysis
+           (title.includes('financial') && title.includes('data'));
   });
 
   const programmingCourses = courses.filter(course => {
     const title = course.title.toLowerCase();
-    // Programming & Infrastructure - focus on software development, infrastructure, and technical skills
+    
+    // Exact title matches for Programming & Infrastructure
+    const exactMatches = [
+      'formation programmation',
+      'python for ai & programming', // cross-listed foundation course
+      'advanced python programming',
+      'web development (html, css, js)',
+      'mobile app development',
+      'database design & management',
+      'cloud computing (aws, azure)',
+      'internet of things (iot)',
+      'blockchain & cryptocurrency',
+      'formation cybersécurité' // keeping in programming for now
+    ];
+    
+    if (exactMatches.some(match => title.includes(match))) {
+      return true;
+    }
+    
+    // Additional keyword matching for Programming & Infrastructure
     return title.includes('programmation') ||
            title.includes('développement') ||
            title.includes('programming') ||
@@ -49,17 +84,30 @@ const SpecialtyPillars: React.FC = () => {
            title.includes('internet of things') ||
            title.includes('cybersécurité') ||
            title.includes('cybersecurity') ||
-           // Programming languages when used for general programming (not AI-specific)
-           (title.includes('python') && !title.includes('data') && !title.includes('analysis') && !title.includes('ai') && !title.includes('machine')) ||
+           // Programming languages for general programming (not AI-specific context)
+           (title.includes('python') && title.includes('advanced') && title.includes('programming')) ||
            // Web technologies
-           (title.includes('html') || title.includes('css') || title.includes('javascript') || title.includes('js')) ||
-           // Advanced programming courses
-           title.includes('advanced') && (title.includes('programming') || title.includes('python'));
+           (title.includes('html') || title.includes('css') || title.includes('javascript') || title.includes('js'));
   });
 
   const marketingCourses = courses.filter(course => {
     const title = course.title.toLowerCase();
-    // Marketing Digital & Créatif - focus on marketing, design, content creation, and business tools
+    
+    // Exact title matches for Marketing Digital & Créatif
+    const exactMatches = [
+      'ai-powered digital marketing',
+      'e-commerce marketing',
+      'video production & ai editing',
+      'social media content creation',
+      'google data studio analytics',
+      'data analysis with microsoft excel' // business/marketing analytics tool
+    ];
+    
+    if (exactMatches.some(match => title.includes(match))) {
+      return true;
+    }
+    
+    // Additional keyword matching for Marketing Digital & Créatif
     return title.includes('marketing') ||
            title.includes('e-commerce') ||
            title.includes('digital marketing') ||
@@ -69,7 +117,7 @@ const SpecialtyPillars: React.FC = () => {
            title.includes('design') ||
            title.includes('créatif') ||
            title.includes('graphique') ||
-           // Business tools and software (Excel, Google tools for business/marketing use)
+           // Business tools for marketing/business use
            title.includes('excel') ||
            title.includes('google data studio') ||
            // Creative and design tools
