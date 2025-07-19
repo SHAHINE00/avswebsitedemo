@@ -2,17 +2,17 @@ import React from 'react';
 
 const PartnersSection: React.FC = () => {
   const partners = [
-    { name: 'MIT', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/0c/MIT_logo.svg', url: 'https://web.mit.edu/' },
-    { name: 'Stanford University', logo: 'https://logos-world.net/wp-content/uploads/2020/07/Stanford-University-Logo.png', url: 'https://www.stanford.edu/' },
-    { name: 'Harvard University', logo: 'https://logos-world.net/wp-content/uploads/2020/07/Harvard-University-Logo.png', url: 'https://www.harvard.edu/' },
-    { name: 'Google', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg', url: 'https://www.google.com/' },
-    { name: 'Microsoft', logo: 'https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg', url: 'https://www.microsoft.com/' },
-    { name: 'IBM', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg', url: 'https://www.ibm.com/' },
-    { name: 'Amazon Web Services', logo: 'https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg', url: 'https://aws.amazon.com/' },
-    { name: 'Unity Technologies', logo: 'https://logos-world.net/wp-content/uploads/2021/08/Unity-Logo.png', url: 'https://unity.com/' },
-    { name: 'Meta', logo: 'https://logos-world.net/wp-content/uploads/2021/10/Meta-Logo.png', url: 'https://about.meta.com/' },
-    { name: 'Adobe', logo: 'https://upload.wikimedia.org/wikipedia/commons/8/8d/Adobe_Corporate_Logo.svg', url: 'https://www.adobe.com/' },
-    { name: 'PMI', logo: 'https://logos-world.net/wp-content/uploads/2021/11/PMI-Logo.png', url: 'https://www.pmi.org/' },
+    { name: 'MIT', logo: 'https://cdn.worldvectorlogo.com/logos/mit.svg', url: 'https://web.mit.edu/' },
+    { name: 'Stanford University', logo: 'https://cdn.worldvectorlogo.com/logos/stanford-university.svg', url: 'https://www.stanford.edu/' },
+    { name: 'Harvard University', logo: 'https://cdn.worldvectorlogo.com/logos/harvard-university.svg', url: 'https://www.harvard.edu/' },
+    { name: 'Google', logo: 'https://cdn.worldvectorlogo.com/logos/google-icon.svg', url: 'https://www.google.com/' },
+    { name: 'Microsoft', logo: 'https://cdn.worldvectorlogo.com/logos/microsoft-5.svg', url: 'https://www.microsoft.com/' },
+    { name: 'IBM', logo: 'https://cdn.worldvectorlogo.com/logos/ibm-2.svg', url: 'https://www.ibm.com/' },
+    { name: 'Amazon Web Services', logo: 'https://cdn.worldvectorlogo.com/logos/aws-2.svg', url: 'https://aws.amazon.com/' },
+    { name: 'Unity Technologies', logo: 'https://cdn.worldvectorlogo.com/logos/unity-69.svg', url: 'https://unity.com/' },
+    { name: 'Meta', logo: 'https://cdn.worldvectorlogo.com/logos/meta-1.svg', url: 'https://about.meta.com/' },
+    { name: 'Adobe', logo: 'https://cdn.worldvectorlogo.com/logos/adobe-1.svg', url: 'https://www.adobe.com/' },
+    { name: 'PMI', logo: 'https://cdn.worldvectorlogo.com/logos/pmi-2.svg', url: 'https://www.pmi.org/' },
   ];
 
   // Duplicate the partners array for seamless infinite scroll
