@@ -2,16 +2,17 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Download, BookOpen, Code, Sparkles, Zap, Brain } from 'lucide-react';
+import { Download, Sparkles, Zap, Brain } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import DownloadGuidePopup from '@/components/DownloadGuidePopup';
+import CourseUniverseShowcase from './CourseUniverseShowcase';
 
 const HeroBanner: React.FC = () => {
   const isMobile = useIsMobile();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   
   return (
-    <div className="container mx-auto px-4 sm:px-6 relative min-h-[80vh] flex items-center justify-center">
+    <div className="container mx-auto px-4 sm:px-6 relative min-h-[80vh] flex flex-col items-center justify-center">
       {/* Sophisticated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Geometric Patterns */}
@@ -25,7 +26,7 @@ const HeroBanner: React.FC = () => {
       </div>
 
       {/* Main Content - Centered */}
-      <div className="relative z-10 text-center max-w-5xl mx-auto">
+      <div className="relative z-10 text-center max-w-5xl mx-auto mb-16">
         {/* Status Badge */}
         <div className="flex items-center justify-center mb-8 animate-fade-in">
           <div className="inline-flex items-center px-6 py-3 bg-white/90 backdrop-blur-sm border border-academy-blue/20 rounded-full shadow-lg">
@@ -77,35 +78,11 @@ const HeroBanner: React.FC = () => {
             Guide IA Gratuit
           </Button>
         </div>
+      </div>
 
-        {/* Course Quick Links - Enhanced Design */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-2xl mx-auto animate-fade-in" style={{animationDelay: '1s'}}>
-          <Link to="/ai-course" className="group relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-academy-blue/20 to-academy-purple/20 rounded-3xl blur-lg group-hover:blur-xl transition-all duration-300"></div>
-            <div className="relative flex items-center p-8 bg-white/95 backdrop-blur-sm rounded-3xl border border-gray-200/50 hover:border-academy-blue/30 shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:scale-105">
-              <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-academy-blue to-academy-purple rounded-2xl mr-6 group-hover:scale-110 transition-transform duration-300">
-                <BookOpen className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <h3 className="font-bold text-xl text-gray-800 group-hover:text-academy-blue transition-colors">Formation IA</h3>
-                <p className="text-gray-600 font-medium">Intelligence Artificielle</p>
-              </div>
-            </div>
-          </Link>
-
-          <Link to="/programming-course" className="group relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-academy-purple/20 to-academy-lightblue/20 rounded-3xl blur-lg group-hover:blur-xl transition-all duration-300"></div>
-            <div className="relative flex items-center p-8 bg-white/95 backdrop-blur-sm rounded-3xl border border-gray-200/50 hover:border-academy-purple/30 shadow-lg hover:shadow-2xl transition-all duration-300 transform group-hover:scale-105">
-              <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-academy-purple to-academy-lightblue rounded-2xl mr-6 group-hover:scale-110 transition-transform duration-300">
-                <Code className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <h3 className="font-bold text-xl text-gray-800 group-hover:text-academy-purple transition-colors">Formation Programmation</h3>
-                <p className="text-gray-600 font-medium">Développement Web & Mobile</p>
-              </div>
-            </div>
-          </Link>
-        </div>
+      {/* Course Universe Showcase */}
+      <div className="relative z-10 w-full">
+        <CourseUniverseShowcase />
       </div>
       
       <DownloadGuidePopup 
