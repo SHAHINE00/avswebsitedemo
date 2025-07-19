@@ -19,14 +19,14 @@ const PartnersSection: React.FC = () => {
   const duplicatedPartners = [...partners, ...partners];
 
   return (
-    <section className="py-16 bg-gray-50/50 overflow-hidden">
+    <section className="py-8 bg-gray-50/50 overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6">
         {/* Section Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
             <span className="gradient-text">Nos partenaires académiques & technologiques</span>
           </h2>
-          <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+          <p className="text-gray-600 text-base sm:text-lg max-w-3xl mx-auto">
             Des certifications reconnues mondialement grâce à nos partenariats prestigieux
           </p>
         </div>
@@ -39,7 +39,7 @@ const PartnersSection: React.FC = () => {
               {duplicatedPartners.map((partner, index) => (
                 <div
                   key={`${partner.name}-${index}`}
-                  className="flex-shrink-0 mx-8 group cursor-pointer"
+                  className="flex-shrink-0 mx-4 sm:mx-6 md:mx-8 group cursor-pointer"
                 >
                   <a
                     href={partner.url}
@@ -47,12 +47,15 @@ const PartnersSection: React.FC = () => {
                     rel="noopener noreferrer"
                     className="block transition-all duration-300 transform group-hover:scale-110 group-hover:drop-shadow-lg"
                   >
-                    <div className="h-16 w-32 flex items-center justify-center bg-white rounded-xl shadow-sm border border-gray-100 p-4 group-hover:shadow-md group-hover:border-academy-blue/20 transition-all duration-300">
+                    <div className="h-12 w-24 sm:h-14 sm:w-28 md:h-16 md:w-32 flex items-center justify-center bg-white rounded-xl shadow-sm border border-gray-100 p-2 sm:p-3 md:p-4 group-hover:shadow-md group-hover:border-academy-blue/20 transition-all duration-300">
                       <img
                         src={partner.logo}
                         alt={`${partner.name} logo`}
                         className="max-h-full max-w-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
                         loading="lazy"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
                       />
                     </div>
                   </a>
@@ -62,12 +65,12 @@ const PartnersSection: React.FC = () => {
           </div>
 
           {/* Gradient Overlays for Seamless Effect */}
-          <div className="absolute top-0 left-0 w-24 h-full bg-gradient-to-r from-gray-50/50 to-transparent pointer-events-none"></div>
-          <div className="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-gray-50/50 to-transparent pointer-events-none"></div>
+          <div className="absolute top-0 left-0 w-12 sm:w-16 md:w-24 h-full bg-gradient-to-r from-gray-50/50 to-transparent pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-12 sm:w-16 md:w-24 h-full bg-gradient-to-l from-gray-50/50 to-transparent pointer-events-none"></div>
         </div>
 
         {/* Progress Indicator */}
-        <div className="flex justify-center mt-8">
+        <div className="flex justify-center mt-6">
           <div className="flex gap-2">
             {[...Array(5)].map((_, index) => (
               <div
@@ -85,22 +88,22 @@ const PartnersSection: React.FC = () => {
         </div>
 
         {/* Stats Below */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 max-w-4xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mt-8 sm:mt-10 md:mt-12 max-w-4xl mx-auto">
           <div className="text-center">
-            <div className="text-3xl font-bold text-academy-blue mb-2">11+</div>
-            <div className="text-gray-600 text-sm">Partenaires prestigieux</div>
+            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2">11+</div>
+            <div className="text-gray-600 text-xs sm:text-sm">Partenaires prestigieux</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-academy-blue mb-2">100%</div>
-            <div className="text-gray-600 text-sm">Certifications reconnues</div>
+            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2">100%</div>
+            <div className="text-gray-600 text-xs sm:text-sm">Certifications reconnues</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-academy-blue mb-2">26+</div>
-            <div className="text-gray-600 text-sm">Formations certifiées</div>
+            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2">26+</div>
+            <div className="text-gray-600 text-xs sm:text-sm">Formations certifiées</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-academy-blue mb-2">∞</div>
-            <div className="text-gray-600 text-sm">Opportunités</div>
+            <div className="text-2xl sm:text-3xl font-bold text-academy-blue mb-1 sm:mb-2">∞</div>
+            <div className="text-gray-600 text-xs sm:text-sm">Opportunités</div>
           </div>
         </div>
       </div>
