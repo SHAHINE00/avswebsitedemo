@@ -15,8 +15,13 @@ const PartnersSection: React.FC = () => {
     { name: 'PMI', logo: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjUwIiB2aWV3Qm94PSIwIDAgMTIwIDUwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjx0ZXh0IHg9IjYwIiB5PSIzMiIgZm9udC1mYW1pbHk9IidIZWx2ZXRpY2EgTmV1ZScsIEhlbHZldGljYSwgQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiM3RTY5QUIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlBNSTwvdGV4dD48L3N2Zz4=', url: 'https://www.pmi.org/' },
   ];
 
-  // Duplicate the partners array for seamless infinite scroll
-  const duplicatedPartners = [...partners, ...partners];
+  // Split partners into two rows
+  const firstRowPartners = partners.slice(0, 6);
+  const secondRowPartners = partners.slice(6);
+  
+  // Duplicate arrays for seamless infinite scroll
+  const duplicatedFirstRow = [...firstRowPartners, ...firstRowPartners];
+  const duplicatedSecondRow = [...secondRowPartners, ...secondRowPartners];
 
   return (
     <section className="py-6 sm:py-8 bg-gray-50/50 overflow-hidden">
@@ -32,13 +37,44 @@ const PartnersSection: React.FC = () => {
         </div>
 
         {/* Partners Slider */}
-        <div className="relative">
-          {/* Main Slider Container */}
+        <div className="relative space-y-6">
+          {/* First Row - Right to Left */}
           <div className="overflow-hidden">
-            <div className="flex animate-scroll">
-              {duplicatedPartners.map((partner, index) => (
+            <div className="flex animate-scroll-rtl">
+              {duplicatedFirstRow.map((partner, index) => (
                 <div
-                  key={`${partner.name}-${index}`}
+                  key={`first-${partner.name}-${index}`}
+                  className="flex-shrink-0 mx-4 sm:mx-6 md:mx-8 group cursor-pointer"
+                >
+                  <a
+                    href={partner.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block transition-all duration-300 transform group-hover:scale-110 group-hover:drop-shadow-lg"
+                  >
+                    <div className="h-16 w-32 sm:h-18 sm:w-36 md:h-20 md:w-40 flex items-center justify-center bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 md:p-5 group-hover:shadow-md group-hover:border-academy-blue/20 transition-all duration-300">
+                      <img
+                        src={partner.logo}
+                        alt={`${partner.name} logo`}
+                        className="max-h-full max-w-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
+                        loading="lazy"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Second Row - Left to Right */}
+          <div className="overflow-hidden">
+            <div className="flex animate-scroll-ltr">
+              {duplicatedSecondRow.map((partner, index) => (
+                <div
+                  key={`second-${partner.name}-${index}`}
                   className="flex-shrink-0 mx-4 sm:mx-6 md:mx-8 group cursor-pointer"
                 >
                   <a
