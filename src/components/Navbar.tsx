@@ -41,13 +41,13 @@ const Navbar = () => {
   return (
     <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-50 top-0">
       <div className="container mx-auto px-6">
-        <div className="flex justify-between items-center h-24">
+        <div className="flex justify-between items-center h-28">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <img 
               src="/lovable-uploads/6b248e94-27d0-4f3f-b198-b751ca00a896.png" 
               alt="AVS Innovation Institute" 
-              className="h-20 w-auto object-contain"
+              className="h-24 w-auto object-contain"
             />
           </Link>
 

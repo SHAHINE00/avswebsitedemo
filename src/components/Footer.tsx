@@ -15,7 +15,7 @@ const Footer: React.FC = () => {
               <img
                 src="/lovable-uploads/6b248e94-27d0-4f3f-b198-b751ca00a896.png"
                 alt="AVS Innovation Institute" 
-                className="h-32 w-auto object-contain filter brightness-0 invert"
+                className="h-40 w-auto object-contain filter brightness-0 invert"
               />
               <span 
                 className="font-montserrat font-bold text-2xl text-white hidden"
