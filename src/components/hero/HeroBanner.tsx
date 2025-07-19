@@ -80,7 +80,7 @@ const HeroBanner: React.FC = () => {
       </div>
 
       {/* Course Universe Showcase */}
-      <div className="relative z-10 w-full -mt-8">
+      <div className="relative z-10 w-full mt-12">
         <CourseUniverseShowcase />
       </div>
       
