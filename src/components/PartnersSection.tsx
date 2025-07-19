@@ -19,7 +19,7 @@ const PartnersSection: React.FC = () => {
   const duplicatedPartners = [...partners, ...partners];
 
   return (
-    <section className="py-8 bg-gray-50/50 overflow-hidden">
+    <section className="py-6 sm:py-8 bg-gray-50/50 overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6">
         {/* Section Header */}
         <div className="text-center mb-8">

@@ -27,7 +27,7 @@ const HeroBanner: React.FC = () => {
       </div>
 
       {/* Main Content - Centered */}
-      <div className="relative z-10 text-center max-w-5xl mx-auto -mb-20">
+      <div className="relative z-10 text-center max-w-5xl mx-auto mb-8">
         {/* Status Badge */}
         <div className="flex items-center justify-center mb-8 animate-fade-in">
           <div className="inline-flex items-center px-6 py-3 bg-white/90 backdrop-blur-sm border border-academy-blue/20 rounded-full shadow-lg">
@@ -61,7 +61,7 @@ const HeroBanner: React.FC = () => {
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-6 mb-16 justify-center animate-fade-in" style={{animationDelay: '0.8s'}}>
+        <div className="flex flex-col sm:flex-row gap-6 mb-8 justify-center animate-fade-in" style={{animationDelay: '0.8s'}}>
           <Button asChild className="bg-gradient-to-r from-academy-blue to-academy-purple hover:from-academy-purple hover:to-academy-blue text-white font-bold px-10 py-4 text-lg rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
             <Link to="/register">
               Commencer Maintenant
@@ -80,12 +80,12 @@ const HeroBanner: React.FC = () => {
       </div>
 
       {/* Partners Section */}
-      <div className="relative z-10 w-full">
+      <div className="relative z-10 w-full -mt-4">
         <PartnersSection />
       </div>
 
       {/* Course Universe Showcase */}
-      <div className="relative z-10 w-full">
+      <div className="relative z-10 w-full -mt-8">
         <CourseUniverseShowcase />
       </div>
       

@@ -2,9 +2,7 @@
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
-import PartnersSection from '@/components/PartnersSection';
 import FeaturesSection from '@/components/FeaturesSection';
-
 import InstructorsSection from '@/components/InstructorsSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
 import CourseSelectionGuide from '@/components/CourseSelectionGuide';
