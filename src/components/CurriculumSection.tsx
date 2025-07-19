@@ -1,7 +1,7 @@
 
 import React from 'react';
 import StatsSection from './curriculum/StatsSection';
-import FormationCards from './curriculum/FormationCards';
+import SpecialtyPillars from './curriculum/SpecialtyPillars';
 import CTABottomSection from './curriculum/CTABottomSection';
 
 const CurriculumSection: React.FC = () => {
@@ -10,17 +10,17 @@ const CurriculumSection: React.FC = () => {
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold mb-3 gradient-text">Nos Formations Professionnelles</h2>
+          <h2 className="text-3xl font-bold mb-3 gradient-text">Nos Spécialités Professionnelles</h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Choisissez votre parcours et maîtrisez les technologies d'avenir
+            Découvrez nos trois piliers d'excellence et choisissez votre parcours de spécialisation
           </p>
         </div>
 
         {/* Quick Stats */}
         <StatsSection />
         
-        {/* Formation Cards */}
-        <FormationCards />
+        {/* Specialty Pillars */}
+        <SpecialtyPillars />
 
         {/* Bottom CTA */}
         <CTABottomSection />
