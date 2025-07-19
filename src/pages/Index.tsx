@@ -14,14 +14,16 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
-      <HeroSection />
-      <FeaturesSection />
-      <CourseSelectionGuide />
-      <InstructorsSection />
-      <TestimonialsSection />
-      <FAQSection />
-      <CTASection />
-      <Footer />
+      <div style={{ paddingTop: '5rem' }}>
+        <HeroSection />
+        <FeaturesSection />
+        <CourseSelectionGuide />
+        <InstructorsSection />
+        <TestimonialsSection />
+        <FAQSection />
+        <CTASection />
+        <Footer />
+      </div>
       
       <div className="fixed bottom-4 right-4 z-50">
         <a 
