@@ -31,9 +31,9 @@ const CareerCard: React.FC<CareerCardProps> = ({ career, colorScheme }) => {
   
   const getLevelColor = (level: string) => {
     switch (level) {
-      case "Débutant": return "bg-green-100 text-green-800";
-      case "Intermédiaire": return "bg-yellow-100 text-yellow-800";
-      case "Avancé": return "bg-red-100 text-red-800";
+      case "مبتدئ": return "bg-green-100 text-green-800";
+      case "متوسط": return "bg-yellow-100 text-yellow-800";
+      case "متقدم": return "bg-red-100 text-red-800";
       default: return "bg-gray-100 text-gray-800";
     }
   };
@@ -111,58 +111,61 @@ const CareerCard: React.FC<CareerCardProps> = ({ career, colorScheme }) => {
         </div>
         
         {/* International Certification Info */}
-        <div className={`${colors.certificationBg} border ${colors.certificationBorder} rounded-lg p-3 mb-3`}>
-          <div className="flex items-center gap-2 mb-2">
-            <Award className={`w-4 h-4 ${colors.iconColor}`} />
-            <span className="text-sm font-semibold text-gray-800">Certification Internationale</span>
+        <div className={`${colors.certificationBg} border ${colors.certificationBorder} rounded-lg p-4 mb-3`}>
+          <div className="flex items-center gap-2 mb-3">
+            <Award className={`w-5 h-5 ${colors.iconColor}`} />
+            <span className="text-sm font-bold text-gray-800">الشهادة الدولية</span>
           </div>
-          <p className="text-sm text-gray-700 mb-2">{career.certification}</p>
-          <div className="flex items-center gap-4 text-xs text-gray-600 mb-2">
-            <div className="flex items-center gap-1">
-              <Clock className="w-3 h-3" />
-              <span>{career.duration}</span>
+          <p className="text-sm text-gray-700 mb-3 font-medium">{career.certification}</p>
+          
+          <div className="grid grid-cols-2 gap-4 text-xs text-gray-600 mb-3">
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              <span className="font-medium">المدة: {career.duration}</span>
             </div>
-            <div className="flex items-center gap-1">
-              <BookOpen className="w-3 h-3" />
-              <span>{career.modules}</span>
+            <div className="flex items-center gap-2">
+              <BookOpen className="w-4 h-4" />
+              <span className="font-medium">{career.modules}</span>
             </div>
           </div>
           
           {/* Certifying Partners */}
-          <div className="flex items-center gap-1 mb-1">
-            <Users className="w-3 h-3 text-gray-500" />
-            <span className="text-xs text-gray-600 font-medium">Partenaires certificateurs:</span>
-          </div>
-          <div className="flex flex-wrap gap-1">
-            {career.certifyingPartners.map((partner, index) => (
-              <span key={index} className={`${colors.partnersBg} ${colors.partnersColor} px-2 py-1 rounded text-xs font-medium`}>
-                {partner}
-              </span>
-            ))}
+          <div className="mb-2">
+            <div className="flex items-center gap-2 mb-2">
+              <Users className="w-4 h-4 text-gray-500" />
+              <span className="text-xs text-gray-600 font-bold">الشركاء المعتمدون:</span>
+            </div>
+            <div className="flex flex-wrap gap-1">
+              {career.certifyingPartners.map((partner, index) => (
+                <span key={index} className={`${colors.partnersBg} ${colors.partnersColor} px-2 py-1 rounded-md text-xs font-bold border`}>
+                  {partner}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
 
-        <CardDescription className="text-gray-700">
+        <CardDescription className="text-gray-700 text-sm">
           {career.description}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <div>
-            <h4 className="font-semibold text-gray-800 mb-2">Compétences clés:</h4>
+            <h4 className="font-semibold text-gray-800 mb-2 text-sm">المهارات الأساسية:</h4>
             <div className="flex flex-wrap gap-2">
               {career.skills.map((skill, skillIndex) => (
-                <span key={skillIndex} className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md text-sm">
+                <span key={skillIndex} className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md text-xs">
                   {skill}
                 </span>
               ))}
             </div>
           </div>
           <div>
-            <h4 className="font-semibold text-gray-800 mb-2">Applications:</h4>
+            <h4 className="font-semibold text-gray-800 mb-2 text-sm">التطبيقات:</h4>
             <div className="flex flex-wrap gap-2">
               {career.applications.map((app, appIndex) => (
-                <span key={appIndex} className={`${colors.applicationsBg} ${colors.applicationsColor} px-2 py-1 rounded-md text-sm`}>
+                <span key={appIndex} className={`${colors.applicationsBg} ${colors.applicationsColor} px-2 py-1 rounded-md text-xs font-medium`}>
                   {app}
                 </span>
               ))}
@@ -171,11 +174,11 @@ const CareerCard: React.FC<CareerCardProps> = ({ career, colorScheme }) => {
           <div className="flex items-center justify-between pt-4 border-t">
             <div className="flex items-center text-green-600">
               <TrendingUp className="w-4 h-4 mr-1" />
-              <span className="text-sm font-medium">{career.growth}</span>
+              <span className="text-xs font-medium">{career.growth}</span>
             </div>
             <div className="flex items-center text-gray-600">
               <Building className="w-4 h-4 mr-1" />
-              <span className="text-sm">{career.companies.length} entreprises</span>
+              <span className="text-xs">{career.companies.length} شركة</span>
             </div>
           </div>
         </div>

@@ -26,11 +26,11 @@ const Careers = () => {
               </div>
             </div>
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              31+ Spécialisations Certifiées Internationalement
+              31+ تخصصاً معتمداً دولياً
             </h1>
             <p className="text-xl md:text-2xl opacity-90 mb-8 max-w-3xl mx-auto">
-              Découvrez nos 31+ spécialisations certifiées par MIT, Google, Microsoft, IBM, Harvard, Stanford et bien plus. 
-              Obtenez votre certification internationale en 3-8 semaines et transformez votre carrière.
+              اكتشف 31+ تخصصاً معتمداً من MIT وGoogle وMicrosoft وIBM وHarvard وStanford والمزيد. 
+              احصل على شهادتك الدولية في 3-8 أسابيع وحوّل مسيرتك المهنية.
             </p>
             
             <HeroStatsGrid stats={successStats} />
@@ -44,8 +44,8 @@ const Careers = () => {
             
             {/* AI & Data Science Careers Section */}
             <CareerSection
-              title="Spécialisations IA & Science des Données"
-              description="L'intelligence artificielle révolutionne tous les secteurs. 10+ spécialisations certifiées par MIT, Google, Microsoft, IBM, Harvard et Stanford pour maîtriser l'IA générative, le machine learning et l'analyse de données."
+              title="تخصصات الذكاء الاصطناعي وعلم البيانات"
+              description="الذكاء الاصطناعي يحدث ثورة في جميع القطاعات. 11 تخصصاً معتمداً من MIT وGoogle وMicrosoft وIBM وHarvard وStanford لإتقان الذكاء الاصطناعي التوليدي والتعلم الآلي وتحليل البيانات."
               icon={<Brain className="w-8 h-8 text-academy-blue" />}
               careers={aiCareers}
               colorScheme="blue"
@@ -53,8 +53,8 @@ const Careers = () => {
 
             {/* Programming & Tech Infrastructure Section */}
             <CareerSection
-              title="Spécialisations Programmation & Infrastructure Tech"
-              description="Le développement logiciel et l'architecture cloud sont au cœur de la transformation digitale. 10+ spécialisations certifiées par Google, Microsoft, AWS, IBM et Unity pour maîtriser les technologies les plus demandées."
+              title="تخصصات البرمجة والبنية التحتية التقنية"
+              description="تطوير البرمجيات وهندسة السحابة في قلب التحول الرقمي. 11 تخصصاً معتمداً من Google وMicrosoft وAWS وIBM وUnity لإتقان التقنيات الأكثر طلباً."
               icon={<Code className="w-8 h-8 text-academy-purple" />}
               careers={programmingCareers}
               colorScheme="purple"
@@ -62,8 +62,8 @@ const Careers = () => {
 
             {/* Digital Marketing & Creative Section */}
             <CareerSection
-              title="Spécialisations Marketing Digital & Création"
-              description="Le marketing digital alimenté par l'IA et la création de contenu offrent des opportunités exceptionnelles. 12+ spécialisations certifiées par Google, Meta, Adobe, Stanford et PMI pour dominer l'économie créative."
+              title="تخصصات التسويق الرقمي والإبداع"
+              description="التسويق الرقمي المدعوم بالذكاء الاصطناعي وإنشاء المحتوى يوفران فرصاً استثنائية. 12 تخصصاً معتمداً من Google وMeta وAdobe وStanford وPMI للهيمنة على الاقتصاد الإبداعي."
               icon={<Megaphone className="w-8 h-8 text-academy-lightblue" />}
               careers={digitalMarketingCareers}
               colorScheme="green"
