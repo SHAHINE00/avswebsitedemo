@@ -186,8 +186,8 @@ const Contact = () => {
                     <div>
                       <h3 className="font-semibold mb-1">Adresse</h3>
                       <p className="text-gray-700">
-                        Avenue Mohammed V, Quartier Gueliz<br />
-                        40000 Marrakech, Maroc
+                        Avenue Allal El Fassi – Alpha 2000<br />
+                        Marrakech – MAROC
                       </p>
                     </div>
                   </div>
@@ -196,7 +196,10 @@ const Contact = () => {
                     <Phone className="text-academy-blue mr-4 mt-1 flex-shrink-0" />
                     <div>
                       <h3 className="font-semibold mb-1">Téléphone</h3>
-                      <p className="text-gray-700">+212 (0)5 24 45 67 89</p>
+                      <div className="text-gray-700">
+                        <p>+212 6 62 63 29 53</p>
+                        <p>+212 5 24 31 19 82</p>
+                      </div>
                     </div>
                   </div>
                   
@@ -204,7 +207,7 @@ const Contact = () => {
                     <Mail className="text-academy-blue mr-4 mt-1 flex-shrink-0" />
                     <div>
                       <h3 className="font-semibold mb-1">Email</h3>
-                      <p className="text-gray-700">contact@avs-academy.ma</p>
+                      <p className="text-gray-700">info@avs.ma</p>
                     </div>
                   </div>
                   

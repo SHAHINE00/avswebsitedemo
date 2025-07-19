@@ -74,15 +74,18 @@ const Footer: React.FC = () => {
             <div className="space-y-3">
               <div className="flex items-start">
                 <MapPin className="text-academy-blue mr-2 mt-1 flex-shrink-0" size={16} />
-                <p className="text-sm">Avenue Mohammed V, Quartier Gueliz<br />40000 Marrakech, Maroc</p>
+                <p className="text-sm">Avenue Allal El Fassi – Alpha 2000<br />Marrakech – MAROC</p>
               </div>
               <div className="flex items-center">
                 <Phone className="text-academy-blue mr-2 flex-shrink-0" size={16} />
-                <p className="text-sm">+212 (0)5 24 45 67 89</p>
+                <div className="text-sm">
+                  <p>+212 6 62 63 29 53</p>
+                  <p>+212 5 24 31 19 82</p>
+                </div>
               </div>
               <div className="flex items-center">
                 <Mail className="text-academy-blue mr-2 flex-shrink-0" size={16} />
-                <p className="text-sm">contact@avs-academy.ma</p>
+                <p className="text-sm">info@avs.ma</p>
               </div>
             </div>
           </div>
