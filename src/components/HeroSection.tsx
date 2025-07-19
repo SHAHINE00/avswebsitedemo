@@ -4,6 +4,7 @@ import HeroBanner from './hero/HeroBanner';
 import AdvantageBadges from './hero/AdvantageBadges';
 import CourseComparison from './hero/CourseComparison';
 import CareerPaths from './hero/CareerPaths';
+import PartnersSection from './PartnersSection';
 
 const HeroSection: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const HeroSection: React.FC = () => {
       <AdvantageBadges />
       <CourseComparison />
       <CareerPaths />
+      <PartnersSection />
     </div>
   );
 };
