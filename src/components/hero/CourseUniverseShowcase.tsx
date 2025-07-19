@@ -8,29 +8,55 @@ const CourseUniverseShowcase: React.FC = () => {
   const { courses, loading } = useCourses();
   const [activeTab, setActiveTab] = useState('ai');
 
-  // Organize courses by specialty
+  // Improved course categorization with more specific keywords
   const organizedCourses = {
-    ai: courses.filter(course => 
-      course.title.toLowerCase().includes('ia') || 
-      course.title.toLowerCase().includes('intelligence') ||
-      course.title.toLowerCase().includes('data') ||
-      course.title.toLowerCase().includes('machine') ||
-      course.title.toLowerCase().includes('deep')
-    ),
-    programming: courses.filter(course => 
-      course.title.toLowerCase().includes('programmation') ||
-      course.title.toLowerCase().includes('développement') ||
-      course.title.toLowerCase().includes('web') ||
-      course.title.toLowerCase().includes('mobile') ||
-      course.title.toLowerCase().includes('devops') ||
-      course.title.toLowerCase().includes('cloud')
-    ),
-    marketing: courses.filter(course => 
-      course.title.toLowerCase().includes('marketing') ||
-      course.title.toLowerCase().includes('design') ||
-      course.title.toLowerCase().includes('créatif') ||
-      course.title.toLowerCase().includes('graphique')
-    )
+    ai: courses.filter(course => {
+      const title = course.title.toLowerCase();
+      return title.includes('ia') || 
+             title.includes('intelligence') ||
+             title.includes('data science') ||
+             title.includes('machine learning') ||
+             title.includes('deep learning') ||
+             title.includes('ai') ||
+             title.includes('python') ||
+             title.includes('scikit-learn') ||
+             title.includes('computer vision') ||
+             title.includes('opencv') ||
+             title.includes('ethical ai') ||
+             title.includes('business intelligence') ||
+             (title.includes('data') && !title.includes('database'));
+    }),
+    programming: courses.filter(course => {
+      const title = course.title.toLowerCase();
+      return title.includes('programmation') ||
+             title.includes('développement') ||
+             title.includes('programming') ||
+             title.includes('web development') ||
+             title.includes('mobile app') ||
+             title.includes('database') ||
+             title.includes('cloud computing') ||
+             title.includes('devops') ||
+             title.includes('blockchain') ||
+             title.includes('iot') ||
+             title.includes('internet of things') ||
+             (title.includes('html') || title.includes('css') || title.includes('js'));
+    }),
+    marketing: courses.filter(course => {
+      const title = course.title.toLowerCase();
+      return title.includes('marketing') ||
+             title.includes('e-commerce') ||
+             title.includes('digital marketing') ||
+             title.includes('social media') ||
+             title.includes('video production') ||
+             title.includes('content creation') ||
+             title.includes('design') ||
+             title.includes('créatif') ||
+             title.includes('graphique') ||
+             // Financial courses that are business/marketing oriented
+             (title.includes('financial') && (title.includes('analysis') || title.includes('data'))) ||
+             title.includes('google data studio') ||
+             title.includes('excel');
+    })
   };
 
   const specialties = [
@@ -39,7 +65,7 @@ const CourseUniverseShowcase: React.FC = () => {
       title: 'IA & Data Science',
       icon: Brain,
       gradient: 'from-academy-blue to-academy-purple',
-      count: 10,
+      count: organizedCourses.ai.length,
       description: 'Intelligence Artificielle & Analyse de Données'
     },
     {
@@ -47,7 +73,7 @@ const CourseUniverseShowcase: React.FC = () => {
       title: 'Programmation & Infrastructure',
       icon: Code,
       gradient: 'from-academy-purple to-academy-lightblue',
-      count: 4,
+      count: organizedCourses.programming.length,
       description: 'Développement Web, Mobile & DevOps'
     },
     {
@@ -55,7 +81,7 @@ const CourseUniverseShowcase: React.FC = () => {
       title: 'Marketing Digital & Créatif',
       icon: Palette,
       gradient: 'from-academy-lightblue to-academy-blue',
-      count: 3,
+      count: organizedCourses.marketing.length,
       description: 'Design, Marketing & Communication'
     }
   ];
@@ -93,6 +119,7 @@ const CourseUniverseShowcase: React.FC = () => {
           const IconComponent = specialty.icon;
           return (
             <Link
+              key={specialty.id}
               to={
                 specialty.id === 'ai' ? '/ai-course' :
                 specialty.id === 'programming' ? '/programming-course' :

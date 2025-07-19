@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Brain, Code, Megaphone } from 'lucide-react';
@@ -10,34 +9,56 @@ const SpecialtyPillars: React.FC = () => {
   const { courses, loading } = useCourses();
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
-  // Organize courses into 3 pillars
-  const aiCourses = courses.filter(course => 
-    course.title.toLowerCase().includes('ia') || 
-    course.title.toLowerCase().includes('intelligence') ||
-    course.title.toLowerCase().includes('data') ||
-    course.title.toLowerCase().includes('python') ||
-    course.title.toLowerCase().includes('machine') ||
-    course.title.toLowerCase().includes('ai')
-  );
+  // Improved course categorization with more specific keywords
+  const aiCourses = courses.filter(course => {
+    const title = course.title.toLowerCase();
+    return title.includes('ia') || 
+           title.includes('intelligence') ||
+           title.includes('data science') ||
+           title.includes('machine learning') ||
+           title.includes('deep learning') ||
+           title.includes('ai') ||
+           title.includes('python') ||
+           title.includes('scikit-learn') ||
+           title.includes('computer vision') ||
+           title.includes('opencv') ||
+           title.includes('ethical ai') ||
+           title.includes('business intelligence') ||
+           (title.includes('data') && !title.includes('database'));
+  });
 
-  const programmingCourses = courses.filter(course => 
-    course.title.toLowerCase().includes('web') ||
-    course.title.toLowerCase().includes('mobile') ||
-    course.title.toLowerCase().includes('cloud') ||
-    course.title.toLowerCase().includes('blockchain') ||
-    course.title.toLowerCase().includes('database') ||
-    course.title.toLowerCase().includes('iot') ||
-    course.title.toLowerCase().includes('excel') ||
-    course.title.toLowerCase().includes('studio')
-  );
+  const programmingCourses = courses.filter(course => {
+    const title = course.title.toLowerCase();
+    return title.includes('programmation') ||
+           title.includes('développement') ||
+           title.includes('programming') ||
+           title.includes('web development') ||
+           title.includes('mobile app') ||
+           title.includes('database') ||
+           title.includes('cloud computing') ||
+           title.includes('devops') ||
+           title.includes('blockchain') ||
+           title.includes('iot') ||
+           title.includes('internet of things') ||
+           (title.includes('html') || title.includes('css') || title.includes('js'));
+  });
 
-  const marketingCourses = courses.filter(course => 
-    course.title.toLowerCase().includes('marketing') ||
-    course.title.toLowerCase().includes('e-commerce') ||
-    course.title.toLowerCase().includes('video') ||
-    course.title.toLowerCase().includes('social') ||
-    course.title.toLowerCase().includes('financial')
-  );
+  const marketingCourses = courses.filter(course => {
+    const title = course.title.toLowerCase();
+    return title.includes('marketing') ||
+           title.includes('e-commerce') ||
+           title.includes('digital marketing') ||
+           title.includes('social media') ||
+           title.includes('video production') ||
+           title.includes('content creation') ||
+           title.includes('design') ||
+           title.includes('créatif') ||
+           title.includes('graphique') ||
+           // Financial courses that are business/marketing oriented
+           (title.includes('financial') && (title.includes('analysis') || title.includes('data'))) ||
+           title.includes('google data studio') ||
+           title.includes('excel');
+  });
 
   const pillars = [
     {
