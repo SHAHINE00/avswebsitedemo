@@ -7,8 +7,8 @@ import HeroStatsGrid from '@/components/careers/HeroStatsGrid';
 import EntrepreneurshipSection from '@/components/careers/EntrepreneurshipSection';
 import SuccessStoriesSection from '@/components/careers/SuccessStoriesSection';
 import CTASection from '@/components/careers/CTASection';
-import { Brain, Code, TrendingUp } from 'lucide-react';
-import { aiCareers, programmingCareers, entrepreneurshipOpportunities, successStats } from '@/data/careersData';
+import { Brain, Code, TrendingUp, Megaphone } from 'lucide-react';
+import { aiCareers, programmingCareers, digitalMarketingCareers, entrepreneurshipOpportunities, successStats } from '@/data/careersData';
 
 const Careers = () => {
   return (
@@ -26,11 +26,11 @@ const Careers = () => {
               </div>
             </div>
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Opportunités de Carrière en IA et Programmation
+              Opportunités de Carrière Digitales & Technologiques
             </h1>
             <p className="text-xl md:text-2xl opacity-90 mb-8 max-w-3xl mx-auto">
-              Découvrez des carrières passionnantes dans les secteurs technologiques les plus dynamiques. 
-              Transformez votre passion en expertise professionnelle.
+              Découvrez 27+ carrières certifiées dans l'IA, la programmation et le marketing digital. 
+              Obtenez votre certification internationale et transformez votre avenir professionnel.
             </p>
             
             <HeroStatsGrid stats={successStats} />
@@ -42,22 +42,31 @@ const Careers = () => {
         <div className="container mx-auto px-6">
           <div className="max-w-7xl mx-auto">
             
-            {/* AI Careers Section */}
+            {/* AI & Data Science Careers Section */}
             <CareerSection
-              title="Carrières en Intelligence Artificielle"
-              description="L'IA révolutionne tous les secteurs. Rejoignez cette transformation technologique majeure."
+              title="Carrières en IA & Data Science"
+              description="L'intelligence artificielle révolutionne tous les secteurs. Obtenez votre certification internationale et rejoignez cette transformation technologique majeure."
               icon={<Brain className="w-8 h-8 text-academy-blue" />}
               careers={aiCareers}
               colorScheme="blue"
             />
 
-            {/* Programming Careers Section */}
+            {/* Programming & Tech Infrastructure Section */}
             <CareerSection
-              title="Carrières en Programmation"
-              description="Le développement logiciel est au cœur de la transformation digitale mondiale."
+              title="Carrières en Programmation & Infrastructure"
+              description="Le développement logiciel et l'architecture cloud sont au cœur de la transformation digitale. Maîtrisez les technologies les plus demandées."
               icon={<Code className="w-8 h-8 text-academy-purple" />}
               careers={programmingCareers}
               colorScheme="purple"
+            />
+
+            {/* Digital Marketing & Content Creation Section */}
+            <CareerSection
+              title="Carrières en Marketing Digital & Création"
+              description="Le marketing digital alimenté par l'IA offre des opportunités exceptionnelles. Créez du contenu innovant et gérez la présence digitale des marques."
+              icon={<Megaphone className="w-8 h-8 text-academy-lightblue" />}
+              careers={digitalMarketingCareers}
+              colorScheme="green"
             />
 
             {/* Entrepreneurship Section */}

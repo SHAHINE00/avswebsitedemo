@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { TrendingUp, Building, LucideIcon } from 'lucide-react';
+import { TrendingUp, Building, LucideIcon, Award, Clock, BookOpen } from 'lucide-react';
 
 export interface Career {
   title: string;
@@ -14,11 +14,15 @@ export interface Career {
   experience: string;
   icon: LucideIcon;
   applications: string[];
+  certification: string;
+  duration: string;
+  modules: string;
+  relatedCourses: string[];
 }
 
 interface CareerCardProps {
   career: Career;
-  colorScheme: 'blue' | 'purple';
+  colorScheme: 'blue' | 'purple' | 'green';
 }
 
 const CareerCard: React.FC<CareerCardProps> = ({ career, colorScheme }) => {
@@ -42,7 +46,9 @@ const CareerCard: React.FC<CareerCardProps> = ({ career, colorScheme }) => {
       salaryBg: 'bg-academy-blue/10',
       salaryColor: 'text-academy-blue',
       applicationsBg: 'bg-academy-blue/10',
-      applicationsColor: 'text-academy-blue'
+      applicationsColor: 'text-academy-blue',
+      certificationBg: 'bg-academy-blue/5',
+      certificationBorder: 'border-academy-blue/20'
     },
     purple: {
       border: 'border-academy-purple/20 hover:border-academy-purple/40',
@@ -52,7 +58,21 @@ const CareerCard: React.FC<CareerCardProps> = ({ career, colorScheme }) => {
       salaryBg: 'bg-academy-purple/10',
       salaryColor: 'text-academy-purple',
       applicationsBg: 'bg-academy-purple/10',
-      applicationsColor: 'text-academy-purple'
+      applicationsColor: 'text-academy-purple',
+      certificationBg: 'bg-academy-purple/5',
+      certificationBorder: 'border-academy-purple/20'
+    },
+    green: {
+      border: 'border-academy-lightblue/20 hover:border-academy-lightblue/40',
+      iconBg: 'bg-academy-lightblue/10',
+      iconColor: 'text-academy-lightblue',
+      titleColor: 'text-academy-lightblue group-hover:text-academy-blue',
+      salaryBg: 'bg-academy-lightblue/10',
+      salaryColor: 'text-academy-lightblue',
+      applicationsBg: 'bg-academy-lightblue/10',
+      applicationsColor: 'text-academy-lightblue',
+      certificationBg: 'bg-academy-lightblue/5',
+      certificationBorder: 'border-academy-lightblue/20'
     }
   };
 
@@ -82,6 +102,26 @@ const CareerCard: React.FC<CareerCardProps> = ({ career, colorScheme }) => {
             {career.salary}
           </div>
         </div>
+        
+        {/* Certification Info */}
+        <div className={`${colors.certificationBg} border ${colors.certificationBorder} rounded-lg p-3 mb-3`}>
+          <div className="flex items-center gap-2 mb-2">
+            <Award className={`w-4 h-4 ${colors.iconColor}`} />
+            <span className="text-sm font-semibold text-gray-800">Certification Internationale</span>
+          </div>
+          <p className="text-sm text-gray-700 mb-2">{career.certification}</p>
+          <div className="flex items-center gap-4 text-xs text-gray-600">
+            <div className="flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              <span>{career.duration}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <BookOpen className="w-3 h-3" />
+              <span>{career.modules}</span>
+            </div>
+          </div>
+        </div>
+
         <CardDescription className="text-gray-700">
           {career.description}
         </CardDescription>

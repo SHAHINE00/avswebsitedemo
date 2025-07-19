@@ -7,7 +7,7 @@ interface CareerSectionProps {
   description: string;
   icon: React.ReactNode;
   careers: Career[];
-  colorScheme: 'blue' | 'purple';
+  colorScheme: 'blue' | 'purple' | 'green';
 }
 
 const CareerSection: React.FC<CareerSectionProps> = ({ 
@@ -21,7 +21,11 @@ const CareerSection: React.FC<CareerSectionProps> = ({
     <section className="mb-20">
       <div className="text-center mb-12">
         <div className="flex justify-center mb-4">
-          <div className={`${colorScheme === 'blue' ? 'bg-academy-blue/10' : 'bg-academy-purple/10'} p-3 rounded-xl`}>
+          <div className={`${
+            colorScheme === 'blue' ? 'bg-academy-blue/10' : 
+            colorScheme === 'purple' ? 'bg-academy-purple/10' : 
+            'bg-academy-lightblue/10'
+          } p-3 rounded-xl`}>
             {icon}
           </div>
         </div>
