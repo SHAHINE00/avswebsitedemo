@@ -13,8 +13,8 @@ const Footer: React.FC = () => {
           <div>
             <Link to="/" className="mb-4 inline-block">
               <OptimizedImage
-                src="/lovable-uploads/0db8713d-35db-40a9-8615-5db99717c56c.png"
-                alt="AVS - Institut de l'Innovation et de l'Intelligence Artificielle" 
+                src="/lovable-uploads/f3c7543c-fddb-40be-aa1c-7e6b6891bccb.png"
+                alt="AVS Innovation Institute" 
                 className="h-14 w-auto object-contain filter brightness-0 invert"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';

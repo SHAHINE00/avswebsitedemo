@@ -44,10 +44,11 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-academy-blue to-academy-purple rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">CA</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">CodeAcademy</span>
+            <img 
+              src="/lovable-uploads/f3c7543c-fddb-40be-aa1c-7e6b6891bccb.png" 
+              alt="AVS Innovation Institute" 
+              className="h-10 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop Navigation */}
