@@ -8,26 +8,32 @@ const CourseUniverseShowcase: React.FC = () => {
   const { courses, loading } = useCourses();
   const [activeTab, setActiveTab] = useState('ai');
 
-  // Improved course categorization with more specific keywords
+  // Improved course categorization with case-insensitive and more precise logic
   const organizedCourses = {
     ai: courses.filter(course => {
       const title = course.title.toLowerCase();
+      // AI & Data Science - focus on artificial intelligence, data analysis, and machine learning
       return title.includes('ia') || 
              title.includes('intelligence') ||
              title.includes('data science') ||
              title.includes('machine learning') ||
              title.includes('deep learning') ||
              title.includes('ai') ||
-             title.includes('python') ||
-             title.includes('scikit-learn') ||
              title.includes('computer vision') ||
              title.includes('opencv') ||
              title.includes('ethical ai') ||
              title.includes('business intelligence') ||
-             (title.includes('data') && !title.includes('database'));
+             title.includes('scikit-learn') ||
+             // Data analysis courses (not just any data course)
+             (title.includes('data') && (title.includes('analysis') || title.includes('analytics') || title.includes('science'))) ||
+             // Financial data analysis is data analysis, not marketing
+             (title.includes('financial') && title.includes('data')) ||
+             // Python when used for data science/AI contexts
+             (title.includes('python') && (title.includes('data') || title.includes('analysis') || title.includes('ai') || title.includes('machine')));
     }),
     programming: courses.filter(course => {
       const title = course.title.toLowerCase();
+      // Programming & Infrastructure - focus on software development, infrastructure, and technical skills
       return title.includes('programmation') ||
              title.includes('développement') ||
              title.includes('programming') ||
@@ -39,10 +45,18 @@ const CourseUniverseShowcase: React.FC = () => {
              title.includes('blockchain') ||
              title.includes('iot') ||
              title.includes('internet of things') ||
-             (title.includes('html') || title.includes('css') || title.includes('js'));
+             title.includes('cybersécurité') ||
+             title.includes('cybersecurity') ||
+             // Programming languages when used for general programming (not AI-specific)
+             (title.includes('python') && !title.includes('data') && !title.includes('analysis') && !title.includes('ai') && !title.includes('machine')) ||
+             // Web technologies
+             (title.includes('html') || title.includes('css') || title.includes('javascript') || title.includes('js')) ||
+             // Advanced programming courses
+             title.includes('advanced') && (title.includes('programming') || title.includes('python'));
     }),
     marketing: courses.filter(course => {
       const title = course.title.toLowerCase();
+      // Marketing Digital & Créatif - focus on marketing, design, content creation, and business tools
       return title.includes('marketing') ||
              title.includes('e-commerce') ||
              title.includes('digital marketing') ||
@@ -52,10 +66,15 @@ const CourseUniverseShowcase: React.FC = () => {
              title.includes('design') ||
              title.includes('créatif') ||
              title.includes('graphique') ||
-             // Financial courses that are business/marketing oriented
-             (title.includes('financial') && (title.includes('analysis') || title.includes('data'))) ||
+             // Business tools and software (Excel, Google tools for business/marketing use)
+             title.includes('excel') ||
              title.includes('google data studio') ||
-             title.includes('excel');
+             // Creative and design tools
+             title.includes('photoshop') ||
+             title.includes('illustrator') ||
+             title.includes('canva') ||
+             // Business and entrepreneurship (not technical/data analysis)
+             (title.includes('business') && !title.includes('intelligence') && !title.includes('data'));
     })
   };
 
