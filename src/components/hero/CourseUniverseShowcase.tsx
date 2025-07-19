@@ -39,7 +39,7 @@ const CourseUniverseShowcase: React.FC = () => {
       title: 'IA & Data Science',
       icon: Brain,
       gradient: 'from-academy-blue to-academy-purple',
-      count: organizedCourses.ai.length,
+      count: 10,
       description: 'Intelligence Artificielle & Analyse de Données'
     },
     {
@@ -47,7 +47,7 @@ const CourseUniverseShowcase: React.FC = () => {
       title: 'Programmation & Infrastructure',
       icon: Code,
       gradient: 'from-academy-purple to-academy-lightblue',
-      count: organizedCourses.programming.length,
+      count: 4,
       description: 'Développement Web, Mobile & DevOps'
     },
     {
@@ -55,7 +55,7 @@ const CourseUniverseShowcase: React.FC = () => {
       title: 'Marketing Digital & Créatif',
       icon: Palette,
       gradient: 'from-academy-lightblue to-academy-blue',
-      count: organizedCourses.marketing.length,
+      count: 3,
       description: 'Design, Marketing & Communication'
     }
   ];
@@ -121,85 +121,8 @@ const CourseUniverseShowcase: React.FC = () => {
         })}
       </div>
 
-      {/* Course Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {activeCourses.map((course, index) => (
-          <Link
-            key={course.id}
-            to={course.link_to || `/course/${course.title.toLowerCase().replace(/\s+/g, '-')}`}
-            className="group relative animate-fade-in"
-            style={{animationDelay: `${1.4 + index * 0.1}s`}}
-          >
-            <div className="relative p-6 bg-white/95 backdrop-blur-sm rounded-2xl border border-gray-200/50 hover:border-academy-blue/30 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 h-full">
-              {/* Gradient Background */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${course.gradient_from} ${course.gradient_to} opacity-5 rounded-2xl`}></div>
-              
-              {/* Content */}
-              <div className="relative z-10">
-                {/* Header with Icon */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${course.gradient_from} ${course.gradient_to} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-                    <Brain className="w-6 h-6 text-white" />
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-academy-blue group-hover:translate-x-1 transition-all duration-300" />
-                </div>
-
-                {/* Course Title */}
-                <h4 className="font-bold text-lg mb-2 text-gray-800 group-hover:text-academy-blue transition-colors duration-300 line-clamp-2">
-                  {course.title}
-                </h4>
-
-                {/* Course Details */}
-                <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
-                  {course.duration && (
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      <span>{course.duration}</span>
-                    </div>
-                  )}
-                  {course.modules && (
-                    <div className="flex items-center gap-1">
-                      <BookOpen className="w-4 h-4" />
-                      <span>{course.modules}</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Certification */}
-                {course.certification_provider_name && (
-                  <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
-                    <Award className="w-4 h-4 text-academy-blue" />
-                    <span className="text-sm font-semibold text-academy-blue">
-                      Certifié {course.certification_provider_name}
-                    </span>
-                  </div>
-                )}
-
-                {/* Features */}
-                {(course.feature1 || course.feature2) && (
-                  <div className="mt-3">
-                    {course.feature1 && (
-                      <div className="text-xs text-gray-600 mb-1">• {course.feature1}</div>
-                    )}
-                    {course.feature2 && (
-                      <div className="text-xs text-gray-600">• {course.feature2}</div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Hover Effect Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-academy-blue/5 to-academy-purple/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </div>
-          </Link>
-        ))}
-      </div>
-
       {/* Call to Action */}
       <div className="text-center mt-12 animate-fade-in" style={{animationDelay: '1.8s'}}>
-        <p className="text-gray-600 mb-6">
-          Plus de <span className="font-bold text-academy-blue">{courses.length} formations disponibles</span> avec des certifications prestigieuses
-        </p>
         <Link
           to="/curriculum"
           className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-academy-blue to-academy-purple hover:from-academy-purple hover:to-academy-blue text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
