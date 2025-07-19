@@ -92,14 +92,18 @@ const CourseUniverseShowcase: React.FC = () => {
         {specialties.map((specialty) => {
           const IconComponent = specialty.icon;
           return (
-            <button
-              key={specialty.id}
-              onClick={() => setActiveTab(specialty.id)}
-              className={`relative group p-6 rounded-2xl backdrop-blur-sm border transition-all duration-300 transform hover:scale-105 ${
+            <Link
+              to={
+                specialty.id === 'ai' ? '/ai-course' :
+                specialty.id === 'programming' ? '/programming-course' :
+                '/curriculum'
+              }
+              className={`relative group p-6 rounded-2xl backdrop-blur-sm border transition-all duration-300 transform hover:scale-105 block ${
                 activeTab === specialty.id
                   ? 'bg-white/90 border-academy-blue/30 shadow-xl'
                   : 'bg-white/60 border-gray-200/50 hover:bg-white/80 hover:border-academy-blue/20'
               }`}
+              onMouseEnter={() => setActiveTab(specialty.id)}
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${specialty.gradient} opacity-5 rounded-2xl`}></div>
               <div className="relative z-10">
@@ -116,7 +120,7 @@ const CourseUniverseShowcase: React.FC = () => {
                   </span>
                 </div>
               </div>
-            </button>
+            </Link>
           );
         })}
       </div>
