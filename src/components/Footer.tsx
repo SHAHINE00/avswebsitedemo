@@ -7,15 +7,15 @@ import OptimizedImage from '@/components/OptimizedImage';
 const Footer: React.FC = () => {
   return (
     <footer className="bg-gray-900 text-gray-300">
-      <div className="container mx-auto px-6 pt-16 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-6 sm:pb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-12 sm:mb-16">
           {/* Column 1 - About */}
           <div>
             <Link to="/" className="mb-4 inline-block">
               <img
                 src="/lovable-uploads/6b248e94-27d0-4f3f-b198-b751ca00a896.png"
                 alt="AVS Innovation Institute" 
-                className="h-40 w-auto object-contain filter brightness-0 invert"
+                className="h-28 sm:h-32 lg:h-40 w-auto object-contain filter brightness-0 invert"
               />
               <span 
                 className="font-montserrat font-bold text-2xl text-white hidden"
@@ -25,7 +25,7 @@ const Footer: React.FC = () => {
                 <span className="text-academy-purple">VS</span>
               </span>
             </Link>
-            <p className="mb-4">
+            <p className="mb-3 sm:mb-4 text-sm sm:text-base">
               AVS l'institut de l'Innovation et de l'Intelligence Artificielle - Offrir à la nouvelle génération des spécialistes AI une formation pratique et une évolution de carrière.
             </p>
             <div className="flex space-x-4">
@@ -64,21 +64,21 @@ const Footer: React.FC = () => {
           {/* Column 3 - Contact Info */}
           <div>
             <h3 className="text-white font-semibold text-lg mb-4">Contact</h3>
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <div className="flex items-start">
                 <MapPin className="text-academy-blue mr-2 mt-1 flex-shrink-0" size={16} />
-                <p className="text-sm">Avenue Allal El Fassi – Alpha 2000<br />Marrakech – MAROC</p>
+                <p className="text-xs sm:text-sm">Avenue Allal El Fassi – Alpha 2000<br />Marrakech – MAROC</p>
               </div>
               <div className="flex items-center">
                 <Phone className="text-academy-blue mr-2 flex-shrink-0" size={16} />
-                <div className="text-sm">
+                <div className="text-xs sm:text-sm">
                   <p>+212 6 62 63 29 53</p>
                   <p>+212 5 24 31 19 82</p>
                 </div>
               </div>
               <div className="flex items-center">
                 <Mail className="text-academy-blue mr-2 flex-shrink-0" size={16} />
-                <p className="text-sm">info@avs.ma</p>
+                <p className="text-xs sm:text-sm">info@avs.ma</p>
               </div>
             </div>
           </div>
@@ -86,17 +86,17 @@ const Footer: React.FC = () => {
           {/* Column 4 - Newsletter */}
           <div>
             <h3 className="text-white font-semibold text-lg mb-4">Newsletter</h3>
-            <p className="mb-4 text-sm">Abonnez-vous à notre newsletter pour recevoir des actualités AI et offres de formation.</p>
+            <p className="mb-3 sm:mb-4 text-xs sm:text-sm">Abonnez-vous à notre newsletter pour recevoir des actualités AI et offres de formation.</p>
             <form className="space-y-2" onSubmit={(e) => e.preventDefault()}>
               <input
                 type="email"
                 placeholder="Votre adresse e-mail"
-                className="w-full px-3 py-2 text-sm rounded bg-gray-800 border border-gray-700 focus:outline-none focus:border-academy-blue"
+                className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm rounded bg-gray-800 border border-gray-700 focus:outline-none focus:border-academy-blue"
                 required
               />
               <button
                 type="submit"
-                className="w-full bg-academy-blue hover:bg-academy-purple text-white py-2 text-sm rounded transition-colors"
+                className="w-full bg-academy-blue hover:bg-academy-purple text-white py-1.5 sm:py-2 text-xs sm:text-sm rounded transition-colors"
               >
                 S'abonner
               </button>
@@ -104,12 +104,12 @@ const Footer: React.FC = () => {
           </div>
         </div>
         
-        <div className="border-t border-gray-800 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-4 md:mb-0">
-              <p>&copy; {new Date().getFullYear()} AVS Academy. Tous droits réservés.</p>
+        <div className="border-t border-gray-800 pt-6 sm:pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+            <div className="mb-3 sm:mb-4 md:mb-0">
+              <p className="text-xs sm:text-sm">&copy; {new Date().getFullYear()} AVS Academy. Tous droits réservés.</p>
             </div>
-            <div className="flex space-x-6 text-sm">
+            <div className="flex flex-wrap justify-center space-x-4 sm:space-x-6 text-xs sm:text-sm">
               <Link to="/privacy-policy" className="hover:text-academy-blue transition-colors">Politique de confidentialité</Link>
               <Link to="/terms-of-use" className="hover:text-academy-blue transition-colors">Conditions d'utilisation</Link>
               <Link to="/cookies-policy" className="hover:text-academy-blue transition-colors">Politique cookies</Link>

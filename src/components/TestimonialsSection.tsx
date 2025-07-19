@@ -28,18 +28,18 @@ const testimonials = [
 
 const TestimonialsSection: React.FC = () => {
   return (
-    <section id="testimonials" className="py-12 bg-white">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Ils témoignent</h2>
-          <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+    <section id="testimonials" className="py-8 sm:py-12 lg:py-16 bg-white">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Ils témoignent</h2>
+          <p className="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto px-4">
             Découvrez les retours de nos diplômés qui ont propulsé leur carrière grâce à notre programme AI.
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="bg-academy-gray rounded-lg p-6 relative">
+            <div key={index} className="bg-academy-gray rounded-lg p-4 sm:p-6 relative">
               <div className="absolute -top-3 -left-3 text-academy-purple opacity-20">
                 <Quote size={40} />
               </div>

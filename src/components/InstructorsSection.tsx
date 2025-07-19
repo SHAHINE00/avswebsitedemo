@@ -32,19 +32,19 @@ const instructors = [
 
 const InstructorsSection: React.FC = () => {
   return (
-    <section id="instructors" className="py-12 bg-white">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Apprenez auprès d'experts</h2>
-          <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+    <section id="instructors" className="py-8 sm:py-12 lg:py-16 bg-white">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Apprenez auprès d'experts</h2>
+          <p className="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto px-4">
             Nos formateurs cumulent des décennies d'expérience dans les entreprises et instituts de recherche leaders en AI.
           </p>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {instructors.map((instructor, index) => (
             <div key={index} className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-              <div className="h-64 overflow-hidden">
+              <div className="h-48 sm:h-64 overflow-hidden">
                 <OptimizedImage
                   src={instructor.image} 
                   alt={instructor.name} 
