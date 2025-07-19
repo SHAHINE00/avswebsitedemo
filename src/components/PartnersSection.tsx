@@ -3,16 +3,16 @@ import React from 'react';
 const PartnersSection: React.FC = () => {
   const partners = [
     { name: 'MIT', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/0c/MIT_logo.svg', url: 'https://web.mit.edu/' },
-    { name: 'Stanford University', logo: 'https://upload.wikimedia.org/wikipedia/commons/b/b5/Coat_of_Arms_of_Leland_Stanford_Junior_University.svg', url: 'https://www.stanford.edu/' },
-    { name: 'Harvard University', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/cc/Harvard_University_coat_of_arms.svg', url: 'https://www.harvard.edu/' },
+    { name: 'Stanford University', logo: 'https://logos-world.net/wp-content/uploads/2020/07/Stanford-University-Logo.png', url: 'https://www.stanford.edu/' },
+    { name: 'Harvard University', logo: 'https://logos-world.net/wp-content/uploads/2020/07/Harvard-University-Logo.png', url: 'https://www.harvard.edu/' },
     { name: 'Google', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg', url: 'https://www.google.com/' },
     { name: 'Microsoft', logo: 'https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg', url: 'https://www.microsoft.com/' },
     { name: 'IBM', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg', url: 'https://www.ibm.com/' },
     { name: 'Amazon Web Services', logo: 'https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg', url: 'https://aws.amazon.com/' },
-    { name: 'Unity Technologies', logo: 'https://upload.wikimedia.org/wikipedia/commons/1/19/Unity_Technologies_logo.svg', url: 'https://unity.com/' },
-    { name: 'Meta', logo: 'https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg', url: 'https://about.meta.com/' },
+    { name: 'Unity Technologies', logo: 'https://logos-world.net/wp-content/uploads/2021/08/Unity-Logo.png', url: 'https://unity.com/' },
+    { name: 'Meta', logo: 'https://logos-world.net/wp-content/uploads/2021/10/Meta-Logo.png', url: 'https://about.meta.com/' },
     { name: 'Adobe', logo: 'https://upload.wikimedia.org/wikipedia/commons/8/8d/Adobe_Corporate_Logo.svg', url: 'https://www.adobe.com/' },
-    { name: 'PMI', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/PMI_logo.svg', url: 'https://www.pmi.org/' },
+    { name: 'PMI', logo: 'https://logos-world.net/wp-content/uploads/2021/11/PMI-Logo.png', url: 'https://www.pmi.org/' },
   ];
 
   // Duplicate the partners array for seamless infinite scroll
