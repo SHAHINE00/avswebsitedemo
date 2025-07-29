@@ -8,7 +8,7 @@ import { Calendar, BarChart3, TrendingUp, Download, Filter } from 'lucide-react'
 import { useAdvancedAnalytics } from '@/hooks/useAdvancedAnalytics';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { format, subDays } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { fr } from 'date-fns/locale/fr';
 import ErrorBoundary from '@/components/ui/error-boundary';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#00ff00'];

@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { useSystemHealth } from '@/hooks/useSystemHealth';
 import { formatDistanceToNow } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { fr } from 'date-fns/locale/fr';
 
 const SystemMonitoring = () => {
   const { health, loading, error, refetch } = useSystemHealth();
