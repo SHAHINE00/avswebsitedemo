@@ -1,6 +1,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { logInfo, logError } from '@/utils/logger';
 
 export interface Course {
   id: string;
@@ -40,7 +41,7 @@ export const useCourses = () => {
       setLoading(true);
       setError(null);
       
-      console.log(`[useCourses] Fetching courses (attempt ${attempt})`);
+      logInfo(`[useCourses] Fetching courses (attempt ${attempt})`);
       
       const { data, error } = await supabase
         .from('courses')
@@ -49,19 +50,19 @@ export const useCourses = () => {
         .order('display_order');
 
       if (error) {
-        console.error(`[useCourses] Supabase error:`, error);
+        logError(`[useCourses] Supabase error:`, error);
         throw error;
       }
 
-      console.log(`[useCourses] Successfully fetched ${data?.length || 0} courses`);
+      logInfo(`[useCourses] Successfully fetched ${data?.length || 0} courses`);
       setCourses(data || []);
       setRetryCount(0);
     } catch (err: any) {
-      console.error(`[useCourses] Fetch failed (attempt ${attempt}):`, err);
+      logError(`[useCourses] Fetch failed (attempt ${attempt}):`, err);
       
       // Retry logic for temporary issues
       if (attempt < 3 && (err.message?.includes('schema cache') || err.message?.includes('404'))) {
-        console.log(`[useCourses] Retrying in ${attempt * 1000}ms...`);
+        logInfo(`[useCourses] Retrying in ${attempt * 1000}ms...`);
         setTimeout(() => {
           setRetryCount(attempt);
           fetchCourses(attempt + 1);

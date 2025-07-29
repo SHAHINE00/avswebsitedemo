@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { logInfo, logError } from '@/utils/logger';
 
 export const useEnrollment = () => {
   const [loading, setLoading] = useState(false);
@@ -22,16 +23,16 @@ export const useEnrollment = () => {
     setLoading(true);
     
     try {
-      console.log('Starting enrollment for course:', courseId);
+      logInfo('Starting enrollment for course:', courseId);
       
       const { data, error } = await supabase.rpc('enroll_in_course', {
         p_course_id: courseId
       });
 
-      console.log('Enrollment response:', { data, error });
+      logInfo('Enrollment response:', { data, error });
 
       if (error) {
-        console.error('Enrollment error:', error);
+        logError('Enrollment error:', error);
         
         if (error.message.includes('Already enrolled') || error.message.includes('unique_violation')) {
           toast({
@@ -60,11 +61,11 @@ export const useEnrollment = () => {
         description: "Vous êtes maintenant inscrit à cette formation.",
       });
       
-      console.log('Enrollment successful');
+      logInfo('Enrollment successful');
       return true;
       
     } catch (error) {
-      console.error('Unexpected enrollment error:', error);
+      logError('Unexpected enrollment error:', error);
       toast({
         title: "Erreur d'inscription",
         description: "Une erreur inattendue est survenue. Veuillez réessayer.",
@@ -78,12 +79,12 @@ export const useEnrollment = () => {
 
   const checkEnrollmentStatus = async (courseId: string) => {
     if (!user) {
-      console.log('No user, returning false for enrollment check');
+      logInfo('No user, returning false for enrollment check');
       return false;
     }
 
     try {
-      console.log('Checking enrollment status for course:', courseId, 'user:', user.id);
+      logInfo('Checking enrollment status for course: ' + courseId + ' user: ' + user.id);
       
       const { data, error } = await supabase
         .from('course_enrollments')
@@ -92,19 +93,19 @@ export const useEnrollment = () => {
         .eq('course_id', courseId)
         .maybeSingle();
 
-      console.log('Enrollment check response:', { data, error });
+      logInfo('Enrollment check response:', { data, error });
 
       if (error) {
-        console.error('Error checking enrollment:', error);
+        logError('Error checking enrollment:', error);
         return false;
       }
 
       const isEnrolled = !!data && data.status === 'active';
-      console.log('Is enrolled:', isEnrolled);
+      logInfo('Is enrolled:', isEnrolled);
       return isEnrolled;
       
     } catch (error) {
-      console.error('Unexpected error checking enrollment status:', error);
+      logError('Unexpected error checking enrollment status:', error);
       return false;
     }
   };
