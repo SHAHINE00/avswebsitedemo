@@ -1,4 +1,5 @@
 
+import { logError } from '@/utils/logger';
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -64,7 +65,7 @@ const AdvancedAnalytics = () => {
 
       return { lineData, barData, pieData };
     } catch (error) {
-      console.error('Error processing chart data:', error);
+      logError('Error processing chart data:', error);
       return { lineData: [], barData: [], pieData: [] };
     }
   };

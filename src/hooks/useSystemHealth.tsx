@@ -1,4 +1,5 @@
 
+import { logInfo, logError, logWarn } from '@/utils/logger';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -18,16 +19,16 @@ export const useSystemHealth = (refreshInterval = 30000) => {
   const fetchSystemHealth = async () => {
     try {
       setError(null);
-      console.log('Fetching system health...');
+      logInfo('Fetching system health...');
       
       const { data, error: rpcError } = await supabase.rpc('get_system_health');
       
       if (rpcError) {
-        console.error('Supabase RPC error:', rpcError);
+        logError('Supabase RPC error:', rpcError);
         throw rpcError;
       }
       
-      console.log('System health data received:', data);
+      logInfo('System health data received:', data);
       
       // Safely handle the JSON response with proper type checking
       if (data && typeof data === 'object' && !Array.isArray(data)) {
@@ -35,7 +36,7 @@ export const useSystemHealth = (refreshInterval = 30000) => {
         
         // Handle the case where the function returns error info
         if (response.error) {
-          console.warn('System health function returned error:', response.error);
+          logWarn('System health function returned error:', response.error);
           setError(`Database function error: ${response.error}`);
           
           // Set fallback data to prevent UI from breaking
@@ -59,7 +60,7 @@ export const useSystemHealth = (refreshInterval = 30000) => {
         throw new Error('Invalid response format from system health function');
       }
     } catch (err) {
-      console.error('Error fetching system health:', err);
+      logError('Error fetching system health:', err);
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       
       // Check if it's an authentication error
