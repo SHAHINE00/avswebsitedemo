@@ -9,7 +9,7 @@ import { MessageSquare, Reply, Heart, Pin, Send, Users } from 'lucide-react';
 import { useEnhancedLearning, LessonDiscussion } from '@/hooks/useEnhancedLearning';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatDistanceToNow } from 'date-fns';
-import { fr } from 'date-fns/locale/fr';
+import { fr } from 'date-fns/locale';
 
 interface DiscussionPanelProps {
   lessonId: string;

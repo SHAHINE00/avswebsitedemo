@@ -6,7 +6,7 @@ import { Users, BookOpen, UserCheck, Clock, TrendingUp, Eye, Calendar, Activity 
 import { useDashboardMetrics } from '@/hooks/useDashboardMetrics';
 import { useAdminActivityLogs } from '@/hooks/useAdminActivityLogs';
 import { formatDistanceToNow } from 'date-fns';
-import { fr } from 'date-fns/locale/fr';
+import { fr } from 'date-fns/locale';
 
 const DashboardOverview = () => {
   const { metrics, loading: metricsLoading } = useDashboardMetrics();
