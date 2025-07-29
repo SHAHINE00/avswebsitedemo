@@ -20,16 +20,13 @@ export const useContactForm = () => {
     setLoading(true);
     
     try {
-      console.log('Submitting contact form:', formData);
-      
+      // Submit contact form to edge function
       const { data, error } = await supabase.functions.invoke('send-contact-email', {
         body: formData
       });
 
-      console.log('Contact form response:', { data, error });
-
       if (error) {
-        console.error('Contact form error:', error);
+        // Contact form submission failed
         throw error;
       }
 
@@ -40,7 +37,7 @@ export const useContactForm = () => {
 
       return true;
     } catch (error) {
-      console.error('Contact form submission error:', error);
+      // Handle submission error
       
       toast({
         title: "Erreur d'envoi",

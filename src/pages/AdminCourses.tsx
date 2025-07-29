@@ -1,38 +1,37 @@
-
 import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import AdminAccessControl from '@/components/admin/AdminAccessControl';
+import AdminRouteGuard from '@/components/admin/AdminRouteGuard';
 import AdminHeader from '@/components/admin/AdminHeader';
 import AdminTabsEnhanced from '@/components/admin/AdminTabsEnhanced';
 import CourseFormDialog from '@/components/admin/CourseFormDialog';
 import ErrorBoundary from '@/components/ui/error-boundary';
+import SEOHead from '@/components/SEOHead';
 import { useAdminCourses } from '@/hooks/useAdminCourses';
+import { logInfo, logError } from '@/utils/logger';
 import type { Course } from '@/hooks/useCourses';
 
 const AdminCourses = () => {
-  const { courses, loading, error, isAdmin, refetch, createCourse, updateCourse, deleteCourse } = useAdminCourses();
+  const { courses, loading, error, refetch, createCourse, updateCourse, deleteCourse } = useAdminCourses();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
 
   const handleEdit = (course: Course) => {
-    console.log('Editing course:', course);
+    logInfo('Editing course', { courseId: course.id, title: course.title });
     setEditingCourse(course);
     setDialogOpen(true);
   };
 
   const handleDelete = async (courseId: string) => {
-    console.log('Deleting course:', courseId);
-    await deleteCourse(courseId);
+    try {
+      logInfo('Deleting course', { courseId });
+      await deleteCourse(courseId);
+    } catch (error) {
+      logError('Failed to delete course', { courseId, error });
+    }
   };
 
   const handleSuccess = () => {
     refetch();
-    setDialogOpen(false);
-    setEditingCourse(null);
-  };
-
-  const handleCancel = () => {
     setDialogOpen(false);
     setEditingCourse(null);
   };
@@ -42,59 +41,14 @@ const AdminCourses = () => {
     setDialogOpen(true);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-white flex flex-col">
-        <Navbar />
-        <div className="flex-grow flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-academy-blue mx-auto mb-4"></div>
-            <p className="text-gray-600">Chargement de l'interface d'administration...</p>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-white flex flex-col">
-        <Navbar />
-        <div className="flex-grow flex items-center justify-center">
-          <div className="text-center text-red-600">
-            <p>Erreur lors du chargement: {error}</p>
-            <button 
-              onClick={() => window.location.reload()} 
-              className="mt-4 px-4 py-2 bg-academy-blue text-white rounded hover:bg-academy-purple"
-            >
-              Réessayer
-            </button>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen bg-white flex flex-col">
-        <Navbar />
-        <div className="flex-grow flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-red-600 mb-4">Accès refusé</h1>
-            <p className="text-gray-600">Vous n'avez pas les permissions d'administrateur.</p>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
   return (
-    <ErrorBoundary>
-      <AdminAccessControl>
+    <AdminRouteGuard>
+      <SEOHead 
+        title="Administration des Cours - AVS Institut"
+        description="Interface d'administration pour gérer les cours, utilisateurs et analytics de la plateforme AVS"
+        noIndex={true}
+      />
+      <ErrorBoundary>
         <div className="min-h-screen bg-gray-50">
           <Navbar />
           
@@ -106,12 +60,31 @@ const AdminCourses = () => {
             />
             
             <div className="container mx-auto px-6 py-8">
-              <AdminTabsEnhanced
-                courses={courses}
-                onRefresh={refetch}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
+              {loading ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-academy-blue mx-auto mb-4"></div>
+                    <p className="text-gray-600">Chargement des cours...</p>
+                  </div>
+                </div>
+              ) : error ? (
+                <div className="text-center py-12">
+                  <p className="text-red-600 mb-4">Erreur: {error}</p>
+                  <button 
+                    onClick={refetch}
+                    className="px-4 py-2 bg-academy-blue text-white rounded hover:bg-academy-purple transition-colors"
+                  >
+                    Réessayer
+                  </button>
+                </div>
+              ) : (
+                <AdminTabsEnhanced
+                  courses={courses}
+                  onRefresh={refetch}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+              )}
             </div>
           </div>
 
@@ -122,8 +95,8 @@ const AdminCourses = () => {
             onSuccess={handleSuccess}
           />
         </div>
-      </AdminAccessControl>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </AdminRouteGuard>
   );
 };
 

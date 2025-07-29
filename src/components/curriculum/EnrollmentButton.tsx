@@ -29,20 +29,20 @@ const EnrollmentButton: React.FC<EnrollmentButtonProps> = ({
 
   useEffect(() => {
     const checkStatus = async () => {
-      console.log('Checking enrollment status for:', courseId);
+      // Check enrollment status for course
       setCheckingStatus(true);
       
       if (user && courseId) {
         try {
           const enrolled = await checkEnrollmentStatus(courseId);
-          console.log('Enrollment status result:', enrolled);
+          // Enrollment status retrieved successfully
           setIsEnrolled(enrolled);
         } catch (error) {
-          console.error('Error in useEffect checkStatus:', error);
+          // Error checking enrollment status
           setIsEnrolled(false);
         }
       } else {
-        console.log('No user or courseId, setting enrolled to false');
+        // No user or courseId available
         setIsEnrolled(false);
       }
       
@@ -54,16 +54,16 @@ const EnrollmentButton: React.FC<EnrollmentButtonProps> = ({
 
   const handleEnrollment = async () => {
     if (!user) {
-      console.log('No user, redirecting to auth');
+      // Redirect to authentication
       navigate('/auth');
       return;
     }
 
-    console.log('Starting enrollment process for course:', courseId);
+    // Start enrollment process
     const success = await enrollInCourse(courseId);
     
     if (success) {
-      console.log('Enrollment successful, updating UI');
+      // Enrollment successful
       setIsEnrolled(true);
       setShowConfirmation(true);
     }
