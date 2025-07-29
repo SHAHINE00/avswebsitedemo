@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface Course {
@@ -33,9 +33,15 @@ export const useCourses = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
-  const fetchCourses = async () => {
+  const fetchCourses = useCallback(async (attempt = 1) => {
     try {
+      setLoading(true);
+      setError(null);
+      
+      console.log(`[useCourses] Fetching courses (attempt ${attempt})`);
+      
       const { data, error } = await supabase
         .from('courses')
         .select('*')
@@ -43,20 +49,46 @@ export const useCourses = () => {
         .order('display_order');
 
       if (error) {
-        setError(error.message);
-      } else {
-        setCourses(data || []);
+        console.error(`[useCourses] Supabase error:`, error);
+        throw error;
       }
-    } catch (err) {
-      setError('Failed to fetch courses');
+
+      console.log(`[useCourses] Successfully fetched ${data?.length || 0} courses`);
+      setCourses(data || []);
+      setRetryCount(0);
+    } catch (err: any) {
+      console.error(`[useCourses] Fetch failed (attempt ${attempt}):`, err);
+      
+      // Retry logic for temporary issues
+      if (attempt < 3 && (err.message?.includes('schema cache') || err.message?.includes('404'))) {
+        console.log(`[useCourses] Retrying in ${attempt * 1000}ms...`);
+        setTimeout(() => {
+          setRetryCount(attempt);
+          fetchCourses(attempt + 1);
+        }, attempt * 1000);
+        return;
+      }
+      
+      setError(err.message || 'Failed to fetch courses');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  const retry = useCallback(() => {
+    fetchCourses(1);
+  }, [fetchCourses]);
 
   useEffect(() => {
     fetchCourses();
-  }, []);
+  }, [fetchCourses]);
 
-  return { courses, loading, error, refetch: fetchCourses };
+  return { 
+    courses, 
+    loading, 
+    error, 
+    retryCount,
+    refetch: fetchCourses,
+    retry 
+  };
 };

@@ -7,7 +7,7 @@ import CourseDetailModal from './CourseDetailModal';
 import type { Course } from '@/hooks/useCourses';
 
 const SpecialtyPillars: React.FC = () => {
-  const { courses, loading } = useCourses();
+  const { courses, loading, error, retry } = useCourses();
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
   // Improved course categorization based on exact recommendations
@@ -161,6 +161,22 @@ const SpecialtyPillars: React.FC = () => {
         {[...Array(3)].map((_, i) => (
           <Card key={i} className="h-96 animate-pulse bg-gray-100" />
         ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+          <p className="text-red-700 mb-4">Erreur lors du chargement des formations</p>
+          <button 
+            onClick={retry}
+            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors"
+          >
+            Réessayer
+          </button>
+        </div>
       </div>
     );
   }
