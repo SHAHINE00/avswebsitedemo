@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Brain, Code, Rocket, TrendingUp, ArrowRight } from 'lucide-react';
+import { Brain, Code, Megaphone, TrendingUp, ArrowRight } from 'lucide-react';
 
 const CareerPaths: React.FC = () => {
   return (
@@ -13,7 +13,7 @@ const CareerPaths: React.FC = () => {
           <div className="text-center mb-6 sm:mb-8">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3 gradient-text">Opportunités de Carrière</h2>
             <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4">
-              Découvrez des carrières passionnantes en IA et Programmation
+              Découvrez des carrières passionnantes dans nos 3 spécialités de formation
             </p>
           </div>
           
@@ -33,16 +33,16 @@ const CareerPaths: React.FC = () => {
             </div>
           </div>
           
-          {/* Career Cards */}
+          {/* Career Cards - Aligned with Formation Categories */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            {/* AI Career */}
+            {/* AI & Data Science Career */}
             <div className="group relative bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-academy-blue/10 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <div className="absolute top-3 sm:top-4 right-3 sm:right-4 w-2 h-2 bg-academy-blue rounded-full animate-pulse"></div>
               <div className="flex items-center mb-3 sm:mb-4">
                 <div className="bg-academy-blue/10 p-1.5 sm:p-2 rounded-lg mr-2 sm:mr-3">
                   <Brain className="w-4 sm:w-5 h-4 sm:h-5 text-academy-blue" />
                 </div>
-                <h3 className="text-base sm:text-lg font-bold text-academy-blue">Intelligence Artificielle</h3>
+                <h3 className="text-base sm:text-lg font-bold text-academy-blue">IA & Data Science</h3>
               </div>
               
               <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
@@ -52,11 +52,15 @@ const CareerPaths: React.FC = () => {
                 </div>
                 <div className="flex items-center">
                   <div className="w-1 h-1 bg-academy-blue rounded-full mr-2"></div>
-                  <span>Ingénieur ML</span>
+                  <span>Ingénieur ML/IA</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-1 h-1 bg-academy-blue rounded-full mr-2"></div>
                   <span>Architecte IA</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-1 h-1 bg-academy-blue rounded-full mr-2"></div>
+                  <span>Analyste BI</span>
                 </div>
               </div>
               
@@ -68,14 +72,14 @@ const CareerPaths: React.FC = () => {
               </div>
             </div>
             
-            {/* Programming Career */}
+            {/* Programming & Infrastructure Career */}
             <div className="group relative bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-academy-purple/10 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <div className="absolute top-3 sm:top-4 right-3 sm:right-4 w-2 h-2 bg-academy-purple rounded-full animate-pulse"></div>
               <div className="flex items-center mb-3 sm:mb-4">
                 <div className="bg-academy-purple/10 p-1.5 sm:p-2 rounded-lg mr-2 sm:mr-3">
                   <Code className="w-4 sm:w-5 h-4 sm:h-5 text-academy-purple" />
                 </div>
-                <h3 className="text-base sm:text-lg font-bold text-academy-purple">Programmation</h3>
+                <h3 className="text-base sm:text-lg font-bold text-academy-purple">Programmation & Infrastructure</h3>
               </div>
               
               <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
@@ -91,6 +95,10 @@ const CareerPaths: React.FC = () => {
                   <div className="w-1 h-1 bg-academy-purple rounded-full mr-2"></div>
                   <span>Ingénieur DevOps</span>
                 </div>
+                <div className="flex items-center">
+                  <div className="w-1 h-1 bg-academy-purple rounded-full mr-2"></div>
+                  <span>Architecte Cloud</span>
+                </div>
               </div>
               
               <div className="flex justify-between items-center">
@@ -101,36 +109,40 @@ const CareerPaths: React.FC = () => {
               </div>
             </div>
 
-            {/* Entrepreneurship */}
+            {/* Marketing Digital & Créatif */}
             <div className="group relative bg-gradient-to-br from-academy-lightblue to-academy-blue rounded-xl sm:rounded-2xl p-4 sm:p-6 text-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300 sm:col-span-2 lg:col-span-1">
               <div className="absolute top-3 sm:top-4 right-3 sm:right-4 w-2 h-2 bg-white rounded-full animate-pulse"></div>
               <div className="flex items-center mb-3 sm:mb-4">
                 <div className="bg-white/20 p-1.5 sm:p-2 rounded-lg mr-2 sm:mr-3">
-                  <Rocket className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
+                  <Megaphone className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
                 </div>
-                <h3 className="text-base sm:text-lg font-bold">Entrepreneuriat</h3>
+                <h3 className="text-base sm:text-lg font-bold">Marketing Digital & Créatif</h3>
               </div>
               
               <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm mb-3 sm:mb-4 opacity-90">
                 <div className="flex items-center">
                   <div className="w-1 h-1 bg-white rounded-full mr-2"></div>
-                  <span>Startup IA</span>
+                  <span>Marketing Manager</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-1 h-1 bg-white rounded-full mr-2"></div>
-                  <span>App Mobile</span>
+                  <span>Community Manager</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-1 h-1 bg-white rounded-full mr-2"></div>
-                  <span>Plateforme SaaS</span>
+                  <span>Content Creator</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-1 h-1 bg-white rounded-full mr-2"></div>
+                  <span>E-commerce Specialist</span>
                 </div>
               </div>
               
               <div className="flex justify-between items-center">
                 <div className="bg-white/20 text-white rounded-full px-2 sm:px-3 py-1 text-xs font-medium">
-                  Potentiel illimité
+                  €35k - €65k
                 </div>
-                <Rocket className="w-3 sm:w-4 h-3 sm:h-4 text-white" />
+                <TrendingUp className="w-3 sm:w-4 h-3 sm:h-4 text-white" />
               </div>
             </div>
           </div>
