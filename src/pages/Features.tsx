@@ -3,10 +3,13 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import FeaturesSection from '@/components/FeaturesSection';
+import SEOHead from '@/components/SEOHead';
+import { pageSEO } from '@/utils/seoData';
 
 const Features = () => {
   return (
     <div className="min-h-screen bg-white flex flex-col">
+      <SEOHead {...pageSEO.features} />
       <Navbar />
       
       <div className="pt-24 pb-16 bg-gradient-to-br from-white to-academy-gray">

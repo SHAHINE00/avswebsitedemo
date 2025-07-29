@@ -9,10 +9,13 @@ import SuccessStoriesSection from '@/components/careers/SuccessStoriesSection';
 import CTASection from '@/components/careers/CTASection';
 import { Brain, Code, TrendingUp, Megaphone } from 'lucide-react';
 import { aiCareers, programmingCareers, digitalMarketingCareers, entrepreneurshipOpportunities, successStats } from '@/data/careersData';
+import SEOHead from '@/components/SEOHead';
+import { pageSEO } from '@/utils/seoData';
 
 const Careers = () => {
   return (
     <div className="min-h-screen bg-white flex flex-col">
+      <SEOHead {...pageSEO.careers} />
       <Navbar />
       
       {/* Hero Section */}

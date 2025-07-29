@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import { useContactForm } from '@/hooks/useContactForm';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 import ErrorBoundary from '@/components/ui/error-boundary';
+import SEOHead from '@/components/SEOHead';
+import { pageSEO } from '@/utils/seoData';
 
 const Contact = () => {
   const [formData, setFormData] = React.useState({
@@ -50,6 +52,7 @@ const Contact = () => {
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-white flex flex-col">
+        <SEOHead {...pageSEO.contact} />
         <Navbar />
         
         <div className="pt-24 pb-16 bg-gradient-to-br from-white to-academy-gray">

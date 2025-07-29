@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Shield, User } from 'lucide-react';
+import { logError } from '@/utils/logger';
 
 const AdminUserSetup: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -28,7 +29,7 @@ const AdminUserSetup: React.FC = () => {
       if (error) throw error;
       setExistingAdmins(data || []);
     } catch (error) {
-      console.error('Error fetching admins:', error);
+      logError('Error fetching admins:', error);
     }
   };
 
@@ -84,7 +85,7 @@ const AdminUserSetup: React.FC = () => {
       setEmail('');
       fetchAdmins();
     } catch (error) {
-      console.error('Error promoting user:', error);
+      logError('Error promoting user:', error);
       toast({
         title: 'Erreur',
         description: 'Impossible de promouvoir l\'utilisateur',
@@ -113,7 +114,7 @@ const AdminUserSetup: React.FC = () => {
 
       fetchAdmins();
     } catch (error) {
-      console.error('Error revoking admin:', error);
+      logError('Error revoking admin:', error);
       toast({
         title: 'Erreur',
         description: 'Impossible de révoquer les droits',
