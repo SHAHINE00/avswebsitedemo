@@ -2,13 +2,14 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import { initializeProductionLogging } from '@/utils/cleanupConsole'
+import { logError } from '@/utils/logger'
 
 // Initialize production monitoring and logging
 initializeProductionLogging();
 
 // Global async error handler
 window.addEventListener('unhandledrejection', (event) => {
-  console.error('Unhandled Promise Rejection:', event.reason);
+  logError('Unhandled Promise Rejection:', event.reason);
   event.preventDefault();
 });
 

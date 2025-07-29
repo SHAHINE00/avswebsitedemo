@@ -41,7 +41,7 @@ export const useNotifications = () => {
       setNotifications((data || []) as Notification[]);
       setUnreadCount(data?.filter(n => !n.is_read).length || 0);
     } catch (error) {
-      console.error('Error fetching notifications:', error);
+      logError('Error fetching notifications:', error);
       toast({
         title: "Erreur",
         description: "Impossible de charger les notifications",
@@ -69,7 +69,7 @@ export const useNotifications = () => {
       );
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (error) {
-      console.error('Error marking notification as read:', error);
+      logError('Error marking notification as read:', error);
     }
   };
 
@@ -90,7 +90,7 @@ export const useNotifications = () => {
       );
       setUnreadCount(0);
     } catch (error) {
-      console.error('Error marking all notifications as read:', error);
+      logError('Error marking all notifications as read:', error);
     }
   };
 
@@ -116,7 +116,7 @@ export const useNotifications = () => {
       fetchNotifications(); // Refresh notifications
       return data;
     } catch (error) {
-      console.error('Error creating notification:', error);
+      logError('Error creating notification:', error);
     }
   };
 

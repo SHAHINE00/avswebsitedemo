@@ -12,6 +12,7 @@ import ErrorBoundary from '@/components/ui/error-boundary';
 import { useNotifications } from '@/hooks/useNotifications';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useCourseInteractions } from '@/hooks/useCourseInteractions';
+import { logInfo, logError } from '@/utils/logger';
 import DashboardStats from '@/components/dashboard/DashboardStats';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import DashboardTabs from '@/components/dashboard/DashboardTabs';
@@ -68,7 +69,7 @@ const Dashboard = () => {
     setError(null);
     
     try {
-      console.log('Fetching dashboard data for user:', user.id);
+      logInfo('Fetching dashboard data for user:', user.id);
       
       // Fetch enrollments
       const { data: enrollmentData, error: enrollmentError } = await supabase
@@ -85,20 +86,20 @@ const Dashboard = () => {
         .order('enrolled_at', { ascending: false });
 
       if (enrollmentError) {
-        console.error('Error fetching enrollments:', enrollmentError);
+        logError('Error fetching enrollments:', enrollmentError);
         throw enrollmentError;
       }
 
-      console.log('Enrollments fetched:', enrollmentData);
+      logInfo('Enrollments fetched:', enrollmentData);
       setEnrollments(enrollmentData || []);
 
       // Fetch appointments
       const appointmentData = await getUserAppointments();
-      console.log('Appointments fetched:', appointmentData);
+      logInfo('Appointments fetched:', appointmentData);
       setAppointments(appointmentData);
 
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      logError('Error fetching dashboard data:', error);
       setError('Erreur lors du chargement des données');
       toast({
         title: "Erreur de chargement",
@@ -115,7 +116,7 @@ const Dashboard = () => {
       await signOut();
       window.location.href = '/';
     } catch (error) {
-      console.error('Error signing out:', error);
+      logError('Error signing out:', error);
       toast({
         title: "Erreur de déconnexion",
         description: "Une erreur est survenue lors de la déconnexion.",

@@ -58,7 +58,7 @@ export const useUserProfile = () => {
       
       setPreferences(data);
     } catch (error) {
-      console.error('Error fetching user preferences:', error);
+      logError('Error fetching user preferences:', error);
     }
   };
 
@@ -84,7 +84,7 @@ export const useUserProfile = () => {
         description: "Préférences mises à jour avec succès",
       });
     } catch (error) {
-      console.error('Error updating user preferences:', error);
+      logError('Error updating user preferences:', error);
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour les préférences",
@@ -107,7 +107,7 @@ export const useUserProfile = () => {
       
       setAchievements(data || []);
     } catch (error) {
-      console.error('Error fetching user achievements:', error);
+      logError('Error fetching user achievements:', error);
     }
   };
 
@@ -123,7 +123,7 @@ export const useUserProfile = () => {
       
       setStatistics(data as unknown as UserStatistics);
     } catch (error) {
-      console.error('Error fetching user statistics:', error);
+      logError('Error fetching user statistics:', error);
     }
   };
 
@@ -167,7 +167,7 @@ export const useUserProfile = () => {
 
       return data;
     } catch (error) {
-      console.error('Error creating achievement:', error);
+      logError('Error creating achievement:', error);
     }
   };
 

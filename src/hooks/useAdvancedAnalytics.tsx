@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { logError } from '@/utils/logger';
 
 interface AnalyticsData {
   date: string;
@@ -32,7 +33,7 @@ export const useAdvancedAnalytics = (
       
       setData(analyticsData || []);
     } catch (err) {
-      console.error('Error fetching advanced analytics:', err);
+      logError('Error fetching advanced analytics:', err);
       setError('Failed to fetch analytics data');
     } finally {
       setLoading(false);

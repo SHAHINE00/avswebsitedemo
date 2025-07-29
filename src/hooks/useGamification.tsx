@@ -314,7 +314,7 @@ export const useGamification = () => {
       setUserPoints(totalPoints);
       setUserLevel(calculateUserLevel(totalPoints));
     } catch (error) {
-      console.error('Error fetching user points:', error);
+      logError('Error fetching user points:', error);
     }
   };
 
@@ -370,7 +370,7 @@ export const useGamification = () => {
       setUserRank(userRankIndex >= 0 ? userRankIndex + 1 : null);
 
     } catch (error) {
-      console.error('Error fetching leaderboard:', error);
+      logError('Error fetching leaderboard:', error);
     } finally {
       setLoading(false);
     }
