@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { logError } from '@/utils/logger';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -40,7 +41,7 @@ export const useCourseInteractions = () => {
       
       setBookmarks(data || []);
     } catch (error) {
-      console.error('Error fetching bookmarks:', error);
+      logError('Error fetching bookmarks:', error);
     }
   };
 
@@ -84,7 +85,7 @@ export const useCourseInteractions = () => {
         });
       }
     } catch (error) {
-      console.error('Error toggling bookmark:', error);
+      logError('Error toggling bookmark:', error);
       toast({
         title: "Erreur",
         description: "Impossible de modifier les favoris",
@@ -122,7 +123,7 @@ export const useCourseInteractions = () => {
 
       return data;
     } catch (error) {
-      console.error('Error submitting review:', error);
+      logError('Error submitting review:', error);
       toast({
         title: "Erreur",
         description: "Impossible de publier l'avis",
@@ -143,7 +144,7 @@ export const useCourseInteractions = () => {
       
       return data || [];
     } catch (error) {
-      console.error('Error fetching course reviews:', error);
+      logError('Error fetching course reviews:', error);
       return [];
     }
   };
@@ -163,7 +164,7 @@ export const useCourseInteractions = () => {
       
       return data;
     } catch (error) {
-      console.error('Error fetching user review:', error);
+      logError('Error fetching user review:', error);
       return null;
     }
   };

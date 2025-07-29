@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { logError } from '@/utils/logger';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,7 +40,7 @@ const MaterialFormDialog = ({ open, onOpenChange, courseId, onSuccess }: Materia
       if (error) throw error;
       onSuccess();
     } catch (error) {
-      console.error('Error saving material:', error);
+      logError('Error saving material:', error);
     } finally {
       setLoading(false);
     }

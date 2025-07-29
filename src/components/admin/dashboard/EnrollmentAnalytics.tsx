@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { logError } from '@/utils/logger';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import { Users, BookOpen, TrendingUp, Award, UserCheck, Clock } from 'lucide-react';
@@ -70,7 +71,7 @@ const EnrollmentAnalytics: React.FC = () => {
       });
 
     } catch (error) {
-      console.error('Error fetching enrollment stats:', error);
+      logError('Error fetching enrollment stats:', error);
       toast({
         title: "Erreur",
         description: "Impossible de charger les statistiques d'inscription",

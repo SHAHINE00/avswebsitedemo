@@ -13,7 +13,7 @@ import {
   Trash2 
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { fr } from 'date-fns/locale/fr';
 
 interface UserProfile {
   id: string;

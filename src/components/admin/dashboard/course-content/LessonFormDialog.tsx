@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { logError } from '@/utils/logger';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -83,7 +84,7 @@ const LessonFormDialog = ({ open, onOpenChange, courseId, lesson, onSuccess }: L
 
       onSuccess();
     } catch (error) {
-      console.error('Error saving lesson:', error);
+      logError('Error saving lesson:', error);
     } finally {
       setLoading(false);
     }

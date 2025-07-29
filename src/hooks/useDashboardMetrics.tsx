@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { logError } from '@/utils/logger';
 import { supabase } from '@/integrations/supabase/client';
 
 interface DashboardMetrics {
@@ -27,7 +28,7 @@ export const useDashboardMetrics = () => {
       // Type assertion to ensure proper typing from Json to DashboardMetrics
       setMetrics(data as unknown as DashboardMetrics);
     } catch (err) {
-      console.error('Error fetching dashboard metrics:', err);
+      logError('Error fetching dashboard metrics:', err);
       setError('Failed to fetch dashboard metrics');
     } finally {
       setLoading(false);

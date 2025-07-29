@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { logError } from '@/utils/logger';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAdminActivityLogs } from '@/hooks/useAdminActivityLogs';
@@ -29,7 +30,7 @@ export const useUserManagement = () => {
       
       setUsers(data || []);
     } catch (error) {
-      console.error('Error fetching users:', error);
+      logError('Error fetching users:', error);
       toast({
         title: "Erreur",
         description: "Impossible de charger les utilisateurs",
@@ -63,7 +64,7 @@ export const useUserManagement = () => {
 
       fetchUsers();
     } catch (error) {
-      console.error('Error updating user role:', error);
+      logError('Error updating user role:', error);
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour le rôle",
@@ -88,7 +89,7 @@ export const useUserManagement = () => {
 
       fetchUsers();
     } catch (error) {
-      console.error('Error deleting user:', error);
+      logError('Error deleting user:', error);
       toast({
         title: "Erreur",
         description: "Impossible de supprimer l'utilisateur",
@@ -115,7 +116,7 @@ export const useUserManagement = () => {
 
       fetchUsers();
     } catch (error) {
-      console.error('Error updating user profile:', error);
+      logError('Error updating user profile:', error);
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour le profil",
@@ -151,7 +152,7 @@ export const useUserManagement = () => {
 
       return true;
     } catch (error) {
-      console.error('Error inviting user:', error);
+      logError('Error inviting user:', error);
       toast({
         title: "Erreur",
         description: "Impossible d'envoyer l'invitation",
@@ -173,7 +174,7 @@ export const useUserManagement = () => {
         description: "Email de réinitialisation envoyé",
       });
     } catch (error) {
-      console.error('Error resetting password:', error);
+      logError('Error resetting password:', error);
       toast({
         title: "Erreur",
         description: "Impossible d'envoyer l'email de réinitialisation",

@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { logError } from '@/utils/logger';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -106,7 +107,7 @@ const ComprehensiveUserManagement = () => {
         description: `Action effectuée sur ${selectedUsers.length} utilisateur(s)`,
       });
     } catch (error) {
-      console.error('Error performing bulk action:', error);
+      logError('Error performing bulk action:', error);
       toast({
         title: "Erreur",
         description: "Erreur lors de l'action groupée",

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { logError } from '@/utils/logger';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -83,7 +84,7 @@ export const useEnhancedLearning = () => {
       if (error) throw error;
       return data || [];
     } catch (error) {
-      console.error('Error fetching quizzes:', error);
+      logError('Error fetching quizzes:', error);
       return [];
     }
   };
@@ -99,7 +100,7 @@ export const useEnhancedLearning = () => {
       if (error) throw error;
       return data || [];
     } catch (error) {
-      console.error('Error fetching quiz questions:', error);
+      logError('Error fetching quiz questions:', error);
       return [];
     }
   };
@@ -161,7 +162,7 @@ export const useEnhancedLearning = () => {
 
       return data;
     } catch (error) {
-      console.error('Error submitting quiz attempt:', error);
+      logError('Error submitting quiz attempt:', error);
       toast({
         title: "Erreur",
         description: "Impossible de soumettre le quiz",
@@ -188,7 +189,7 @@ export const useEnhancedLearning = () => {
       if (error) throw error;
       return data || [];
     } catch (error) {
-      console.error('Error fetching notes:', error);
+      logError('Error fetching notes:', error);
       return [];
     }
   };
@@ -221,7 +222,7 @@ export const useEnhancedLearning = () => {
 
       return data;
     } catch (error) {
-      console.error('Error creating note:', error);
+      logError('Error creating note:', error);
       toast({
         title: "Erreur",
         description: "Impossible de créer la note",
@@ -247,7 +248,7 @@ export const useEnhancedLearning = () => {
 
       return true;
     } catch (error) {
-      console.error('Error updating note:', error);
+      logError('Error updating note:', error);
       toast({
         title: "Erreur",
         description: "Impossible de modifier la note",
@@ -273,7 +274,7 @@ export const useEnhancedLearning = () => {
 
       return true;
     } catch (error) {
-      console.error('Error deleting note:', error);
+      logError('Error deleting note:', error);
       toast({
         title: "Erreur",
         description: "Impossible de supprimer la note",
@@ -297,7 +298,7 @@ export const useEnhancedLearning = () => {
       if (error) throw error;
       return data || [];
     } catch (error) {
-      console.error('Error fetching discussions:', error);
+      logError('Error fetching discussions:', error);
       return [];
     }
   };
@@ -313,7 +314,7 @@ export const useEnhancedLearning = () => {
       if (error) throw error;
       return data || [];
     } catch (error) {
-      console.error('Error fetching replies:', error);
+      logError('Error fetching replies:', error);
       return [];
     }
   };
@@ -346,7 +347,7 @@ export const useEnhancedLearning = () => {
 
       return data;
     } catch (error) {
-      console.error('Error creating discussion:', error);
+      logError('Error creating discussion:', error);
       toast({
         title: "Erreur",
         description: "Impossible de publier le message",
@@ -372,7 +373,7 @@ export const useEnhancedLearning = () => {
 
       return true;
     } catch (error) {
-      console.error('Error updating discussion:', error);
+      logError('Error updating discussion:', error);
       toast({
         title: "Erreur",
         description: "Impossible de modifier le message",
@@ -398,7 +399,7 @@ export const useEnhancedLearning = () => {
 
       return true;
     } catch (error) {
-      console.error('Error deleting discussion:', error);
+      logError('Error deleting discussion:', error);
       toast({
         title: "Erreur",
         description: "Impossible de supprimer le message",

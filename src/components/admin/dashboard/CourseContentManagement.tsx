@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { logError } from '@/utils/logger';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Play, FileText, Bell, Brain } from 'lucide-react';
 import { useCourseContent, CourseLesson } from '@/hooks/useCourseContent';
@@ -89,7 +90,7 @@ const CourseContentManagement = () => {
       }
       setQuizzes(allQuizzes);
     } catch (error) {
-      console.error('Error loading quizzes:', error);
+      logError('Error loading quizzes:', error);
     }
   };
 

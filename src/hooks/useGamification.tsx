@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { logError } from '@/utils/logger';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -238,7 +239,7 @@ export const useGamification = () => {
         }
       }
     } catch (error) {
-      console.error('Error checking achievements:', error);
+      logError('Error checking achievements:', error);
     }
   }, [user]);
 
@@ -293,7 +294,7 @@ export const useGamification = () => {
       });
 
     } catch (error) {
-      console.error('Error awarding achievement:', error);
+      logError('Error awarding achievement:', error);
     }
   };
 

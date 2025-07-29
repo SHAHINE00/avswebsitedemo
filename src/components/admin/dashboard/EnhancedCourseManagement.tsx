@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { logError } from '@/utils/logger';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -112,7 +113,7 @@ const EnhancedCourseManagement: React.FC<EnhancedCourseManagementProps> = ({
       setSelectedCourses([]);
       onRefresh();
     } catch (error) {
-      console.error('Error updating course status:', error);
+      logError('Error updating course status:', error);
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour le statut des cours",
@@ -150,7 +151,7 @@ const EnhancedCourseManagement: React.FC<EnhancedCourseManagementProps> = ({
       setSelectedCourses([]);
       onRefresh();
     } catch (error) {
-      console.error('Error deleting courses:', error);
+      logError('Error deleting courses:', error);
       toast({
         title: "Erreur",
         description: "Impossible de supprimer les cours",

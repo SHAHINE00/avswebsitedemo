@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { PlusCircle, Edit, Trash2, Clock, StickyNote } from 'lucide-react';
 import { useEnhancedLearning, LessonNote } from '@/hooks/useEnhancedLearning';
 import { formatDistanceToNow } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { fr } from 'date-fns/locale/fr';
 
 interface NotesPanelProps {
   lessonId: string;

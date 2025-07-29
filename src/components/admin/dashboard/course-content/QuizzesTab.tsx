@@ -1,4 +1,5 @@
 import React from 'react';
+import { logError } from '@/utils/logger';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -39,7 +40,7 @@ const QuizzesTab = ({
           description: "Le quiz a été supprimé avec succès",
         });
       } catch (error) {
-        console.error('Error deleting quiz:', error);
+        logError('Error deleting quiz:', error);
         toast({
           title: "Erreur",
           description: "Impossible de supprimer le quiz",

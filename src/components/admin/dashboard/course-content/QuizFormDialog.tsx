@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { logError } from '@/utils/logger';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -106,7 +107,7 @@ const QuizFormDialog: React.FC<QuizFormDialogProps> = ({
 
       setQuestions(formattedQuestions);
     } catch (error) {
-      console.error('Error loading questions:', error);
+      logError('Error loading questions:', error);
     }
   };
 
@@ -271,7 +272,7 @@ const QuizFormDialog: React.FC<QuizFormDialogProps> = ({
       onSuccess();
       onOpenChange(false);
     } catch (error) {
-      console.error('Error saving quiz:', error);
+      logError('Error saving quiz:', error);
       toast({
         title: "Erreur",
         description: "Impossible de sauvegarder le quiz",

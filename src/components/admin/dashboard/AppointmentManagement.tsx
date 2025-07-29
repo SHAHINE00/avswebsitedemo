@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { logError } from '@/utils/logger';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -53,7 +54,7 @@ const AppointmentManagement: React.FC = () => {
       
       setAppointments(typedAppointments);
     } catch (error) {
-      console.error('Error fetching appointments:', error);
+      logError('Error fetching appointments:', error);
       toast({
         title: "Erreur",
         description: "Impossible de charger les rendez-vous",
@@ -87,7 +88,7 @@ const AppointmentManagement: React.FC = () => {
         description: `Le rendez-vous a été marqué comme ${newStatus}`,
       });
     } catch (error) {
-      console.error('Error updating appointment status:', error);
+      logError('Error updating appointment status:', error);
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour le statut",

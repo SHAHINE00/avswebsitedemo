@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { logError } from '@/utils/logger';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,7 +41,7 @@ const AnnouncementFormDialog = ({ open, onOpenChange, courseId, onSuccess }: Ann
       if (error) throw error;
       onSuccess();
     } catch (error) {
-      console.error('Error saving announcement:', error);
+      logError('Error saving announcement:', error);
     } finally {
       setLoading(false);
     }

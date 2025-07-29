@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { logError } from '@/utils/logger';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { BookOpen, Users, TrendingUp, Clock, Eye, Star } from 'lucide-react';
@@ -103,7 +104,7 @@ const CoursePerformanceMetrics: React.FC = () => {
       });
 
     } catch (error) {
-      console.error('Error fetching performance data:', error);
+      logError('Error fetching performance data:', error);
       toast({
         title: "Erreur",
         description: "Impossible de charger les métriques de performance",

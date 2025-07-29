@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { logError } from '@/utils/logger';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -52,7 +53,7 @@ const LessonReorderDialog = ({ open, onOpenChange, courseId, lessons, onSuccess 
       onSuccess();
       onOpenChange(false);
     } catch (error) {
-      console.error('Error reordering lessons:', error);
+      logError('Error reordering lessons:', error);
     } finally {
       setLoading(false);
     }
