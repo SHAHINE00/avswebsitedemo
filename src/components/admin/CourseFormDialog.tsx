@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { logError } from '@/utils/logger';
 import type { Course } from '@/hooks/useCourses';
 import { courseSchema, CourseFormData } from './course-form/types';
 import { generateSlug, validateAndFormatLink } from './course-form/utils';
@@ -145,7 +146,7 @@ const CourseFormDialog: React.FC<CourseFormDialogProps> = ({
       onOpenChange(false);
       reset();
     } catch (error) {
-      console.error('Error saving course:', error);
+      logError('Error saving course:', error);
       toast({
         title: 'Erreur',
         description: 'Impossible de sauvegarder le cours',

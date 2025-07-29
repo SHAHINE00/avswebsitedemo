@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { logInfo, logError } from '@/utils/logger';
 
 interface AppointmentData {
   firstName: string;
@@ -25,7 +26,7 @@ export const useAppointmentBooking = () => {
     setLoading(true);
     
     try {
-      console.log('Booking appointment:', appointmentData);
+      logInfo('Booking appointment:', appointmentData);
       
       const { data, error } = await supabase
         .from('appointments')
@@ -45,10 +46,10 @@ export const useAppointmentBooking = () => {
         .select()
         .single();
 
-      console.log('Appointment booking response:', { data, error });
+      logInfo('Appointment booking response:', { data, error });
 
       if (error) {
-        console.error('Appointment booking error:', error);
+        logError('Appointment booking error:', error);
         throw error;
       }
 
@@ -59,7 +60,7 @@ export const useAppointmentBooking = () => {
 
       return true;
     } catch (error) {
-      console.error('Appointment booking error:', error);
+      logError('Appointment booking error:', error);
       
       toast({
         title: "Erreur de réservation",
@@ -77,7 +78,7 @@ export const useAppointmentBooking = () => {
     if (!user) return [];
     
     try {
-      console.log('Fetching user appointments for:', user.id);
+      logInfo('Fetching user appointments for:', user.id);
       
       const { data, error } = await supabase
         .from('appointments')
@@ -85,16 +86,16 @@ export const useAppointmentBooking = () => {
         .eq('user_id', user.id)
         .order('appointment_date', { ascending: true });
 
-      console.log('User appointments response:', { data, error });
+      logInfo('User appointments response:', { data, error });
 
       if (error) {
-        console.error('Error fetching appointments:', error);
+        logError('Error fetching appointments:', error);
         return [];
       }
 
       return data || [];
     } catch (error) {
-      console.error('Unexpected error fetching appointments:', error);
+      logError('Unexpected error fetching appointments:', error);
       return [];
     }
   };

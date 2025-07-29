@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { logError } from '@/utils/logger';
 
 export interface CourseLesson {
   id: string;
@@ -76,7 +77,7 @@ export const useCourseContent = () => {
       if (error) throw error;
       setLessons((data as CourseLesson[]) || []);
     } catch (error) {
-      console.error('Error fetching lessons:', error);
+      logError('Error fetching lessons:', error);
       toast({
         title: "Erreur",
         description: "Impossible de charger les leçons",
@@ -98,7 +99,7 @@ export const useCourseContent = () => {
       if (error) throw error;
       setMaterials(data || []);
     } catch (error) {
-      console.error('Error fetching materials:', error);
+      logError('Error fetching materials:', error);
     }
   };
 
@@ -114,7 +115,7 @@ export const useCourseContent = () => {
       if (error) throw error;
       setAnnouncements((data as CourseAnnouncement[]) || []);
     } catch (error) {
-      console.error('Error fetching announcements:', error);
+      logError('Error fetching announcements:', error);
     }
   };
 
@@ -134,7 +135,7 @@ export const useCourseContent = () => {
       if (error) throw error;
       setProgress(data || []);
     } catch (error) {
-      console.error('Error fetching progress:', error);
+      logError('Error fetching progress:', error);
     }
   };
 
@@ -155,7 +156,7 @@ export const useCourseContent = () => {
 
       return data;
     } catch (error) {
-      console.error('Error creating lesson:', error);
+      logError('Error creating lesson:', error);
       toast({
         title: "Erreur",
         description: "Impossible de créer la leçon",
@@ -178,7 +179,7 @@ export const useCourseContent = () => {
         description: "Leçon mise à jour avec succès",
       });
     } catch (error) {
-      console.error('Error updating lesson:', error);
+      logError('Error updating lesson:', error);
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour la leçon",
@@ -201,7 +202,7 @@ export const useCourseContent = () => {
         description: "Leçon supprimée avec succès",
       });
     } catch (error) {
-      console.error('Error deleting lesson:', error);
+      logError('Error deleting lesson:', error);
       toast({
         title: "Erreur",
         description: "Impossible de supprimer la leçon",
@@ -231,7 +232,7 @@ export const useCourseContent = () => {
         description: "Leçon marquée comme terminée",
       });
     } catch (error) {
-      console.error('Error marking lesson complete:', error);
+      logError('Error marking lesson complete:', error);
     }
   };
 
@@ -250,7 +251,7 @@ export const useCourseContent = () => {
 
       if (error) throw error;
     } catch (error) {
-      console.error('Error updating progress:', error);
+      logError('Error updating progress:', error);
     }
   };
 

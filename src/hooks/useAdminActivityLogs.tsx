@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { logError } from '@/utils/logger';
 
 interface ActivityLog {
   id: string;
@@ -29,7 +30,7 @@ export const useAdminActivityLogs = (limit = 10) => {
       
       setLogs(data || []);
     } catch (err) {
-      console.error('Error fetching activity logs:', err);
+      logError('Error fetching activity logs:', err);
       setError('Failed to fetch activity logs');
     } finally {
       setLoading(false);
@@ -48,7 +49,7 @@ export const useAdminActivityLogs = (limit = 10) => {
       // Refresh logs after logging new activity
       fetchLogs();
     } catch (err) {
-      console.error('Error logging activity:', err);
+      logError('Error logging activity:', err);
     }
   };
 

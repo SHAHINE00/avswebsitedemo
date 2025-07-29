@@ -244,3 +244,9 @@ export const trackUserAction = (action: string, metadata?: Record<string, any>) 
 export const trackApiCall = (endpoint: string, duration: number, status: number, metadata?: Record<string, any>) => {
   monitoring.trackApiCall(endpoint, duration, status, metadata);
 };
+
+// Initialize monitoring system
+export const initializeMonitoring = () => {
+  // Monitoring is automatically initialized via the singleton
+  return monitoring;
+};

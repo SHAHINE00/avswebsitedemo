@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { logError } from '@/utils/logger';
 
 export interface BlogPost {
   id: string;
@@ -79,7 +80,7 @@ export const useBlogManagement = () => {
       if (error) throw error;
       setPosts((data as unknown as BlogPost[]) || []);
     } catch (error) {
-      console.error('Error fetching posts:', error);
+      logError('Error fetching posts:', error);
       toast({
         title: "Erreur",
         description: "Impossible de charger les articles",
@@ -104,7 +105,7 @@ export const useBlogManagement = () => {
       if (error) throw error;
       setCategories(data || []);
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      logError('Error fetching categories:', error);
     }
   };
 
@@ -138,7 +139,7 @@ export const useBlogManagement = () => {
         description: "Article créé avec succès",
       });
     } catch (error) {
-      console.error('Error creating post:', error);
+      logError('Error creating post:', error);
       toast({
         title: "Erreur",
         description: "Impossible de créer l'article",
@@ -182,7 +183,7 @@ export const useBlogManagement = () => {
         description: "Article mis à jour avec succès",
       });
     } catch (error) {
-      console.error('Error updating post:', error);
+      logError('Error updating post:', error);
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour l'article",
@@ -206,7 +207,7 @@ export const useBlogManagement = () => {
         description: "Article supprimé avec succès",
       });
     } catch (error) {
-      console.error('Error deleting post:', error);
+      logError('Error deleting post:', error);
       toast({
         title: "Erreur",
         description: "Impossible de supprimer l'article",
@@ -243,7 +244,7 @@ export const useBlogManagement = () => {
       if (error) throw error;
       return data as unknown as BlogPost;
     } catch (error) {
-      console.error('Error fetching post by slug:', error);
+      logError('Error fetching post by slug:', error);
       return null;
     }
   };

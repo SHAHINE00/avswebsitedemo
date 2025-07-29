@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { logError } from '@/utils/logger';
 import type { Course } from '@/hooks/useCourses';
 
 export const useAdminCourses = () => {
@@ -24,13 +25,13 @@ export const useAdminCourses = () => {
         .single();
 
       if (error) {
-        console.error('Error checking admin status:', error);
+        logError('Error checking admin status:', error);
         return;
       }
 
       setIsAdmin(data?.role === 'admin');
     } catch (error) {
-      console.error('Error:', error);
+      logError('Error:', error);
     }
   };
 
@@ -56,7 +57,7 @@ export const useAdminCourses = () => {
 
       setCourses(data || []);
     } catch (error) {
-      console.error('Error fetching courses:', error);
+      logError('Error fetching courses:', error);
       setError('Erreur lors du chargement des cours');
     } finally {
       setLoading(false);
@@ -88,7 +89,7 @@ export const useAdminCourses = () => {
       await fetchAllCourses();
       return data;
     } catch (error) {
-      console.error('Error creating course:', error);
+      logError('Error creating course:', error);
       throw error;
     }
   };
@@ -116,7 +117,7 @@ export const useAdminCourses = () => {
 
       await fetchAllCourses();
     } catch (error) {
-      console.error('Error updating course:', error);
+      logError('Error updating course:', error);
       throw error;
     }
   };
@@ -146,7 +147,7 @@ export const useAdminCourses = () => {
 
       fetchAllCourses();
     } catch (error) {
-      console.error('Error deleting course:', error);
+      logError('Error deleting course:', error);
     }
   };
 

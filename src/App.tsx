@@ -2,6 +2,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
+import AdminRouteGuard from "@/components/admin/AdminRouteGuard";
+import { GlobalErrorBoundary } from "@/components/ui/global-error-boundary";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ElementorExport from "./pages/ElementorExport";
@@ -31,14 +33,15 @@ import Dashboard from "./pages/Dashboard";
 
 const App = () => {
   return (
-    <Router>
-      <AuthProvider>
+    <GlobalErrorBoundary>
+      <Router>
+        <AuthProvider>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin/courses" element={<AdminCourses />} />
-          <Route path="/admin/test" element={<AdminTest />} />
+          <Route path="/admin/courses" element={<AdminRouteGuard><AdminCourses /></AdminRouteGuard>} />
+          <Route path="/admin/test" element={<AdminRouteGuard><AdminTest /></AdminRouteGuard>} />
           <Route path="/features" element={<Features />} />
           <Route path="/curriculum" element={<Curriculum />} />
           {/* Legacy course routes - keep for backward compatibility */}
@@ -65,6 +68,7 @@ const App = () => {
         <Toaster />
       </AuthProvider>
     </Router>
+  </GlobalErrorBoundary>
   );
 };
 
