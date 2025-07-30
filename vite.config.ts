@@ -4,7 +4,10 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig(({ mode }) => {
+  const isProduction = mode === 'production';
+  
+  return {
   server: {
     host: "::",
     port: 8080,
@@ -50,15 +53,52 @@ export default defineConfig(({ mode }) => ({
     },
     // Increase chunk size warning limit
     chunkSizeWarningLimit: 600,
-    // Enable compression only in production
-    ...(mode === 'production' && {
+    // Production optimizations
+    ...(isProduction && {
       minify: 'terser',
       terserOptions: {
         compress: {
           drop_console: true,
-          drop_debugger: true
+          drop_debugger: true,
+          pure_funcs: ['console.log', 'console.warn']
+        },
+        mangle: {
+          safari10: true
         }
+      },
+      // Add hash to filenames for cache busting
+      rollupOptions: {
+        ...((isProduction) && {
+          output: {
+            entryFileNames: 'assets/[name]-[hash].js',
+            chunkFileNames: 'assets/[name]-[hash].js',
+            assetFileNames: 'assets/[name]-[hash].[ext]',
+            manualChunks: {
+              'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+              'vendor-ui': [
+                '@radix-ui/react-dialog',
+                '@radix-ui/react-dropdown-menu',
+                '@radix-ui/react-tabs',
+                '@radix-ui/react-toast',
+                'lucide-react'
+              ],
+              'vendor-forms': [
+                'react-hook-form',
+                '@hookform/resolvers',
+                'zod'
+              ],
+              'vendor-charts': ['recharts'],
+              'vendor-utils': [
+                'clsx',
+                'class-variance-authority',
+                'tailwind-merge',
+                'date-fns'
+              ]
+            }
+          }
+        })
       }
     })
   }
-}));
+};
+});

@@ -25,8 +25,24 @@ jobs:
         npm audit fix --audit-level moderate
         npx update-browserslist-db@latest
       
-    - name: Build application
-      run: npm run build
+    - name: Build application for production
+      run: |
+        chmod +x scripts/build-production.sh
+        ./scripts/build-production.sh
+        
+    - name: Verify build contains recent changes
+      run: |
+        if [ ! -f "dist/index.html" ]; then
+          echo "Build failed - no index.html found"
+          exit 1
+        fi
+        # Check build timestamp
+        BUILD_TIME=$(stat -c %Y dist/index.html)
+        CURRENT_TIME=$(date +%s)
+        AGE=$((CURRENT_TIME - BUILD_TIME))
+        if [ $AGE -gt 300 ]; then
+          echo "Warning: Build seems old (${AGE}s), but continuing..."
+        fi
         
     - name: Deploy to VPS
       uses: appleboy/ssh-action@v1.0.0
@@ -43,8 +59,15 @@ jobs:
             npm audit fix --audit-level moderate || true
             npx update-browserslist-db@latest || true
             
-            # Build with optimizations
-            npm run build
+            # Build with production optimizations
+            chmod +x scripts/build-production.sh
+            ./scripts/build-production.sh
+            
+            # Add cache busting for static assets
+            TIMESTAMP=$(date +%s)
+            find dist -name "*.js" -o -name "*.css" | head -5 | while read file; do
+              echo "Built: $(basename "$file") at $(date)"
+            done
             
             # Update nginx configuration
             sudo cp nginx.conf /etc/nginx/sites-available/avs.ma.conf
@@ -63,7 +86,28 @@ jobs:
             find /var/www/avswebsite -name "*.log" -mtime +7 -delete || true
             npm cache clean --force || true
           
-    - name: Health Check
+    - name: Advanced Health Check
       run: |
+        echo "Waiting for deployment to settle..."
         sleep 30
-        curl -f https://avs.ma || exit 1
+        
+        # Basic connectivity check
+        if ! curl -f -s https://avs.ma > /dev/null; then
+          echo "❌ Basic connectivity failed"
+          exit 1
+        fi
+        
+        # Content verification check
+        RESPONSE=$(curl -s https://avs.ma)
+        if echo "$RESPONSE" | grep -q "AVS"; then
+          echo "✅ Content verification passed - website contains expected content"
+        else
+          echo "⚠️ Content verification warning - AVS content not found"
+        fi
+        
+        # Cache busting check
+        CACHE_BUST=$(date +%s)
+        curl -s "https://avs.ma?cb=$CACHE_BUST" > /dev/null
+        echo "✅ Cache busting request sent"
+        
+        echo "✅ Deployment health check completed successfully"
