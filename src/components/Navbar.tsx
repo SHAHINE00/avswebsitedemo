@@ -23,9 +23,8 @@ const Navbar = () => {
     { name: 'Formations', href: '/curriculum' },
     { name: 'Fonctionnalités', href: '/features' },
     { name: 'Formateurs', href: '/instructors' },
-    { name: 'Témoignages', href: '/testimonials' },
+    { name: 'À propos', href: '/about' },
     { name: 'Carrières', href: '/careers' },
-    { name: 'Blog', href: '/blog' },
     { name: 'Contact', href: '/contact' },
   ];
 

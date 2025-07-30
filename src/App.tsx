@@ -16,10 +16,8 @@ import CybersecurityCourse from "./pages/CybersecurityCourse";
 import GenericCourse from "./pages/GenericCourse";
 import CoursePlayer from "./pages/CoursePlayer";
 import Instructors from "./pages/Instructors";
-import Testimonials from "./pages/Testimonials";
 import Register from "./pages/Register";
-import Blog from "./pages/Blog";
-import BlogPost from "./pages/BlogPost";
+import About from "./pages/About";
 import Careers from "./pages/Careers";
 import Contact from "./pages/Contact";
 import Appointment from "./pages/Appointment";
@@ -52,10 +50,8 @@ const App = () => {
           <Route path="/course/:slug" element={<GenericCourse />} />
           <Route path="/learn/:slug" element={<CoursePlayer />} />
           <Route path="/instructors" element={<Instructors />} />
-          <Route path="/testimonials" element={<Testimonials />} />
+          <Route path="/about" element={<About />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/appointment" element={<Appointment />} />
