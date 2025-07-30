@@ -27,6 +27,7 @@ import CookiesPolicy from "./pages/CookiesPolicy";
 import Auth from "./pages/Auth";
 import AdminCourses from "./pages/AdminCourses";
 import AdminTest from "./pages/AdminTest";
+import Admin from "./pages/Admin";
 import Dashboard from "./pages/Dashboard";
 
 const App = () => {
@@ -38,6 +39,7 @@ const App = () => {
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admin" element={<AdminRouteGuard><Admin /></AdminRouteGuard>} />
           <Route path="/admin/courses" element={<AdminRouteGuard><AdminCourses /></AdminRouteGuard>} />
           <Route path="/admin/test" element={<AdminRouteGuard><AdminTest /></AdminRouteGuard>} />
           <Route path="/features" element={<Features />} />
