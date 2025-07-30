@@ -14,7 +14,7 @@ import { pageSEO } from '@/utils/seoData';
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-blue-50">
       <SEOHead {...pageSEO.home} />
       <Navbar />
       <div style={{ paddingTop: '5rem' }}>
