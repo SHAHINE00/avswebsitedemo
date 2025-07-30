@@ -27,8 +27,11 @@ jobs:
       
     - name: Build application for production
       run: |
-        chmod +x scripts/build-production.sh
-        ./scripts/build-production.sh
+        npm run build
+        
+    - name: Add build timestamp
+      run: |
+        echo "<!-- Build timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ) -->" >> dist/index.html
         
     - name: Verify build contains recent changes
       run: |
@@ -60,8 +63,7 @@ jobs:
             npx update-browserslist-db@latest || true
             
             # Build with production optimizations
-            chmod +x scripts/build-production.sh
-            ./scripts/build-production.sh
+            npm run build
             
             # Add cache busting for static assets
             TIMESTAMP=$(date +%s)
