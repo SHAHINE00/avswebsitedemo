@@ -19,7 +19,7 @@ const FormationCards: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto mb-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto mb-10">
         <Skeleton className="h-64 rounded-2xl" />
         <Skeleton className="h-64 rounded-2xl" />
       </div>
@@ -43,7 +43,7 @@ const FormationCards: React.FC = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto mb-10">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto mb-10">
       {courses.map((course) => {
         const IconComponent = iconMap[course.icon] || Brain;
         

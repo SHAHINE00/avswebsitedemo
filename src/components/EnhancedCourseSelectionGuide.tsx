@@ -256,24 +256,24 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8 mb-12">
             {recommendations.map((path, index) => (
               <Card key={path.id} className={`relative overflow-hidden border-0 shadow-xl ${index === 0 ? 'ring-2 ring-blue-500 ring-offset-2' : ''}`}>
                 {index === 0 && (
-                  <div className="absolute top-4 right-4 z-10">
-                    <Badge className="bg-blue-500 text-white">Recommandé</Badge>
+                  <div className="absolute top-3 right-3 z-10">
+                    <Badge className="bg-blue-500 text-white text-xs">Recommandé</Badge>
                   </div>
                 )}
                 <div className={`h-2 bg-gradient-to-r ${path.color}`} />
-                <CardHeader className="pb-4">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className={`p-2 rounded-lg bg-gradient-to-r ${path.color} text-white`}>
+                <CardHeader className="pb-4 p-4 md:p-6">
+                  <div className="flex items-center gap-2 md:gap-3 mb-2">
+                    <div className={`p-1.5 md:p-2 rounded-lg bg-gradient-to-r ${path.color} text-white`}>
                       {path.icon}
                     </div>
-                    <Badge variant="outline">{path.level}</Badge>
+                    <Badge variant="outline" className="text-xs">{path.level}</Badge>
                   </div>
-                  <CardTitle className="text-xl">{path.title}</CardTitle>
-                  <CardDescription className="text-sm">{path.description}</CardDescription>
+                  <CardTitle className="text-lg md:text-xl leading-tight">{path.title}</CardTitle>
+                  <CardDescription className="text-xs md:text-sm">{path.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -359,21 +359,21 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
                 5 questions pour identifier votre parcours optimal
               </CardDescription>
             </CardHeader>
-            <CardContent className="p-8">
-              <div className="space-y-8">
+            <CardContent className="p-4 md:p-8">
+              <div className="space-y-6 md:space-y-8">
                 {questions.map((q, qIndex) => (
-                  <div key={q.id} className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  <div key={q.id} className="space-y-3 md:space-y-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">
                         {qIndex + 1}
                       </div>
-                      <h3 className="font-semibold text-lg">{q.question}</h3>
+                      <h3 className="font-semibold text-base md:text-lg leading-tight">{q.question}</h3>
                     </div>
-                    <div className="ml-11 space-y-3">
+                    <div className="ml-0 md:ml-11 space-y-2 md:space-y-3">
                       {q.options.map((option) => (
                         <label 
                           key={option.value} 
-                          className={`flex items-center p-4 rounded-lg border-2 transition-all cursor-pointer hover:bg-blue-50 ${
+                          className={`flex items-start p-3 md:p-4 rounded-lg md:rounded-xl border-2 transition-all cursor-pointer hover:bg-blue-50 ${
                             selectedAnswers[q.id] === option.value 
                               ? 'border-blue-500 bg-blue-50' 
                               : 'border-gray-200'
@@ -387,7 +387,7 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
                             onChange={() => handleAnswerSelect(q.id, option.value)}
                             className="sr-only"
                           />
-                          <div className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center ${
+                          <div className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center flex-shrink-0 mt-0.5 ${
                             selectedAnswers[q.id] === option.value
                               ? 'border-blue-500 bg-blue-500'
                               : 'border-gray-300'
@@ -396,7 +396,7 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
                               <div className="w-2 h-2 bg-white rounded-full" />
                             )}
                           </div>
-                          <span className="font-medium">{option.label}</span>
+                          <span className="font-medium text-sm md:text-base leading-tight">{option.label}</span>
                         </label>
                       ))}
                     </div>
@@ -404,20 +404,23 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
                 ))}
               </div>
             </CardContent>
-            <CardFooter className="bg-gray-50 p-8">
-              <Button 
-                onClick={generateRecommendations}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 text-lg font-semibold"
-                disabled={Object.keys(selectedAnswers).length < questions.length}
-              >
-                <Award className="w-5 h-5 mr-2" />
-                Obtenir mes recommandations personnalisées
-              </Button>
-              {Object.keys(selectedAnswers).length < questions.length && (
-                <p className="text-sm text-gray-500 text-center mt-2">
-                  Répondez à toutes les questions pour continuer ({Object.keys(selectedAnswers).length}/{questions.length})
-                </p>
-              )}
+            <CardFooter className="bg-gray-50 p-4 md:p-8">
+              <div className="w-full space-y-3">
+                <Button 
+                  onClick={generateRecommendations}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 text-base md:text-lg font-semibold"
+                  disabled={Object.keys(selectedAnswers).length < questions.length}
+                >
+                  <Award className="w-5 h-5 mr-2" />
+                  <span className="hidden sm:inline">Obtenir mes recommandations personnalisées</span>
+                  <span className="sm:hidden">Obtenir mes recommandations</span>
+                </Button>
+                {Object.keys(selectedAnswers).length < questions.length && (
+                  <p className="text-xs md:text-sm text-gray-500 text-center">
+                    Répondez à toutes les questions pour continuer ({Object.keys(selectedAnswers).length}/{questions.length})
+                  </p>
+                )}
+              </div>
             </CardFooter>
           </Card>
         </div>
