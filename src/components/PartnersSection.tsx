@@ -40,7 +40,7 @@ const PartnersSection: React.FC = () => {
         <div className="relative space-y-6">
           {/* First Row - Right to Left */}
           <div className="overflow-hidden">
-            <div className="flex animate-scroll-rtl">
+            <div className="flex animate-scroll-rtl motion-reduce:animate-none">
               {duplicatedFirstRow.map((partner, index) => (
                 <div
                   key={`first-${partner.name}-${index}`}
@@ -52,7 +52,7 @@ const PartnersSection: React.FC = () => {
                     rel="noopener noreferrer"
                     className="block transition-all duration-300 transform group-hover:scale-110 group-hover:drop-shadow-lg"
                   >
-                    <div className="h-20 w-40 sm:h-22 sm:w-44 md:h-24 md:w-48 flex items-center justify-center bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 md:p-5 group-hover:shadow-md group-hover:border-academy-blue/20 transition-all duration-300">
+                     <div className="h-16 w-32 xs:h-18 xs:w-36 sm:h-20 sm:w-40 md:h-24 md:w-48 flex items-center justify-center bg-white rounded-xl shadow-sm border border-gray-100 p-2 sm:p-3 md:p-4 group-hover:shadow-md group-hover:border-academy-blue/20 transition-all duration-300">
                       <img
                         src={partner.logo}
                         alt={`${partner.name} logo`}
@@ -71,7 +71,7 @@ const PartnersSection: React.FC = () => {
 
           {/* Second Row - Left to Right */}
           <div className="overflow-hidden">
-            <div className="flex animate-scroll-ltr">
+            <div className="flex animate-scroll-ltr motion-reduce:animate-none">
               {duplicatedSecondRow.map((partner, index) => (
                 <div
                   key={`second-${partner.name}-${index}`}
@@ -83,7 +83,7 @@ const PartnersSection: React.FC = () => {
                     rel="noopener noreferrer"
                     className="block transition-all duration-300 transform group-hover:scale-110 group-hover:drop-shadow-lg"
                   >
-                    <div className="h-20 w-40 sm:h-22 sm:w-44 md:h-24 md:w-48 flex items-center justify-center bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 md:p-5 group-hover:shadow-md group-hover:border-academy-blue/20 transition-all duration-300">
+                    <div className="h-16 w-32 xs:h-18 xs:w-36 sm:h-20 sm:w-40 md:h-24 md:w-48 flex items-center justify-center bg-white rounded-xl shadow-sm border border-gray-100 p-2 sm:p-3 md:p-4 group-hover:shadow-md group-hover:border-academy-blue/20 transition-all duration-300">
                       <img
                         src={partner.logo}
                         alt={`${partner.name} logo`}
