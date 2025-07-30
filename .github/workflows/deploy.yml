@@ -19,8 +19,11 @@ jobs:
         node-version: '18'
         cache: 'npm'
         
-    - name: Install dependencies
-      run: npm ci
+    - name: Update dependencies and security
+      run: |
+        npm ci
+        npm audit fix --audit-level moderate
+        npx update-browserslist-db@latest
       
     - name: Build application
       run: npm run build
@@ -32,23 +35,33 @@ jobs:
         username: ${{ secrets.VPS_USERNAME }}
         key: ${{ secrets.VPS_SSH_KEY }}
         script: |
-          cd /var/www/avswebsite
-          git pull origin main
-          npm ci
-          npm run build
-          
-          # Update nginx configuration
-          sudo cp nginx.conf /etc/nginx/sites-available/avs.ma.conf
-          sudo nginx -t && sudo systemctl reload nginx
-          
-          # Set correct permissions
-          sudo chown -R appuser:www-data /var/www/avswebsite
-          sudo find /var/www/avswebsite -type d -exec chmod 755 {} \;
-          sudo find /var/www/avswebsite -type f -exec chmod 644 {} \;
-          
-          # Restart PM2 processes
-          pm2 reload ecosystem.config.js --env production || pm2 start ecosystem.config.js --env production
-          pm2 save
+            cd /var/www/avswebsite
+            git pull origin main
+            
+            # Update dependencies and fix security issues
+            npm ci
+            npm audit fix --audit-level moderate || true
+            npx update-browserslist-db@latest || true
+            
+            # Build with optimizations
+            npm run build
+            
+            # Update nginx configuration
+            sudo cp nginx.conf /etc/nginx/sites-available/avs.ma.conf
+            sudo nginx -t && sudo systemctl reload nginx
+            
+            # Set correct permissions
+            sudo chown -R appuser:www-data /var/www/avswebsite
+            sudo find /var/www/avswebsite -type d -exec chmod 755 {} \;
+            sudo find /var/www/avswebsite -type f -exec chmod 644 {} \;
+            
+            # Restart PM2 processes with zero downtime
+            pm2 reload ecosystem.config.js --env production || pm2 start ecosystem.config.js --env production
+            pm2 save
+            
+            # Clean up old builds and logs
+            find /var/www/avswebsite -name "*.log" -mtime +7 -delete || true
+            npm cache clean --force || true
           
     - name: Health Check
       run: |
