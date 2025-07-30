@@ -41,91 +41,91 @@ const Navbar = () => {
   return (
     <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-50 top-0">
       <div className="container mx-auto px-6">
-        <div className="flex justify-between items-center h-16 relative">
-          {/* Desktop Navigation - Left */}
-          <div className="hidden lg:flex items-center space-x-6">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`text-sm font-medium transition-colors duration-200 ${
-                  isActive(item.href)
-                    ? 'text-academy-blue'
-                    : 'text-gray-700 hover:text-academy-blue'
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </div>
-
-          {/* Logo - Mobile Centered, Desktop Right */}
-          <div className="lg:hidden flex items-center justify-center">
-            <Link to="/" className="flex items-center justify-center">
+        <div className="flex items-center h-16 relative">
+          {/* Logo - Desktop Left */}
+          <div className="hidden lg:flex items-center flex-shrink-0">
+            <Link to="/" className="flex items-center">
               <img 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
-                className="h-12 sm:h-16 w-auto object-contain"
+                className="h-16 w-auto object-contain"
               />
             </Link>
           </div>
 
-          {/* Desktop Right Section - Logo + Auth */}
-          <div className="hidden lg:flex items-center space-x-6">
-            <Link to="/" className="flex items-center justify-center">
-              <img 
-                src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
-                alt="AVS Innovation Institute" 
-                className="h-20 w-auto object-contain"
-              />
-            </Link>
-
-            {/* Auth Section */}
-            <div className="flex items-center space-x-4 ml-6">
-              {user ? (
-                <>
-                  <NotificationBell />
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                        <User className="w-4 h-4" />
-                        {user.email?.split('@')[0]}
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56">
-                      <DropdownMenuItem asChild>
-                        <Link to="/dashboard" className="flex items-center gap-2">
-                          <Settings className="w-4 h-4" />
-                          Tableau de bord
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={handleSignOut} className="flex items-center gap-2 text-red-600">
-                        <LogOut className="w-4 h-4" />
-                        Déconnexion
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </>
-              ) : (
-                <>
-                  <Button asChild variant="ghost" size="sm">
-                    <Link to="/auth">Connexion</Link>
-                  </Button>
-                  <Button asChild size="sm" className="bg-academy-blue hover:bg-academy-purple">
-                    <Link to="/appointment">Prendre RDV</Link>
-                  </Button>
-                </>
-              )}
+          {/* Desktop Navigation - Center */}
+          <div className="hidden lg:flex flex-1 justify-center">
+            <div className="flex items-center space-x-8">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`text-sm font-medium transition-colors duration-200 ${
+                    isActive(item.href)
+                      ? 'text-academy-blue'
+                      : 'text-gray-700 hover:text-academy-blue'
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ))}
             </div>
           </div>
 
-          {/* Mobile menu button */}
-          <div className="lg:hidden z-10">
+          {/* Desktop Auth - Right */}
+          <div className="hidden lg:flex items-center space-x-4 flex-shrink-0">
+            {user ? (
+              <>
+                <NotificationBell />
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                      <User className="w-4 h-4" />
+                      {user.email?.split('@')[0]}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem asChild>
+                      <Link to="/dashboard" className="flex items-center gap-2">
+                        <Settings className="w-4 h-4" />
+                        Tableau de bord
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSignOut} className="flex items-center gap-2 text-red-600">
+                      <LogOut className="w-4 h-4" />
+                      Déconnexion
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <>
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/auth">Connexion</Link>
+                </Button>
+                <Button asChild size="sm" className="bg-academy-blue hover:bg-academy-purple">
+                  <Link to="/appointment">Prendre RDV</Link>
+                </Button>
+              </>
+            )}
+          </div>
+
+          {/* Mobile - Logo Centered, Menu Button Right */}
+          <div className="lg:hidden flex items-center justify-between w-full">
+            <div className="w-10"></div> {/* Spacer for centering */}
+            <Link to="/" className="flex items-center">
+              <img 
+                src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
+                alt="AVS Innovation Institute" 
+                className="h-12 sm:h-14 w-auto object-contain"
+              />
+            </Link>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="flex-shrink-0"
             >
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
