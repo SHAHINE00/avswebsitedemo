@@ -17,7 +17,7 @@ const Index = () => {
     <div className="min-h-screen bg-blue-50">
       <SEOHead {...pageSEO.home} />
       <Navbar />
-      <div style={{ paddingTop: '5rem' }}>
+      <div style={{ paddingTop: '4rem' }}>
         <HeroSection />
         <FeaturesSection />
         <EnhancedCourseSelectionGuide />

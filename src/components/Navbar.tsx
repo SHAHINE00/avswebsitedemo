@@ -60,8 +60,8 @@ const Navbar = () => {
           </div>
 
           {/* Logo - Mobile Centered, Desktop Right */}
-          <div className="lg:hidden">
-            <Link to="/" className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center">
+          <div className="lg:hidden flex items-center justify-center">
+            <Link to="/" className="flex items-center justify-center">
               <img 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
