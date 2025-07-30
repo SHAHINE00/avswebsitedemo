@@ -62,7 +62,7 @@ const Navbar = () => {
           {/* Logo - Centered */}
           <Link to="/" className="absolute left-1/2 transform -translate-x-1/2 lg:relative lg:left-auto lg:transform-none flex items-center justify-center">
             <img 
-              src="/lovable-uploads/f3c7543c-fddb-40be-aa1c-7e6b6891bccb.png" 
+              src="/lovable-uploads/ded3c821-f1cd-4e1e-a865-7426612e6206.png" 
               alt="AVS Innovation Institute" 
               className="h-24 w-auto object-contain"
             />
