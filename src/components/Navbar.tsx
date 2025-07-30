@@ -41,9 +41,26 @@ const Navbar = () => {
   return (
     <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-50 top-0">
       <div className="container mx-auto px-6">
-        <div className="flex justify-between items-center h-20 lg:grid lg:grid-cols-3">
-          {/* Logo - Centered on desktop */}
-          <Link to="/" className="flex items-center justify-center lg:col-start-2">
+        <div className="flex justify-between items-center h-24 relative">
+          {/* Desktop Navigation - Left */}
+          <div className="hidden lg:flex items-center space-x-6">
+            {navigation.slice(0, 4).map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`text-sm font-medium transition-colors duration-200 ${
+                  isActive(item.href)
+                    ? 'text-academy-blue'
+                    : 'text-gray-700 hover:text-academy-blue'
+                }`}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
+
+          {/* Logo - Centered */}
+          <Link to="/" className="absolute left-1/2 transform -translate-x-1/2 lg:relative lg:left-auto lg:transform-none flex items-center justify-center">
             <img 
               src="/lovable-uploads/6b248e94-27d0-4f3f-b198-b751ca00a896.png" 
               alt="AVS Innovation Institute" 
@@ -51,9 +68,9 @@ const Navbar = () => {
             />
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8 lg:col-start-1">
-            {navigation.map((item) => (
+          {/* Desktop Navigation - Right */}
+          <div className="hidden lg:flex items-center space-x-6">
+            {navigation.slice(4).map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
@@ -69,7 +86,7 @@ const Navbar = () => {
           </div>
 
           {/* Auth Section */}
-          <div className="hidden lg:flex items-center space-x-4 lg:col-start-3 lg:justify-end">
+          <div className="hidden lg:flex items-center space-x-4 ml-6">
             {user ? (
               <>
                 <NotificationBell />
@@ -108,7 +125,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile menu button */}
-          <div className="lg:hidden">
+          <div className="lg:hidden z-10">
             <Button
               variant="ghost"
               size="sm"
