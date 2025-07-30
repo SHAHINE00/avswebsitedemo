@@ -353,9 +353,9 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
         
         <div className="max-w-3xl mx-auto">
           <Card className="shadow-xl border-0">
-            <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+            <CardHeader className="bg-blue-100 text-gray-800">
               <CardTitle className="text-xl">Guide de Sélection Personnalisé</CardTitle>
-              <CardDescription className="text-blue-100">
+              <CardDescription className="text-gray-600">
                 5 questions pour identifier votre parcours optimal
               </CardDescription>
             </CardHeader>
