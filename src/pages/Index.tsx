@@ -27,17 +27,6 @@ const Index = () => {
         <CTASection />
         <Footer />
       </div>
-      
-      <div className="fixed bottom-4 right-4 z-50">
-        <a 
-          href="/elementor-export" 
-          className="bg-academy-purple text-white px-4 py-2 rounded-xl shadow-lg hover:bg-academy-blue transition-colors"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          WordPress Export Guide
-        </a>
-      </div>
     </div>
   );
 };
