@@ -4,13 +4,17 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import FeaturesSection from '@/components/FeaturesSection';
 import SEOHead from '@/components/SEOHead';
+import VisibleSection from '@/components/ui/VisibleSection';
 import { pageSEO } from '@/utils/seoData';
 
 const Features = () => {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <SEOHead {...pageSEO.features} />
-      <Navbar />
+      
+      <VisibleSection sectionKey="global_navbar">
+        <Navbar />
+      </VisibleSection>
       
       <div className="pt-24 pb-16 bg-gradient-to-br from-white to-academy-gray">
         <div className="container mx-auto px-6">
@@ -22,10 +26,14 @@ const Features = () => {
       </div>
       
       <main className="flex-grow">
-        <FeaturesSection />
+        <VisibleSection sectionKey="features_main">
+          <FeaturesSection />
+        </VisibleSection>
       </main>
       
-      <Footer />
+      <VisibleSection sectionKey="global_footer">
+        <Footer />
+      </VisibleSection>
     </div>
   );
 };

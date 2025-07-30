@@ -946,6 +946,53 @@ export type Database = {
         }
         Relationships: []
       }
+      section_visibility: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          display_order: number | null
+          id: string
+          is_visible: boolean
+          page_name: string
+          section_description: string | null
+          section_key: string
+          section_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          display_order?: number | null
+          id?: string
+          is_visible?: boolean
+          page_name: string
+          section_description?: string | null
+          section_key: string
+          section_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          display_order?: number | null
+          id?: string
+          is_visible?: boolean
+          page_name?: string
+          section_description?: string | null
+          section_key?: string
+          section_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "section_visibility_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscribers: {
         Row: {
           created_at: string
