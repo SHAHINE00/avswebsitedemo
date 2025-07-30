@@ -237,303 +237,358 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
   const selectedDomaine = domaines.find(domain => domain.value === formData.formation.domaine);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      {/* Personal Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Informations personnelles</CardTitle>
-          <CardDescription>Veuillez remplir vos informations de base</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <Label htmlFor="firstName">Prénom *</Label>
-              <Input
-                type="text"
-                id="firstName"
-                value={formData.firstName}
-                onChange={(e) => handleInputChange('firstName', e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="lastName">Nom *</Label>
-              <Input
-                type="text"
-                id="lastName"
-                value={formData.lastName}
-                onChange={(e) => handleInputChange('lastName', e.target.value)}
-                required
-              />
-            </div>
-          </div>
-          
-          <div>
-            <Label htmlFor="email">Email *</Label>
-            <Input
-              type="email"
-              id="email"
-              value={formData.email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
-              required
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="password">Mot de passe *</Label>
-            <Input
-              type="password"
-              id="password"
-              value={formData.password}
-              onChange={(e) => handleInputChange('password', e.target.value)}
-              required
-              minLength={6}
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="phone">Téléphone</Label>
-            <Input
-              type="tel"
-              id="phone"
-              value={formData.phone}
-              onChange={(e) => handleInputChange('phone', e.target.value)}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Formation Selection */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Choix de Formation</CardTitle>
-          <CardDescription>Sélectionnez votre parcours de formation en 3 étapes</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-8">
-          {/* Step indicators */}
-          <div className="flex items-center justify-between mb-8">
-            {[1, 2, 3].map((step) => {
-              const status = getStepStatus(step);
-              return (
-                <div key={step} className="flex items-center">
-                  <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
-                    status === 'completed' ? 'bg-academy-blue border-academy-blue text-white' :
-                    status === 'current' ? 'border-academy-blue text-academy-blue' :
-                    'border-gray-300 text-gray-300'
-                  }`}>
-                    {status === 'completed' ? (
-                      <CheckCircle2 className="w-6 h-6" />
-                    ) : (
-                      <Circle className="w-6 h-6" />
-                    )}
-                  </div>
-                  {step < 3 && (
-                    <div className={`w-20 h-0.5 mx-4 ${
-                      getStepStatus(step + 1) === 'completed' ? 'bg-academy-blue' : 'bg-gray-300'
-                    }`} />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Step 1: Formation Type */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold ${
-                getStepStatus(1) === 'completed' ? 'bg-academy-blue text-white' : 'bg-gray-200 text-gray-600'
-              }`}>
-                1
+    <div className="max-w-4xl mx-auto">
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Personal Information */}
+        <Card className="shadow-lg border-0 bg-white">
+          <CardHeader className="bg-gradient-to-r from-academy-blue to-academy-purple text-white rounded-t-lg">
+            <CardTitle className="text-xl font-bold">Informations personnelles</CardTitle>
+            <CardDescription className="text-blue-100">
+              Veuillez remplir vos informations de base pour créer votre compte
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-8 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="firstName" className="text-sm font-semibold text-gray-700">
+                  Prénom <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  type="text"
+                  id="firstName"
+                  value={formData.firstName}
+                  onChange={(e) => handleInputChange('firstName', e.target.value)}
+                  required
+                  className="h-12 border-2 border-gray-200 focus:border-academy-blue rounded-lg"
+                  placeholder="Votre prénom"
+                />
               </div>
-              <Label className="text-lg font-semibold">Type de Formation</Label>
+              <div className="space-y-2">
+                <Label htmlFor="lastName" className="text-sm font-semibold text-gray-700">
+                  Nom <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  type="text"
+                  id="lastName"
+                  value={formData.lastName}
+                  onChange={(e) => handleInputChange('lastName', e.target.value)}
+                  required
+                  className="h-12 border-2 border-gray-200 focus:border-academy-blue rounded-lg"
+                  placeholder="Votre nom de famille"
+                />
+              </div>
             </div>
             
-            <Select 
-              value={formData.formation.formationType} 
-              onValueChange={(value) => handleInputChange('formation.formationType', value)}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Choisissez votre type de formation" />
-              </SelectTrigger>
-              <SelectContent>
-                {formationTypes.map((type) => (
-                  <SelectItem key={type.value} value={type.value}>
-                    <div className="py-2">
-                      <div className="font-medium">{type.label}</div>
-                      <div className="text-sm text-gray-500">{type.description}</div>
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-semibold text-gray-700">
+                Email <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                type="email"
+                id="email"
+                value={formData.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                required
+                className="h-12 border-2 border-gray-200 focus:border-academy-blue rounded-lg"
+                placeholder="votre.email@exemple.com"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-sm font-semibold text-gray-700">
+                Mot de passe <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                type="password"
+                id="password"
+                value={formData.password}
+                onChange={(e) => handleInputChange('password', e.target.value)}
+                required
+                minLength={6}
+                className="h-12 border-2 border-gray-200 focus:border-academy-blue rounded-lg"
+                placeholder="Minimum 6 caractères"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="phone" className="text-sm font-semibold text-gray-700">
+                Téléphone
+              </Label>
+              <Input
+                type="tel"
+                id="phone"
+                value={formData.phone}
+                onChange={(e) => handleInputChange('phone', e.target.value)}
+                className="h-12 border-2 border-gray-200 focus:border-academy-blue rounded-lg"
+                placeholder="+33 6 12 34 56 78"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Formation Selection */}
+        <Card className="shadow-lg border-0 bg-white">
+          <CardHeader className="bg-gradient-to-r from-academy-purple to-academy-blue text-white rounded-t-lg">
+            <CardTitle className="text-xl font-bold">Choix de Formation</CardTitle>
+            <CardDescription className="text-purple-100">
+              Sélectionnez votre parcours de formation personnalisé en 3 étapes simples
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-8 space-y-10">
+            {/* Step indicators */}
+            <div className="flex items-center justify-center mb-12">
+              <div className="flex items-center space-x-8 relative">
+                {[1, 2, 3].map((step) => {
+                  const status = getStepStatus(step);
+                  const stepLabels = ['Type', 'Domaine', 'Programme'];
+                  return (
+                    <div key={step} className="flex flex-col items-center relative">
+                      <div className={`flex items-center justify-center w-14 h-14 rounded-full border-3 transition-all duration-300 ${
+                        status === 'completed' ? 'bg-academy-blue border-academy-blue text-white shadow-lg' :
+                        status === 'current' ? 'border-academy-blue text-academy-blue bg-blue-50 shadow-md' :
+                        'border-gray-300 text-gray-400 bg-gray-50'
+                      }`}>
+                        {status === 'completed' ? (
+                          <CheckCircle2 className="w-7 h-7" />
+                        ) : (
+                          <span className="text-lg font-bold">{step}</span>
+                        )}
+                      </div>
+                      <span className={`mt-2 text-sm font-medium ${
+                        status === 'completed' || status === 'current' ? 'text-academy-blue' : 'text-gray-400'
+                      }`}>
+                        {stepLabels[step - 1]}
+                      </span>
+                      {step < 3 && (
+                        <div className={`absolute w-24 h-1 mt-7 left-14 ${
+                          getStepStatus(step + 1) === 'completed' ? 'bg-academy-blue' : 'bg-gray-200'
+                        }`} />
+                      )}
                     </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            
-            {selectedFormationType && (
-              <div className="p-4 bg-academy-blue/5 rounded-lg border border-academy-blue/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="w-4 h-4 text-academy-blue" />
-                  <span className="font-medium text-academy-blue">{selectedFormationType.label}</span>
-                </div>
-                <p className="text-sm text-gray-600">{selectedFormationType.description}</p>
+                  );
+                })}
               </div>
-            )}
-          </div>
+            </div>
 
-          {/* Step 2: Domain */}
-          {formData.formation.formationType && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold ${
-                  getStepStatus(2) === 'completed' ? 'bg-academy-blue text-white' : 'bg-gray-200 text-gray-600'
+            {/* Step 1: Formation Type */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 pb-4 border-b border-gray-100">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                  getStepStatus(1) === 'completed' ? 'bg-academy-blue text-white' : 
+                  getStepStatus(1) === 'current' ? 'bg-academy-blue text-white' : 'bg-gray-300 text-gray-600'
                 }`}>
-                  2
+                  1
                 </div>
-                <Label className="text-lg font-semibold">Domaine</Label>
+                <h3 className="text-xl font-bold text-gray-800">Type de Formation</h3>
               </div>
               
               <Select 
-                value={formData.formation.domaine} 
-                onValueChange={(value) => handleInputChange('formation.domaine', value)}
+                value={formData.formation.formationType} 
+                onValueChange={(value) => handleInputChange('formation.formationType', value)}
               >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Choisissez votre domaine d'expertise" />
+                <SelectTrigger className="w-full h-16 border-2 border-gray-200 hover:border-academy-blue transition-colors rounded-xl">
+                  <SelectValue placeholder="Sélectionnez votre type de formation" className="text-gray-500" />
                 </SelectTrigger>
-                <SelectContent>
-                  {domaines.map((domaine) => (
-                    <SelectItem key={domaine.value} value={domaine.value}>
-                      <div className="py-2">
-                        <div className="font-medium">{domaine.label}</div>
-                        <div className="text-sm text-gray-500">{domaine.description}</div>
+                <SelectContent className="rounded-xl border-2 shadow-xl">
+                  {formationTypes.map((type) => (
+                    <SelectItem key={type.value} value={type.value} className="h-auto p-4 hover:bg-blue-50 cursor-pointer">
+                      <div className="space-y-2">
+                        <div className="font-semibold text-gray-800">{type.label}</div>
+                        <div className="text-sm text-gray-600 leading-relaxed">{type.description}</div>
                       </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               
-               {selectedDomaine && (
-                 <div className="p-4 bg-academy-purple/5 rounded-lg border border-academy-purple/20">
-                   <div className="flex items-center gap-2 mb-2">
-                     <Users className="w-4 h-4 text-academy-purple" />
-                     <span className="font-medium text-academy-purple">{selectedDomaine.label}</span>
-                     <Badge variant="secondary" className="ml-auto">
-                       {availableCourses.length} programme{availableCourses.length > 1 ? 's' : ''}
-                     </Badge>
-                   </div>
-                   <p className="text-sm text-gray-600">{selectedDomaine.description}</p>
-                 </div>
-               )}
+              {selectedFormationType && (
+                <div className="p-6 bg-gradient-to-r from-academy-blue/5 to-academy-purple/5 rounded-xl border-2 border-academy-blue/20 shadow-sm">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Calendar className="w-5 h-5 text-academy-blue" />
+                    <span className="font-bold text-academy-blue text-lg">{selectedFormationType.label}</span>
+                  </div>
+                  <p className="text-gray-700 leading-relaxed">{selectedFormationType.description}</p>
+                </div>
+              )}
             </div>
-          )}
 
-          {/* Step 3: Programme */}
-          {formData.formation.domaine && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold ${
-                  getStepStatus(3) === 'completed' ? 'bg-academy-blue text-white' : 'bg-gray-200 text-gray-600'
-                }`}>
-                  3
+            {/* Step 2: Domain */}
+            {formData.formation.formationType && (
+              <div className="space-y-6">
+                <div className="flex items-center gap-3 pb-4 border-b border-gray-100">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                    getStepStatus(2) === 'completed' ? 'bg-academy-blue text-white' : 
+                    getStepStatus(2) === 'current' ? 'bg-academy-blue text-white' : 'bg-gray-300 text-gray-600'
+                  }`}>
+                    2
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800">Domaine d'Expertise</h3>
                 </div>
-                <Label className="text-lg font-semibold">Programme Spécifique</Label>
-              </div>
-              
-              {coursesLoading ? (
-                <div className="text-center py-4">
-                  <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-academy-blue"></div>
-                  <p className="text-sm text-gray-500 mt-2">Chargement des programmes...</p>
-                </div>
-              ) : (
+                
                 <Select 
-                  value={formData.formation.programme} 
-                  onValueChange={(value) => handleInputChange('formation.programme', value)}
+                  value={formData.formation.domaine} 
+                  onValueChange={(value) => handleInputChange('formation.domaine', value)}
                 >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Choisissez votre programme spécifique" />
+                  <SelectTrigger className="w-full h-16 border-2 border-gray-200 hover:border-academy-purple transition-colors rounded-xl">
+                    <SelectValue placeholder="Choisissez votre domaine d'expertise" className="text-gray-500" />
                   </SelectTrigger>
-                  <SelectContent className="max-h-[300px]">
-                    {availableCourses.length === 0 ? (
-                      <div className="py-4 px-3 text-center text-sm text-muted-foreground">
-                        Aucun programme disponible pour ce domaine
-                      </div>
-                    ) : (
-                      availableCourses.map((course) => (
-                        <SelectItem key={course.id} value={course.id}>
-                          <div className="py-2">
-                            <div className="font-medium">{course.title}</div>
-                            {course.subtitle && (
-                              <div className="text-sm text-muted-foreground">{course.subtitle}</div>
-                            )}
-                          </div>
-                        </SelectItem>
-                      ))
-                    )}
+                  <SelectContent className="rounded-xl border-2 shadow-xl">
+                    {domaines.map((domaine) => (
+                      <SelectItem key={domaine.value} value={domaine.value} className="h-auto p-4 hover:bg-purple-50 cursor-pointer">
+                        <div className="space-y-2">
+                          <div className="font-semibold text-gray-800">{domaine.label}</div>
+                          <div className="text-sm text-gray-600 leading-relaxed">{domaine.description}</div>
+                        </div>
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
-              )}
-              
-              {formData.formation.programmeDetails && (
-                <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                  <div className="flex items-start justify-between mb-2">
-                    <div>
-                      <h4 className="font-medium text-green-800">{formData.formation.programmeDetails.title}</h4>
-                      {formData.formation.programmeDetails.subtitle && (
-                        <p className="text-sm text-green-600">{formData.formation.programmeDetails.subtitle}</p>
-                      )}
+                
+                {selectedDomaine && (
+                  <div className="p-6 bg-gradient-to-r from-academy-purple/5 to-academy-blue/5 rounded-xl border-2 border-academy-purple/20 shadow-sm">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Users className="w-5 h-5 text-academy-purple" />
+                      <span className="font-bold text-academy-purple text-lg">{selectedDomaine.label}</span>
+                      <Badge variant="secondary" className="ml-auto bg-academy-purple/10 text-academy-purple font-semibold">
+                        {availableCourses.length} programme{availableCourses.length > 1 ? 's' : ''} disponible{availableCourses.length > 1 ? 's' : ''}
+                      </Badge>
                     </div>
-                    <Badge variant="secondary" className="bg-green-100 text-green-800">
-                      Sélectionné
-                    </Badge>
+                    <p className="text-gray-700 leading-relaxed">{selectedDomaine.description}</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    {formData.formation.programmeDetails.duration && (
-                      <div>
-                        <span className="text-green-600">Durée:</span>
-                        <span className="ml-1 text-green-800">{formData.formation.programmeDetails.duration}</span>
-                      </div>
-                    )}
-                    {formData.formation.programmeDetails.diploma && (
-                      <div>
-                        <span className="text-green-600">Diplôme:</span>
-                        <span className="ml-1 text-green-800">{formData.formation.programmeDetails.diploma}</span>
-                      </div>
-                    )}
+                )}
+              </div>
+            )}
+
+            {/* Step 3: Programme */}
+            {formData.formation.domaine && (
+              <div className="space-y-6">
+                <div className="flex items-center gap-3 pb-4 border-b border-gray-100">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                    getStepStatus(3) === 'completed' ? 'bg-academy-blue text-white' : 
+                    getStepStatus(3) === 'current' ? 'bg-academy-blue text-white' : 'bg-gray-300 text-gray-600'
+                  }`}>
+                    3
                   </div>
+                  <h3 className="text-xl font-bold text-gray-800">Programme Spécifique</h3>
+                </div>
+                
+                {coursesLoading ? (
+                  <div className="text-center py-8">
+                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-academy-blue border-t-transparent"></div>
+                    <p className="text-gray-600 mt-4 font-medium">Chargement des programmes disponibles...</p>
+                  </div>
+                ) : (
+                  <Select 
+                    value={formData.formation.programme} 
+                    onValueChange={(value) => handleInputChange('formation.programme', value)}
+                  >
+                    <SelectTrigger className="w-full h-16 border-2 border-gray-200 hover:border-academy-blue transition-colors rounded-xl">
+                      <SelectValue placeholder="Sélectionnez votre programme spécifique" className="text-gray-500" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-[400px] rounded-xl border-2 shadow-xl">
+                      {availableCourses.length === 0 ? (
+                        <div className="py-8 px-6 text-center">
+                          <div className="text-gray-500 text-lg font-medium">Aucun programme disponible</div>
+                          <div className="text-gray-400 text-sm mt-2">pour ce domaine actuellement</div>
+                        </div>
+                      ) : (
+                        availableCourses.map((course) => (
+                          <SelectItem key={course.id} value={course.id} className="h-auto p-4 hover:bg-green-50 cursor-pointer">
+                            <div className="space-y-2">
+                              <div className="font-semibold text-gray-800">{course.title}</div>
+                              {course.subtitle && (
+                                <div className="text-sm text-gray-600 leading-relaxed">{course.subtitle}</div>
+                              )}
+                              {course.duration && (
+                                <div className="text-xs text-academy-blue font-medium bg-academy-blue/10 px-2 py-1 rounded-full inline-block">
+                                  {course.duration}
+                                </div>
+                              )}
+                            </div>
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
+                )}
+                
+                {formData.formation.programmeDetails && (
+                  <div className="p-6 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border-2 border-green-200 shadow-sm">
+                    <div className="flex items-start gap-4">
+                      <CheckCircle2 className="w-6 h-6 text-green-600 mt-1 flex-shrink-0" />
+                      <div className="space-y-3">
+                        <h4 className="font-bold text-green-800 text-lg">{formData.formation.programmeDetails.title}</h4>
+                        {formData.formation.programmeDetails.subtitle && (
+                          <p className="text-gray-700 leading-relaxed">{formData.formation.programmeDetails.subtitle}</p>
+                        )}
+                        <div className="flex flex-wrap gap-2">
+                          {formData.formation.programmeDetails.duration && (
+                            <Badge className="bg-academy-blue text-white">
+                              {formData.formation.programmeDetails.duration}
+                            </Badge>
+                          )}
+                          {formData.formation.programmeDetails.modules && (
+                            <Badge variant="outline" className="border-academy-purple text-academy-purple">
+                              {formData.formation.programmeDetails.modules}
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Terms and Submit */}
+        <Card className="shadow-lg border-0 bg-white">
+          <CardContent className="p-8">
+            <div className="space-y-6">
+              <div className="flex items-start gap-4 p-6 bg-gray-50 rounded-xl border-2 border-gray-200">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  required
+                  className="mt-1 h-5 w-5 text-academy-blue border-2 border-gray-300 rounded focus:ring-academy-blue"
+                />
+                <label htmlFor="terms" className="text-sm text-gray-700 leading-relaxed">
+                  <span className="font-semibold">J'accepte les conditions générales</span> et la politique de confidentialité d'AVS Innovation Institute. 
+                  Je comprends que mes données seront utilisées pour le processus d'inscription et la communication relative à ma formation.
+                </label>
+              </div>
+              
+              <Button 
+                type="submit" 
+                disabled={!isFormValid() || loading}
+                className="w-full h-14 bg-gradient-to-r from-academy-blue to-academy-purple hover:from-academy-blue/90 hover:to-academy-purple/90 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <div className="flex items-center gap-3">
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                    Inscription en cours...
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <CheckCircle2 className="w-6 h-6" />
+                    Finaliser mon inscription
+                  </div>
+                )}
+              </Button>
+              
+              {!isFormValid() && (
+                <div className="text-center">
+                  <p className="text-red-600 text-sm font-medium">
+                    Veuillez remplir tous les champs obligatoires pour continuer
+                  </p>
                 </div>
               )}
             </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Terms and Submit */}
-      <Card>
-        <CardContent className="pt-6 space-y-6">
-          <label className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              className="mt-1"
-              required
-            />
-            <span className="text-sm text-gray-700">
-              J'accepte les conditions générales et la politique de confidentialité d'AVS Innovation Institute
-            </span>
-          </label>
-          
-          <Button 
-            type="submit" 
-            disabled={loading || !isFormValid()}
-            className="w-full bg-academy-blue hover:bg-academy-purple text-white font-semibold py-3"
-          >
-            {loading ? 'Inscription en cours...' : 'Finaliser mon inscription'}
-          </Button>
-          
-          {!isFormValid() && (
-            <p className="text-sm text-red-600 text-center">
-              Veuillez remplir tous les champs obligatoires et sélectionner un programme complet.
-            </p>
-          )}
-        </CardContent>
-      </Card>
-    </form>
+          </CardContent>
+        </Card>
+      </form>
+    </div>
   );
 };
 
