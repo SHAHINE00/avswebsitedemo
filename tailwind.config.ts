@@ -64,10 +64,10 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				academy: {
-					blue: 'hsl(var(--academy-blue))',
-					purple: 'hsl(var(--academy-purple))',
-					lightblue: 'hsl(var(--academy-lightblue))',
-					gray: 'hsl(var(--academy-gray))'
+					blue: '#4A55A2',
+					purple: '#7E69AB',
+					lightblue: '#6EC1E4',
+					gray: '#F8F9FA'
 				}
 			},
 			borderRadius: {

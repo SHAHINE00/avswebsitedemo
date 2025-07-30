@@ -154,44 +154,15 @@ const CourseUniverseShowcase: React.FC = () => {
     }
   ];
 
-  // Show fallback content if no courses and not loading
-  const hasAnyCourses = organizedCourses.ai.length > 0 || 
-                       organizedCourses.programming.length > 0 || 
-                       organizedCourses.marketing.length > 0;
-
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto animate-pulse">
-        <div className="text-center mb-12">
-          <div className="h-8 bg-muted rounded w-1/2 mx-auto mb-4"></div>
-          <div className="h-4 bg-muted rounded w-2/3 mx-auto"></div>
-        </div>
+      <div className="animate-pulse">
+        <div className="h-8 bg-gray-200 rounded w-1/2 mx-auto mb-4"></div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-48 bg-muted rounded-xl"></div>
+            <div key={i} className="h-32 bg-gray-200 rounded-xl"></div>
           ))}
         </div>
-      </div>
-    );
-  }
-
-  // If no courses available, show a fallback message
-  if (!hasAnyCourses) {
-    return (
-      <div className="max-w-7xl mx-auto text-center py-12">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">
-          <span className="gradient-text">Notre Univers de Formations</span>
-        </h2>
-        <p className="text-muted-foreground mb-8">
-          Nos formations seront bientôt disponibles. Restez connectés !
-        </p>
-        <Link
-          to="/curriculum"
-          className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-academy-blue to-academy-purple text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-        >
-          Voir plus d'informations
-          <ChevronRight className="ml-2 w-5 h-5" />
-        </Link>
       </div>
     );
   }
@@ -205,7 +176,7 @@ const CourseUniverseShowcase: React.FC = () => {
         <h2 className="text-3xl md:text-4xl font-bold mb-4">
           <span className="gradient-text">Notre Univers de Formations</span>
         </h2>
-        <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
+        <p className="text-gray-600 text-lg max-w-3xl mx-auto">
           Découvrez notre gamme complète de formations certifiées par les plus prestigieuses institutions
         </p>
       </div>
@@ -222,11 +193,11 @@ const CourseUniverseShowcase: React.FC = () => {
                 specialty.id === 'programming' ? '/programming-course' :
                 '/curriculum'
               }
-               className={`relative group p-6 rounded-2xl backdrop-blur-sm border transition-all duration-300 transform hover:scale-105 block ${
-                 activeTab === specialty.id
-                   ? 'bg-card/90 border-academy-blue/30 shadow-xl'
-                   : 'bg-card/60 border-border hover:bg-card/80 hover:border-academy-blue/20'
-               }`}
+              className={`relative group p-6 rounded-2xl backdrop-blur-sm border transition-all duration-300 transform hover:scale-105 block ${
+                activeTab === specialty.id
+                  ? 'bg-white/90 border-academy-blue/30 shadow-xl'
+                  : 'bg-white/60 border-gray-200/50 hover:bg-white/80 hover:border-academy-blue/20'
+              }`}
               onMouseEnter={() => setActiveTab(specialty.id)}
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${specialty.gradient} opacity-5 rounded-2xl`}></div>
@@ -236,8 +207,8 @@ const CourseUniverseShowcase: React.FC = () => {
                     <IconComponent className="w-6 h-6 text-white" />
                   </div>
                 </div>
-                <h3 className="font-bold text-lg mb-1 text-foreground">{specialty.title}</h3>
-                <p className="text-sm text-muted-foreground mb-2">{specialty.description}</p>
+                <h3 className="font-bold text-lg mb-1">{specialty.title}</h3>
+                <p className="text-sm text-gray-600 mb-2">{specialty.description}</p>
                 <div className="flex items-center justify-center">
                   <span className="bg-academy-blue/10 text-academy-blue px-3 py-1 rounded-full text-sm font-semibold">
                     {specialty.count} formations
