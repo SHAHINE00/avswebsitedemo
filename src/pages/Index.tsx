@@ -5,7 +5,7 @@ import HeroSection from '@/components/HeroSection';
 import FeaturesSection from '@/components/FeaturesSection';
 import InstructorsSection from '@/components/InstructorsSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
-import CourseSelectionGuide from '@/components/CourseSelectionGuide';
+import EnhancedCourseSelectionGuide from '@/components/EnhancedCourseSelectionGuide';
 import FAQSection from '@/components/FAQSection';
 import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
@@ -20,7 +20,7 @@ const Index = () => {
       <div style={{ paddingTop: '5rem' }}>
         <HeroSection />
         <FeaturesSection />
-        <CourseSelectionGuide />
+        <EnhancedCourseSelectionGuide />
         <InstructorsSection />
         <TestimonialsSection />
         <FAQSection />
