@@ -320,7 +320,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                 value={formData.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value)}
                 className="h-12 border-2 border-gray-200 focus:border-academy-blue rounded-lg"
-                placeholder="+33 6 12 34 56 78"
+                placeholder="+xx x xx xx xx xx"
               />
             </div>
           </CardContent>
