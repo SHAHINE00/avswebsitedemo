@@ -1,17 +1,15 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Download, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import DownloadGuidePopup from '@/components/DownloadGuidePopup';
 import CourseUniverseShowcase from './CourseUniverseShowcase';
 import PartnersSection from '../PartnersSection';
 import AdvantageBadges from './AdvantageBadges';
 
 const HeroBanner: React.FC = () => {
   const isMobile = useIsMobile();
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
   
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative min-h-[80vh] flex flex-col items-center justify-center">
@@ -57,14 +55,6 @@ const HeroBanner: React.FC = () => {
               <Sparkles className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
             </Link>
           </Button>
-          <Button 
-            onClick={() => setIsPopupOpen(true)}
-            variant="outline" 
-            className="border-2 border-academy-purple text-academy-purple hover:bg-academy-purple hover:text-white font-bold px-6 sm:px-10 py-3 sm:py-4 text-base sm:text-lg rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-white/90 backdrop-blur-sm"
-          >
-            <Download className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-            Guide IA Gratuit
-          </Button>
         </div>
       </div>
 
@@ -83,10 +73,6 @@ const HeroBanner: React.FC = () => {
         <CourseUniverseShowcase />
       </div>
       
-      <DownloadGuidePopup 
-        isOpen={isPopupOpen} 
-        onClose={() => setIsPopupOpen(false)} 
-      />
     </div>
   );
 };
