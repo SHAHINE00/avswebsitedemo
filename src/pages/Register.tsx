@@ -1,24 +1,17 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import MultiStepRegistrationForm from '@/components/MultiStepRegistrationForm';
-import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import SEOHead from '@/components/SEOHead';
+import { supabase } from '@/integrations/supabase/client';
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
-  const { signUp, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user) {
-      navigate('/');
-    }
-  }, [user, navigate]);
 
   const handleFormSubmit = async (formData: any) => {
     setLoading(true);
@@ -34,34 +27,45 @@ const Register = () => {
         formData.formation.programmeDetails?.title || formData.formation.programme
       ].join(' | ');
 
-      // Add formation metadata to the signup
-      const metadata = {
-        formation_type: formData.formation.formationType,
-        formation_domaine: formData.formation.domaine,
-        formation_programme: formData.formation.programme,
-        formation_programme_title: formData.formation.programmeDetails?.title,
-        formation_tag: formationTag,
-        phone: formData.phone
-      };
-
-      const { error } = await signUp(formData.email, '', fullName, metadata);
+      // Insert subscriber data directly into the subscribers table
+      const { error } = await supabase
+        .from('subscribers')
+        .insert({
+          email: formData.email,
+          full_name: fullName,
+          phone: formData.phone,
+          formation_type: formData.formation.formationType,
+          formation_domaine: formData.formation.domaine,
+          formation_programme: formData.formation.programme,
+          formation_programme_title: formData.formation.programmeDetails?.title,
+          formation_tag: formationTag
+        });
       
       if (error) {
+        console.error('Subscription error:', error);
         toast({
           title: "Erreur d'inscription",
-          description: error.message,
+          description: error.message === 'duplicate key value violates unique constraint "subscribers_email_key"' 
+            ? "Cette adresse email est déjà enregistrée."
+            : "Une erreur s'est produite lors de l'inscription. Veuillez réessayer.",
           variant: "destructive",
         });
       } else {
         toast({
           title: "Inscription réussie !",
-          description: `Bienvenue dans le programme: ${formData.formation.programmeDetails?.title}. Vérifiez votre email pour confirmer votre compte.`,
+          description: `Merci ${formData.firstName} ! Votre inscription au programme "${formData.formation.programmeDetails?.title}" a été enregistrée. Nous vous contacterons bientôt.`,
         });
+        
+        // Redirect to home page after successful registration
+        setTimeout(() => {
+          navigate('/');
+        }, 3000);
       }
     } catch (error: any) {
+      console.error('Registration error:', error);
       toast({
         title: "Erreur d'inscription",
-        description: error.message || "Une erreur s'est produite lors de l'inscription",
+        description: "Une erreur s'est produite lors de l'inscription. Veuillez réessayer.",
         variant: "destructive",
       });
     } finally {
