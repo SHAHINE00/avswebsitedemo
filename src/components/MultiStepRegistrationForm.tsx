@@ -21,7 +21,6 @@ interface FormData {
   lastName: string;
   email: string;
   phone: string;
-  password: string;
   formation: FormationData;
 }
 
@@ -37,7 +36,6 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
     lastName: '',
     email: '',
     phone: '',
-    password: '',
     formation: {
       formationType: '',
       domaine: '',
@@ -205,7 +203,6 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
     return formData.firstName &&
            formData.lastName &&
            formData.email &&
-           formData.password &&
            formData.formation.formationType &&
            formData.formation.domaine &&
            formData.formation.programme;
@@ -291,22 +288,6 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                 required
                 className="h-12 border-2 border-gray-200 focus:border-academy-blue rounded-lg"
                 placeholder="votre.email@exemple.com"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-semibold text-gray-700">
-                Mot de passe <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                type="password"
-                id="password"
-                value={formData.password}
-                onChange={(e) => handleInputChange('password', e.target.value)}
-                required
-                minLength={6}
-                className="h-12 border-2 border-gray-200 focus:border-academy-blue rounded-lg"
-                placeholder="Minimum 6 caractères"
               />
             </div>
             
