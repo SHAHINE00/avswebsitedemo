@@ -64,7 +64,7 @@ const Navbar = () => {
             <img 
               src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
               alt="AVS Innovation Institute" 
-              className="h-16 w-auto object-contain"
+              className="h-28 sm:h-32 lg:h-40 w-auto object-contain"
             />
           </Link>
 
