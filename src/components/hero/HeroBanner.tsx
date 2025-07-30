@@ -12,7 +12,7 @@ const HeroBanner: React.FC = () => {
   const isMobile = useIsMobile();
   
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative min-h-[80vh] flex flex-col items-center justify-center">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative min-h-[80vh] flex flex-col items-center justify-center pt-6">
       {/* Sophisticated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Geometric Patterns */}
@@ -25,7 +25,7 @@ const HeroBanner: React.FC = () => {
       <div className="relative z-10 text-center max-w-5xl mx-auto mb-8">
         {/* Status Badge */}
         <div className="flex items-center justify-center mb-6 sm:mb-8 animate-fade-in">
-          <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-primary/10 backdrop-blur-sm border border-primary/30 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+          <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-primary/5 backdrop-blur-sm border border-primary/20 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
             <Sparkles className="w-4 sm:w-5 h-4 sm:h-5 text-primary mr-2 animate-pulse" />
             <span className="text-xs sm:text-sm font-semibold text-primary">Inscriptions ouvertes</span>
           </div>
