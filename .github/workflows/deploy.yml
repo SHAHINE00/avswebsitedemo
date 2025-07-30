@@ -36,10 +36,21 @@ jobs:
           git pull origin main
           npm ci
           npm run build
+          
+          # Update nginx configuration
+          sudo cp nginx.conf /etc/nginx/sites-available/avs.ma.conf
+          sudo nginx -t && sudo systemctl reload nginx
+          
+          # Set correct permissions
+          sudo chown -R appuser:www-data /var/www/avswebsite
+          sudo find /var/www/avswebsite -type d -exec chmod 755 {} \;
+          sudo find /var/www/avswebsite -type f -exec chmod 644 {} \;
+          
+          # Restart PM2 processes
           pm2 reload ecosystem.config.js --env production || pm2 start ecosystem.config.js --env production
           pm2 save
           
     - name: Health Check
       run: |
         sleep 30
-        curl -f ${{ secrets.PRODUCTION_URL }} || exit 1
+        curl -f https://avs.ma || exit 1

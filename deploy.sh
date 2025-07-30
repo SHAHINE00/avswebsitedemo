@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# Education Platform VPS Deployment Script
+# AVS.ma VPS Deployment Script
 # Usage: ./deploy.sh [production|staging]
 
 set -e
 
 ENVIRONMENT=${1:-production}
-APP_DIR="/var/www/your-app"
-BACKUP_DIR="/var/backups/your-app"
-LOG_FILE="/var/log/deploy.log"
+APP_DIR="/var/www/avswebsite"
+BACKUP_DIR="/var/backups/avswebsite"
+LOG_FILE="/var/log/avswebsite-deploy.log"
 
 echo "$(date): Starting deployment for $ENVIRONMENT environment" >> $LOG_FILE
 
@@ -70,9 +70,14 @@ main() {
     export NODE_ENV=$ENVIRONMENT
     npm run build
     
+    # Update nginx configuration
+    log "Updating Nginx configuration"
+    sudo cp nginx.conf /etc/nginx/sites-available/avs.ma.conf
+    sudo nginx -t && sudo systemctl reload nginx
+    
     # Update file permissions
     log "Updating file permissions"
-    sudo chown -R $USER:www-data $APP_DIR
+    sudo chown -R appuser:www-data $APP_DIR
     sudo chmod -R 755 $APP_DIR
     
     # Restart services
@@ -84,7 +89,7 @@ main() {
     log "Performing health check"
     sleep 10
     
-    if curl -f -s http://localhost:3000 > /dev/null; then
+    if curl -f -s https://avs.ma > /dev/null; then
         log "Health check passed"
     else
         log "Health check failed"
