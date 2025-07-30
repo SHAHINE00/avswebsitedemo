@@ -41,7 +41,7 @@ const Navbar = () => {
   return (
     <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-50 top-0">
       <div className="container mx-auto px-6">
-        <div className="flex justify-between items-center h-20 relative">
+        <div className="flex justify-between items-center h-16 relative">
           {/* Desktop Navigation - Left */}
           <div className="hidden lg:flex items-center space-x-6">
             {navigation.map((item) => (
@@ -65,7 +65,7 @@ const Navbar = () => {
               <img 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
-                className="h-28 sm:h-32 w-auto object-contain"
+                className="h-12 sm:h-16 w-auto object-contain"
               />
             </Link>
           </div>
@@ -76,7 +76,7 @@ const Navbar = () => {
               <img 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
-                className="h-40 w-auto object-contain"
+                className="h-20 w-auto object-contain"
               />
             </Link>
 
