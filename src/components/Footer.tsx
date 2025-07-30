@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
           <div>
             <Link to="/" className="mb-4 inline-block">
               <img
-                src="/lovable-uploads/6b248e94-27d0-4f3f-b198-b751ca00a896.png"
+                src="/lovable-uploads/f3c7543c-fddb-40be-aa1c-7e6b6891bccb.png"
                 alt="AVS Innovation Institute" 
                 className="h-28 sm:h-32 lg:h-40 w-auto object-contain filter brightness-0 invert"
               />
