@@ -44,7 +44,7 @@ const Register = () => {
         phone: formData.phone
       };
 
-      const { error } = await signUp(formData.email, formData.password, fullName, metadata);
+      const { error } = await signUp(formData.email, '', fullName, metadata);
       
       if (error) {
         toast({
