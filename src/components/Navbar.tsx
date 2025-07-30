@@ -41,18 +41,18 @@ const Navbar = () => {
   return (
     <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-50 top-0">
       <div className="container mx-auto px-6">
-        <div className="flex justify-between items-center h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+        <div className="flex justify-between items-center h-20 lg:grid lg:grid-cols-3">
+          {/* Logo - Centered on desktop */}
+          <Link to="/" className="flex items-center justify-center lg:col-start-2">
             <img 
               src="/lovable-uploads/6b248e94-27d0-4f3f-b198-b751ca00a896.png" 
               alt="AVS Innovation Institute" 
-              className="h-16 w-auto object-contain"
+              className="h-20 w-auto object-contain"
             />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-8 lg:col-start-1">
             {navigation.map((item) => (
               <Link
                 key={item.name}
@@ -69,7 +69,7 @@ const Navbar = () => {
           </div>
 
           {/* Auth Section */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4 lg:col-start-3 lg:justify-end">
             {user ? (
               <>
                 <NotificationBell />
