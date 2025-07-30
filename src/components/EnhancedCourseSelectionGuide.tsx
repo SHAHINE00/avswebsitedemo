@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Badge } from "@/components/ui/badge";
 import { Brain, Code, Shield, Target, Database, Cloud, Palette, Briefcase, Clock, Award, Users, ArrowRight, RefreshCw } from 'lucide-react';
 
-interface Course {
+interface CourseInfo {
   id: string;
   title: string;
   subtitle: string;
@@ -22,7 +22,7 @@ interface LearningPath {
   description: string;
   duration: string;
   level: 'Débutant' | 'Intermédiaire' | 'Avancé';
-  courses: Course[];
+  courses: CourseInfo[];
   icon: React.ReactNode;
   color: string;
   careerOutcomes: string[];
