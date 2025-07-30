@@ -25,9 +25,9 @@ const HeroBanner: React.FC = () => {
       <div className="relative z-10 text-center max-w-5xl mx-auto mb-8">
         {/* Status Badge */}
         <div className="flex items-center justify-center mb-6 sm:mb-8 animate-fade-in">
-          <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-white/90 backdrop-blur-sm border border-academy-blue/20 rounded-full shadow-lg">
-            <Sparkles className="w-4 sm:w-5 h-4 sm:h-5 text-academy-blue mr-2" />
-            <span className="text-xs sm:text-sm font-semibold text-academy-blue">Inscriptions ouvertes</span>
+          <div className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-primary/10 backdrop-blur-sm border border-primary/30 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+            <Sparkles className="w-4 sm:w-5 h-4 sm:h-5 text-primary mr-2 animate-pulse" />
+            <span className="text-xs sm:text-sm font-semibold text-primary">Inscriptions ouvertes</span>
           </div>
         </div>
 
