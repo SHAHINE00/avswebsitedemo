@@ -12,6 +12,8 @@ interface DashboardMetrics {
   total_admins: number;
   recent_users: number;
   recent_courses: number;
+  total_subscribers: number;
+  recent_subscribers: number;
 }
 
 export const useDashboardMetrics = () => {

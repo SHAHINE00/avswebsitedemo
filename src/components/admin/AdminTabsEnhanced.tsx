@@ -6,6 +6,7 @@ import CourseManagementSection from '@/components/admin/dashboard/CourseManageme
 import UserManagementSection from '@/components/admin/dashboard/UserManagementSection';
 import AnalyticsSection from '@/components/admin/dashboard/AnalyticsSection';
 import SystemMonitoring from '@/components/admin/dashboard/SystemMonitoring';
+import SubscriberManagement from '@/components/admin/dashboard/SubscriberManagement';
 import type { Course } from '@/hooks/useCourses';
 
 interface AdminTabsEnhancedProps {
@@ -27,6 +28,7 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
         <TabsTrigger value="dashboard" className="flex-shrink-0 px-4 py-2">Vue d'ensemble</TabsTrigger>
         <TabsTrigger value="courses" className="flex-shrink-0 px-4 py-2">Gestion des Cours</TabsTrigger>
         <TabsTrigger value="users" className="flex-shrink-0 px-4 py-2">Utilisateurs</TabsTrigger>
+        <TabsTrigger value="subscribers" className="flex-shrink-0 px-4 py-2">Abonnements</TabsTrigger>
         <TabsTrigger value="analytics" className="flex-shrink-0 px-4 py-2">Analytics & Rapports</TabsTrigger>
         <TabsTrigger value="system" className="flex-shrink-0 px-4 py-2">Système</TabsTrigger>
       </TabsList>
@@ -46,6 +48,10 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
 
       <TabsContent value="users">
         <UserManagementSection />
+      </TabsContent>
+
+      <TabsContent value="subscribers">
+        <SubscriberManagement />
       </TabsContent>
 
       <TabsContent value="analytics">
