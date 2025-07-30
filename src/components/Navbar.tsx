@@ -44,7 +44,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-20 relative">
           {/* Desktop Navigation - Left */}
           <div className="hidden lg:flex items-center space-x-6">
-            {navigation.slice(0, 4).map((item) => (
+            {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
@@ -59,69 +59,65 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Logo - Centered */}
-          <Link to="/" className="absolute left-1/2 transform -translate-x-1/2 lg:relative lg:left-auto lg:transform-none flex items-center justify-center">
-            <img 
-              src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
-              alt="AVS Innovation Institute" 
-              className="h-28 sm:h-32 lg:h-40 w-auto object-contain"
-            />
-          </Link>
+          {/* Logo - Mobile Centered, Desktop Right */}
+          <div className="lg:hidden">
+            <Link to="/" className="absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center">
+              <img 
+                src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
+                alt="AVS Innovation Institute" 
+                className="h-28 sm:h-32 w-auto object-contain"
+              />
+            </Link>
+          </div>
 
-          {/* Desktop Navigation - Right */}
+          {/* Desktop Right Section - Logo + Auth */}
           <div className="hidden lg:flex items-center space-x-6">
-            {navigation.slice(4).map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`text-sm font-medium transition-colors duration-200 ${
-                  isActive(item.href)
-                    ? 'text-academy-blue'
-                    : 'text-gray-700 hover:text-academy-blue'
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </div>
+            <Link to="/" className="flex items-center justify-center">
+              <img 
+                src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
+                alt="AVS Innovation Institute" 
+                className="h-40 w-auto object-contain"
+              />
+            </Link>
 
-          {/* Auth Section */}
-          <div className="hidden lg:flex items-center space-x-4 ml-6">
-            {user ? (
-              <>
-                <NotificationBell />
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                      <User className="w-4 h-4" />
-                      {user.email?.split('@')[0]}
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuItem asChild>
-                      <Link to="/dashboard" className="flex items-center gap-2">
-                        <Settings className="w-4 h-4" />
-                        Tableau de bord
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSignOut} className="flex items-center gap-2 text-red-600">
-                      <LogOut className="w-4 h-4" />
-                      Déconnexion
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </>
-            ) : (
-              <>
-                <Button asChild variant="ghost" size="sm">
-                  <Link to="/auth">Connexion</Link>
-                </Button>
-                <Button asChild size="sm" className="bg-academy-blue hover:bg-academy-purple">
-                  <Link to="/appointment">Prendre RDV</Link>
-                </Button>
-              </>
-            )}
+            {/* Auth Section */}
+            <div className="flex items-center space-x-4 ml-6">
+              {user ? (
+                <>
+                  <NotificationBell />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                        <User className="w-4 h-4" />
+                        {user.email?.split('@')[0]}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                      <DropdownMenuItem asChild>
+                        <Link to="/dashboard" className="flex items-center gap-2">
+                          <Settings className="w-4 h-4" />
+                          Tableau de bord
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={handleSignOut} className="flex items-center gap-2 text-red-600">
+                        <LogOut className="w-4 h-4" />
+                        Déconnexion
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </>
+              ) : (
+                <>
+                  <Button asChild variant="ghost" size="sm">
+                    <Link to="/auth">Connexion</Link>
+                  </Button>
+                  <Button asChild size="sm" className="bg-academy-blue hover:bg-academy-purple">
+                    <Link to="/appointment">Prendre RDV</Link>
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
 
           {/* Mobile menu button */}
