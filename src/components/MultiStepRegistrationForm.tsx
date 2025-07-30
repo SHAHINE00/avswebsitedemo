@@ -83,68 +83,71 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
   const getCoursesForDomain = (domainValue: string): Course[] => {
     if (!courses.length) return [];
 
+    const allCourses = courses.filter(course => course.status === 'published');
+    console.log('Available courses:', allCourses.map(c => c.title));
+
     switch (domainValue) {
       case 'ai-data':
-        return courses.filter(course => {
+        const aiCourses = allCourses.filter(course => {
           const title = course.title.toLowerCase();
-          const exactMatches = [
-            'formation ia', 'ai & machine learning engineering', 'business intelligence',
-            'ai for business', 'ai for decision making', 'computer vision with opencv',
-            'ethical ai & governance', 'data science for business', 'data science with scikit-learn',
-            'ai applications in industries', 'financial data analysis', 'python for ai & programming'
+          const subtitle = course.subtitle?.toLowerCase() || '';
+          
+          // AI & Data Science keywords
+          const aiKeywords = [
+            'ia', 'ai', 'intelligence artificielle', 'artificial intelligence',
+            'machine learning', 'deep learning', 'data science', 'data analysis',
+            'business intelligence', 'computer vision', 'opencv', 'python',
+            'scikit-learn', 'tensorflow', 'neural network', 'algorithm',
+            'statistics', 'analytics', 'prediction', 'modeling'
           ];
           
-          if (exactMatches.some(match => title.includes(match))) return true;
-          
-          return title.includes('ia') || title.includes('intelligence artificielle') ||
-                 title.includes('machine learning') || title.includes('deep learning') ||
-                 title.includes('computer vision') || title.includes('opencv') ||
-                 title.includes('ethical ai') || title.includes('scikit-learn') ||
-                 (title.includes('data science') || (title.includes('data') && title.includes('science'))) ||
-                 (title.includes('financial') && title.includes('data'));
+          return aiKeywords.some(keyword => 
+            title.includes(keyword) || subtitle.includes(keyword)
+          );
         });
+        console.log('AI courses filtered:', aiCourses.map(c => c.title));
+        return aiCourses;
 
       case 'programming':
-        return courses.filter(course => {
+        const programmingCourses = allCourses.filter(course => {
           const title = course.title.toLowerCase();
-          const exactMatches = [
-            'formation programmation', 'python for ai & programming', 'advanced python programming',
-            'web development (html, css, js)', 'mobile app development', 'database design & management',
-            'cloud computing (aws, azure)', 'internet of things (iot)', 'blockchain & cryptocurrency',
-            'formation cybersécurité'
+          const subtitle = course.subtitle?.toLowerCase() || '';
+          
+          // Programming & Infrastructure keywords
+          const progKeywords = [
+            'programmation', 'programming', 'développement', 'development',
+            'web', 'mobile', 'app', 'database', 'cloud', 'devops',
+            'cybersécurité', 'cybersecurity', 'blockchain', 'iot',
+            'html', 'css', 'javascript', 'python', 'java', 'react',
+            'node', 'sql', 'aws', 'azure', 'docker', 'kubernetes'
           ];
           
-          if (exactMatches.some(match => title.includes(match))) return true;
-          
-          return title.includes('programmation') || title.includes('développement') ||
-                 title.includes('programming') || title.includes('web development') ||
-                 title.includes('mobile app') || title.includes('database') ||
-                 title.includes('cloud computing') || title.includes('devops') ||
-                 title.includes('blockchain') || title.includes('iot') ||
-                 title.includes('cybersécurité') || title.includes('cybersecurity') ||
-                 (title.includes('python') && title.includes('advanced') && title.includes('programming')) ||
-                 (title.includes('html') || title.includes('css') || title.includes('javascript'));
+          return progKeywords.some(keyword => 
+            title.includes(keyword) || subtitle.includes(keyword)
+          );
         });
+        console.log('Programming courses filtered:', programmingCourses.map(c => c.title));
+        return programmingCourses;
 
       case 'marketing':
-        return courses.filter(course => {
+        const marketingCourses = allCourses.filter(course => {
           const title = course.title.toLowerCase();
-          const exactMatches = [
-            'ai-powered digital marketing', 'e-commerce marketing', 'video production & ai editing',
-            'social media content creation', 'google data studio analytics',
-            'data analysis with microsoft excel'
+          const subtitle = course.subtitle?.toLowerCase() || '';
+          
+          // Marketing & Creative keywords
+          const marketingKeywords = [
+            'marketing', 'digital', 'e-commerce', 'social media',
+            'content', 'design', 'créatif', 'creative', 'video',
+            'photoshop', 'illustrator', 'excel', 'analytics',
+            'seo', 'sem', 'advertising', 'brand', 'communication'
           ];
           
-          if (exactMatches.some(match => title.includes(match))) return true;
-          
-          return title.includes('marketing') || title.includes('e-commerce') ||
-                 title.includes('digital marketing') || title.includes('social media') ||
-                 title.includes('video production') || title.includes('content creation') ||
-                 title.includes('design') || title.includes('créatif') ||
-                 title.includes('excel') || title.includes('google data studio') ||
-                 title.includes('photoshop') || title.includes('illustrator') ||
-                 (title.includes('business') && !title.includes('intelligence') && !title.includes('data'));
+          return marketingKeywords.some(keyword => 
+            title.includes(keyword) || subtitle.includes(keyword)
+          );
         });
+        console.log('Marketing courses filtered:', marketingCourses.map(c => c.title));
+        return marketingCourses;
 
       default:
         return [];
@@ -406,15 +409,18 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                 </SelectContent>
               </Select>
               
-              {selectedDomaine && (
-                <div className="p-4 bg-academy-purple/5 rounded-lg border border-academy-purple/20">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Users className="w-4 h-4 text-academy-purple" />
-                    <span className="font-medium text-academy-purple">{selectedDomaine.label}</span>
-                  </div>
-                  <p className="text-sm text-gray-600">{selectedDomaine.description}</p>
-                </div>
-              )}
+               {selectedDomaine && (
+                 <div className="p-4 bg-academy-purple/5 rounded-lg border border-academy-purple/20">
+                   <div className="flex items-center gap-2 mb-2">
+                     <Users className="w-4 h-4 text-academy-purple" />
+                     <span className="font-medium text-academy-purple">{selectedDomaine.label}</span>
+                     <Badge variant="secondary" className="ml-auto">
+                       {availableCourses.length} programme{availableCourses.length > 1 ? 's' : ''}
+                     </Badge>
+                   </div>
+                   <p className="text-sm text-gray-600">{selectedDomaine.description}</p>
+                 </div>
+               )}
             </div>
           )}
 
@@ -443,17 +449,23 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Choisissez votre programme spécifique" />
                   </SelectTrigger>
-                  <SelectContent>
-                    {availableCourses.map((course) => (
-                      <SelectItem key={course.id} value={course.id}>
-                        <div className="py-2">
-                          <div className="font-medium">{course.title}</div>
-                          {course.subtitle && (
-                            <div className="text-sm text-gray-500">{course.subtitle}</div>
-                          )}
-                        </div>
-                      </SelectItem>
-                    ))}
+                  <SelectContent className="max-h-[300px]">
+                    {availableCourses.length === 0 ? (
+                      <div className="py-4 px-3 text-center text-sm text-muted-foreground">
+                        Aucun programme disponible pour ce domaine
+                      </div>
+                    ) : (
+                      availableCourses.map((course) => (
+                        <SelectItem key={course.id} value={course.id}>
+                          <div className="py-2">
+                            <div className="font-medium">{course.title}</div>
+                            {course.subtitle && (
+                              <div className="text-sm text-muted-foreground">{course.subtitle}</div>
+                            )}
+                          </div>
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
               )}
