@@ -53,8 +53,8 @@ const About = () => {
               À propos d'AVS Innovation Institute
             </h1>
             <p className="text-xl text-gray-700 mb-8">
-              Pionniers de l'innovation pédagogique, nous formons les talents de demain 
-              aux technologies qui transforment le monde.
+              Pionniers de l'innovation pédagogique en partenariat avec des universités et entreprises de renommée internationale, 
+              nous formons les talents de demain aux technologies qui transforment le monde.
             </p>
           </div>
         </div>
