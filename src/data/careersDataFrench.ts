@@ -613,5 +613,5 @@ export const successStats = [
   { value: "95%", label: "Taux d'emploi", description: "de nos diplômés trouvent un emploi" },
   { value: "€62k", label: "Salaire moyen", description: "salaire de départ moyen" },
   { value: "35%", label: "Croissance annuelle", description: "du secteur tech en France" },
-  { value: "31+", label: "Spécialisations", description: "certifications internationales" }
+  { value: "+26", label: "Spécialisations", description: "certifications internationales" }
 ];

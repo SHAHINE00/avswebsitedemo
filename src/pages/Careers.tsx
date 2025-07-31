@@ -29,10 +29,10 @@ const Careers = () => {
               </div>
             </div>
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              31+ Spécialisations Certifiées Internationalement
+              +26 Spécialisations Certifiées Internationalement
             </h1>
             <p className="text-xl md:text-2xl opacity-90 mb-8 max-w-3xl mx-auto">
-              Découvrez 31+ spécialisations certifiées par MIT, Google, Microsoft, IBM, Harvard, Stanford et plus encore. 
+              Découvrez +26 spécialisations certifiées par MIT, Google, Microsoft, IBM, Harvard, Stanford et plus encore. 
               Obtenez votre certification internationale en 3-8 semaines et transformez votre carrière professionnelle.
             </p>
             
