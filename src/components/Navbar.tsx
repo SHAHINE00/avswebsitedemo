@@ -45,9 +45,9 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center flex-shrink-0">
             <Link to="/" className="flex items-center">
               <img 
-                src="/lovable-uploads/avs-logo-only.png" 
+                src="/lovable-uploads/avs-logo-correct.png" 
                 alt="AVS Innovation Institute" 
-                className="h-16 w-auto object-contain"
+                className="h-20 w-auto object-contain"
               />
             </Link>
           </div>
@@ -115,9 +115,9 @@ const Navbar = () => {
             <div className="w-10"></div> {/* Spacer for centering */}
             <Link to="/" className="flex items-center">
               <img 
-                src="/lovable-uploads/avs-logo-only.png" 
+                src="/lovable-uploads/avs-logo-correct.png" 
                 alt="AVS Innovation Institute" 
-                className="h-12 sm:h-14 w-auto object-contain"
+                className="h-16 sm:h-18 w-auto object-contain"
               />
             </Link>
             <Button
