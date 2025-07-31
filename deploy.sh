@@ -35,7 +35,7 @@ rollback() {
         sudo rm -rf $APP_DIR/*
         sudo cp -r $BACKUP_DIR/$LATEST_BACKUP/* $APP_DIR/
         sudo systemctl restart nginx
-        pm2 restart ecosystem.config.js
+        pm2 restart ecosystem.config.cjs
         log "Rollback completed"
     else
         log "No backup found for rollback"
@@ -100,7 +100,7 @@ main() {
     
     # Restart services
     log "Restarting services"
-    pm2 reload ecosystem.config.js --env $ENVIRONMENT
+    pm2 reload ecosystem.config.cjs --env $ENVIRONMENT
     sudo systemctl reload nginx
     
     # Health check
