@@ -69,30 +69,6 @@ const FeaturesSection: React.FC = () => {
             </div>
           ))}
         </div>
-        
-        <div className="text-center mt-16">
-          <div className="inline-flex items-center space-x-8 bg-white p-6 rounded-2xl shadow-lg">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-academy-blue">15+</div>
-              <div className="text-sm text-gray-600">Années d'expérience</div>
-            </div>
-            <div className="w-px h-12 bg-gray-200"></div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-academy-blue">5000+</div>
-              <div className="text-sm text-gray-600">Diplômés</div>
-            </div>
-            <div className="w-px h-12 bg-gray-200"></div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-academy-blue">95%</div>
-              <div className="text-sm text-gray-600">Taux de réussite</div>
-            </div>
-            <div className="w-px h-12 bg-gray-200"></div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-academy-blue">50+</div>
-              <div className="text-sm text-gray-600">Entreprises partenaires</div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
