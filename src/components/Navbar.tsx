@@ -47,7 +47,7 @@ const Navbar = () => {
               <img 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
-                className="h-20 w-auto object-contain relative z-10"
+                className="h-24 w-auto object-contain relative z-10"
               />
             </Link>
           </div>
@@ -117,7 +117,7 @@ const Navbar = () => {
               <img 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
-                className="h-16 sm:h-18 w-auto object-contain relative z-10"
+                className="h-18 sm:h-20 w-auto object-contain relative z-10"
               />
             </Link>
             <Button
