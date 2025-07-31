@@ -6,6 +6,7 @@ import instructorMale1 from '@/assets/instructor-male-1.jpg';
 import instructorMale2 from '@/assets/instructor-male-2.jpg';
 import instructorFemale1 from '@/assets/instructor-female-1.jpg';
 import instructorFemale2 from '@/assets/instructor-female-2.jpg';
+import instructorMoroccanFemale from '@/assets/instructor-moroccan-female.jpg';
 
 const instructors = [
   {
@@ -18,7 +19,7 @@ const instructors = [
     name: "Fatima Zahra Alami",
     title: "Ingénieure Machine Learning",
     bio: "Responsable technique chez Amazon AWS, experte du déploiement d'IA à grande échelle et du cloud.",
-    image: instructorFemale1
+    image: instructorMoroccanFemale
   },
   {
     name: "Dr. Hassan Cherkaoui",
