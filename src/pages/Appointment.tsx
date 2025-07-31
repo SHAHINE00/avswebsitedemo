@@ -289,11 +289,15 @@ const Appointment = () => {
                     <div className="space-y-2">
                       <p className="flex items-center">
                         <Phone className="mr-2" size={16} />
-                        +33 (0)1 23 45 67 89
+                        +212 6 62 63 29 53
+                      </p>
+                      <p className="flex items-center">
+                        <Phone className="mr-2" size={16} />
+                        +212 5 24 31 19 82
                       </p>
                       <p className="flex items-center">
                         <Mail className="mr-2" size={16} />
-                        contact@aiacademie.fr
+                        info@avs.ma
                       </p>
                     </div>
                   </div>
