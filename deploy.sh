@@ -63,12 +63,16 @@ main() {
     
     # Install dependencies
     log "Installing dependencies"
-    npm ci --production
+    npm ci
     
     # Build application
     log "Building application"
     export NODE_ENV=$ENVIRONMENT
     npm run build
+    
+    # Clean up devDependencies to save space
+    log "Cleaning up devDependencies"
+    npm prune --production
     
     # Update nginx configuration
     log "Updating Nginx configuration"
