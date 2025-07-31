@@ -31,7 +31,7 @@ const CTASection: React.FC = () => {
           </div>
           <div className="bg-white/10 rounded-lg p-3 sm:p-4 backdrop-blur-sm">
             <p className="text-xs sm:text-sm opacity-90 mb-1 sm:mb-2">
-              <strong>Prochaine session :</strong> 15 septembre 2025
+              <strong>Prochaine session :</strong> septembre 2025
             </p>
             <p className="text-xs sm:text-sm opacity-90">
               Places limitées • Formation certifiante • Accompagnement personnalisé
