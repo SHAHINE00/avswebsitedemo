@@ -4,7 +4,9 @@ import Footer from '@/components/Footer';
 import DynamicBlog from '@/components/blog/DynamicBlog';
 import SEOHead from '@/components/SEOHead';
 import { pageSEO } from '@/utils/seoData';
-
+import BlogHeroSection from '@/components/blog/BlogHeroSection';
+import BlogCategories from '@/components/blog/BlogCategories';
+import BlogNewsletter from '@/components/blog/BlogNewsletter';
 
 const Blog = () => {
   return (
@@ -12,20 +14,20 @@ const Blog = () => {
       <SEOHead {...pageSEO.blog} />
       <Navbar />
       
-      <div className="pt-24 pb-16 bg-gradient-to-br from-white to-academy-gray">
-        <div className="container mx-auto px-6">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Blog</h1>
-          <p className="text-xl text-gray-700 max-w-3xl">
-            Découvrez nos articles sur l'Intelligence Artificielle, la Programmation et les carrières dans la tech.
-          </p>
-        </div>
-      </div>
+      {/* Hero Section */}
+      <BlogHeroSection />
+      
+      {/* Categories Section */}
+      <BlogCategories />
       
       <main className="flex-grow py-16">
         <div className="container mx-auto px-6">
           <DynamicBlog />
         </div>
       </main>
+
+      {/* Newsletter Section */}
+      <BlogNewsletter />
       
       <Footer />
     </div>
