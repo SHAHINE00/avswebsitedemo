@@ -47,7 +47,7 @@ const Navbar = () => {
               <img 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
-                className="h-20 xl:h-24 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
+                className="h-28 xl:h-32 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
               />
             </Link>
           </div>
@@ -117,7 +117,7 @@ const Navbar = () => {
               <img 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
-                className="h-14 sm:h-16 md:h-18 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
+                className="h-16 sm:h-18 md:h-20 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
               />
             </Link>
             <Button
