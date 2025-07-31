@@ -119,55 +119,60 @@ const SectionReorderDialog: React.FC<SectionReorderDialogProps> = ({
           <div className="space-y-2">
             {orderedSections.map((section, index) => (
               <Card key={section.id} className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3 flex-1">
-                    <div className="flex items-center space-x-1">
-                      <GripVertical className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm font-medium text-muted-foreground w-8">
-                        #{index + 1}
-                      </span>
-                    </div>
-                    
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2">
-                        <h4 className="font-medium">{section.section_name}</h4>
-                        <Badge variant={section.is_visible ? "default" : "secondary"}>
-                          {section.is_visible ? (
-                            <><Eye className="h-3 w-3 mr-1" />Visible</>
-                          ) : (
-                            <><EyeOff className="h-3 w-3 mr-1" />Masqué</>
-                          )}
-                        </Badge>
-                      </div>
-                      {section.section_description && (
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {section.section_description}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-1">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => moveSection(index, index - 1)}
-                      disabled={index === 0}
-                      className="h-8 w-8"
-                    >
-                      <ArrowUp className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => moveSection(index, index + 1)}
-                      disabled={index === orderedSections.length - 1}
-                      className="h-8 w-8"
-                    >
-                      <ArrowDown className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
+                 <div className="flex items-center justify-between">
+                   <div className="flex items-center space-x-3 flex-1">
+                     <div className="flex items-center space-x-2">
+                       <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
+                       <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-semibold">
+                         {index + 1}
+                       </div>
+                     </div>
+                     
+                     <div className="flex-1">
+                       <div className="flex items-center space-x-2">
+                         <h4 className="font-medium">{section.section_name}</h4>
+                         <Badge 
+                           variant={section.is_visible ? "default" : "secondary"}
+                           className="text-xs"
+                         >
+                           {section.is_visible ? (
+                             <><Eye className="h-3 w-3 mr-1" />Visible</>
+                           ) : (
+                             <><EyeOff className="h-3 w-3 mr-1" />Masqué</>
+                           )}
+                         </Badge>
+                       </div>
+                       {section.section_description && (
+                         <p className="text-sm text-muted-foreground mt-1">
+                           {section.section_description}
+                         </p>
+                       )}
+                     </div>
+                   </div>
+                   
+                   <div className="flex items-center space-x-1">
+                     <Button
+                       variant="outline"
+                       size="icon"
+                       onClick={() => moveSection(index, index - 1)}
+                       disabled={index === 0}
+                       className="h-8 w-8 hover:bg-primary/10"
+                       title="Déplacer vers le haut"
+                     >
+                       <ArrowUp className="h-4 w-4" />
+                     </Button>
+                     <Button
+                       variant="outline"
+                       size="icon"
+                       onClick={() => moveSection(index, index + 1)}
+                       disabled={index === orderedSections.length - 1}
+                       className="h-8 w-8 hover:bg-primary/10"
+                       title="Déplacer vers le bas"
+                     >
+                       <ArrowDown className="h-4 w-4" />
+                     </Button>
+                   </div>
+                 </div>
               </Card>
             ))}
           </div>
