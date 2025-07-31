@@ -61,14 +61,28 @@ main() {
     git fetch origin
     git reset --hard origin/main
     
-    # Install dependencies
-    log "Installing dependencies"
-    npm ci
+    # Clean npm cache and install dependencies
+    log "Cleaning npm cache and installing dependencies"
+    npm cache clean --force
+    rm -rf node_modules package-lock.json
+    npm install
+    
+    # Verify vite installation
+    log "Verifying vite installation"
+    if [ ! -f "node_modules/.bin/vite" ]; then
+        log "Warning: vite not found in .bin, trying to reinstall"
+        npm install vite --save-dev
+    fi
     
     # Build application
     log "Building application"
     export NODE_ENV=$ENVIRONMENT
-    npm run build
+    if [ -f "node_modules/.bin/vite" ]; then
+        npm run build
+    else
+        log "Using npx as fallback for vite build"
+        npx vite build
+    fi
     
     # Clean up devDependencies to save space
     log "Cleaning up devDependencies"
