@@ -117,7 +117,7 @@ const Navbar = () => {
               <img 
                 src="/lovable-uploads/df791f2c-9e71-41b4-9235-828cb12f2b42.png" 
                 alt="AVS Innovation Institute" 
-                className="h-16 sm:h-20 md:h-24 w-auto object-contain transform hover:scale-105 transition-transform duration-200 mt-1"
+                className="h-16 sm:h-20 md:h-24 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
               />
             </Link>
             <Button
