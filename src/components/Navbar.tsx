@@ -45,7 +45,7 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center flex-shrink-0">
             <Link to="/" className="flex items-center">
               <img 
-                src="/lovable-uploads/4bee2f05-198e-4bd6-90fb-a34207bdb906.png" 
+                src="/lovable-uploads/avs-logo-only.png" 
                 alt="AVS Innovation Institute" 
                 className="h-16 w-auto object-contain"
               />
@@ -115,7 +115,7 @@ const Navbar = () => {
             <div className="w-10"></div> {/* Spacer for centering */}
             <Link to="/" className="flex items-center">
               <img 
-                src="/lovable-uploads/4bee2f05-198e-4bd6-90fb-a34207bdb906.png" 
+                src="/lovable-uploads/avs-logo-only.png" 
                 alt="AVS Innovation Institute" 
                 className="h-12 sm:h-14 w-auto object-contain"
               />
