@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -77,7 +77,7 @@ export const useEnrollment = () => {
     }
   };
 
-  const checkEnrollmentStatus = async (courseId: string) => {
+  const checkEnrollmentStatus = useCallback(async (courseId: string) => {
     if (!user) {
       logInfo('No user, returning false for enrollment check');
       return false;
@@ -108,7 +108,7 @@ export const useEnrollment = () => {
       logError('Unexpected error checking enrollment status:', error);
       return false;
     }
-  };
+  }, [user]);
 
   return {
     enrollInCourse,

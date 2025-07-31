@@ -29,22 +29,25 @@ const EnrollmentButton: React.FC<EnrollmentButtonProps> = ({
 
   useEffect(() => {
     const checkStatus = async () => {
+      console.log('Starting enrollment check for course:', courseId, 'user:', user?.id);
       setCheckingStatus(true);
       
       if (user && courseId) {
         try {
           const enrolled = await checkEnrollmentStatus(courseId);
+          console.log('Enrollment check result:', enrolled);
           setIsEnrolled(enrolled);
         } catch (error) {
           console.error('Error checking enrollment status:', error);
           setIsEnrolled(false);
         }
       } else {
-        // No user or courseId available - not enrolled
+        console.log('No user or courseId available - not enrolled');
         setIsEnrolled(false);
       }
       
       setCheckingStatus(false);
+      console.log('Enrollment check completed');
     };
 
     checkStatus();
