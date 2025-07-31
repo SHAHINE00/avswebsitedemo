@@ -339,7 +339,7 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
   }
 
   return (
-    <section id="course-guide" className="py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-gray-50 to-blue-50">
+    <section id="course-guide" className="py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-gray-50 to-blue-50 mt-0 pt-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16 sm:mb-20">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-academy-blue/10 rounded-full mb-6">
