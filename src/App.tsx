@@ -29,6 +29,8 @@ import AdminCourses from "./pages/AdminCourses";
 import AdminTest from "./pages/AdminTest";
 import Admin from "./pages/Admin";
 import Dashboard from "./pages/Dashboard";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 
 const App = () => {
   return (
@@ -57,6 +59,8 @@ const App = () => {
           <Route path="/careers" element={<Careers />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/appointment" element={<Appointment />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-use" element={<TermsOfUse />} />
           <Route path="/cookies-policy" element={<CookiesPolicy />} />
