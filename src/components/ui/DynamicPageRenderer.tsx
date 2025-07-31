@@ -1,11 +1,15 @@
 import React, { useMemo, useEffect } from 'react';
 import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 import { supabase } from '@/integrations/supabase/client';
+
 // Global components
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+
 // Home page components
 import HeroSection from '@/components/HeroSection';
+import CareerPaths from '@/components/hero/CareerPaths';
+import CourseUniverseShowcase from '@/components/hero/CourseUniverseShowcase';
 import PartnersSection from '@/components/PartnersSection';
 import FeaturesSection from '@/components/FeaturesSection';
 import InstructorsSection from '@/components/InstructorsSection';
@@ -13,6 +17,7 @@ import TestimonialsSection from '@/components/TestimonialsSection';
 import EnhancedCourseSelectionGuide from '@/components/EnhancedCourseSelectionGuide';
 import FAQSection from '@/components/FAQSection';
 import CTASection from '@/components/CTASection';
+
 // About page components
 import AboutHeroSection from '@/components/about/AboutHeroSection';
 import AboutMissionSection from '@/components/about/AboutMissionSection';
@@ -20,9 +25,19 @@ import AboutValuesSection from '@/components/about/AboutValuesSection';
 import AboutStatsSection from '@/components/about/AboutStatsSection';
 import AboutHistorySection from '@/components/about/AboutHistorySection';
 import AboutCTASection from '@/components/about/AboutCTASection';
+
 // Features page components
 import FeaturesHeroSection from '@/components/features/FeaturesHeroSection';
 import FeaturesMainSection from '@/components/features/FeaturesMainSection';
+
+// Section wrapper components
+const CourseUniverseSection: React.FC = () => (
+  <section className="py-12 bg-white">
+    <div className="container mx-auto px-6">
+      <CourseUniverseShowcase />
+    </div>
+  </section>
+);
 
 interface DynamicPageRendererProps {
   pageName: string;
@@ -37,6 +52,8 @@ const SECTION_COMPONENTS: Record<string, React.ComponentType> = {
   
   // Home page sections
   'home_hero': HeroSection,
+  'home_career_paths': CareerPaths,
+  'home_course_universe': CourseUniverseSection,
   'home_partners': PartnersSection,
   'home_features': FeaturesSection,
   'home_course_guide': EnhancedCourseSelectionGuide,
