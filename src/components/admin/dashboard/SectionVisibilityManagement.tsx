@@ -4,12 +4,23 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Eye, EyeOff, Settings, Globe, Shuffle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Eye, EyeOff, Settings, Globe, Shuffle, AlertTriangle } from 'lucide-react';
 import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 import { useToast } from '@/hooks/use-toast';
 import EnhancedSectionReorderDialog from './EnhancedSectionReorderDialog';
 
 const SectionVisibilityManagement: React.FC = () => {
+  // Component mappings for validation
+  const MAPPED_SECTIONS = [
+    'global_navbar', 'global_footer',
+    'home_hero', 'home_partners', 'home_features', 'home_course_guide',
+    'home_instructors', 'home_testimonials', 'home_faq', 'home_cta',
+    'about_hero', 'about_mission', 'about_values', 'about_stats',
+    'about_history', 'about_cta',
+    'features_hero', 'features_main'
+  ];
+
   const {
     sections,
     loading,
@@ -57,6 +68,10 @@ const SectionVisibilityManagement: React.FC = () => {
     return { total, visible, hidden };
   };
 
+  const getUnmappedSections = () => {
+    return sections.filter(section => !MAPPED_SECTIONS.includes(section.section_key));
+  };
+
   if (loading) {
     return (
       <Card>
@@ -81,6 +96,7 @@ const SectionVisibilityManagement: React.FC = () => {
 
   const stats = getVisibilityStats();
   const pageNames = [...new Set(sections.map(s => s.page_name))];
+  const unmappedSections = getUnmappedSections();
 
   return (
     <div className="space-y-6">
@@ -137,6 +153,27 @@ const SectionVisibilityManagement: React.FC = () => {
         </Card>
       </div>
 
+      {/* Unmapped Sections Warning */}
+      {unmappedSections.length > 0 && (
+        <Alert className="border-orange-200 bg-orange-50">
+          <AlertTriangle className="h-4 w-4 text-orange-600" />
+          <AlertDescription className="text-orange-800">
+            <div className="space-y-2">
+              <p className="font-semibold">⚠️ Sections sans composant détectées</p>
+              <p className="text-sm">Les sections suivantes existent dans la base de données mais n'ont pas de composant React mappé :</p>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {unmappedSections.map(section => (
+                  <Badge key={section.section_key} variant="outline" className="text-orange-700 border-orange-300">
+                    {section.section_key}
+                  </Badge>
+                ))}
+              </div>
+              <p className="text-xs mt-2">Ces sections ne s'afficheront pas sur le site web. Contactez un développeur pour créer les composants manquants.</p>
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Sections by Page */}
       <div className="space-y-6">
         {pageNames.map((pageName) => {
@@ -182,6 +219,11 @@ const SectionVisibilityManagement: React.FC = () => {
                           >
                             {section.is_visible ? 'Visible' : 'Masqué'}
                           </Badge>
+                          {!MAPPED_SECTIONS.includes(section.section_key) && (
+                            <Badge variant="outline" className="text-orange-700 border-orange-300 bg-orange-50">
+                              Pas de composant
+                            </Badge>
+                          )}
                         </div>
                         {section.section_description && (
                           <p className="text-sm text-muted-foreground">
