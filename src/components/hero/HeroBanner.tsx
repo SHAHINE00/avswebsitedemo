@@ -40,8 +40,8 @@ const HeroBanner: React.FC = () => {
         {/* Subtitle */}
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-700 mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in text-center px-4" style={{animationDelay: '0.6s'}}>
           <span className="font-semibold text-academy-blue">AVS Institut de l'Innovation et de l'Intelligence Artificielle</span>
-          <br className="hidden sm:block" />
-          <br className="hidden sm:block" />
+          <br />
+          <br />
           est un institut leader en formation technologique et numérique, reconnu pour son excellence académique et son réseau de partenaires internationaux prestigieux. Voici une présentation enrichie de ses atouts majeurs
         </p>
 
