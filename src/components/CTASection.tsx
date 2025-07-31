@@ -22,8 +22,8 @@ const CTASection: React.FC = () => {
                 S'inscrire maintenant <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Link>
             </Button>
-            <Button asChild variant="outline" className="border-white text-white hover:bg-white/10 font-semibold px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg">
-              <Link to="/appointment">
+            <Button asChild variant="outline" className="border-white text-white hover:bg-white/10 hover:text-white font-semibold px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg">
+              <Link to="/appointment" className="text-white hover:text-white">
                 <Calendar className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                 Consultation gratuite
               </Link>
