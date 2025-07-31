@@ -45,7 +45,7 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center flex-shrink-0">
             <Link to="/" className="flex items-center py-2">
               <img 
-                src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
+                src="/lovable-uploads/df791f2c-9e71-41b4-9235-828cb12f2b42.png" 
                 alt="AVS Innovation Institute" 
                 className="h-20 lg:h-20 xl:h-24 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
               />
@@ -115,7 +115,7 @@ const Navbar = () => {
             <div className="w-10"></div> {/* Spacer for centering */}
             <Link to="/" className="flex items-center py-1">
               <img 
-                src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
+                src="/lovable-uploads/df791f2c-9e71-41b4-9235-828cb12f2b42.png" 
                 alt="AVS Innovation Institute" 
                 className="h-14 sm:h-16 md:h-20 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
               />
