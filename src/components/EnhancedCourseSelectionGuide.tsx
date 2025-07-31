@@ -367,7 +367,7 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
                 {questions.map((q, qIndex) => (
                   <div key={q.id} className="space-y-3 md:space-y-4">
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">
+                      <div className="w-8 h-8 bg-gradient-to-r from-academy-blue to-academy-purple text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">
                         {qIndex + 1}
                       </div>
                       <h3 className="font-semibold text-base md:text-lg leading-tight">{q.question}</h3>
