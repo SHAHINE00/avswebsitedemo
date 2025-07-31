@@ -69,8 +69,8 @@ const Appointment = () => {
         <Navbar />
         
         {/* Hero Section */}
-        <div className="pt-32 pb-20 relative overflow-hidden bg-gradient-to-r from-purple-600 to-purple-800">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-600 to-purple-900"></div>
+        <div className="pt-32 pb-20 relative overflow-hidden bg-gradient-to-r from-sky-400 to-blue-500">
+          <div className="absolute inset-0 bg-gradient-to-br from-sky-400 to-blue-600"></div>
           
           <div className="container mx-auto px-6 relative z-10">
             <div className="text-center max-w-4xl mx-auto">
