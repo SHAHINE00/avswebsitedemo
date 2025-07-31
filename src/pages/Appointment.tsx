@@ -70,7 +70,7 @@ const Appointment = () => {
         
         <div className="pt-24 pb-16 bg-gradient-to-br from-white to-academy-gray">
           <div className="container mx-auto px-6">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Planifier un rendez-vous</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center text-blue-400">Planifier un rendez-vous</h1>
             <p className="text-xl text-gray-700 max-w-3xl">
               Réservez un créneau avec nos conseillers pour discuter de votre projet de formation en IA.
             </p>
