@@ -27,6 +27,7 @@ const SectionVisibilityManagement: React.FC = () => {
     error,
     updateSectionVisibility,
     updateSectionOrder,
+    moveSection,
     getSectionsByPage,
     refetch
   } = useSectionVisibility();

@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useSectionVisibility } from '@/hooks/useSectionVisibility';
+import { supabase } from '@/integrations/supabase/client';
 // Global components
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -61,7 +62,30 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
   pageName, 
   children 
 }) => {
-  const { getSectionsByPage, loading } = useSectionVisibility();
+  const { getSectionsByPage, loading, refetch } = useSectionVisibility();
+
+  // Set up real-time subscriptions for section visibility changes
+  useEffect(() => {
+    const channel = supabase
+      .channel('section-visibility-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'section_visibility'
+        },
+        () => {
+          // Refetch sections when any change occurs to section_visibility table
+          refetch();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [refetch]);
 
   const orderedSections = useMemo(() => {
     if (loading) return [];

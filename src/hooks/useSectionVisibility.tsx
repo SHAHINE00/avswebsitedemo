@@ -64,46 +64,57 @@ export const useSectionVisibility = () => {
 
   const updateSectionOrder = async (sectionKey: string, newOrder: number) => {
     try {
-      // First, get the current section to update
+      // Get the section being moved
       const sectionToUpdate = sections.find(s => s.section_key === sectionKey);
       if (!sectionToUpdate) throw new Error('Section not found');
 
-      const samePage = sections.filter(s => s.page_name === sectionToUpdate.page_name);
-      
-      // Reorder all sections on the same page
-      const updatedSections = samePage.map((section, index) => {
-        if (section.section_key === sectionKey) {
-          return { ...section, display_order: newOrder };
-        }
-        return section;
-      }).sort((a, b) => a.display_order - b.display_order);
+      // Use the database function for proper reordering
+      const { error } = await supabase
+        .rpc('reorder_sections_on_page', {
+          p_page_name: sectionToUpdate.page_name,
+          p_section_key: sectionKey,
+          p_new_order: newOrder
+        });
 
-      // Reassign sequential order numbers
-      const reorderedSections = updatedSections.map((section, index) => ({
-        ...section,
-        display_order: index
-      }));
+      if (error) throw error;
 
-      // Update all sections in database
-      for (const section of reorderedSections) {
-        const { error } = await supabase
-          .from('section_visibility')
-          .update({ display_order: section.display_order })
-          .eq('section_key', section.section_key);
-
-        if (error) throw error;
-      }
-
-      // Update local state
-      setSections(prev => 
-        prev.map(section => {
-          const updated = reorderedSections.find(rs => rs.section_key === section.section_key);
-          return updated || section;
-        })
-      );
+      // Refetch sections to get the updated order
+      await fetchSections();
     } catch (err) {
       logError('Error updating section order:', err);
       throw new Error('Failed to update section order');
+    }
+  };
+
+  const moveSection = async (sectionKey: string, direction: 'up' | 'down' | 'top' | 'bottom') => {
+    try {
+      const section = sections.find(s => s.section_key === sectionKey);
+      if (!section) throw new Error('Section not found');
+
+      const samePage = sections.filter(s => s.page_name === section.page_name);
+      const maxOrder = Math.max(...samePage.map(s => s.display_order));
+      
+      let newOrder: number;
+      
+      switch (direction) {
+        case 'up':
+          newOrder = Math.max(0, section.display_order - 1);
+          break;
+        case 'down':
+          newOrder = Math.min(maxOrder, section.display_order + 1);
+          break;
+        case 'top':
+          newOrder = 0;
+          break;
+        case 'bottom':
+          newOrder = maxOrder;
+          break;
+      }
+      
+      await updateSectionOrder(sectionKey, newOrder);
+    } catch (err) {
+      logError('Error moving section:', err);
+      throw new Error('Failed to move section');
     }
   };
 
@@ -130,6 +141,7 @@ export const useSectionVisibility = () => {
     getSectionsByPage,
     updateSectionVisibility,
     updateSectionOrder,
+    moveSection,
     refetch: fetchSections
   };
 };

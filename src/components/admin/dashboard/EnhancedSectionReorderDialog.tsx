@@ -219,29 +219,23 @@ const EnhancedSectionReorderDialog: React.FC<EnhancedSectionReorderDialogProps> 
       const overSection = orderedSections.find(s => s.id === over?.id);
       
       if (activeSection && overSection) {
-        const oldIndex = orderedSections.findIndex(s => s.id === active.id);
-        const newIndex = orderedSections.findIndex(s => s.id === over?.id);
-        
-        const newOrder = orderedSections[newIndex].display_order;
-        await updateSectionOrder(activeSection.section_key, newOrder, oldIndex, newIndex);
+        const newOrder = overSection.display_order;
+        await updateSectionOrder(activeSection.section_key, newOrder);
       }
     }
   };
 
-  const updateSectionOrder = async (sectionKey: string, newOrder: number, oldIndex?: number, newIndex?: number) => {
+  const updateSectionOrder = async (sectionKey: string, newOrder: number) => {
     setIsUpdating(true);
     try {
       await onReorder(sectionKey, newOrder);
-      
-      if (oldIndex !== undefined && newIndex !== undefined) {
-        setOrderedSections(arrayMove(orderedSections, oldIndex, newIndex));
-      }
       
       toast({
         title: "Ordre mis à jour",
         description: "L'ordre des sections a été sauvegardé automatiquement.",
       });
       
+      // Don't manually update state - let the hook handle it through refetch
       onRefetch();
     } catch (error) {
       console.error('Error updating section order:', error);
