@@ -38,7 +38,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-50 top-0">
+    <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-50 top-0 overflow-visible">
       <div className="container mx-auto px-6">
         <div className="flex items-center h-16">
           {/* Logo - Desktop Left */}
@@ -47,7 +47,7 @@ const Navbar = () => {
               <img 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
-                className="h-16 lg:h-18 xl:h-20 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
+                className="h-20 lg:h-20 xl:h-24 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
               />
             </Link>
           </div>
@@ -117,7 +117,7 @@ const Navbar = () => {
               <img 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
-                className="h-12 sm:h-14 md:h-16 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
+                className="h-14 sm:h-16 md:h-20 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
               />
             </Link>
             <Button
