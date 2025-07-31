@@ -47,9 +47,6 @@ const CybersecurityCourse = () => {
                 <span className="font-semibold">Diplôme certifié</span>
               </div>
             </div>
-            <Button asChild size="lg" className="bg-white text-red-600 hover:bg-gray-100 font-semibold px-8 py-4 text-lg rounded-xl">
-              <Link to="/curriculum">Découvrir le Programme</Link>
-            </Button>
           </div>
         </div>
       </section>
