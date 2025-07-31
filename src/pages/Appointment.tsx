@@ -274,7 +274,7 @@ const Appointment = () => {
                           <Button 
                             type="submit" 
                             disabled={loading}
-                            className="w-full bg-slate-800 hover:bg-slate-900 text-white font-semibold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-lg"
+                            className="w-full bg-gradient-to-r from-sky-400 to-blue-500 hover:from-sky-500 hover:to-blue-600 text-white font-semibold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-lg"
                           >
                             {loading ? (
                               <>
