@@ -8,7 +8,7 @@ import EntrepreneurshipSection from '@/components/careers/EntrepreneurshipSectio
 import SuccessStoriesSection from '@/components/careers/SuccessStoriesSection';
 import CTASection from '@/components/careers/CTASection';
 import { Brain, Code, TrendingUp, Megaphone } from 'lucide-react';
-import { aiCareers, programmingCareers, digitalMarketingCareers, entrepreneurshipOpportunities, successStats } from '@/data/careersData';
+import { aiCareers, programmingCareers, digitalMarketingCareers, entrepreneurshipOpportunities, successStats } from '@/data/careersDataFrench';
 import SEOHead from '@/components/SEOHead';
 import { pageSEO } from '@/utils/seoData';
 
@@ -29,11 +29,11 @@ const Careers = () => {
               </div>
             </div>
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              31+ تخصصاً معتمداً دولياً
+              31+ Spécialisations Certifiées Internationalement
             </h1>
             <p className="text-xl md:text-2xl opacity-90 mb-8 max-w-3xl mx-auto">
-              اكتشف 31+ تخصصاً معتمداً من MIT وGoogle وMicrosoft وIBM وHarvard وStanford والمزيد. 
-              احصل على شهادتك الدولية في 3-8 أسابيع وحوّل مسيرتك المهنية.
+              Découvrez 31+ spécialisations certifiées par MIT, Google, Microsoft, IBM, Harvard, Stanford et plus encore. 
+              Obtenez votre certification internationale en 3-8 semaines et transformez votre carrière professionnelle.
             </p>
             
             <HeroStatsGrid stats={successStats} />
@@ -56,10 +56,10 @@ const Careers = () => {
                   </div>
                 </div>
                 <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-academy-blue to-academy-purple bg-clip-text text-transparent">
-                  ركيزة الذكاء الاصطناعي وعلم البيانات
+                  Pilier Intelligence Artificielle & Science des Données
                 </h2>
                 <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-12">
-                  11 تخصصاً معتمداً من MIT وGoogle وMicrosoft وIBM وHarvard وStanford لإتقان الذكاء الاصطناعي التوليدي والتعلم الآلي وتحليل البيانات
+                  11 spécialisations certifiées par MIT, Google, Microsoft, IBM, Harvard et Stanford pour maîtriser l'IA générative, l'apprentissage automatique et l'analyse de données
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -73,18 +73,18 @@ const Careers = () => {
                         </div>
                         <h3 className="text-xl font-bold mb-3 text-center">{career.title}</h3>
                         <div className="space-y-2 text-sm">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">المدة:</span>
-                            <span className="font-semibold text-academy-blue">{career.duration}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">الشهادة:</span>
-                            <span className="font-semibold text-academy-blue">{career.certification}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">الجهة:</span>
-                            <span className="font-semibold text-academy-blue">{career.certifyingPartners}</span>
-                          </div>
+                           <div className="flex justify-between">
+                             <span className="text-muted-foreground">Durée:</span>
+                             <span className="font-semibold text-academy-blue">{career.duration}</span>
+                           </div>
+                           <div className="flex justify-between">
+                             <span className="text-muted-foreground">Certification:</span>
+                             <span className="font-semibold text-academy-blue">{career.certification}</span>
+                           </div>
+                           <div className="flex justify-between">
+                             <span className="text-muted-foreground">Partenaires:</span>
+                             <span className="font-semibold text-academy-blue">{career.certifyingPartners}</span>
+                           </div>
                         </div>
                       </div>
                     </div>
@@ -100,10 +100,10 @@ const Careers = () => {
                   </div>
                 </div>
                 <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-academy-purple to-academy-lightblue bg-clip-text text-transparent">
-                  ركيزة البرمجة والبنية التحتية التقنية
+                  Pilier Programmation & Infrastructure Technique
                 </h2>
                 <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-12">
-                  11 تخصصاً معتمداً من Google وMicrosoft وAWS وIBM وUnity لإتقان التقنيات الأكثر طلباً في السوق
+                  11 spécialisations certifiées par Google, Microsoft, AWS, IBM et Unity pour maîtriser les technologies les plus demandées sur le marché
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -117,18 +117,18 @@ const Careers = () => {
                         </div>
                         <h3 className="text-xl font-bold mb-3 text-center">{career.title}</h3>
                         <div className="space-y-2 text-sm">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">المدة:</span>
-                            <span className="font-semibold text-academy-purple">{career.duration}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">الشهادة:</span>
-                            <span className="font-semibold text-academy-purple">{career.certification}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">الجهة:</span>
-                            <span className="font-semibold text-academy-purple">{career.certifyingPartners}</span>
-                          </div>
+                           <div className="flex justify-between">
+                             <span className="text-muted-foreground">Durée:</span>
+                             <span className="font-semibold text-academy-purple">{career.duration}</span>
+                           </div>
+                           <div className="flex justify-between">
+                             <span className="text-muted-foreground">Certification:</span>
+                             <span className="font-semibold text-academy-purple">{career.certification}</span>
+                           </div>
+                           <div className="flex justify-between">
+                             <span className="text-muted-foreground">Partenaires:</span>
+                             <span className="font-semibold text-academy-purple">{career.certifyingPartners}</span>
+                           </div>
                         </div>
                       </div>
                     </div>
@@ -144,10 +144,10 @@ const Careers = () => {
                   </div>
                 </div>
                 <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-academy-lightblue to-academy-blue bg-clip-text text-transparent">
-                  ركيزة التسويق الرقمي والإبداع
+                  Pilier Marketing Digital & Créatif
                 </h2>
                 <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-12">
-                  12 تخصصاً معتمداً من Google وMeta وAdobe وStanford وPMI للهيمنة على الاقتصاد الإبداعي والتسويق الرقمي
+                  12 spécialisations certifiées par Google, Meta, Adobe, Stanford et PMI pour dominer l'économie créative et le marketing digital
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -161,18 +161,18 @@ const Careers = () => {
                         </div>
                         <h3 className="text-xl font-bold mb-3 text-center">{career.title}</h3>
                         <div className="space-y-2 text-sm">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">المدة:</span>
-                            <span className="font-semibold text-academy-lightblue">{career.duration}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">الشهادة:</span>
-                            <span className="font-semibold text-academy-lightblue">{career.certification}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">الجهة:</span>
-                            <span className="font-semibold text-academy-lightblue">{career.certifyingPartners}</span>
-                          </div>
+                           <div className="flex justify-between">
+                             <span className="text-muted-foreground">Durée:</span>
+                             <span className="font-semibold text-academy-lightblue">{career.duration}</span>
+                           </div>
+                           <div className="flex justify-between">
+                             <span className="text-muted-foreground">Certification:</span>
+                             <span className="font-semibold text-academy-lightblue">{career.certification}</span>
+                           </div>
+                           <div className="flex justify-between">
+                             <span className="text-muted-foreground">Partenaires:</span>
+                             <span className="font-semibold text-academy-lightblue">{career.certifyingPartners}</span>
+                           </div>
                         </div>
                       </div>
                     </div>
@@ -186,8 +186,6 @@ const Careers = () => {
               <EntrepreneurshipSection opportunities={entrepreneurshipOpportunities} />
             </div>
 
-            {/* Success Stories Section */}
-            <SuccessStoriesSection />
 
             {/* Call to Action */}
             <CTASection />

@@ -3,20 +3,20 @@ import { Career } from '@/components/careers/CareerCard';
 
 export const aiCareers: Career[] = [
   {
-    title: "الذكاء الاصطناعي التوليدي",
+    title: "Intelligence Artificielle Générative",
     salary: "€55k - €85k",
-    level: "متقدم", 
-    description: "تخصص في تقنيات الذكاء الاصطناعي التوليدي لإنشاء محتوى مبتكر وأتمتة العمليات الإبداعية.",
+    level: "Avancé", 
+    description: "Spécialisez-vous dans les technologies d'IA générative pour créer du contenu innovant et automatiser les processus créatifs.",
     skills: ["GPT-4", "Midjourney", "DALL-E", "Claude", "Stable Diffusion", "Prompt Engineering"],
-    growth: "نمو 45% سنوياً",
+    growth: "Croissance 45% annuelle",
     companies: ["OpenAI", "Google", "Microsoft", "Adobe", "Stability AI"],
-    experience: "2-5 سنوات",
+    experience: "2-5 ans",
     icon: Brain,
-    applications: ["إنشاء المحتوى", "الأتمتة", "التصميم", "الكتابة"],
-    certification: "شهادة AVS المعتمدة + شهادة MIT في الذكاء الاصطناعي التوليدي + شهادة Google AI المتقدمة",
-    duration: "6 أسابيع",
-    modules: "12 وحدة متخصصة",
-    relatedCourses: ["الذكاء الاصطناعي التوليدي", "هندسة التعليمات المتقدمة"],
+    applications: ["Création de contenu", "Automatisation", "Design", "Rédaction"],
+    certification: "Certification AVS agréée + Certification MIT en IA générative + Certification Google AI avancée",
+    duration: "6 semaines",
+    modules: "12 modules spécialisés",
+    relatedCourses: ["IA Générative", "Prompt Engineering Avancé"],
     certifyingPartners: ["MIT", "Google", "Microsoft"]
   },
   {
