@@ -66,7 +66,7 @@ const TermsOfUse = () => {
             
             <h2>Contact</h2>
             <p>
-              Pour toute question concernant ces conditions d'utilisation, veuillez nous contacter à legal@aiacademie.fr.
+              Pour toute question concernant ces conditions d'utilisation, veuillez nous contacter à info@avs.ma.
             </p>
           </div>
         </div>
