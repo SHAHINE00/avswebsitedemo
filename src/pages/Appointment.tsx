@@ -210,10 +210,14 @@ const Appointment = () => {
                           disabled={loading}
                         >
                           <option value="">Sélectionnez un sujet</option>
-                          <option value="ai-course">Formation IA</option>
-                          <option value="programming-course">Formation Programmation</option>
-                          <option value="career-guidance">Orientation de carrière</option>
+                          <option value="ai-data-science">Intelligence Artificielle & Data Science</option>
+                          <option value="programming-infrastructure">Programmation & Infrastructure</option>
+                          <option value="digital-marketing-creative">Marketing Digital & Créatif</option>
+                          <option value="international-certification">Certification internationale</option>
+                          <option value="career-guidance">Orientation & consultation de carrière</option>
                           <option value="partnership">Partenariat entreprise</option>
+                          <option value="entrepreneurship">Entrepreneuriat & innovation</option>
+                          <option value="general-consultation">Consultation générale</option>
                           <option value="other">Autre</option>
                         </select>
                       </div>
