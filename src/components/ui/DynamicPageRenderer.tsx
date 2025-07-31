@@ -43,12 +43,24 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
     const pageSpecificSections = getSectionsByPage(pageName);
     const globalSections = getSectionsByPage('global');
     
-    // Combine and sort all sections
-    const allSections = [...pageSpecificSections, ...globalSections];
+    // Filter visible sections
+    const visiblePageSections = pageSpecificSections.filter(section => section.is_visible);
+    const visibleGlobalSections = globalSections.filter(section => section.is_visible);
     
-    return allSections
-      .filter(section => section.is_visible)
-      .sort((a, b) => a.display_order - b.display_order);
+    // Sort page sections by display order
+    const sortedPageSections = visiblePageSections.sort((a, b) => a.display_order - b.display_order);
+    
+    // Separate global sections
+    const navbar = visibleGlobalSections.find(section => section.section_key === 'global_navbar');
+    const footer = visibleGlobalSections.find(section => section.section_key === 'global_footer');
+    
+    // Combine in correct order: navbar first, then page content, then footer
+    const result = [];
+    if (navbar) result.push(navbar);
+    result.push(...sortedPageSections);
+    if (footer) result.push(footer);
+    
+    return result;
   }, [getSectionsByPage, pageName, loading]);
 
   const renderSection = (sectionKey: string) => {
