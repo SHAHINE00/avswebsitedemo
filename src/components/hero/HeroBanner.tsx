@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sparkles } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import CourseUniverseShowcase from './CourseUniverseShowcase';
 import AdvantageBadges from './AdvantageBadges';
 
 const HeroBanner: React.FC = () => {
@@ -62,11 +61,6 @@ const HeroBanner: React.FC = () => {
         <AdvantageBadges />
       </div>
 
-      {/* Course Universe Showcase */}
-      <div className="relative z-10 w-full mt-8 sm:mt-12">
-        <CourseUniverseShowcase />
-      </div>
-      
     </div>
   );
 };
