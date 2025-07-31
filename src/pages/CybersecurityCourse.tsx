@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { Link } from 'react-router-dom';
 
 const CybersecurityCourse = () => {
   const keyAreas = [
@@ -46,8 +47,8 @@ const CybersecurityCourse = () => {
                 <span className="font-semibold">Diplôme certifié</span>
               </div>
             </div>
-            <Button size="lg" className="bg-white text-red-600 hover:bg-gray-100 font-semibold px-8 py-4 text-lg rounded-xl">
-              Découvrir le Programme
+            <Button asChild size="lg" className="bg-white text-red-600 hover:bg-gray-100 font-semibold px-8 py-4 text-lg rounded-xl">
+              <Link to="/curriculum">Découvrir le Programme</Link>
             </Button>
           </div>
         </div>
@@ -142,8 +143,8 @@ const CybersecurityCourse = () => {
           <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
             Rejoignez notre programme de formation en cybersécurité et devenez un expert reconnu dans la protection des systèmes informatiques.
           </p>
-          <Button size="lg" className="bg-white text-red-600 hover:bg-gray-100 font-semibold px-8 py-4 text-lg rounded-xl">
-            S'inscrire Maintenant
+          <Button asChild size="lg" className="bg-white text-red-600 hover:bg-gray-100 font-semibold px-8 py-4 text-lg rounded-xl">
+            <Link to="/register">S'inscrire Maintenant</Link>
           </Button>
         </div>
       </section>
