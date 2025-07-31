@@ -46,7 +46,7 @@ const HeroBanner: React.FC = () => {
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-4 sm:mb-6 justify-center animate-fade-in px-4" style={{animationDelay: '0.8s'}}>
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-2 sm:mb-4 justify-center animate-fade-in px-4" style={{animationDelay: '0.8s'}}>
           <Button asChild className="bg-gradient-to-r from-academy-blue to-academy-purple hover:from-academy-purple hover:to-academy-blue text-white font-bold px-6 sm:px-10 py-3 sm:py-4 text-base sm:text-lg rounded-xl sm:rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
             <Link to="/register">
               Commencer Maintenant
