@@ -38,16 +38,16 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-50 top-0">
+    <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-50 top-0 overflow-visible">
       <div className="container mx-auto px-6">
-        <div className="flex items-center h-16 relative">
+        <div className="flex items-center h-16 relative overflow-visible">
           {/* Logo - Desktop Left */}
           <div className="hidden lg:flex items-center flex-shrink-0">
-            <Link to="/" className="flex items-center relative">
+            <Link to="/" className="flex items-center py-2">
               <img 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
-                className="h-24 w-auto object-contain relative z-10"
+                className="h-20 xl:h-24 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
               />
             </Link>
           </div>
@@ -113,11 +113,11 @@ const Navbar = () => {
           {/* Mobile - Logo Centered, Menu Button Right */}
           <div className="lg:hidden flex items-center justify-between w-full">
             <div className="w-10"></div> {/* Spacer for centering */}
-            <Link to="/" className="flex items-center">
+            <Link to="/" className="flex items-center py-1">
               <img 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
-                className="h-12 sm:h-14 w-auto object-contain"
+                className="h-14 sm:h-16 md:h-18 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
               />
             </Link>
             <Button
