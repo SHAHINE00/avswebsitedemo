@@ -2,31 +2,35 @@
 import React from 'react';
 import { Linkedin, Twitter } from 'lucide-react';
 import OptimizedImage from '@/components/OptimizedImage';
+import instructorMale1 from '@/assets/instructor-male-1.jpg';
+import instructorMale2 from '@/assets/instructor-male-2.jpg';
+import instructorFemale1 from '@/assets/instructor-female-1.jpg';
+import instructorFemale2 from '@/assets/instructor-female-2.jpg';
 
 const instructors = [
   {
     name: "Dr. Youssef Bennani",
     title: "Chercheur expert en IA",
     bio: "Ancien responsable de recherche chez Google Brain avec plus de 15 ans d'expérience en deep learning et réseaux neuronaux.",
-    image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop"
+    image: instructorMale1
   },
   {
     name: "Fatima Zahra Alami",
     title: "Ingénieure Machine Learning",
     bio: "Responsable technique chez Amazon AWS, experte du déploiement d'IA à grande échelle et du cloud.",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop"
+    image: instructorFemale1
   },
   {
     name: "Dr. Hassan Cherkaoui",
     title: "Spécialiste Éthique IA",
     bio: "Auteur et consultant, spécialiste en IA responsable et problématiques d'automatisation.",
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=400&fit=crop"
+    image: instructorMale2
   },
   {
     name: "Aicha Bourhim",
     title: "Experte applications IA",
     bio: "Ancienne CTO de startup IA, expérience multisectorielle : santé, finance, commerce.",
-    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop"
+    image: instructorFemale2
   }
 ];
 
