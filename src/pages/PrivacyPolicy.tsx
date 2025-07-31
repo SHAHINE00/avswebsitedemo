@@ -21,7 +21,7 @@ const PrivacyPolicy = () => {
             
             <h2>Introduction</h2>
             <p>
-              AI Académie s'engage à protéger la vie privée et les données personnelles de ses utilisateurs.
+              AVS INSTITUTE s'engage à protéger la vie privée et les données personnelles de ses utilisateurs.
               Cette politique de confidentialité décrit nos pratiques concernant la collecte et l'utilisation des informations
               que vous nous fournissez lorsque vous utilisez notre site web et nos services.
             </p>
@@ -39,7 +39,7 @@ const PrivacyPolicy = () => {
             
             <h2>Protection des données</h2>
             <p>
-              AI Académie met en œuvre diverses mesures de sécurité pour protéger vos informations personnelles 
+              AVS INSTITUTE met en œuvre diverses mesures de sécurité pour protéger vos informations personnelles 
               contre l'accès non autorisé, la modification, la divulgation ou la destruction.
             </p>
             

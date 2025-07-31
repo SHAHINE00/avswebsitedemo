@@ -28,7 +28,7 @@ const TermsOfUse = () => {
             
             <h2>Propriété intellectuelle</h2>
             <p>
-              Le contenu publié sur ce site (textes, images, logos, vidéos) est la propriété d'AI Académie
+              Le contenu publié sur ce site (textes, images, logos, vidéos) est la propriété d'AVS INSTITUTE
               et est protégé par les lois sur la propriété intellectuelle. Toute reproduction ou utilisation
               non autorisée de ce contenu est strictement interdite.
             </p>
@@ -47,7 +47,7 @@ const TermsOfUse = () => {
             
             <h2>Limitations de responsabilité</h2>
             <p>
-              AI Académie ne sera pas tenue responsable des dommages directs, indirects, accessoires, consécutifs ou punitifs
+              AVS INSTITUTE ne sera pas tenue responsable des dommages directs, indirects, accessoires, consécutifs ou punitifs
               résultant de votre utilisation ou de votre incapacité à utiliser nos services.
             </p>
             

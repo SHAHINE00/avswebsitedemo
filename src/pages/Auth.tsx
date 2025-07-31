@@ -77,7 +77,7 @@ const Auth = () => {
       <div className="flex-grow flex items-center justify-center py-24 px-6">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-center">AVS Academy</CardTitle>
+            <CardTitle className="text-center">AVS INSTITUTE</CardTitle>
             <CardDescription className="text-center">
               Accédez à votre espace formation
             </CardDescription>

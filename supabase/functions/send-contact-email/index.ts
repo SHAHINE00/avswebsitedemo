@@ -47,14 +47,14 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send confirmation email to the user
     const userEmailResponse = await resend.emails.send({
-      from: "AVS Academy <contact@resend.dev>",
+      from: "AVS INSTITUTE <contact@resend.dev>",
       to: [email],
       subject: "Confirmation de réception de votre message",
       html: `
         <h1>Merci pour votre message, ${firstName}!</h1>
         <p>Nous avons bien reçu votre message concernant: <strong>${subject}</strong></p>
         <p>Nous vous répondrons dans les plus brefs délais.</p>
-        <p>Cordialement,<br>L'équipe AVS Academy</p>
+        <p>Cordialement,<br>L'équipe AVS INSTITUTE</p>
       `,
     });
 

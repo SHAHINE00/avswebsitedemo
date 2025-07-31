@@ -107,7 +107,7 @@ const Footer: React.FC = () => {
         <div className="border-t border-gray-800 pt-6 sm:pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
             <div className="mb-3 sm:mb-4 md:mb-0">
-              <p className="text-xs sm:text-sm">&copy; {new Date().getFullYear()} AVS Academy. Tous droits réservés.</p>
+              <p className="text-xs sm:text-sm">&copy; {new Date().getFullYear()} AVS INSTITUTE. Tous droits réservés.</p>
             </div>
             <div className="flex flex-wrap justify-center space-x-4 sm:space-x-6 text-xs sm:text-sm">
               <Link to="/privacy-policy" className="hover:text-academy-blue transition-colors">Politique de confidentialité</Link>

@@ -9,7 +9,7 @@ import {
 
 const faqItems = [
   {
-    question: "Quelles formations proposez-vous à AVS Academy ?",
+    question: "Quelles formations proposez-vous à AVS INSTITUTE ?",
     answer: "Nous proposons trois formations de pointe : Intelligence Artificielle (IA) avec machine learning et analyse de données, Programmation avec développement web/mobile/logiciel, et Cybersécurité avec ethical hacking et protection des systèmes. Chaque formation est conçue pour répondre aux besoins actuels du marché technologique."
   },
   {
