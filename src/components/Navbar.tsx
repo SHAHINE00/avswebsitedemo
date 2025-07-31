@@ -48,13 +48,6 @@ const Navbar = () => {
                 src="/lovable-uploads/avs-logo-correct.png" 
                 alt="AVS Innovation Institute" 
                 className="h-40 w-auto object-contain"
-                style={{
-                  filter: 'hue-rotate(0deg) saturate(1.2) brightness(1.1)',
-                  background: 'linear-gradient(135deg, #1a237e 0%, #1565c0 25%, #1976d2 50%, #42a5f5 75%, #64b5f6 100%)',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text',
-                  mixBlendMode: 'multiply'
-                }}
               />
             </Link>
           </div>
@@ -125,13 +118,6 @@ const Navbar = () => {
                 src="/lovable-uploads/avs-logo-correct.png" 
                 alt="AVS Innovation Institute" 
                 className="h-32 sm:h-36 w-auto object-contain"
-                style={{
-                  filter: 'hue-rotate(0deg) saturate(1.2) brightness(1.1)',
-                  background: 'linear-gradient(135deg, #1a237e 0%, #1565c0 25%, #1976d2 50%, #42a5f5 75%, #64b5f6 100%)',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text',
-                  mixBlendMode: 'multiply'
-                }}
               />
             </Link>
             <Button
