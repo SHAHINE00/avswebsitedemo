@@ -1,6 +1,5 @@
 
 import React from 'react';
-import StatsSection from './curriculum/StatsSection';
 import SpecialtyPillars from './curriculum/SpecialtyPillars';
 import CTABottomSection from './curriculum/CTABottomSection';
 
@@ -16,9 +15,6 @@ const CurriculumSection: React.FC = () => {
           </p>
         </div>
 
-        {/* Quick Stats */}
-        <StatsSection />
-        
         {/* Specialty Pillars */}
         <SpecialtyPillars />
 
