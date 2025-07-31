@@ -10,35 +10,39 @@ import {
 const faqItems = [
   {
     question: "Quelles formations proposez-vous à AVS INSTITUTE ?",
-    answer: "Nous proposons trois formations de pointe : Intelligence Artificielle (IA) avec machine learning et analyse de données, Programmation avec développement web/mobile/logiciel, et Cybersécurité avec ethical hacking et protection des systèmes. Chaque formation est conçue pour répondre aux besoins actuels du marché technologique."
+    answer: "Nous proposons trois piliers de spécialisation professionnelle : IA & Data Science (Intelligence Artificielle, Machine Learning, Data Analysis), Programmation & Infrastructure (Développement Full-Stack, DevOps, Cloud Computing), et Marketing Digital & Créatif (Digital Marketing, UX/UI Design, Content Creation). Chaque pilier comprend des formations spécialisées et des micro-certifications."
   },
   {
-    question: "Quelles sont les différences principales entre nos trois formations ?",
-    answer: "La formation IA se concentre sur l'intelligence artificielle, le machine learning et l'analyse de données. La formation Programmation couvre le développement web, mobile et logiciel avec les frameworks modernes. La formation Cybersécurité forme aux techniques de protection, ethical hacking et sécurisation des systèmes informatiques."
+    question: "Quelles sont les différences principales entre nos trois piliers ?",
+    answer: "IA & Data Science se concentre sur l'intelligence artificielle, le machine learning et l'analyse de données avec Python, TensorFlow et outils de Big Data. Programmation & Infrastructure couvre le développement web/mobile, DevOps et architecture cloud avec les frameworks modernes. Marketing Digital & Créatif forme aux stratégies digitales, design UX/UI, création de contenu et marketing automation."
   },
   {
     question: "Ai-je besoin d'expérience préalable pour commencer ?",
-    answer: "Non, nos formations sont conçues pour accueillir tous les niveaux. Pour l'IA, des bases en mathématiques sont utiles mais nous proposons des modules de mise à niveau. Pour la Programmation, nous partons des fondamentaux. Pour la Cybersécurité, une compréhension de base de l'informatique est recommandée mais non obligatoire."
+    answer: "Non, nos formations sont conçues pour tous les niveaux. Pour l'IA & Data Science, des bases en mathématiques sont utiles mais nous proposons des modules de mise à niveau. Pour la Programmation & Infrastructure, nous partons des fondamentaux du code. Pour le Marketing Digital & Créatif, aucune expérience technique préalable n'est requise."
   },
   {
-    question: "Est-il possible de suivre plusieurs formations ou de se spécialiser ?",
-    answer: "Absolument ! Nous proposons des parcours combinés et des spécialisations. Vous pouvez commencer par la Programmation pour acquérir les bases techniques, puis vous spécialiser en IA ou Cybersécurité. Nos parcours sont flexibles et personnalisables selon vos objectifs professionnels."
+    question: "Est-il possible de suivre plusieurs spécialisations ou obtenir des micro-certifications ?",
+    answer: "Absolument ! Nos parcours sont modulaires et flexibles. Vous pouvez obtenir des micro-certifications dans chaque pilier, combiner plusieurs spécialisations, ou suivre un parcours complet. Par exemple : commencer par la Programmation, puis vous spécialiser en IA ou ajouter des compétences en Marketing Digital selon vos objectifs professionnels."
   },
   {
     question: "Quelles sont les opportunités professionnelles après nos formations ?",
-    answer: "Formation IA : Data Scientist, ML Engineer, AI Consultant, Analyst Data. Formation Programmation : Développeur Full-Stack, Mobile Developer, DevOps Engineer, Tech Lead. Formation Cybersécurité : Cybersecurity Analyst, Penetration Tester, Security Consultant, CISO. Toutes ouvrent vers des carrières hautement rémunérées."
+    answer: "IA & Data Science : Data Scientist, ML Engineer, AI Consultant, Data Analyst. Programmation & Infrastructure : Développeur Full-Stack, DevOps Engineer, Cloud Architect, Tech Lead. Marketing Digital & Créatif : Digital Marketing Manager, UX/UI Designer, Content Strategist, Social Media Manager, Growth Hacker. Salaires moyens : 35K€ à 65K€ selon la spécialisation."
   },
   {
     question: "Les formations sont-elles reconnues et certifiantes ?",
-    answer: "Oui, toutes nos formations sont reconnues par l'État et délivrent des certifications internationales. Nous sommes partenaires d'entreprises technologiques majeures qui reconnaissent nos diplômes. Nos étudiants bénéficient d'un taux d'employabilité de plus de 90% dans les 6 mois suivant l'obtention du diplôme."
+    answer: "Oui, toutes nos formations sont reconnues par l'État et délivrent des certifications internationales. Nous sommes partenaires des plus grandes universités (Harvard, MIT, Stanford) et entreprises technologiques (Google, Microsoft, IBM) qui reconnaissent nos diplômes. Nos étudiants bénéficient d'un taux d'employabilité de plus de 90% dans les 6 mois suivant l'obtention du diplôme."
   },
   {
     question: "Quelle est la durée et le format des formations ?",
-    answer: "Nos formations s'étendent sur 12 à 24 mois selon la spécialisation choisie. Elles combinent théorie approfondie (40%) et pratique intensive (60%) avec des projets réels. Format hybride disponible : présentiel pour les travaux pratiques et distanciel pour certains cours théoriques."
+    answer: "Les durées varient selon le pilier : IA & Data Science (18 mois), Programmation & Infrastructure (24 semaines intensives), Marketing Digital & Créatif (12 mois). Toutes combinent théorie approfondie (40%) et pratique intensive (60%) avec des projets réels. Format hybride disponible : présentiel pour les travaux pratiques et distanciel pour certains cours théoriques."
+  },
+  {
+    question: "Qu'est-ce qui distingue votre pilier Marketing Digital & Créatif ?",
+    answer: "Notre pilier Marketing Digital & Créatif forme aux métiers d'avenir du marketing numérique : stratégies digitales, UX/UI design, création de contenu, marketing automation, analytics et growth hacking. Les formations incluent des outils professionnels (Adobe Creative Suite, Google Analytics, HubSpot) et des projets réels avec des entreprises partenaires."
   },
   {
     question: "Quels sont les prérequis techniques et le matériel nécessaire ?",
-    answer: "Niveau Bac ou équivalent recommandé. Ordinateur personnel requis (specifications fournies selon la formation). Accès internet stable. Pour la Cybersécurité, nous fournissons l'accès à des environnements de test sécurisés. Tous les logiciels et licences professionnelles sont inclus dans la formation."
+    answer: "Niveau Bac ou équivalent recommandé. Ordinateur personnel requis (specifications fournies selon la formation). Accès internet stable. Pour l'IA & Data Science, nous fournissons l'accès aux plateformes cloud et GPU. Pour le Marketing Digital, tous les logiciels et licences professionnelles sont inclus dans la formation."
   },
   {
     question: "Comment se déroule l'admission et y a-t-il une sélection ?",
