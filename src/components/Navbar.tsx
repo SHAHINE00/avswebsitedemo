@@ -113,11 +113,11 @@ const Navbar = () => {
           {/* Mobile - Logo Centered, Menu Button Right */}
           <div className="lg:hidden flex items-center justify-between w-full">
             <div className="w-10"></div> {/* Spacer for centering */}
-            <Link to="/" className="flex items-center relative">
+            <Link to="/" className="flex items-center">
               <img 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
-                className="h-18 sm:h-20 w-auto object-contain relative z-10"
+                className="h-12 sm:h-14 w-auto object-contain"
               />
             </Link>
             <Button
