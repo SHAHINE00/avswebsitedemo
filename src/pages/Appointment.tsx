@@ -69,19 +69,15 @@ const Appointment = () => {
         <Navbar />
         
         {/* Hero Section */}
-        <div className="pt-32 pb-20 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-indigo-600/10"></div>
-          <div className="absolute top-0 left-0 w-full h-full">
-            <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400/10 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-20 right-10 w-96 h-96 bg-indigo-400/10 rounded-full blur-3xl"></div>
-          </div>
+        <div className="pt-32 pb-20 relative overflow-hidden bg-gradient-to-r from-purple-600 to-purple-800">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-600 to-purple-900"></div>
           
           <div className="container mx-auto px-6 relative z-10">
             <div className="text-center max-w-4xl mx-auto">
-              <h1 className="text-5xl md:text-7xl font-bold mb-6 text-black">
+              <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
                 Planifier un rendez-vous
               </h1>
-              <p className="text-xl md:text-2xl text-slate-700 leading-relaxed max-w-3xl mx-auto">
+              <p className="text-xl md:text-2xl text-white/90 leading-relaxed max-w-3xl mx-auto">
                 Réservez un créneau personnalisé avec nos experts pour explorer ensemble votre projet de formation et définir votre parcours professionnel
               </p>
               <div className="mt-8 flex justify-center">
