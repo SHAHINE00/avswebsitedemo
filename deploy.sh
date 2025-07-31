@@ -91,6 +91,12 @@ main() {
     # Update nginx configuration
     log "Updating Nginx configuration"
     sudo cp nginx.conf /etc/nginx/sites-available/avs.ma.conf
+    
+    # Add rate limiting to main nginx.conf if not present
+    if ! grep -q "limit_req_zone.*zone=api" /etc/nginx/nginx.conf; then
+        sudo sed -i '/http {/a\    limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;' /etc/nginx/nginx.conf
+    fi
+    
     sudo nginx -t && sudo systemctl reload nginx
     
     # Update file permissions
