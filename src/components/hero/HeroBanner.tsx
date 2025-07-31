@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Sparkles } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import CourseUniverseShowcase from './CourseUniverseShowcase';
-import PartnersSection from '../PartnersSection';
 import AdvantageBadges from './AdvantageBadges';
 
 const HeroBanner: React.FC = () => {
@@ -56,11 +55,6 @@ const HeroBanner: React.FC = () => {
             </Link>
           </Button>
         </div>
-      </div>
-
-      {/* Partners Section */}
-      <div className="relative z-10 w-full -mt-4">
-        <PartnersSection />
       </div>
 
       {/* Advantages Section */}
