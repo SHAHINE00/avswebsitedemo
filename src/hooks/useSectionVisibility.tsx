@@ -64,20 +64,42 @@ export const useSectionVisibility = () => {
 
   const updateSectionOrder = async (sectionKey: string, newOrder: number) => {
     try {
-      const { error } = await supabase
-        .from('section_visibility')
-        .update({ display_order: newOrder })
-        .eq('section_key', sectionKey);
+      // First, get the current section to update
+      const sectionToUpdate = sections.find(s => s.section_key === sectionKey);
+      if (!sectionToUpdate) throw new Error('Section not found');
 
-      if (error) throw error;
+      const samePage = sections.filter(s => s.page_name === sectionToUpdate.page_name);
+      
+      // Reorder all sections on the same page
+      const updatedSections = samePage.map((section, index) => {
+        if (section.section_key === sectionKey) {
+          return { ...section, display_order: newOrder };
+        }
+        return section;
+      }).sort((a, b) => a.display_order - b.display_order);
+
+      // Reassign sequential order numbers
+      const reorderedSections = updatedSections.map((section, index) => ({
+        ...section,
+        display_order: index
+      }));
+
+      // Update all sections in database
+      for (const section of reorderedSections) {
+        const { error } = await supabase
+          .from('section_visibility')
+          .update({ display_order: section.display_order })
+          .eq('section_key', section.section_key);
+
+        if (error) throw error;
+      }
 
       // Update local state
       setSections(prev => 
-        prev.map(section => 
-          section.section_key === sectionKey 
-            ? { ...section, display_order: newOrder }
-            : section
-        )
+        prev.map(section => {
+          const updated = reorderedSections.find(rs => rs.section_key === section.section_key);
+          return updated || section;
+        })
       );
     } catch (err) {
       logError('Error updating section order:', err);

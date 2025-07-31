@@ -38,7 +38,15 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
 
   const orderedSections = useMemo(() => {
     if (loading) return [];
-    return getSectionsByPage(pageName)
+    
+    // Get sections for both the specific page and global sections
+    const pageSpecificSections = getSectionsByPage(pageName);
+    const globalSections = getSectionsByPage('global');
+    
+    // Combine and sort all sections
+    const allSections = [...pageSpecificSections, ...globalSections];
+    
+    return allSections
       .filter(section => section.is_visible)
       .sort((a, b) => a.display_order - b.display_order);
   }, [getSectionsByPage, pageName, loading]);

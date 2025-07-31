@@ -4,10 +4,10 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Eye, EyeOff, Settings, Globe, ArrowUpDown } from 'lucide-react';
+import { Eye, EyeOff, Settings, Globe, Shuffle } from 'lucide-react';
 import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 import { useToast } from '@/hooks/use-toast';
-import SectionReorderDialog from './SectionReorderDialog';
+import EnhancedSectionReorderDialog from './EnhancedSectionReorderDialog';
 
 const SectionVisibilityManagement: React.FC = () => {
   const {
@@ -162,10 +162,10 @@ const SectionVisibilityManagement: React.FC = () => {
                       setSelectedPageForReorder(pageName);
                       setReorderDialogOpen(true);
                     }}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 bg-blue-50 hover:bg-blue-100 border-blue-200"
                   >
-                    <ArrowUpDown className="h-4 w-4" />
-                    Réorganiser
+                    <Shuffle className="h-4 w-4" />
+                    Contrôle complet
                   </Button>
                 </div>
               </CardHeader>
@@ -228,25 +228,20 @@ const SectionVisibilityManagement: React.FC = () => {
             <p>💡 <strong>Astuce:</strong> Utilisez les commutateurs ci-dessus pour contrôler la visibilité de chaque section individuellement.</p>
             <p className="mt-2">🔄 Les modifications sont appliquées immédiatement et visibles sur votre site web.</p>
             <p className="mt-2">⚠️ Attention: Masquer des éléments globaux comme la navigation ou le footer affectera toutes les pages.</p>
-            <p className="mt-2">📋 <strong>Nouveau:</strong> Utilisez le bouton "Réorganiser" pour changer l'ordre d'affichage des sections.</p>
+            <p className="mt-2">🎯 <strong>Nouveau:</strong> Utilisez le bouton "Contrôle complet" pour un contrôle avancé avec glisser-déposer automatique.</p>
           </div>
         </CardContent>
       </Card>
 
-      {/* Section Reorder Dialog */}
-      <SectionReorderDialog
+      {/* Enhanced Section Reorder Dialog */}
+      <EnhancedSectionReorderDialog
         open={reorderDialogOpen}
         onOpenChange={setReorderDialogOpen}
         pageName={selectedPageForReorder}
-        sections={selectedPageForReorder ? getSectionsByPage(selectedPageForReorder) : []}
-        onSuccess={() => {
-          refetch();
-          toast({
-            title: "Ordre mis à jour",
-            description: "L'ordre des sections a été mis à jour avec succès.",
-          });
-        }}
+        sections={sections}
+        onVisibilityChange={updateSectionVisibility}
         onReorder={updateSectionOrder}
+        onRefetch={refetch}
       />
     </div>
   );
