@@ -1256,6 +1256,14 @@ export type Database = {
         Args: { p_notification_id: string }
         Returns: undefined
       }
+      reorder_sections_on_page: {
+        Args: {
+          p_page_name: string
+          p_section_key: string
+          p_new_order: number
+        }
+        Returns: undefined
+      }
       track_analytics: {
         Args: {
           p_metric_type: string
