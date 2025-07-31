@@ -78,7 +78,7 @@ const Appointment = () => {
           
           <div className="container mx-auto px-6 relative z-10">
             <div className="text-center max-w-4xl mx-auto">
-              <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              <h1 className="text-5xl md:text-7xl font-bold mb-6 text-black">
                 Planifier un rendez-vous
               </h1>
               <p className="text-xl md:text-2xl text-slate-700 leading-relaxed max-w-3xl mx-auto">
