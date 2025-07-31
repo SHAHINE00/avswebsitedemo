@@ -59,13 +59,17 @@ const SectionReorderDialog: React.FC<SectionReorderDialogProps> = ({
       setLoading(true);
       
       // Update the display_order for each section based on its new position
+      const updates = [];
       for (let i = 0; i < orderedSections.length; i++) {
         const section = orderedSections[i];
         const newOrder = i + 1;
         if (section.display_order !== newOrder) {
-          await onReorder(section.section_key, newOrder);
+          updates.push(onReorder(section.section_key, newOrder));
         }
       }
+
+      // Wait for all updates to complete
+      await Promise.all(updates);
 
       toast({
         title: "Ordre mis à jour",
