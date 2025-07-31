@@ -1,5 +1,9 @@
 import React, { useMemo } from 'react';
 import { useSectionVisibility } from '@/hooks/useSectionVisibility';
+// Global components
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+// Home page components
 import HeroSection from '@/components/HeroSection';
 import PartnersSection from '@/components/PartnersSection';
 import FeaturesSection from '@/components/FeaturesSection';
@@ -8,8 +12,16 @@ import TestimonialsSection from '@/components/TestimonialsSection';
 import EnhancedCourseSelectionGuide from '@/components/EnhancedCourseSelectionGuide';
 import FAQSection from '@/components/FAQSection';
 import CTASection from '@/components/CTASection';
-import Footer from '@/components/Footer';
-import Navbar from '@/components/Navbar';
+// About page components
+import AboutHeroSection from '@/components/about/AboutHeroSection';
+import AboutMissionSection from '@/components/about/AboutMissionSection';
+import AboutValuesSection from '@/components/about/AboutValuesSection';
+import AboutStatsSection from '@/components/about/AboutStatsSection';
+import AboutHistorySection from '@/components/about/AboutHistorySection';
+import AboutCTASection from '@/components/about/AboutCTASection';
+// Features page components
+import FeaturesHeroSection from '@/components/features/FeaturesHeroSection';
+import FeaturesMainSection from '@/components/features/FeaturesMainSection';
 
 interface DynamicPageRendererProps {
   pageName: string;
@@ -18,7 +30,11 @@ interface DynamicPageRendererProps {
 
 // Component mapping for section keys
 const SECTION_COMPONENTS: Record<string, React.ComponentType> = {
+  // Global components
   'global_navbar': Navbar,
+  'global_footer': Footer,
+  
+  // Home page sections
   'home_hero': HeroSection,
   'home_partners': PartnersSection,
   'home_features': FeaturesSection,
@@ -27,7 +43,18 @@ const SECTION_COMPONENTS: Record<string, React.ComponentType> = {
   'home_testimonials': TestimonialsSection,
   'home_faq': FAQSection,
   'home_cta': CTASection,
-  'global_footer': Footer,
+  
+  // About page sections
+  'about_hero': AboutHeroSection,
+  'about_mission': AboutMissionSection,
+  'about_values': AboutValuesSection,
+  'about_stats': AboutStatsSection,
+  'about_history': AboutHistorySection,
+  'about_cta': AboutCTASection,
+  
+  // Features page sections
+  'features_hero': FeaturesHeroSection,
+  'features_main': FeaturesMainSection,
 };
 
 const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({ 
@@ -66,7 +93,16 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
   const renderSection = (sectionKey: string) => {
     const Component = SECTION_COMPONENTS[sectionKey];
     if (!Component) {
-      console.warn(`No component found for section: ${sectionKey}`);
+      console.warn(`No component found for section: ${sectionKey}. Available sections:`, Object.keys(SECTION_COMPONENTS));
+      // In development, show a placeholder for missing components
+      if (process.env.NODE_ENV === 'development') {
+        return (
+          <div key={sectionKey} className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 my-4">
+            <p className="font-bold">Missing Component: {sectionKey}</p>
+            <p className="text-sm">This section exists in the database but no React component is mapped to it.</p>
+          </div>
+        );
+      }
       return null;
     }
     return <Component key={sectionKey} />;
