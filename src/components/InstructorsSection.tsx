@@ -2,30 +2,30 @@
 import React from 'react';
 import { Linkedin, Twitter } from 'lucide-react';
 import OptimizedImage from '@/components/OptimizedImage';
-import instructorMale1 from '@/assets/instructor-male-1.jpg';
-import instructorMale2 from '@/assets/instructor-male-2.jpg';
+import drMoroccanMale1 from '@/assets/dr-moroccan-male-1.jpg';
+import drMoroccanMale2 from '@/assets/dr-moroccan-male-2.jpg';
 import instructorFemale1 from '@/assets/instructor-female-1.jpg';
 import instructorFemale2 from '@/assets/instructor-female-2.jpg';
-import instructorMoroccanFemale from '@/assets/instructor-moroccan-female.jpg';
+import drMoroccanFemale from '@/assets/dr-moroccan-female.jpg';
 
 const instructors = [
   {
     name: "Dr. Youssef Bennani",
     title: "Chercheur expert en IA",
     bio: "Ancien responsable de recherche chez Google Brain avec plus de 15 ans d'expérience en deep learning et réseaux neuronaux.",
-    image: instructorMale1
+    image: drMoroccanMale1
   },
   {
     name: "Fatima Zahra Alami",
     title: "Ingénieure Machine Learning",
     bio: "Responsable technique chez Amazon AWS, experte du déploiement d'IA à grande échelle et du cloud.",
-    image: instructorMoroccanFemale
+    image: drMoroccanFemale
   },
   {
     name: "Dr. Hassan Cherkaoui",
     title: "Spécialiste Éthique IA",
     bio: "Auteur et consultant, spécialiste en IA responsable et problématiques d'automatisation.",
-    image: instructorMale2
+    image: drMoroccanMale2
   },
   {
     name: "Aicha Bourhim",
