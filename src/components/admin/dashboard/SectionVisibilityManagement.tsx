@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Eye, EyeOff, Settings, Globe } from 'lucide-react';
+import { Eye, EyeOff, Settings, Globe, ArrowUpDown } from 'lucide-react';
 import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 import { useToast } from '@/hooks/use-toast';
+import SectionReorderDialog from './SectionReorderDialog';
 
 const SectionVisibilityManagement: React.FC = () => {
   const {
@@ -13,10 +15,14 @@ const SectionVisibilityManagement: React.FC = () => {
     loading,
     error,
     updateSectionVisibility,
-    getSectionsByPage
+    updateSectionOrder,
+    getSectionsByPage,
+    refetch
   } = useSectionVisibility();
 
   const { toast } = useToast();
+  const [reorderDialogOpen, setReorderDialogOpen] = useState(false);
+  const [selectedPageForReorder, setSelectedPageForReorder] = useState<string>('');
 
   const handleToggleVisibility = async (sectionKey: string, currentVisibility: boolean) => {
     try {
@@ -139,13 +145,29 @@ const SectionVisibilityManagement: React.FC = () => {
           return (
             <Card key={pageName}>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Globe className="h-5 w-5" />
-                  {getPageDisplayName(pageName)}
-                </CardTitle>
-                <CardDescription>
-                  Gérez la visibilité des sections de la page {getPageDisplayName(pageName).toLowerCase()}
-                </CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Globe className="h-5 w-5" />
+                      {getPageDisplayName(pageName)}
+                    </CardTitle>
+                    <CardDescription>
+                      Gérez la visibilité des sections de la page {getPageDisplayName(pageName).toLowerCase()}
+                    </CardDescription>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedPageForReorder(pageName);
+                      setReorderDialogOpen(true);
+                    }}
+                    className="flex items-center gap-2"
+                  >
+                    <ArrowUpDown className="h-4 w-4" />
+                    Réorganiser
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 {pageSections.map((section, index) => (
@@ -206,9 +228,26 @@ const SectionVisibilityManagement: React.FC = () => {
             <p>💡 <strong>Astuce:</strong> Utilisez les commutateurs ci-dessus pour contrôler la visibilité de chaque section individuellement.</p>
             <p className="mt-2">🔄 Les modifications sont appliquées immédiatement et visibles sur votre site web.</p>
             <p className="mt-2">⚠️ Attention: Masquer des éléments globaux comme la navigation ou le footer affectera toutes les pages.</p>
+            <p className="mt-2">📋 <strong>Nouveau:</strong> Utilisez le bouton "Réorganiser" pour changer l'ordre d'affichage des sections.</p>
           </div>
         </CardContent>
       </Card>
+
+      {/* Section Reorder Dialog */}
+      <SectionReorderDialog
+        open={reorderDialogOpen}
+        onOpenChange={setReorderDialogOpen}
+        pageName={selectedPageForReorder}
+        sections={selectedPageForReorder ? getSectionsByPage(selectedPageForReorder) : []}
+        onSuccess={() => {
+          refetch();
+          toast({
+            title: "Ordre mis à jour",
+            description: "L'ordre des sections a été mis à jour avec succès.",
+          });
+        }}
+        onReorder={updateSectionOrder}
+      />
     </div>
   );
 };
