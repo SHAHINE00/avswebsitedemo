@@ -65,7 +65,7 @@ export const useBlogManagement = () => {
             name,
             slug
           ),
-          profiles!blog_posts_author_id_fkey (
+          profiles!fk_blog_posts_author (
             full_name
           )
         `)
@@ -236,7 +236,7 @@ export const useBlogManagement = () => {
             name,
             slug
           ),
-          profiles!blog_posts_author_id_fkey (
+          profiles!fk_blog_posts_author (
             full_name
           )
         `)
