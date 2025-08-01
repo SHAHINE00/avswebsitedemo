@@ -8,9 +8,9 @@ const SynthesisSection = () => {
     <section id="synthese" className="py-20 bg-gradient-to-br from-gray-50 to-white">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">Synthèse du Programme de Formation</h2>
+          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-6 text-gray-900">Synthèse du Programme de Formation</h2>
           <div className="w-32 h-1 bg-gradient-to-r from-academy-blue to-academy-purple mx-auto rounded-full mb-6"></div>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-base md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">
             Un programme structuré sur 2 années pour une expertise complète en Intelligence Artificielle
           </p>
         </div>
@@ -107,22 +107,51 @@ const SynthesisSection = () => {
           </div>
 
           {/* Detailed Program Timeline */}
-          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
-            <h3 className="text-3xl font-bold text-center mb-12 text-gray-900">Progression Pédagogique</h3>
+          <div className="bg-white rounded-3xl shadow-2xl p-4 md:p-8 lg:p-12">
+            <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-center mb-8 md:mb-12 text-gray-900">Progression Pédagogique</h3>
             
-            <div className="relative">
-              {/* Timeline line */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-academy-blue via-academy-purple to-academy-lightblue rounded-full"></div>
-              
-              <div className="space-y-16">
-                {/* Year 1 */}
-                <div className="relative flex items-center">
-                  <div className="flex-1 pr-8 text-right">
-                    <Card className="inline-block bg-gradient-to-r from-blue-50 to-purple-50 border-0 shadow-lg">
-                      <CardContent className="p-6">
-                        <h4 className="text-xl font-bold text-academy-blue mb-2">Première Année</h4>
-                        <p className="text-gray-700 mb-3">Fondamentaux et bases techniques</p>
-                        <div className="flex items-center justify-end space-x-4 text-sm">
+            {/* Mobile-first vertical timeline */}
+            <div className="space-y-8 md:space-y-12">
+              {/* Year 1 */}
+              <div className="flex flex-col md:flex-row md:items-center relative">
+                {/* Mobile timeline dot */}
+                <div className="flex md:hidden items-center mb-4">
+                  <div className="w-4 h-4 bg-academy-blue rounded-full mr-4"></div>
+                  <div className="h-px bg-gradient-to-r from-academy-blue to-transparent flex-1"></div>
+                </div>
+                
+                {/* Desktop layout */}
+                <div className="hidden md:flex md:flex-1 md:pr-8 md:text-right md:justify-end">
+                  <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-0 shadow-lg max-w-md">
+                    <CardContent className="p-4 md:p-6">
+                      <h4 className="text-lg md:text-xl font-bold text-academy-blue mb-2">Première Année</h4>
+                      <p className="text-gray-700 mb-3 text-sm md:text-base">Fondamentaux et bases techniques</p>
+                      <div className="flex items-center justify-end space-x-4 text-sm">
+                        <div className="flex items-center">
+                          <Clock className="w-4 h-4 mr-1 text-academy-blue" />
+                          <span>10 mois</span>
+                        </div>
+                        <div className="flex items-center">
+                          <BookOpen className="w-4 h-4 mr-1 text-academy-blue" />
+                          <span>14 modules</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+                
+                {/* Desktop timeline dot */}
+                <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-academy-blue rounded-full border-4 border-white shadow-lg z-10"></div>
+                
+                {/* Content */}
+                <div className="md:flex-1 md:pl-8">
+                  {/* Mobile card */}
+                  <div className="md:hidden mb-4">
+                    <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-0 shadow-lg">
+                      <CardContent className="p-4">
+                        <h4 className="text-lg font-bold text-academy-blue mb-2">Première Année</h4>
+                        <p className="text-gray-700 mb-3 text-sm">Fondamentaux et bases techniques</p>
+                        <div className="flex items-center space-x-4 text-sm">
                           <div className="flex items-center">
                             <Clock className="w-4 h-4 mr-1 text-academy-blue" />
                             <span>10 mois</span>
@@ -136,40 +165,33 @@ const SynthesisSection = () => {
                     </Card>
                   </div>
                   
-                  <div className="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-academy-blue rounded-full border-4 border-white shadow-lg z-10"></div>
-                  
-                  <div className="flex-1 pl-8">
-                    <div className="text-gray-600">
-                      <p className="text-sm leading-relaxed">
-                        • Mathématiques pour l'IA<br/>
-                        • Programmation Python avancée<br/>
-                        • Introduction au Machine Learning<br/>
-                        • Gestion et visualisation de données
-                      </p>
-                    </div>
+                  <div className="text-gray-600 md:text-left">
+                    <p className="text-sm leading-relaxed">
+                      • Mathématiques pour l'IA<br/>
+                      • Programmation Python avancée<br/>
+                      • Introduction au Machine Learning<br/>
+                      • Gestion et visualisation de données
+                    </p>
                   </div>
                 </div>
+              </div>
 
-                {/* Year 2 */}
-                <div className="relative flex items-center">
-                  <div className="flex-1 pr-8">
-                    <div className="text-gray-600 text-right">
-                      <p className="text-sm leading-relaxed">
-                        • Deep Learning et réseaux de neurones<br/>
-                        • NLP et Computer Vision<br/>
-                        • Déploiement cloud et production<br/>
-                        • Projet de fin d'études
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-academy-purple rounded-full border-4 border-white shadow-lg z-10"></div>
-                  
-                  <div className="flex-1 pl-8">
-                    <Card className="inline-block bg-gradient-to-r from-purple-50 to-pink-50 border-0 shadow-lg">
-                      <CardContent className="p-6">
-                        <h4 className="text-xl font-bold text-academy-purple mb-2">Deuxième Année</h4>
-                        <p className="text-gray-700 mb-3">Spécialisation et expertise avancée</p>
+              {/* Year 2 */}
+              <div className="flex flex-col md:flex-row md:items-center relative">
+                {/* Mobile timeline dot */}
+                <div className="flex md:hidden items-center mb-4">
+                  <div className="w-4 h-4 bg-academy-purple rounded-full mr-4"></div>
+                  <div className="h-px bg-gradient-to-r from-academy-purple to-transparent flex-1"></div>
+                </div>
+                
+                {/* Desktop layout - content first for year 2 */}
+                <div className="md:flex-1 md:pr-8 order-2 md:order-1">
+                  {/* Mobile card */}
+                  <div className="md:hidden mb-4">
+                    <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-0 shadow-lg">
+                      <CardContent className="p-4">
+                        <h4 className="text-lg font-bold text-academy-purple mb-2">Deuxième Année</h4>
+                        <p className="text-gray-700 mb-3 text-sm">Spécialisation et expertise avancée</p>
                         <div className="flex items-center space-x-4 text-sm">
                           <div className="flex items-center">
                             <Clock className="w-4 h-4 mr-1 text-academy-purple" />
@@ -183,6 +205,48 @@ const SynthesisSection = () => {
                       </CardContent>
                     </Card>
                   </div>
+                  
+                  <div className="text-gray-600 hidden md:block text-right">
+                    <p className="text-sm leading-relaxed">
+                      • Deep Learning et réseaux de neurones<br/>
+                      • NLP et Computer Vision<br/>
+                      • Déploiement cloud et production<br/>
+                      • Projet de fin d'études
+                    </p>
+                  </div>
+                  
+                  {/* Mobile content */}
+                  <div className="text-gray-600 md:hidden">
+                    <p className="text-sm leading-relaxed">
+                      • Deep Learning et réseaux de neurones<br/>
+                      • NLP et Computer Vision<br/>
+                      • Déploiement cloud et production<br/>
+                      • Projet de fin d'études
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Desktop timeline dot */}
+                <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-academy-purple rounded-full border-4 border-white shadow-lg z-10"></div>
+                
+                {/* Desktop card */}
+                <div className="hidden md:flex md:flex-1 md:pl-8 order-1 md:order-2">
+                  <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-0 shadow-lg max-w-md">
+                    <CardContent className="p-4 md:p-6">
+                      <h4 className="text-lg md:text-xl font-bold text-academy-purple mb-2">Deuxième Année</h4>
+                      <p className="text-gray-700 mb-3 text-sm md:text-base">Spécialisation et expertise avancée</p>
+                      <div className="flex items-center space-x-4 text-sm">
+                        <div className="flex items-center">
+                          <Clock className="w-4 h-4 mr-1 text-academy-purple" />
+                          <span>10 mois</span>
+                        </div>
+                        <div className="flex items-center">
+                          <BookOpen className="w-4 h-4 mr-1 text-academy-purple" />
+                          <span>13 modules</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
             </div>
