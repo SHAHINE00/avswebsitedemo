@@ -16,6 +16,10 @@ if [ -d "dist" ]; then
     rm -rf dist
 fi
 
+# Generate sitemap.xml
+echo "🗺️  Generating sitemap.xml..."
+node scripts/generate-sitemap.js
+
 # Run production build
 echo "⚙️ Building with production optimizations..."
 npx vite build --mode production
