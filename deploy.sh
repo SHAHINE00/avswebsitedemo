@@ -61,28 +61,37 @@ main() {
     git fetch origin
     git reset --hard origin/main
     
-    # Clean npm cache and install dependencies
-    log "Cleaning npm cache and installing dependencies"
-    npm cache clean --force
-    rm -rf node_modules package-lock.json
-    npm install
+    # Switch to appuser for build operations to avoid root ownership
+    log "Switching to appuser for build operations"
+    sudo -u appuser bash << 'APPUSER_BUILD'
+        cd /var/www/avswebsite
+        
+        # Clean npm cache and install dependencies
+        npm cache clean --force
+        rm -rf node_modules package-lock.json
+        npm install
+        
+        # Verify vite installation
+        if [ ! -f "node_modules/.bin/vite" ]; then
+            echo "Warning: vite not found in .bin, trying to reinstall"
+            npm install vite --save-dev
+        fi
+        
+        # Build application
+        export NODE_ENV=production
+        if [ -f "node_modules/.bin/vite" ]; then
+            npm run build
+        else
+            echo "Using npx as fallback for vite build"
+            npx vite build
+        fi
+APPUSER_BUILD
     
-    # Verify vite installation
-    log "Verifying vite installation"
-    if [ ! -f "node_modules/.bin/vite" ]; then
-        log "Warning: vite not found in .bin, trying to reinstall"
-        npm install vite --save-dev
-    fi
-    
-    # Build application
-    log "Building application"
-    export NODE_ENV=$ENVIRONMENT
-    if [ -f "node_modules/.bin/vite" ]; then
-        npm run build
-    else
-        log "Using npx as fallback for vite build"
-        npx vite build
-    fi
+    # Fix ownership and permissions after build
+    log "Setting correct ownership and permissions"
+    sudo chown -R appuser:www-data $APP_DIR/dist/
+    sudo find $APP_DIR/dist/ -type d -exec chmod 755 {} \;
+    sudo find $APP_DIR/dist/ -type f -exec chmod 644 {} \;
     
     # Clean up devDependencies to save space
     log "Cleaning up devDependencies"
