@@ -65,16 +65,12 @@ export const EnhancedNewsletterSignup: React.FC<EnhancedNewsletterSignupProps> =
     setIsLoading(true);
 
     try {
-      // Save to newsletter_subscribers table
+      // Save to subscribers table  
       const { error: dbError } = await supabase
-        .from('newsletter_subscribers')
+        .from('subscribers')
         .insert({
           email: formData.email,
-          full_name: formData.fullName || null,
-          interests: formData.interests,
-          source,
-          status: 'active',
-          verified_at: new Date().toISOString()
+          full_name: formData.fullName || null
         });
 
       if (dbError) {

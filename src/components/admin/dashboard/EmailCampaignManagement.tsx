@@ -18,7 +18,7 @@ interface EmailCampaign {
   subject: string;
   content: string;
   template_type: string;
-  status: 'draft' | 'scheduled' | 'sending' | 'sent' | 'cancelled';
+  status: string;
   scheduled_at?: string;
   sent_at?: string;
   total_recipients: number;
@@ -26,14 +26,17 @@ interface EmailCampaign {
   total_opened: number;
   total_clicked: number;
   created_at: string;
+  updated_at: string;
+  created_by?: string;
 }
 
-interface Subscriber {
+interface NewsletterSubscriber {
   id: string;
   email: string;
-  full_name?: string;
+  full_name: string;
   status: string;
   interests?: string[];
+  phone?: string;
 }
 
 const EMAIL_TEMPLATES = {
@@ -65,7 +68,7 @@ const EMAIL_TEMPLATES = {
 
 export const EmailCampaignManagement: React.FC = () => {
   const [campaigns, setCampaigns] = useState<EmailCampaign[]>([]);
-  const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
+  const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState<EmailCampaign | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -107,12 +110,17 @@ export const EmailCampaignManagement: React.FC = () => {
   const fetchSubscribers = async () => {
     try {
       const { data, error } = await supabase
-        .from('newsletter_subscribers')
-        .select('*')
-        .eq('status', 'active');
+        .from('subscribers')
+        .select('*');
 
       if (error) throw error;
-      setSubscribers(data || []);
+      setSubscribers(data?.map(sub => ({
+        id: sub.id,
+        email: sub.email,
+        full_name: sub.full_name,
+        status: 'active',
+        phone: sub.phone || undefined
+      })) || []);
     } catch (error) {
       console.error('Error fetching subscribers:', error);
     }
