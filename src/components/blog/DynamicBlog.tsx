@@ -29,7 +29,7 @@ const DynamicBlog = () => {
       );
     }
 
-    if (selectedCategory) {
+    if (selectedCategory && selectedCategory !== 'all') {
       filtered = filtered.filter(post => post.category_id === selectedCategory);
     }
 
@@ -63,7 +63,7 @@ const DynamicBlog = () => {
               <SelectValue placeholder="Filtrer par catégorie" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Toutes les catégories</SelectItem>
+              <SelectItem value="all">Toutes les catégories</SelectItem>
               {categories.map((category) => (
                 <SelectItem key={category.id} value={category.id}>
                   {category.name}
@@ -105,7 +105,7 @@ const DynamicBlog = () => {
                     <div className="text-gray-500">
                       <span>{formatDate(filteredPosts[0].created_at)}</span>
                       <span className="mx-2">•</span>
-                      <span>Par {filteredPosts[0].profiles?.full_name}</span>
+                      <span>Par {filteredPosts[0].profiles?.full_name || 'Auteur'}</span>
                     </div>
                     <Link 
                       to={`/blog/${filteredPosts[0].slug}`}
@@ -158,7 +158,7 @@ const DynamicBlog = () => {
                       <div className="flex justify-between items-center text-sm text-gray-500 mb-3">
                         <span>{formatDate(post.created_at)}</span>
                         <Badge variant="secondary" className="text-xs">
-                          {post.blog_categories?.name}
+                          {post.blog_categories?.name || 'Général'}
                         </Badge>
                       </div>
                       <h3 className="text-lg font-bold mb-3 hover:text-primary transition-colors">
@@ -171,7 +171,7 @@ const DynamicBlog = () => {
                       </p>
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-gray-500">
-                          Par {post.profiles?.full_name}
+                          Par {post.profiles?.full_name || 'Auteur'}
                         </span>
                         <Link 
                           to={`/blog/${post.slug}`}
