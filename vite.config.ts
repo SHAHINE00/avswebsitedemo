@@ -11,6 +11,10 @@ export default defineConfig(({ mode }) => {
   server: {
     host: "::",
     port: 8080,
+    headers: {
+      'Cache-Control': 'no-cache',
+      'Access-Control-Allow-Origin': '*',
+    },
   },
   plugins: [
     react(),
@@ -26,8 +30,10 @@ export default defineConfig(({ mode }) => {
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: false,
-    target: 'es2015',
+    target: ['es2015', 'safari11', 'chrome58', 'firefox57'],
+    cssTarget: ['chrome58', 'safari11', 'firefox57'],
     cssCodeSplit: true,
+    assetsInlineLimit: 4096,
     // Performance optimizations
     rollupOptions: {
       output: {

@@ -3,7 +3,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>AVS - Institut de l'Innovation et de l'Intelligence Artificielle</title>
     <meta name="description" content="Rejoignez notre programme complet AVS IA Course et maîtrisez les technologies d'intelligence artificielle de pointe avec des instructeurs experts." />
     <meta name="author" content="AVS" />
@@ -25,9 +28,47 @@
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    <!-- Optimized Font Loading with font-display: swap -->
+    <!-- Mobile-optimized Font Loading with font-display: swap -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap"></noscript>
+    
+    <!-- Critical CSS for mobile rendering -->
+    <style>
+      /* Mobile-first critical styles */
+      * { box-sizing: border-box; }
+      html { 
+        width: 100%; 
+        overflow-x: hidden; 
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
+      body { 
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Montserrat', sans-serif; 
+        margin: 0; 
+        padding: 0; 
+        min-height: 100vh;
+        width: 100%;
+        overflow-x: hidden;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      #root { 
+        min-height: 100vh; 
+        width: 100%;
+        max-width: 100vw;
+        position: relative;
+      }
+      /* Prevent zoom on iOS */
+      input[type="text"], input[type="email"], input[type="tel"], textarea, select {
+        font-size: 16px;
+      }
+      /* Mobile touch target sizing */
+      button, a, input, select, textarea {
+        min-height: 44px;
+        min-width: 44px;
+      }
+    </style>
     
     <!-- Preload Critical Assets -->
     <link rel="preload" href="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" as="image" type="image/png">

@@ -3,9 +3,13 @@ import App from './App.tsx'
 import './index.css'
 import { initializeProductionLogging } from '@/utils/cleanupConsole'
 import { logError } from '@/utils/logger'
+import { optimizeForMobile } from '@/utils/mobile'
 
 // Initialize production monitoring and logging
 initializeProductionLogging();
+
+// Initialize mobile optimizations
+optimizeForMobile();
 
 // Global async error handler
 window.addEventListener('unhandledrejection', (event) => {
