@@ -2,19 +2,30 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Share2, Clock, Eye, Calendar, User, ExternalLink } from 'lucide-react';
 import OptimizedImage from '@/components/OptimizedImage';
 import { useBlogManagement, BlogPost as BlogPostType } from '@/hooks/useBlogManagement';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import BlogComments from '@/components/blog/BlogComments';
+import SEOHead from '@/components/SEOHead';
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { getPostBySlug } = useBlogManagement();
+  const { getPostBySlug, fetchPublishedPosts, posts } = useBlogManagement();
   const [post, setPost] = useState<BlogPostType | null>(null);
+  const [relatedPosts, setRelatedPosts] = useState<BlogPostType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [readingTime, setReadingTime] = useState(0);
+
+  // Calculate reading time (average 200 words per minute)
+  const calculateReadingTime = (content: string) => {
+    const wordsPerMinute = 200;
+    const words = content.replace(/<[^>]*>/g, '').split(/\s+/).length;
+    return Math.ceil(words / wordsPerMinute);
+  };
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -23,11 +34,29 @@ const BlogPost = () => {
       setLoading(true);
       const blogPost = await getPostBySlug(slug);
       setPost(blogPost);
+      
+      if (blogPost) {
+        setReadingTime(calculateReadingTime(blogPost.content));
+        
+        // Fetch related posts from the same category
+        await fetchPublishedPosts();
+      }
+      
       setLoading(false);
     };
 
     fetchPost();
-  }, [slug, getPostBySlug]);
+  }, [slug, getPostBySlug, fetchPublishedPosts]);
+
+  useEffect(() => {
+    if (post && posts.length > 0) {
+      // Get related posts from the same category
+      const related = posts
+        .filter(p => p.id !== post.id && p.category_id === post.category_id)
+        .slice(0, 2);
+      setRelatedPosts(related);
+    }
+  }, [post, posts]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('fr-FR', {
@@ -35,6 +64,19 @@ const BlogPost = () => {
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const shareOnSocial = (platform: string) => {
+    const url = window.location.href;
+    const title = post?.title || '';
+    
+    const shareUrls = {
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+      twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
+    };
+    
+    window.open(shareUrls[platform as keyof typeof shareUrls], '_blank');
   };
 
   if (loading) {
@@ -71,6 +113,11 @@ const BlogPost = () => {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
+      <SEOHead 
+        title={post?.title || 'Article de blog'}
+        description={post?.excerpt || ''}
+        ogImage={post?.featured_image_url || ''}
+      />
       <Navbar />
       
       <main className="flex-grow pt-24 pb-16">
@@ -92,12 +139,23 @@ const BlogPost = () => {
             
             <h1 className="text-3xl md:text-4xl font-bold mb-6">{post.title}</h1>
             
-            <div className="flex items-center text-gray-600 mb-8">
-              <span>Par {post.profiles?.full_name}</span>
-              <span className="mx-2">•</span>
-              <span>{formatDate(post.published_at || post.created_at)}</span>
-              <span className="mx-2">•</span>
-              <span>{post.view_count} vues</span>
+            <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-8">
+              <div className="flex items-center gap-1">
+                <User className="w-4 h-4" />
+                <span>Par {post.profiles?.full_name}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Calendar className="w-4 h-4" />
+                <span>{formatDate(post.published_at || post.created_at)}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Clock className="w-4 h-4" />
+                <span>{readingTime} min de lecture</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Eye className="w-4 h-4" />
+                <span>{post.view_count} vues</span>
+              </div>
             </div>
             
             {post.featured_image_url && (
@@ -133,16 +191,37 @@ const BlogPost = () => {
 
             {/* Share Buttons */}
             <div className="mt-6 pt-6 border-t">
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-gray-600">Partager cet article:</span>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Share2 className="w-4 h-4 text-gray-600" />
+                  <span className="text-sm text-gray-600">Partager cet article:</span>
+                </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="text-blue-600 hover:bg-blue-50">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => shareOnSocial('linkedin')}
+                    className="text-blue-600 hover:bg-blue-50 border-blue-200"
+                  >
+                    <ExternalLink className="w-3 h-3 mr-1" />
                     LinkedIn
                   </Button>
-                  <Button variant="outline" size="sm" className="text-blue-500 hover:bg-blue-50">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => shareOnSocial('twitter')}
+                    className="text-blue-500 hover:bg-blue-50 border-blue-200"
+                  >
+                    <ExternalLink className="w-3 h-3 mr-1" />
                     Twitter
                   </Button>
-                  <Button variant="outline" size="sm" className="text-blue-700 hover:bg-blue-50">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => shareOnSocial('facebook')}
+                    className="text-blue-700 hover:bg-blue-50 border-blue-200"
+                  >
+                    <ExternalLink className="w-3 h-3 mr-1" />
                     Facebook
                   </Button>
                 </div>
@@ -171,32 +250,47 @@ const BlogPost = () => {
           </article>
 
           {/* Related Articles */}
-          <div className="mt-12 pt-8 border-t">
-            <h3 className="text-2xl font-bold mb-6">Articles recommandés</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* This would be populated with related articles */}
-              <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="h-32 bg-gradient-to-br from-academy-blue/20 to-academy-purple/20"></div>
-                <CardContent className="p-4">
-                  <h4 className="font-bold mb-2">Article recommandé 1</h4>
-                  <p className="text-sm text-gray-600 mb-3">Description de l'article recommandé...</p>
-                  <Link to="#" className="text-primary text-sm hover:underline">
-                    Lire la suite →
-                  </Link>
-                </CardContent>
-              </Card>
-              <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="h-32 bg-gradient-to-br from-academy-lightblue/20 to-academy-blue/20"></div>
-                <CardContent className="p-4">
-                  <h4 className="font-bold mb-2">Article recommandé 2</h4>
-                  <p className="text-sm text-gray-600 mb-3">Description de l'article recommandé...</p>
-                  <Link to="#" className="text-primary text-sm hover:underline">
-                    Lire la suite →
-                  </Link>
-                </CardContent>
-              </Card>
+          {relatedPosts.length > 0 && (
+            <div className="mt-12 pt-8 border-t">
+              <h3 className="text-2xl font-bold mb-6">Articles recommandés</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {relatedPosts.map((relatedPost) => (
+                  <Card key={relatedPost.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                    {relatedPost.featured_image_url ? (
+                      <OptimizedImage
+                        src={relatedPost.featured_image_url}
+                        alt={relatedPost.title}
+                        className="w-full h-32 object-cover"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                    ) : (
+                      <div className="h-32 bg-gradient-to-br from-primary/20 to-primary/10"></div>
+                    )}
+                    <CardContent className="p-4">
+                      <div className="mb-2">
+                        <Badge variant="outline" className="text-xs">
+                          {relatedPost.blog_categories?.name}
+                        </Badge>
+                      </div>
+                      <h4 className="font-bold mb-2 line-clamp-2">{relatedPost.title}</h4>
+                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">{relatedPost.excerpt}</p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-500">
+                          {formatDate(relatedPost.created_at)}
+                        </span>
+                        <Link 
+                          to={`/blog/${relatedPost.slug}`} 
+                          className="text-primary text-sm hover:underline flex items-center gap-1"
+                        >
+                          Lire la suite →
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Comments Section */}
           <div className="mt-12 pt-8 border-t">
