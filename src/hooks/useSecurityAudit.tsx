@@ -5,12 +5,11 @@ import { performSecurityCheck } from '@/utils/security';
 
 interface SecurityAuditEvent {
   id: string;
-  event_type: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  details: any;
+  action: string; // maps to event_type
+  details: any; // includes severity and other data
   user_id?: string;
-  ip_address?: string;
-  user_agent?: string;
+  ip_address?: string | null;
+  user_agent?: string | null;
   created_at: string;
 }
 
@@ -49,13 +48,16 @@ export const useSecurityAudit = () => {
         return;
       }
 
-      // Insert security audit event
+      // Insert security audit event using user_activity_logs table
       const { error } = await supabase
-        .from('security_audit_events')
+        .from('user_activity_logs')
         .insert({
-          event_type: eventType,
-          severity,
-          details,
+          action: eventType,
+          details: {
+            ...details,
+            severity,
+            event_type: eventType
+          },
           user_id: userId,
           ip_address: await getClientIP(),
           user_agent: navigator.userAgent
@@ -87,13 +89,13 @@ export const useSecurityAudit = () => {
   const fetchAuditEvents = async () => {
     try {
       const { data, error } = await supabase
-        .from('security_audit_events')
+        .from('user_activity_logs')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(100);
 
       if (error) throw error;
-      setAuditEvents(data || []);
+      setAuditEvents((data || []) as SecurityAuditEvent[]);
     } catch (err) {
       logError('Error fetching security audit events:', err);
       setError('Failed to fetch security events');
@@ -105,8 +107,8 @@ export const useSecurityAudit = () => {
     try {
       // Get basic metrics from audit events
       const { data: events, error } = await supabase
-        .from('security_audit_events')
-        .select('severity, created_at')
+        .from('user_activity_logs')
+        .select('details, created_at')
         .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
 
       if (error) throw error;
@@ -116,8 +118,8 @@ export const useSecurityAudit = () => {
 
       const metrics: SecurityMetrics = {
         total_events: events?.length || 0,
-        critical_events: events?.filter(e => e.severity === 'critical').length || 0,
-        high_priority_events: events?.filter(e => e.severity === 'high').length || 0,
+        critical_events: events?.filter(e => (e.details as any)?.severity === 'critical').length || 0,
+        high_priority_events: events?.filter(e => (e.details as any)?.severity === 'high').length || 0,
         recent_events: events?.filter(e => new Date(e.created_at).getTime() > dayAgo).length || 0,
         blocked_requests: 0, // Would be calculated from specific event types
         failed_logins: 0     // Would be calculated from auth events
@@ -205,11 +207,11 @@ export const useSecurityAudit = () => {
   // Set up real-time monitoring for new events
   useEffect(() => {
     const channel = supabase
-      .channel('security_audit_events')
+      .channel('user_activity_logs')
       .on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
-        table: 'security_audit_events'
+        table: 'user_activity_logs'
       }, (payload) => {
         setAuditEvents(prev => [payload.new as SecurityAuditEvent, ...prev.slice(0, 99)]);
         fetchMetrics(); // Refresh metrics when new events arrive

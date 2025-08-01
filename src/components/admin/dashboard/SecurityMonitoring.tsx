@@ -121,16 +121,16 @@ const SecurityMonitoring: React.FC = () => {
                   className="flex items-start space-x-4 p-4 border rounded-lg"
                 >
                   <div className="flex-shrink-0">
-                    {getEventIcon(event.event_type)}
+                    {getEventIcon(event.action)}
                   </div>
                   
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <h4 className="text-sm font-medium">
-                        {event.event_type.replace(/_/g, ' ').toUpperCase()}
+                        {event.action.replace(/_/g, ' ').toUpperCase()}
                       </h4>
-                      <Badge variant={getSeverityColor(event.severity) as any}>
-                        {event.severity}
+                      <Badge variant={getSeverityColor((event.details as any)?.severity || 'unknown') as any}>
+                        {(event.details as any)?.severity || 'unknown'}
                       </Badge>
                     </div>
                     
