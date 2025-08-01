@@ -8,6 +8,7 @@ import MultiStepRegistrationForm from '@/components/MultiStepRegistrationForm';
 import { useToast } from '@/hooks/use-toast';
 import SEOHead from '@/components/SEOHead';
 import { supabase } from '@/integrations/supabase/client';
+import { logError } from '@/utils/logger';
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
@@ -43,7 +44,7 @@ const Register = () => {
         });
       
       if (error) {
-        console.error('Subscription error:', error);
+        logError('Subscription error:', error);
         toast({
           title: "Erreur d'inscription",
           description: error.message === 'duplicate key value violates unique constraint "subscribers_email_key"' 
@@ -63,7 +64,7 @@ const Register = () => {
         }, 3000);
       }
     } catch (error: any) {
-      console.error('Registration error:', error);
+      logError('Registration error:', error);
       toast({
         title: "Erreur d'inscription",
         description: "Une erreur s'est produite lors de l'inscription. Veuillez réessayer.",

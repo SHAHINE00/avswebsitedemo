@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Mail, CheckCircle, User, Tag } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { trackNewsletterSignup } from '@/utils/analytics';
+import { logError } from '@/utils/logger';
 
 interface EnhancedNewsletterSignupProps {
   title?: string;
@@ -100,7 +101,7 @@ export const EnhancedNewsletterSignup: React.FC<EnhancedNewsletterSignupProps> =
       });
 
       if (emailError) {
-        console.error('Email sending error:', emailError);
+        logError('Email sending error:', emailError);
         // Don't fail the whole process if email fails
       }
 
@@ -117,7 +118,7 @@ export const EnhancedNewsletterSignup: React.FC<EnhancedNewsletterSignupProps> =
       setFormData({ email: '', fullName: '', interests: [] });
 
     } catch (error) {
-      console.error('Newsletter subscription error:', error);
+      logError('Newsletter subscription error:', error);
       toast({
         title: "Erreur d'inscription",
         description: "Une erreur est survenue. Veuillez réessayer.",

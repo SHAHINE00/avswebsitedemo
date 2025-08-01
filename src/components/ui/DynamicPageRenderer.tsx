@@ -1,6 +1,7 @@
 import React, { useMemo, useEffect } from 'react';
 import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 import { supabase } from '@/integrations/supabase/client';
+import { logWarn } from '@/utils/logger';
 
 // Global components
 import Navbar from '@/components/Navbar';
@@ -134,7 +135,7 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
   const renderSection = (sectionKey: string) => {
     const Component = SECTION_COMPONENTS[sectionKey];
     if (!Component) {
-      console.warn(`No component found for section: ${sectionKey}. Available sections:`, Object.keys(SECTION_COMPONENTS));
+      logWarn(`No component found for section: ${sectionKey}. Available sections:`, Object.keys(SECTION_COMPONENTS));
       // In development, show a placeholder for missing components
       if (process.env.NODE_ENV === 'development') {
         return (

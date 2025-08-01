@@ -11,6 +11,7 @@ import { Mail, Send, Users, TrendingUp, Calendar, Plus, Eye, Edit } from 'lucide
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useHostingerEmail } from '@/hooks/useHostingerEmail';
+import { logError } from '@/utils/logger';
 
 interface EmailCampaign {
   id: string;
@@ -98,7 +99,7 @@ export const EmailCampaignManagement: React.FC = () => {
       if (error) throw error;
       setCampaigns(data || []);
     } catch (error) {
-      console.error('Error fetching campaigns:', error);
+      logError('Error fetching campaigns:', error);
       toast({
         title: "Erreur",
         description: "Impossible de charger les campagnes",
@@ -122,7 +123,7 @@ export const EmailCampaignManagement: React.FC = () => {
         phone: sub.phone || undefined
       })) || []);
     } catch (error) {
-      console.error('Error fetching subscribers:', error);
+      logError('Error fetching subscribers:', error);
     }
   };
 
@@ -163,7 +164,7 @@ export const EmailCampaignManagement: React.FC = () => {
       });
       fetchCampaigns();
     } catch (error) {
-      console.error('Error creating campaign:', error);
+      logError('Error creating campaign:', error);
       toast({
         title: "Erreur",
         description: "Impossible de créer la campagne",

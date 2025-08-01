@@ -6,6 +6,7 @@ import { useEnrollment } from '@/hooks/useEnrollment';
 import { CheckCircle, BookOpen, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import EnrollmentConfirmationModal from './EnrollmentConfirmationModal';
+import { logInfo, logError } from '@/utils/logger';
 
 interface EnrollmentButtonProps {
   courseId: string;
@@ -29,25 +30,25 @@ const EnrollmentButton: React.FC<EnrollmentButtonProps> = ({
 
   useEffect(() => {
     const checkStatus = async () => {
-      console.log('Starting enrollment check for course:', courseId, 'user:', user?.id);
+      logInfo('Starting enrollment check for course:', { courseId, userId: user?.id });
       setCheckingStatus(true);
       
       if (user && courseId) {
         try {
           const enrolled = await checkEnrollmentStatus(courseId);
-          console.log('Enrollment check result:', enrolled);
+          logInfo('Enrollment check result:', { enrolled });
           setIsEnrolled(enrolled);
         } catch (error) {
-          console.error('Error checking enrollment status:', error);
+          logError('Error checking enrollment status:', error);
           setIsEnrolled(false);
         }
       } else {
-        console.log('No user or courseId available - not enrolled');
+        logInfo('No user or courseId available - not enrolled');
         setIsEnrolled(false);
       }
       
       setCheckingStatus(false);
-      console.log('Enrollment check completed');
+      logInfo('Enrollment check completed');
     };
 
     checkStatus();

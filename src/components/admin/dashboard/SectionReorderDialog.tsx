@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowUp, ArrowDown, GripVertical, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { logError } from '@/utils/logger';
 
 interface SectionVisibility {
   id: string;
@@ -79,7 +80,7 @@ const SectionReorderDialog: React.FC<SectionReorderDialogProps> = ({
       onSuccess();
       onOpenChange(false);
     } catch (error) {
-      console.error('Error updating section order:', error);
+      logError('Error updating section order:', error);
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour l'ordre des sections.",

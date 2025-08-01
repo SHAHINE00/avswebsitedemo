@@ -25,6 +25,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { GripVertical, Eye, EyeOff, ArrowUp, ArrowDown, SkipForward, SkipBack } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { logError } from '@/utils/logger';
 
 interface SectionVisibility {
   id: string;
@@ -238,7 +239,7 @@ const EnhancedSectionReorderDialog: React.FC<EnhancedSectionReorderDialogProps> 
       // Don't manually update state - let the hook handle it through refetch
       onRefetch();
     } catch (error) {
-      console.error('Error updating section order:', error);
+      logError('Error updating section order:', error);
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour l'ordre des sections.",
@@ -259,7 +260,7 @@ const EnhancedSectionReorderDialog: React.FC<EnhancedSectionReorderDialogProps> 
       });
       onRefetch();
     } catch (error) {
-      console.error('Error updating visibility:', error);
+      logError('Error updating visibility:', error);
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour la visibilité.",

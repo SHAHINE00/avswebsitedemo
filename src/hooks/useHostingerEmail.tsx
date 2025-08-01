@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { logError } from '@/utils/logger';
 import { useToast } from '@/hooks/use-toast';
 
 interface ContactFormData {
@@ -52,7 +53,7 @@ export const useHostingerEmail = () => {
 
       return true;
     } catch (error) {
-      console.error('Contact email error:', error);
+      logError('Contact email error:', error);
       
       toast({
         title: "Erreur d'envoi",
@@ -83,7 +84,7 @@ export const useHostingerEmail = () => {
 
       return true;
     } catch (error) {
-      console.error('Newsletter email error:', error);
+      logError('Newsletter email error:', error);
       return false;
     } finally {
       setLoading(false);
@@ -112,7 +113,7 @@ export const useHostingerEmail = () => {
 
       return true;
     } catch (error) {
-      console.error('Custom email error:', error);
+      logError('Custom email error:', error);
       
       toast({
         title: "Erreur d'envoi",
@@ -177,7 +178,7 @@ export const useHostingerEmail = () => {
           // Small delay between batches
           await new Promise(resolve => setTimeout(resolve, 1000));
         } catch (batchError) {
-          console.error('Batch sending error:', batchError);
+          logError('Batch sending error:', batchError);
           totalErrors += batch.length;
         }
       }
@@ -190,7 +191,7 @@ export const useHostingerEmail = () => {
 
       return { sent: totalSent, errors: totalErrors };
     } catch (error) {
-      console.error('Bulk email error:', error);
+      logError('Bulk email error:', error);
       
       toast({
         title: "Erreur d'envoi groupé",

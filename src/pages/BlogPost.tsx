@@ -12,6 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import BlogComments from '@/components/blog/BlogComments';
 import SEOHead from '@/components/SEOHead';
+import { logInfo } from '@/utils/logger';
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -62,7 +63,7 @@ const BlogPost = () => {
     };
     
     // Log for debugging
-    console.log('Sharing on', platform, 'with clean URL:', cleanUrl);
+    logInfo('Sharing on', { platform, cleanUrl });
     
     const newWindow = window.open(shareUrls[platform as keyof typeof shareUrls], '_blank', 'width=600,height=400,scrollbars=yes,resizable=yes');
     

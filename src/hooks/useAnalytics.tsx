@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { analytics, trackPageView } from '@/utils/analytics';
+import { logWarn } from '@/utils/logger';
 
 // Hook for page view tracking
 export const usePageTracking = () => {
@@ -35,7 +36,7 @@ export const useScrollTracking = () => {
           analytics.trackScrollDepth(roundedScroll);
         }
       } catch (error) {
-        console.warn('Scroll tracking error:', error);
+        logWarn('Scroll tracking error:', error);
       }
     };
 
