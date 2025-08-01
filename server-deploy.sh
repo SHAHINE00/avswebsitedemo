@@ -30,7 +30,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Configuration
-REPO_URL="https://github.com/YOUR_USERNAME/YOUR_REPO.git"  # Replace with your actual GitHub repo
+REPO_URL="https://github.com/SHAHINE00/avswebsitedemo.git"
 APP_DIR="/var/www/avswebsite"
 DOMAIN="avs.ma"
 EMAIL="admin@avs.ma"  # Replace with your email
