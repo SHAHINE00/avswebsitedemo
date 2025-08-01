@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { logInfo, logError } from '@/utils/logger';
+import { trackAppointmentBooking, trackFormSubmission } from '@/utils/analytics';
 
 interface AppointmentData {
   firstName: string;
@@ -53,6 +54,10 @@ export const useAppointmentBooking = () => {
         throw error;
       }
 
+      // Track successful appointment booking
+      trackAppointmentBooking(appointmentData.appointmentType);
+      trackFormSubmission('appointment-form', 'appointment', true);
+
       toast({
         title: "Rendez-vous confirmé !",
         description: "Votre demande de rendez-vous a été enregistrée. Nous vous contacterons pour confirmer.",
@@ -60,6 +65,9 @@ export const useAppointmentBooking = () => {
 
       return true;
     } catch (error) {
+      // Track failed appointment booking
+      trackFormSubmission('appointment-form', 'appointment', false);
+      
       logError('Appointment booking error:', error);
       
       toast({

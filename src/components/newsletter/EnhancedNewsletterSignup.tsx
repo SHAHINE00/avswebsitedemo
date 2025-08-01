@@ -7,6 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Mail, CheckCircle, User, Tag } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { trackNewsletterSignup } from '@/utils/analytics';
 
 interface EnhancedNewsletterSignupProps {
   title?: string;
@@ -102,6 +103,9 @@ export const EnhancedNewsletterSignup: React.FC<EnhancedNewsletterSignupProps> =
         console.error('Email sending error:', emailError);
         // Don't fail the whole process if email fails
       }
+
+      // Track newsletter signup in analytics
+      trackNewsletterSignup(source);
 
       setIsSubscribed(true);
       toast({

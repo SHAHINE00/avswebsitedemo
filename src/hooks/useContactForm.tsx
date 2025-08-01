@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { trackFormSubmission } from '@/utils/analytics';
 
 interface ContactFormData {
   firstName: string;
@@ -30,6 +31,9 @@ export const useContactForm = () => {
         throw error;
       }
 
+      // Track successful form submission
+      trackFormSubmission('contact-form', 'contact', true);
+
       toast({
         title: "Message envoyé !",
         description: "Nous avons bien reçu votre message et vous répondrons rapidement.",
@@ -37,7 +41,8 @@ export const useContactForm = () => {
 
       return true;
     } catch (error) {
-      // Handle submission error
+      // Track failed form submission
+      trackFormSubmission('contact-form', 'contact', false);
       
       toast({
         title: "Erreur d'envoi",

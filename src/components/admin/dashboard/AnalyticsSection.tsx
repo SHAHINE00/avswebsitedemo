@@ -5,6 +5,7 @@ import { BarChart3, TrendingUp, Users, Award } from 'lucide-react';
 import AdvancedAnalytics from './AdvancedAnalytics';
 import EnrollmentAnalytics from './EnrollmentAnalytics';
 import CoursePerformanceMetrics from './CoursePerformanceMetrics';
+import RealTimeAnalytics from './RealTimeAnalytics';
 
 const AnalyticsSection: React.FC = () => {
   return (
@@ -21,8 +22,12 @@ const AnalyticsSection: React.FC = () => {
         </CardHeader>
       </Card>
 
-      <Tabs defaultValue="advanced" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 max-w-lg">
+      <Tabs defaultValue="realtime" className="w-full">
+        <TabsList className="grid w-full grid-cols-4 max-w-2xl">
+          <TabsTrigger value="realtime" className="flex items-center gap-2">
+            <TrendingUp className="w-4 h-4" />
+            Temps Réel
+          </TabsTrigger>
           <TabsTrigger value="advanced" className="flex items-center gap-2">
             <BarChart3 className="w-4 h-4" />
             Analytics
@@ -36,6 +41,10 @@ const AnalyticsSection: React.FC = () => {
             Performance
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="realtime" className="mt-6">
+          <RealTimeAnalytics />
+        </TabsContent>
 
         <TabsContent value="advanced" className="mt-6">
           <AdvancedAnalytics />

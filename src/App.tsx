@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import AdminRouteGuard from "@/components/admin/AdminRouteGuard";
 import { GlobalErrorBoundary } from "@/components/ui/global-error-boundary";
 import ScrollToTop from "@/components/ui/ScrollToTop";
+import { usePageTracking, useScrollTracking } from "@/hooks/useAnalytics";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ElementorExport from "./pages/ElementorExport";
@@ -34,6 +35,10 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 
 const App = () => {
+  // Initialize analytics tracking
+  usePageTracking();
+  useScrollTracking();
+
   return (
     <GlobalErrorBoundary>
       <Router>

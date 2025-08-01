@@ -4,13 +4,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { logInfo, logError } from '@/utils/logger';
+import { trackCourseEnrollment } from '@/utils/analytics';
 
 export const useEnrollment = () => {
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const enrollInCourse = async (courseId: string) => {
+  const enrollInCourse = async (courseId: string, courseTitle?: string) => {
     if (!user) {
       toast({
         title: "Authentification requise",
@@ -55,6 +56,9 @@ export const useEnrollment = () => {
         }
         return false;
       }
+
+      // Track enrollment in analytics
+      trackCourseEnrollment(courseId, courseTitle || 'Unknown Course');
 
       toast({
         title: "Inscription réussie !",
