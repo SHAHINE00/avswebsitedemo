@@ -132,24 +132,6 @@ const DynamicBlog = () => {
 
         {/* Sidebar */}
         <div className="space-y-6">
-          {/* Categories Widget */}
-          <Card className="p-6">
-            <h4 className="text-lg font-bold mb-4">Catégories</h4>
-            <div className="space-y-2">
-              {categories.map((category) => (
-                <Link 
-                  key={category.id}
-                  to={`/blog?category=${category.id}`}
-                  className="flex justify-between items-center py-2 px-3 rounded hover:bg-gray-50 transition-colors text-sm"
-                >
-                  <span>{category.name}</span>
-                  <Badge variant="outline" className="text-xs">
-                    {posts.filter(p => p.category_id === category.id).length}
-                  </Badge>
-                </Link>
-              ))}
-            </div>
-          </Card>
 
           {/* Quick Newsletter Signup */}
           <Card className="p-6 bg-gradient-to-br from-academy-blue/5 to-academy-purple/5">
