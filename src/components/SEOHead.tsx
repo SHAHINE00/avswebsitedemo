@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import JsonLd from './JsonLd';
+import { generateOrganizationJsonLd } from '@/utils/seoData';
 
 interface SEOHeadProps {
   title?: string;
@@ -10,6 +12,7 @@ interface SEOHeadProps {
   ogType?: string;
   ogSiteName?: string;
   ogUrl?: string;
+  jsonLd?: any[];
 }
 
 const SEOHead: React.FC<SEOHeadProps> = ({
@@ -21,7 +24,8 @@ const SEOHead: React.FC<SEOHeadProps> = ({
   noIndex = false,
   ogType = "website",
   ogSiteName = "AVS - Institut de l'Innovation et de l'Intelligence Artificielle",
-  ogUrl
+  ogUrl,
+  jsonLd = []
 }) => {
   useEffect(() => {
     // Update document title
@@ -111,7 +115,16 @@ const SEOHead: React.FC<SEOHeadProps> = ({
 
   }, [title, description, keywords, ogImage, canonicalUrl, noIndex, ogType, ogSiteName, ogUrl]);
 
-  return null; // This component doesn't render anything
+  // Always include organization schema
+  const allJsonLd = [generateOrganizationJsonLd(), ...jsonLd];
+
+  return (
+    <>
+      {allJsonLd.map((data, index) => (
+        <JsonLd key={index} data={data} />
+      ))}
+    </>
+  );
 };
 
 export default SEOHead;

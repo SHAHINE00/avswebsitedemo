@@ -16,6 +16,8 @@ import { logInfo, logError } from '@/utils/logger';
 import DashboardStats from '@/components/dashboard/DashboardStats';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import DashboardTabs from '@/components/dashboard/DashboardTabs';
+import SEOHead from '@/components/SEOHead';
+import { utilityPagesSEO } from '@/utils/seoData';
 
 interface Enrollment {
   id: string;
@@ -140,6 +142,7 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
+        <SEOHead {...utilityPagesSEO.dashboard} />
         <Navbar />
         <div className="container mx-auto px-6 py-8">
           <div className="flex items-center justify-center min-h-[400px]">
@@ -154,6 +157,7 @@ const Dashboard = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50">
+        <SEOHead {...utilityPagesSEO.dashboard} />
         <Navbar />
         <div className="container mx-auto px-6 py-8">
           <div className="text-center">
@@ -169,6 +173,7 @@ const Dashboard = () => {
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gray-50">
+        <SEOHead {...utilityPagesSEO.dashboard} />
         <Navbar />
         
         <div className="container mx-auto px-6 py-8">

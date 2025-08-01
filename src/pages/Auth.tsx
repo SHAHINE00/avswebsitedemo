@@ -10,6 +10,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEOHead from '@/components/SEOHead';
+import { utilityPagesSEO } from '@/utils/seoData';
 
 const Auth = () => {
   const [email, setEmail] = useState('');
@@ -72,6 +74,7 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
+      <SEOHead {...utilityPagesSEO.auth} />
       <Navbar />
       
       <div className="flex-grow flex items-center justify-center py-24 px-6">

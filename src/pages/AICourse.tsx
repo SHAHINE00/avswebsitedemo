@@ -11,6 +11,8 @@ import ObjectivesSection from '@/components/ai-course/ObjectivesSection';
 import CurriculumSection from '@/components/ai-course/CurriculumSection';
 import TeachingStrategiesSection from '@/components/ai-course/TeachingStrategiesSection';
 import CTASection from '@/components/ai-course/CTASection';
+import SEOHead from '@/components/SEOHead';
+import { courseSEO, generateCourseJsonLd, generateBreadcrumbJsonLd } from '@/utils/seoData';
 
 const AICourse = () => {
   const firstYearModules = [
@@ -46,8 +48,27 @@ const AICourse = () => {
     { code: "M27", title: "PROJET DE FIN D'ÉTUDES EN INTELLIGENCE ARTIFICIELLE", duration: "6 semaines" }
   ];
 
+  const courseJsonLd = generateCourseJsonLd({
+    name: "Formation Intelligence Artificielle & Machine Learning",
+    description: "Formation complète en Intelligence Artificielle : Machine Learning, Deep Learning, Big Data, NLP et Computer Vision. 18 mois de formation pratique avec projets concrets.",
+    duration: "18 mois",
+    level: "Débutant à Expert",
+    instructor: "Experts IA certifiés"
+  });
+
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "Accueil", url: "/" },
+    { name: "Formations", url: "/curriculum" },
+    { name: "Formation IA", url: "/ai-course" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
+      <SEOHead 
+        {...courseSEO["formation-ia"]} 
+        canonicalUrl="https://avs.ma/ai-course"
+        jsonLd={[courseJsonLd, breadcrumbJsonLd]}
+      />
       <Navbar />
       <HeroSection />
       

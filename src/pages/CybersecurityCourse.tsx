@@ -6,6 +6,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Link } from 'react-router-dom';
+import SEOHead from '@/components/SEOHead';
+import { courseSEO, generateCourseJsonLd, generateBreadcrumbJsonLd } from '@/utils/seoData';
 
 const CybersecurityCourse = () => {
   const keyAreas = [
@@ -17,8 +19,27 @@ const CybersecurityCourse = () => {
     { title: "Certification", description: "Préparation aux certifications professionnelles", icon: Award, color: "from-indigo-500 to-purple-600" }
   ];
 
+  const courseJsonLd = generateCourseJsonLd({
+    name: "Formation Cybersécurité & Ethical Hacking",
+    description: "Formation complète en cybersécurité : ethical hacking, sécurité réseau, cryptographie, analyse forensique. 15 mois de formation certifiante.",
+    duration: "15 mois",
+    level: "Intermédiaire à Expert",
+    instructor: "Experts cybersécurité certifiés"
+  });
+
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "Accueil", url: "/" },
+    { name: "Formations", url: "/curriculum" },
+    { name: "Formation Cybersécurité", url: "/cybersecurity-course" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
+      <SEOHead 
+        {...courseSEO["formation-cybersecurite"]} 
+        canonicalUrl="https://avs.ma/cybersecurity-course"
+        jsonLd={[courseJsonLd, breadcrumbJsonLd]}
+      />
       <Navbar />
       
       {/* Hero Section */}

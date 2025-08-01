@@ -6,6 +6,8 @@ import { Calendar, Clock, User, Phone, Mail, MessageSquare, CheckCircle } from '
 import { useAppointmentBooking } from '@/hooks/useAppointmentBooking';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 import ErrorBoundary from '@/components/ui/error-boundary';
+import SEOHead from '@/components/SEOHead';
+import { utilityPagesSEO } from '@/utils/seoData';
 
 const Appointment = () => {
   const [formData, setFormData] = useState({
@@ -66,6 +68,7 @@ const Appointment = () => {
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex flex-col">
+        <SEOHead {...utilityPagesSEO.appointment} />
         <Navbar />
         
         {/* Hero Section */}

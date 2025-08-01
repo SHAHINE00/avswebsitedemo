@@ -2,10 +2,13 @@
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SEOHead from '@/components/SEOHead';
+import { legalPagesSEO } from '@/utils/seoData';
 
 const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen bg-white flex flex-col">
+      <SEOHead {...legalPagesSEO.privacyPolicy} />
       <Navbar />
       
       <div className="pt-24 pb-12 bg-gradient-to-br from-white to-academy-gray">

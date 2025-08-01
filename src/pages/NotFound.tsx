@@ -1,6 +1,8 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { logError } from '@/utils/logger';
+import SEOHead from '@/components/SEOHead';
+import { utilityPagesSEO } from '@/utils/seoData';
 
 const NotFound = () => {
   const location = useLocation();
@@ -14,6 +16,7 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <SEOHead {...utilityPagesSEO.notFound} />
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-4">404</h1>
         <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>

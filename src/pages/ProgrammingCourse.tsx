@@ -12,6 +12,8 @@ import ObjectivesSection from '@/components/programming-course/ObjectivesSection
 import CurriculumSection from '@/components/programming-course/CurriculumSection';
 import TeachingStrategiesSection from '@/components/programming-course/TeachingStrategiesSection';
 import CTASection from '@/components/programming-course/CTASection';
+import SEOHead from '@/components/SEOHead';
+import { courseSEO, generateCourseJsonLd, generateBreadcrumbJsonLd } from '@/utils/seoData';
 
 const ProgrammingCourse = () => {
   const firstYearModules = [
@@ -38,8 +40,27 @@ const ProgrammingCourse = () => {
     { code: "M18", title: "PROJET FINAL DE DÉVELOPPEMENT D'APPLICATION", duration: "6 semaines" }
   ];
 
+  const courseJsonLd = generateCourseJsonLd({
+    name: "Formation Programmation & Développement",
+    description: "Formation complète en programmation : développement web, mobile, frameworks modernes, DevOps et architecture. 24 semaines de formation pratique.",
+    duration: "24 semaines",
+    level: "Débutant à Avancé",
+    instructor: "Développeurs experts certifiés"
+  });
+
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd([
+    { name: "Accueil", url: "/" },
+    { name: "Formations", url: "/curriculum" },
+    { name: "Formation Programmation", url: "/programming-course" }
+  ]);
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
+      <SEOHead 
+        {...courseSEO["formation-programmation"]} 
+        canonicalUrl="https://avs.ma/programming-course"
+        jsonLd={[courseJsonLd, breadcrumbJsonLd]}
+      />
       <Navbar />
       <HeroSection />
       
