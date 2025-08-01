@@ -1,6 +1,6 @@
 // Mobile-specific error handler component
 import React, { useEffect, useState } from 'react';
-import { AlertTriangle, RefreshCw, Wifi, WifiOff } from 'lucide-react';
+import { AlertTriangle, RefreshCw, Wifi, WifiOff, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { logError, logInfo } from '@/utils/logger';
@@ -36,28 +36,32 @@ export const MobileErrorHandler: React.FC<MobileErrorHandlerProps> = ({ error, o
     };
   }, []);
 
-  const handleRetry = () => {
+  const handleRetry = async () => {
     setRetryCount(prev => prev + 1);
     logInfo(`Mobile error retry attempt: ${retryCount + 1}`);
     
     if (onRetry) {
       onRetry();
     } else {
-      // Clear any cached chunks and reload
-      if (typeof window !== 'undefined' && window.location) {
-        if ('caches' in window) {
-          caches.keys().then(names => {
-            names.forEach(name => {
-              if (name.includes('vite') || name.includes('chunk')) {
-                caches.delete(name);
-              }
-            });
-          }).finally(() => {
-            window.location.reload();
-          });
+      try {
+        // Progressive retry strategy for mobile
+        if (retryCount === 0) {
+          // First retry: just reload
+          (window as any).location.reload();
+        } else if (retryCount === 1) {
+          // Second retry: clear caches and reload
+          if ('caches' in window) {
+            const cacheNames = await caches.keys();
+            await Promise.all(cacheNames.map(name => caches.delete(name)));
+          }
+          (window as any).location.reload();
         } else {
-          (window as Window).location.reload();
+          // Third+ retry: hard refresh
+          (window as any).location.href = (window as any).location.href;
         }
+      } catch (e) {
+        logError('Mobile retry failed:', e);
+        (window as any).location.reload();
       }
     }
   };
@@ -91,12 +95,12 @@ export const MobileErrorHandler: React.FC<MobileErrorHandlerProps> = ({ error, o
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="max-w-md w-full space-y-4">
-        <Alert className={`border-2 ${!isOnline ? 'border-orange-500' : 'border-destructive'}`}>
+        <Alert className="border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive">
           <div className="flex items-center gap-2">
             {!isOnline ? (
-              <WifiOff className="h-4 w-4 text-orange-500" />
+              <WifiOff className="h-4 w-4" />
             ) : (
-              <AlertTriangle className="h-4 w-4 text-destructive" />
+              <Smartphone className="h-4 w-4" />
             )}
             <AlertDescription>
               <div className="space-y-3">

@@ -34,16 +34,21 @@ export default defineConfig(({ mode }) => {
     cssTarget: ['chrome58', 'safari11', 'firefox57'],
     cssCodeSplit: true,
     assetsInlineLimit: 4096,
+    // Mobile-optimized chunk size
+    chunkSizeWarningLimit: 600,
     // Performance optimizations
     rollupOptions: {
       output: {
         manualChunks: {
-          // Split vendor libraries into separate chunks
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          // Mobile-optimized smaller chunks
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-router': ['react-router-dom'],
           'vendor-ui': [
             '@radix-ui/react-dialog',
             '@radix-ui/react-dropdown-menu',
-            '@radix-ui/react-tabs',
+            '@radix-ui/react-tabs'
+          ],
+          'vendor-ui-extended': [
             '@radix-ui/react-toast',
             'lucide-react'
           ],
@@ -52,20 +57,17 @@ export default defineConfig(({ mode }) => {
             '@hookform/resolvers',
             'zod'
           ],
-          'vendor-charts': ['recharts'],
           'vendor-utils': [
             'clsx',
             'class-variance-authority',
-            'tailwind-merge',
-            'date-fns'
+            'tailwind-merge'
           ],
+          'vendor-data': ['date-fns'],
           'vendor-query': ['@tanstack/react-query'],
           'vendor-supabase': ['@supabase/supabase-js']
         }
       }
     },
-    // Increase chunk size warning limit
-    chunkSizeWarningLimit: 1000,
     // Production optimizations
     ...(isProduction && {
       minify: 'terser',
@@ -83,50 +85,6 @@ export default defineConfig(({ mode }) => {
         },
         format: {
           comments: false
-        }
-      },
-      // Add hash to filenames for cache busting
-      rollupOptions: {
-        output: {
-          entryFileNames: 'assets/js/[name]-[hash].js',
-          chunkFileNames: 'assets/js/[name]-[hash].js',
-          assetFileNames: (assetInfo) => {
-            const extType = assetInfo.name?.split('.').at(1);
-            if (/png|jpe?g|svg|gif|tiff|bmp|ico|webp|avif/i.test(extType || '')) {
-              return 'assets/images/[name]-[hash].[ext]';
-            }
-            if (/woff2?|eot|ttf|otf/i.test(extType || '')) {
-              return 'assets/fonts/[name]-[hash].[ext]';
-            }
-            if (/css/i.test(extType || '')) {
-              return 'assets/css/[name]-[hash].[ext]';
-            }
-            return 'assets/[name]-[hash].[ext]';
-          },
-          manualChunks: {
-            'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-            'vendor-ui': [
-              '@radix-ui/react-dialog',
-              '@radix-ui/react-dropdown-menu',
-              '@radix-ui/react-tabs',
-              '@radix-ui/react-toast',
-              'lucide-react'
-            ],
-            'vendor-forms': [
-              'react-hook-form',
-              '@hookform/resolvers',
-              'zod'
-            ],
-            'vendor-charts': ['recharts'],
-            'vendor-utils': [
-              'clsx',
-              'class-variance-authority',
-              'tailwind-merge',
-              'date-fns'
-            ],
-            'vendor-query': ['@tanstack/react-query'],
-            'vendor-supabase': ['@supabase/supabase-js']
-          }
         }
       }
     })
