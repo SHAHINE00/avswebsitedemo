@@ -15,6 +15,7 @@ const SectionVisibilityManagement: React.FC = () => {
   const MAPPED_SECTIONS = [
     'global_navbar', 'global_footer',
     'home_hero', 'home_partners', 'home_features', 'home_course_guide',
+    'home_career_paths', 'home_course_universe',
     'home_instructors', 'home_testimonials', 'home_faq', 'home_cta',
     'about_hero', 'about_mission', 'about_values', 'about_stats',
     'about_history', 'about_cta',
