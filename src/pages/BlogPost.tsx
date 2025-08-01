@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { ArrowLeft, Share2, Clock, Eye, Calendar, User, ExternalLink } from 'lucide-react';
@@ -173,10 +174,9 @@ const BlogPost = () => {
                 {post.excerpt}
               </div>
               
-              <div 
-                className="text-gray-700 leading-relaxed blog-content"
-                dangerouslySetInnerHTML={{ __html: post.content }}
-              />
+              <div className="text-gray-700 leading-relaxed blog-content">
+                <ReactMarkdown>{post.content}</ReactMarkdown>
+              </div>
             </div>
 
             {/* Article Tags */}
