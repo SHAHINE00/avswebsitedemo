@@ -62,7 +62,7 @@ const CookiesPolicy = () => {
             
             <h2>Contact</h2>
             <p>
-              Si vous avez des questions concernant l'utilisation des cookies sur notre site, n'hésitez pas à nous contacter à info@avs.ma.
+              Si vous avez des questions concernant l'utilisation des cookies sur notre site, n'hésitez pas à nous contacter à privacy@avs.ma.
             </p>
           </div>
         </div>
