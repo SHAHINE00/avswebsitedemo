@@ -36,13 +36,6 @@ const DynamicBlog = () => {
     setFilteredPosts(filtered);
   }, [posts, searchTerm, selectedCategory]);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fr-FR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
 
   return (
     <div className="space-y-8">
@@ -101,12 +94,7 @@ const DynamicBlog = () => {
                   <p className="text-gray-600 mb-4 line-clamp-3">
                     {filteredPosts[0].excerpt}
                   </p>
-                  <div className="flex justify-between items-center text-sm">
-                    <div className="text-gray-500">
-                      <span>{formatDate(filteredPosts[0].created_at)}</span>
-                      <span className="mx-2">•</span>
-                      <span>Par {filteredPosts[0].profiles?.full_name || 'Auteur'}</span>
-                    </div>
+                  <div className="flex justify-end items-center">
                     <Link 
                       to={`/blog/${filteredPosts[0].slug}`}
                       className="text-primary font-medium flex items-center hover:underline"
@@ -141,12 +129,7 @@ const DynamicBlog = () => {
                     <p className="text-gray-600 mb-4 line-clamp-2">
                       {post.excerpt}
                     </p>
-                    <div className="flex justify-between items-center text-sm">
-                      <div className="text-gray-500">
-                        <span>{formatDate(post.created_at)}</span>
-                        <span className="mx-2">•</span>
-                        <span>Par {post.profiles?.full_name || 'Auteur'}</span>
-                      </div>
+                    <div className="flex justify-end items-center">
                       <Link 
                         to={`/blog/${post.slug}`}
                         className="text-primary font-medium flex items-center hover:underline"

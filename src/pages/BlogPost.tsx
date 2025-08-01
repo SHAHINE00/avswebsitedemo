@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { ArrowLeft, Share2, Clock, Eye, Calendar, User, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Share2, ExternalLink } from 'lucide-react';
 import OptimizedImage from '@/components/OptimizedImage';
 import { useBlogManagement, BlogPost as BlogPostType } from '@/hooks/useBlogManagement';
 import { Badge } from '@/components/ui/badge';
@@ -19,14 +19,7 @@ const BlogPost = () => {
   const [post, setPost] = useState<BlogPostType | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPostType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [readingTime, setReadingTime] = useState(0);
 
-  // Calculate reading time (average 200 words per minute)
-  const calculateReadingTime = (content: string) => {
-    const wordsPerMinute = 200;
-    const words = content.replace(/<[^>]*>/g, '').split(/\s+/).length;
-    return Math.ceil(words / wordsPerMinute);
-  };
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -35,11 +28,6 @@ const BlogPost = () => {
       setLoading(true);
       const blogPost = await getPostBySlug(slug);
       setPost(blogPost);
-      
-      if (blogPost) {
-        setReadingTime(calculateReadingTime(blogPost.content));
-      }
-      
       setLoading(false);
     };
 
@@ -60,13 +48,6 @@ const BlogPost = () => {
     }
   }, [post, posts]);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fr-FR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
 
   const shareOnSocial = (platform: string) => {
     const url = window.location.href;
@@ -139,26 +120,7 @@ const BlogPost = () => {
               </Badge>
             </div>
             
-            <h1 className="text-3xl md:text-4xl font-bold mb-6">{post.title}</h1>
-            
-            <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-8">
-              <div className="flex items-center gap-1">
-                <User className="w-4 h-4" />
-                <span>Par {post.profiles?.full_name}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                <span>{formatDate(post.published_at || post.created_at)}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Clock className="w-4 h-4" />
-                <span>{readingTime} min de lecture</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Eye className="w-4 h-4" />
-                <span>{post.view_count} vues</span>
-              </div>
-            </div>
+            <h1 className="text-3xl md:text-4xl font-bold mb-8">{post.title}</h1>
             
             {post.featured_image_url && (
               <OptimizedImage
@@ -229,25 +191,6 @@ const BlogPost = () => {
               </div>
             </div>
 
-            {/* Author Box */}
-            <div className="mt-8 p-6 bg-academy-gray/20 rounded-xl">
-              <div className="flex items-start gap-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-academy-blue to-academy-purple rounded-full flex items-center justify-center text-white font-bold text-xl">
-                  {post.profiles?.full_name?.charAt(0)}
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-bold text-lg mb-2">À propos de {post.profiles?.full_name}</h4>
-                  <p className="text-gray-600 text-sm mb-3">
-                    Expert en technologie et rédacteur passionné, partageant son expertise sur les dernières innovations tech.
-                  </p>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
-                      Voir tous les articles
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
           </article>
 
           {/* Related Articles */}
@@ -275,10 +218,7 @@ const BlogPost = () => {
                       </div>
                       <h4 className="font-bold mb-2 line-clamp-2">{relatedPost.title}</h4>
                       <p className="text-sm text-gray-600 mb-3 line-clamp-2">{relatedPost.excerpt}</p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-500">
-                          {formatDate(relatedPost.created_at)}
-                        </span>
+                      <div className="flex justify-end">
                         <Link 
                           to={`/blog/${relatedPost.slug}`} 
                           className="text-primary text-sm hover:underline flex items-center gap-1"
