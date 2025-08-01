@@ -21,8 +21,17 @@
     <!-- WordPress/Elementor Export Support -->
     <meta name="wp-export" content="For WordPress integration instructions, visit /elementor-export" />
     
-    <!-- Fonts that can be used in WordPress -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" />
+    <!-- Resource Hints for Performance -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Optimized Font Loading with font-display: swap -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap"></noscript>
+    
+    <!-- Preload Critical Assets -->
+    <link rel="preload" href="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" as="image" type="image/png">
+    <link rel="modulepreload" href="/src/main.tsx">
     
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>

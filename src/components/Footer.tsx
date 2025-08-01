@@ -12,10 +12,11 @@ const Footer: React.FC = () => {
           {/* Column 1 - About */}
           <div>
             <Link to="/" className="mb-4 inline-block">
-              <img
+              <OptimizedImage
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png"
                 alt="AVS Innovation Institute" 
                 className="h-28 sm:h-32 lg:h-40 w-auto object-contain filter brightness-0 invert"
+                priority={true}
               />
               <span 
                 className="font-montserrat font-bold text-2xl text-white hidden"

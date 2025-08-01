@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Clock, BookOpen, Award, CheckCircle, Brain, Code, Database, Cloud, Target, Shield, Star } from 'lucide-react';
+import OptimizedImage from '@/components/OptimizedImage';
 import EnrollmentButton from './EnrollmentButton';
 import type { Course } from '@/hooks/useCourses';
 import type { LucideIcon } from 'lucide-react';
@@ -100,7 +101,7 @@ const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
                 <div className="flex items-center space-x-4">
                   {course.certification_provider_logo && (
                     <div className="flex-shrink-0">
-                      <img 
+                      <OptimizedImage 
                         src={course.certification_provider_logo} 
                         alt={`${course.certification_provider_name} logo`}
                         className="w-12 h-12 object-contain rounded-lg bg-white p-1 shadow-sm"

@@ -1,37 +1,38 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { usePageTracking, useScrollTracking } from '@/hooks/useAnalytics';
 import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
 import AdminRouteGuard from "@/components/admin/AdminRouteGuard";
 import ScrollToTop from "@/components/ui/ScrollToTop";
+import { LazyWrapper } from "@/components/ui/lazy-wrapper";
 
-// Import all pages
-import Index from "@/pages/Index";
-import NotFound from "@/pages/NotFound";
-import Features from "@/pages/Features";
-import Curriculum from "@/pages/Curriculum";
-import AICourse from "@/pages/AICourse";
-import ProgrammingCourse from "@/pages/ProgrammingCourse";
-import CybersecurityCourse from "@/pages/CybersecurityCourse";
-import GenericCourse from "@/pages/GenericCourse";
-import CoursePlayer from "@/pages/CoursePlayer";
-import Instructors from "@/pages/Instructors";
-import Register from "@/pages/Register";
-import About from "@/pages/About";
-import Careers from "@/pages/Careers";
-import Contact from "@/pages/Contact";
-import Appointment from "@/pages/Appointment";
-import PrivacyPolicy from "@/pages/PrivacyPolicy";
-import TermsOfUse from "@/pages/TermsOfUse";
-import CookiesPolicy from "@/pages/CookiesPolicy";
-import Auth from "@/pages/Auth";
-import AdminCourses from "@/pages/AdminCourses";
-import AdminTest from "@/pages/AdminTest";
-import Admin from "@/pages/Admin";
-import Dashboard from "@/pages/Dashboard";
-import Blog from "@/pages/Blog";
-import BlogPost from "@/pages/BlogPost";
+// Lazy load all pages for code splitting
+const Index = lazy(() => import("@/pages/Index"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
+const Features = lazy(() => import("@/pages/Features"));
+const Curriculum = lazy(() => import("@/pages/Curriculum"));
+const AICourse = lazy(() => import("@/pages/AICourse"));
+const ProgrammingCourse = lazy(() => import("@/pages/ProgrammingCourse"));
+const CybersecurityCourse = lazy(() => import("@/pages/CybersecurityCourse"));
+const GenericCourse = lazy(() => import("@/pages/GenericCourse"));
+const CoursePlayer = lazy(() => import("@/pages/CoursePlayer"));
+const Instructors = lazy(() => import("@/pages/Instructors"));
+const Register = lazy(() => import("@/pages/Register"));
+const About = lazy(() => import("@/pages/About"));
+const Careers = lazy(() => import("@/pages/Careers"));
+const Contact = lazy(() => import("@/pages/Contact"));
+const Appointment = lazy(() => import("@/pages/Appointment"));
+const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
+const TermsOfUse = lazy(() => import("@/pages/TermsOfUse"));
+const CookiesPolicy = lazy(() => import("@/pages/CookiesPolicy"));
+const Auth = lazy(() => import("@/pages/Auth"));
+const AdminCourses = lazy(() => import("@/pages/AdminCourses"));
+const AdminTest = lazy(() => import("@/pages/AdminTest"));
+const Admin = lazy(() => import("@/pages/Admin"));
+const Dashboard = lazy(() => import("@/pages/Dashboard"));
+const Blog = lazy(() => import("@/pages/Blog"));
+const BlogPost = lazy(() => import("@/pages/BlogPost"));
 
 const AnalyticsWrapper: React.FC = () => {
   // Initialize analytics tracking inside Router context
@@ -43,31 +44,31 @@ const AnalyticsWrapper: React.FC = () => {
       <ScrollToTop />
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin" element={<AdminRouteGuard><Admin /></AdminRouteGuard>} />
-          <Route path="/admin/courses" element={<AdminRouteGuard><AdminCourses /></AdminRouteGuard>} />
-          <Route path="/admin/test" element={<AdminRouteGuard><AdminTest /></AdminRouteGuard>} />
-          <Route path="/features" element={<Features />} />
-          <Route path="/curriculum" element={<Curriculum />} />
-          <Route path="/ai-course" element={<AICourse />} />
-          <Route path="/programming-course" element={<ProgrammingCourse />} />
-          <Route path="/cybersecurity-course" element={<CybersecurityCourse />} />
-          <Route path="/course/:slug" element={<GenericCourse />} />
-          <Route path="/learn/:slug" element={<CoursePlayer />} />
-          <Route path="/instructors" element={<Instructors />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/careers" element={<Careers />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/appointment" element={<Appointment />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-use" element={<TermsOfUse />} />
-          <Route path="/cookies-policy" element={<CookiesPolicy />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path="/" element={<LazyWrapper><Index /></LazyWrapper>} />
+          <Route path="/auth" element={<LazyWrapper><Auth /></LazyWrapper>} />
+          <Route path="/dashboard" element={<LazyWrapper><Dashboard /></LazyWrapper>} />
+          <Route path="/admin" element={<AdminRouteGuard><LazyWrapper><Admin /></LazyWrapper></AdminRouteGuard>} />
+          <Route path="/admin/courses" element={<AdminRouteGuard><LazyWrapper><AdminCourses /></LazyWrapper></AdminRouteGuard>} />
+          <Route path="/admin/test" element={<AdminRouteGuard><LazyWrapper><AdminTest /></LazyWrapper></AdminRouteGuard>} />
+          <Route path="/features" element={<LazyWrapper><Features /></LazyWrapper>} />
+          <Route path="/curriculum" element={<LazyWrapper><Curriculum /></LazyWrapper>} />
+          <Route path="/ai-course" element={<LazyWrapper><AICourse /></LazyWrapper>} />
+          <Route path="/programming-course" element={<LazyWrapper><ProgrammingCourse /></LazyWrapper>} />
+          <Route path="/cybersecurity-course" element={<LazyWrapper><CybersecurityCourse /></LazyWrapper>} />
+          <Route path="/course/:slug" element={<LazyWrapper><GenericCourse /></LazyWrapper>} />
+          <Route path="/learn/:slug" element={<LazyWrapper><CoursePlayer /></LazyWrapper>} />
+          <Route path="/instructors" element={<LazyWrapper><Instructors /></LazyWrapper>} />
+          <Route path="/about" element={<LazyWrapper><About /></LazyWrapper>} />
+          <Route path="/register" element={<LazyWrapper><Register /></LazyWrapper>} />
+          <Route path="/careers" element={<LazyWrapper><Careers /></LazyWrapper>} />
+          <Route path="/contact" element={<LazyWrapper><Contact /></LazyWrapper>} />
+          <Route path="/appointment" element={<LazyWrapper><Appointment /></LazyWrapper>} />
+          <Route path="/blog" element={<LazyWrapper><Blog /></LazyWrapper>} />
+          <Route path="/blog/:slug" element={<LazyWrapper><BlogPost /></LazyWrapper>} />
+          <Route path="/privacy-policy" element={<LazyWrapper><PrivacyPolicy /></LazyWrapper>} />
+          <Route path="/terms-of-use" element={<LazyWrapper><TermsOfUse /></LazyWrapper>} />
+          <Route path="/cookies-policy" element={<LazyWrapper><CookiesPolicy /></LazyWrapper>} />
+          <Route path="*" element={<LazyWrapper><NotFound /></LazyWrapper>} />
         </Routes>
         <Toaster />
       </AuthProvider>

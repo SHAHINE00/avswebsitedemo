@@ -1,4 +1,5 @@
 import React from 'react';
+import OptimizedImage from '@/components/OptimizedImage';
 // Updated with AVS Innovation Institute logo and bigger sizes
 
 const PartnersSection: React.FC = () => {
@@ -53,11 +54,10 @@ const PartnersSection: React.FC = () => {
                     className="block transition-all duration-300 transform group-hover:scale-110 group-hover:drop-shadow-lg"
                   >
                      <div className="h-16 w-32 xs:h-18 xs:w-36 sm:h-20 sm:w-40 md:h-24 md:w-48 flex items-center justify-center bg-white rounded-xl shadow-sm border border-gray-100 p-2 sm:p-3 md:p-4 group-hover:shadow-md group-hover:border-academy-blue/20 transition-all duration-300">
-                      <img
+                      <OptimizedImage
                         src={partner.logo}
                         alt={`${partner.name} logo`}
                         className="max-h-full max-w-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
-                        loading="lazy"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
                         }}
@@ -84,11 +84,10 @@ const PartnersSection: React.FC = () => {
                     className="block transition-all duration-300 transform group-hover:scale-110 group-hover:drop-shadow-lg"
                   >
                     <div className="h-16 w-32 xs:h-18 xs:w-36 sm:h-20 sm:w-40 md:h-24 md:w-48 flex items-center justify-center bg-white rounded-xl shadow-sm border border-gray-100 p-2 sm:p-3 md:p-4 group-hover:shadow-md group-hover:border-academy-blue/20 transition-all duration-300">
-                      <img
+                      <OptimizedImage
                         src={partner.logo}
                         alt={`${partner.name} logo`}
                         className="max-h-full max-w-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
-                        loading="lazy"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
                         }}

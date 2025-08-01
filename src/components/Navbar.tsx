@@ -5,6 +5,7 @@ import { Menu, X, User, LogOut, Settings } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import NotificationBell from './user/NotificationBell';
+import OptimizedImage from '@/components/OptimizedImage';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,10 +45,11 @@ const Navbar = () => {
           {/* Logo - Desktop Left */}
           <div className="hidden lg:flex items-center flex-shrink-0">
             <Link to="/" className="flex items-center py-2">
-              <img 
+              <OptimizedImage 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
                 className="h-14 xl:h-16 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
+                priority={true}
               />
             </Link>
           </div>
@@ -114,10 +116,11 @@ const Navbar = () => {
           <div className="lg:hidden flex items-center justify-between w-full">
             <div className="w-10"></div> {/* Spacer for centering */}
             <Link to="/" className="flex items-center py-1">
-              <img 
+              <OptimizedImage 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
                 className="h-14 sm:h-16 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
+                priority={true}
               />
             </Link>
             <Button
