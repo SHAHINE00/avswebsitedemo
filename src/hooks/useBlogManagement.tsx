@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -54,7 +54,7 @@ export const useBlogManagement = () => {
   const [categories, setCategories] = useState<BlogCategory[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchPosts = async (status?: string) => {
+  const fetchPosts = useCallback(async (status?: string) => {
     try {
       setLoading(true);
       let query = supabase
@@ -92,11 +92,11 @@ export const useBlogManagement = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
 
-  const fetchPublishedPosts = async () => {
+  const fetchPublishedPosts = useCallback(async () => {
     await fetchPosts('published');
-  };
+  }, [fetchPosts]);
 
   const fetchCategories = async () => {
     try {
@@ -226,7 +226,7 @@ export const useBlogManagement = () => {
     });
   };
 
-  const getPostBySlug = async (slug: string) => {
+  const getPostBySlug = useCallback(async (slug: string) => {
     try {
       const { data, error } = await supabase
         .from('blog_posts')
@@ -253,7 +253,7 @@ export const useBlogManagement = () => {
       logError('Error fetching post by slug:', error);
       return null;
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchCategories();

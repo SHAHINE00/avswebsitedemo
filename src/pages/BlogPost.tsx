@@ -37,16 +37,17 @@ const BlogPost = () => {
       
       if (blogPost) {
         setReadingTime(calculateReadingTime(blogPost.content));
-        
-        // Fetch related posts from the same category
-        await fetchPublishedPosts();
       }
       
       setLoading(false);
     };
 
     fetchPost();
-  }, [slug, getPostBySlug, fetchPublishedPosts]);
+  }, [slug, getPostBySlug]);
+
+  useEffect(() => {
+    fetchPublishedPosts();
+  }, [fetchPublishedPosts]);
 
   useEffect(() => {
     if (post && posts.length > 0) {
