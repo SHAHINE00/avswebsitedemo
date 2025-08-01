@@ -241,6 +241,20 @@ export type Database = {
             referencedRelation: "blog_categories"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fk_blog_posts_author"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_blog_posts_category"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "blog_categories"
+            referencedColumns: ["id"]
+          },
         ]
       }
       course_announcements: {

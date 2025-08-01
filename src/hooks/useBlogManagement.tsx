@@ -77,7 +77,10 @@ export const useBlogManagement = () => {
 
       const { data, error } = await query;
 
-      if (error) throw error;
+      if (error) {
+        logError('Error fetching posts:', error);
+        throw error;
+      }
       setPosts((data as unknown as BlogPost[]) || []);
     } catch (error) {
       logError('Error fetching posts:', error);
@@ -241,7 +244,10 @@ export const useBlogManagement = () => {
         .eq('status', 'published')
         .single();
 
-      if (error) throw error;
+      if (error) {
+        logError('Error fetching post by slug:', error);
+        return null;
+      }
       return data as unknown as BlogPost;
     } catch (error) {
       logError('Error fetching post by slug:', error);
