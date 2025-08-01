@@ -119,6 +119,53 @@ const DynamicBlog = () => {
             </Card>
           )}
 
+          {/* Blog Posts Grid */}
+          {filteredPosts.length > 1 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {filteredPosts.slice(1).map((post) => (
+                <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  {post.featured_image_url && (
+                    <OptimizedImage
+                      src={post.featured_image_url}
+                      alt={post.title}
+                      className="w-full h-48 object-cover"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                  )}
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold mb-3 hover:text-primary transition-colors">
+                      <Link to={`/blog/${post.slug}`}>
+                        {post.title}
+                      </Link>
+                    </h3>
+                    <p className="text-gray-600 mb-4 line-clamp-2">
+                      {post.excerpt}
+                    </p>
+                    <div className="flex justify-between items-center text-sm">
+                      <div className="text-gray-500">
+                        <span>{formatDate(post.created_at)}</span>
+                        <span className="mx-2">•</span>
+                        <span>Par {post.profiles?.full_name || 'Auteur'}</span>
+                      </div>
+                      <Link 
+                        to={`/blog/${post.slug}`}
+                        className="text-primary font-medium flex items-center hover:underline"
+                      >
+                        Lire plus <ArrowRight className="ml-1 w-4 h-4" />
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+
+          {/* No Posts Message */}
+          {filteredPosts.length === 0 && !loading && (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">Aucun article trouvé.</p>
+            </div>
+          )}
 
           {/* Load More Button */}
           {filteredPosts.length > 7 && (
