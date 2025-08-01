@@ -78,11 +78,23 @@ const Footer: React.FC = () => {
               </div>
               <div className="flex items-start">
                 <Mail className="text-academy-blue mr-2 mt-1 flex-shrink-0" size={16} />
-                <div className="text-xs sm:text-sm">
-                  <p>info@avs.ma</p>
-                  <p>admissions@avs.ma</p>
-                  <p>careers@avs.ma</p>
-                  <p>partnerships@avs.ma</p>
+                <div className="text-xs sm:text-sm space-y-1">
+                  <div className="space-y-0.5">
+                    <p className="text-gray-400 text-xs">Informations générales</p>
+                    <a href="mailto:info@avs.ma" className="hover:text-academy-blue transition-colors block">info@avs.ma</a>
+                  </div>
+                  <div className="space-y-0.5">
+                    <p className="text-gray-400 text-xs">Admissions étudiantes</p>
+                    <a href="mailto:admissions@avs.ma" className="hover:text-academy-blue transition-colors block">admissions@avs.ma</a>
+                  </div>
+                  <div className="space-y-0.5">
+                    <p className="text-gray-400 text-xs">Opportunités carrières</p>
+                    <a href="mailto:careers@avs.ma" className="hover:text-academy-blue transition-colors block">careers@avs.ma</a>
+                  </div>
+                  <div className="space-y-0.5">
+                    <p className="text-gray-400 text-xs">Partenariats business</p>
+                    <a href="mailto:partnerships@avs.ma" className="hover:text-academy-blue transition-colors block">partnerships@avs.ma</a>
+                  </div>
                 </div>
               </div>
             </div>
