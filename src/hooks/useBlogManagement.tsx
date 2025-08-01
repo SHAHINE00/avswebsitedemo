@@ -61,11 +61,11 @@ export const useBlogManagement = () => {
         .from('blog_posts')
         .select(`
           *,
-          blog_categories (
+          blog_categories!blog_posts_category_id_fkey (
             name,
             slug
           ),
-          profiles (
+          profiles!blog_posts_author_id_fkey (
             full_name
           )
         `)
@@ -232,11 +232,11 @@ export const useBlogManagement = () => {
         .from('blog_posts')
         .select(`
           *,
-          blog_categories (
+          blog_categories!blog_posts_category_id_fkey (
             name,
             slug
           ),
-          profiles (
+          profiles!blog_posts_author_id_fkey (
             full_name
           )
         `)
