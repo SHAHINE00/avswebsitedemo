@@ -6,6 +6,7 @@ import AdminRouteGuard from "@/components/admin/AdminRouteGuard";
 import { GlobalErrorBoundary } from "@/components/ui/global-error-boundary";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import { usePageTracking, useScrollTracking } from "@/hooks/useAnalytics";
+import AnalyticsWrapper from "@/components/AnalyticsWrapper";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ElementorExport from "./pages/ElementorExport";
@@ -35,49 +36,12 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 
 const App = () => {
-  // Initialize analytics tracking
-  usePageTracking();
-  useScrollTracking();
-
   return (
     <GlobalErrorBoundary>
       <Router>
-        <ScrollToTop />
-        <AuthProvider>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin" element={<AdminRouteGuard><Admin /></AdminRouteGuard>} />
-          <Route path="/admin/courses" element={<AdminRouteGuard><AdminCourses /></AdminRouteGuard>} />
-          <Route path="/admin/test" element={<AdminRouteGuard><AdminTest /></AdminRouteGuard>} />
-          <Route path="/features" element={<Features />} />
-          <Route path="/curriculum" element={<Curriculum />} />
-          {/* Legacy course routes - keep for backward compatibility */}
-          <Route path="/ai-course" element={<AICourse />} />
-          <Route path="/programming-course" element={<ProgrammingCourse />} />
-          <Route path="/cybersecurity-course" element={<CybersecurityCourse />} />
-          {/* Dynamic course route - handles all new courses automatically */}
-          <Route path="/course/:slug" element={<GenericCourse />} />
-          <Route path="/learn/:slug" element={<CoursePlayer />} />
-          <Route path="/instructors" element={<Instructors />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/careers" element={<Careers />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/appointment" element={<Appointment />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-use" element={<TermsOfUse />} />
-          <Route path="/cookies-policy" element={<CookiesPolicy />} />
-          <Route path="/elementor-export" element={<WordPressGuide />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <Toaster />
-      </AuthProvider>
-    </Router>
-  </GlobalErrorBoundary>
+        <AnalyticsWrapper />
+      </Router>
+    </GlobalErrorBoundary>
   );
 };
 
