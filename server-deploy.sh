@@ -98,7 +98,7 @@ fi
 # Step 5: Start/restart PM2 if using it
 if command -v pm2 &> /dev/null; then
     log "Managing PM2 processes..."
-    sudo -u appuser pm2 reload ecosystem.config.js --env production 2>/dev/null || sudo -u appuser pm2 start ecosystem.config.js --env production
+    sudo -u appuser pm2 reload ecosystem.config.cjs --env production 2>/dev/null || sudo -u appuser pm2 start ecosystem.config.cjs --env production
     sudo -u appuser pm2 save
 else
     log "PM2 not found, skipping process management"
