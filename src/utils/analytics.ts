@@ -32,44 +32,68 @@ class AnalyticsService {
       return;
     }
 
-    // Check if gtag is available
-    if (typeof window.gtag === 'function') {
-      this.isInitialized = true;
-      logInfo('Analytics service initialized');
+    try {
+      // Check if gtag is available - mobile safe
+      if (window.gtag && typeof window.gtag === 'function') {
+        this.isInitialized = true;
+        logInfo('Analytics service initialized');
+      } else {
+        // Wait for gtag to load on mobile
+        let retries = 0;
+        const checkGtag = () => {
+          if (window.gtag && typeof window.gtag === 'function') {
+            this.isInitialized = true;
+            logInfo('Analytics service initialized (delayed)');
+          } else if (retries < 10) {
+            retries++;
+            setTimeout(checkGtag, 500);
+          }
+        };
+        setTimeout(checkGtag, 100);
+      }
+    } catch (error) {
+      // Silent fail on mobile if analytics can't initialize
+      logInfo('Analytics initialization failed, continuing without tracking');
     }
   }
 
-  // Track custom events
+  // Track custom events - mobile safe
   trackEvent(event: GAEvent) {
-    if (!this.isInitialized || !this.isEnabled) return;
+    if (!this.isInitialized || !this.isEnabled || typeof window === 'undefined') return;
 
     try {
-      window.gtag('event', event.action, {
-        event_category: event.category,
-        event_label: event.label,
-        value: event.value,
-        ...event.custom_parameters
-      });
+      if (window.gtag && typeof window.gtag === 'function') {
+        window.gtag('event', event.action, {
+          event_category: event.category,
+          event_label: event.label,
+          value: event.value,
+          ...event.custom_parameters
+        });
 
-      logInfo(`Analytics event tracked: ${event.action}`, event);
+        logInfo(`Analytics event tracked: ${event.action}`, event);
+      }
     } catch (error) {
-      console.warn('Failed to track analytics event:', error);
+      // Silent fail on mobile to prevent app crashes
+      logInfo('Analytics event tracking failed, continuing without tracking');
     }
   }
 
-  // Track page views
+  // Track page views - mobile safe
   trackPageView(pagePath: string, pageTitle?: string) {
-    if (!this.isInitialized || !this.isEnabled) return;
+    if (!this.isInitialized || !this.isEnabled || typeof window === 'undefined') return;
 
     try {
-      window.gtag('config', 'G-XXXXXXXXXX', {
-        page_path: pagePath,
-        page_title: pageTitle || document.title,
-      });
+      if (window.gtag && typeof window.gtag === 'function') {
+        window.gtag('config', 'G-XXXXXXXXXX', {
+          page_path: pagePath,
+          page_title: pageTitle || (document && document.title) || 'Unknown',
+        });
 
-      logInfo(`Page view tracked: ${pagePath}`);
+        logInfo(`Page view tracked: ${pagePath}`);
+      }
     } catch (error) {
-      console.warn('Failed to track page view:', error);
+      // Silent fail on mobile to prevent app crashes
+      logInfo('Page view tracking failed, continuing without tracking');
     }
   }
 
@@ -86,7 +110,8 @@ class AnalyticsService {
 
       logInfo(`Conversion tracked: ${conversionId}`, { value, currency });
     } catch (error) {
-      console.warn('Failed to track conversion:', error);
+      // Silent fail on mobile to prevent app crashes
+      logInfo('Conversion tracking failed, continuing without tracking');
     }
   }
 
@@ -256,7 +281,8 @@ class AnalyticsService {
         custom_map: properties
       });
     } catch (error) {
-      console.warn('Failed to set user properties:', error);
+      // Silent fail on mobile to prevent app crashes
+      logInfo('User properties setting failed, continuing without tracking');
     }
   }
 }

@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, Circle, Users, Calendar } from 'lucide-react';
 import { useCourses } from '@/hooks/useCourses';
 import type { Course } from '@/hooks/useCourses';
+import { logInfo } from '@/utils/logger';
 
 interface FormationData {
   formationType: string;
@@ -82,7 +83,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
     if (!courses.length) return [];
 
     const allCourses = courses.filter(course => course.status === 'published');
-    console.log('Available courses:', allCourses.map(c => c.title));
+    logInfo('Available courses:', allCourses.map(c => c.title));
 
     switch (domainValue) {
       case 'ai-data':
@@ -103,7 +104,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
             title.includes(keyword) || subtitle.includes(keyword)
           );
         });
-        console.log('AI courses filtered:', aiCourses.map(c => c.title));
+        logInfo('AI courses filtered:', aiCourses.map(c => c.title));
         return aiCourses;
 
       case 'programming':
@@ -124,7 +125,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
             title.includes(keyword) || subtitle.includes(keyword)
           );
         });
-        console.log('Programming courses filtered:', programmingCourses.map(c => c.title));
+        logInfo('Programming courses filtered:', programmingCourses.map(c => c.title));
         return programmingCourses;
 
       case 'marketing':
@@ -144,7 +145,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
             title.includes(keyword) || subtitle.includes(keyword)
           );
         });
-        console.log('Marketing courses filtered:', marketingCourses.map(c => c.title));
+        logInfo('Marketing courses filtered:', marketingCourses.map(c => c.title));
         return marketingCourses;
 
       default:

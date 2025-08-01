@@ -44,45 +44,69 @@ export const optimizeForMobile = (): void => {
   if (typeof window === 'undefined') return;
 
   try {
-    // Add mobile-specific meta tags if they don't exist
+    // Add mobile-specific meta tags if they don't exist - mobile safe
     const addMetaTag = (name: string, content: string) => {
       try {
-        if (!document.querySelector(`meta[name="${name}"]`)) {
+        if (document && document.querySelector && document.head && !document.querySelector(`meta[name="${name}"]`)) {
           const meta = document.createElement('meta');
           meta.name = name;
           meta.content = content;
           document.head.appendChild(meta);
         }
       } catch (error) {
-        console.warn(`Failed to add meta tag ${name}:`, error);
+        // Silent fail to prevent mobile crashes
       }
     };
 
     if (isMobileDevice()) {
       // Only add meta tags if document is ready and head exists
-      if (document.head) {
+      if (document && document.head && document.body) {
         addMetaTag('mobile-web-app-capable', 'yes');
         addMetaTag('apple-mobile-web-app-capable', 'yes');
         addMetaTag('apple-mobile-web-app-status-bar-style', 'default');
         
         // Add CSS class to body for mobile-specific styling
-        document.body.classList.add('mobile-device');
+        try {
+          document.body.classList.add('mobile-device');
+        } catch (e) {
+          // Silent fail if classList not supported
+        }
         
-        // Prevent double-tap zoom
-        document.addEventListener('gesturestart', (e) => e.preventDefault());
-        
-        // Optimize viewport on orientation change
-        window.addEventListener('orientationchange', () => {
-          const viewport = document.querySelector('meta[name="viewport"]');
-          if (viewport) {
-            viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes');
+        // Prevent double-tap zoom - with error handling
+        try {
+          if (document.addEventListener) {
+            document.addEventListener('gesturestart', (e) => {
+              try {
+                e.preventDefault();
+              } catch (preventError) {
+                // Silent fail
+              }
+            }, { passive: false });
           }
-        });
+        } catch (e) {
+          // Silent fail if gesture events not supported
+        }
         
-        console.log('Mobile optimizations applied successfully');
+        // Optimize viewport on orientation change - with error handling
+        try {
+          if (window.addEventListener) {
+            window.addEventListener('orientationchange', () => {
+              try {
+                const viewport = document.querySelector('meta[name="viewport"]');
+                if (viewport && viewport.setAttribute) {
+                  viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes');
+                }
+              } catch (e) {
+                // Silent fail
+              }
+            }, { passive: true });
+          }
+        } catch (e) {
+          // Silent fail if orientation events not supported
+        }
       }
     }
   } catch (error) {
-    console.warn('Mobile optimization failed:', error);
+    // Silent fail to prevent mobile optimization from crashing the app
   }
 };

@@ -3,6 +3,7 @@ import { AlertTriangle, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { logError } from '@/utils/logger';
+import { MobileErrorHandler } from '@/components/ui/mobile-error-handler';
 
 interface Props {
   children: React.ReactNode;
@@ -25,8 +26,23 @@ export class GlobalErrorBoundary extends React.Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    logError('Global Error Boundary caught an error:', { error, errorInfo });
-    this.setState({ errorInfo });
+    try {
+      logError('Global Error Boundary caught an error:', { error, errorInfo });
+      this.setState({ errorInfo });
+      
+      // Track mobile-specific errors
+      if (typeof window !== 'undefined' && error.message) {
+        if (error.message.includes('Failed to fetch dynamically imported module') ||
+            error.message.includes('Loading chunk') ||
+            error.message.includes('Loading CSS chunk')) {
+          // This is likely a mobile network/caching issue
+          logError('Mobile loading error detected:', error.message);
+        }
+      }
+    } catch (e) {
+      // Prevent error boundary from crashing
+      this.setState({ errorInfo: { componentStack: 'Error boundary failed to log error' } });
+    }
   }
 
   handleRetry = () => {
@@ -35,45 +51,12 @@ export class GlobalErrorBoundary extends React.Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
+      // Use mobile-specific error handler for better mobile experience
       return (
-        <div className="min-h-screen flex items-center justify-center bg-background p-4">
-          <div className="max-w-md w-full space-y-4">
-            <Alert className="border-destructive">
-              <AlertTriangle className="h-4 w-4" />
-              <AlertDescription>
-                <div className="space-y-3">
-                  <p className="font-medium text-destructive">
-                    Une erreur inattendue s'est produite
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    L'application a rencontré un problème. Veuillez rafraîchir la page ou réessayer.
-                  </p>
-                  {process.env.NODE_ENV === 'development' && this.state.error && (
-                    <details className="text-xs bg-muted p-2 rounded mt-2">
-                      <summary>Détails de l'erreur (dev only)</summary>
-                      <pre className="mt-2 overflow-auto">
-                        {this.state.error.stack}
-                      </pre>
-                    </details>
-                  )}
-                  <div className="flex gap-2">
-                    <Button onClick={this.handleRetry} size="sm" className="flex items-center gap-2">
-                      <RotateCcw className="h-3 w-3" />
-                      Réessayer
-                    </Button>
-                    <Button 
-                      onClick={() => window.location.reload()} 
-                      variant="outline" 
-                      size="sm"
-                    >
-                      Rafraîchir la page
-                    </Button>
-                  </div>
-                </div>
-              </AlertDescription>
-            </Alert>
-          </div>
-        </div>
+        <MobileErrorHandler 
+          error={this.state.error} 
+          onRetry={this.handleRetry}
+        />
       );
     }
 
