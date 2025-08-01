@@ -18,17 +18,36 @@ export const useScrollTracking = () => {
     let maxScroll = 0;
 
     const handleScroll = () => {
-      const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-      const roundedScroll = Math.floor(scrolled / 25) * 25;
+      try {
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = window.innerHeight;
+        const scrollTop = window.scrollY;
 
-      if (roundedScroll > maxScroll && roundedScroll <= 100) {
-        maxScroll = roundedScroll;
-        analytics.trackScrollDepth(roundedScroll);
+        // Prevent division by zero on mobile
+        const scrollableDistance = scrollHeight - clientHeight;
+        if (scrollableDistance <= 0) return;
+
+        const scrolled = (scrollTop / scrollableDistance) * 100;
+        const roundedScroll = Math.floor(Math.max(0, Math.min(100, scrolled)) / 25) * 25;
+
+        if (roundedScroll > maxScroll && roundedScroll <= 100) {
+          maxScroll = roundedScroll;
+          analytics.trackScrollDepth(roundedScroll);
+        }
+      } catch (error) {
+        console.warn('Scroll tracking error:', error);
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    // Add a small delay to ensure DOM is ready
+    const timeoutId = setTimeout(() => {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 };
 
