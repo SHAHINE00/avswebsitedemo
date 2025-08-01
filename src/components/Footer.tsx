@@ -1,10 +1,28 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Linkedin, Instagram, Mail, MapPin, Phone } from 'lucide-react';
 import OptimizedImage from '@/components/OptimizedImage';
+import { useHostingerEmail } from '@/hooks/useHostingerEmail';
 
 const Footer: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const { sendNewsletterWelcome, loading } = useHostingerEmail();
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    
+    const success = await sendNewsletterWelcome({
+      email: email.trim(),
+      source: 'footer'
+    });
+    
+    if (success) {
+      setEmail('');
+    }
+  };
+
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-6 sm:pb-8">
@@ -105,18 +123,22 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="text-white font-semibold text-lg mb-4">Newsletter</h3>
             <p className="mb-3 sm:mb-4 text-xs sm:text-sm">Abonnez-vous à notre newsletter pour recevoir des actualités AI et offres de formation.</p>
-            <form className="space-y-2" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-2" onSubmit={handleNewsletterSubmit}>
               <input
                 type="email"
                 placeholder="Votre adresse e-mail"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm rounded bg-gray-800 border border-gray-700 focus:outline-none focus:border-academy-blue"
                 required
+                disabled={loading}
               />
               <button
                 type="submit"
-                className="w-full bg-academy-blue hover:bg-academy-purple text-white py-1.5 sm:py-2 text-xs sm:text-sm rounded transition-colors"
+                disabled={loading || !email.trim()}
+                className="w-full bg-academy-blue hover:bg-academy-purple disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-1.5 sm:py-2 text-xs sm:text-sm rounded transition-colors"
               >
-                S'abonner
+                {loading ? 'Envoi...' : 'S\'abonner'}
               </button>
             </form>
           </div>
