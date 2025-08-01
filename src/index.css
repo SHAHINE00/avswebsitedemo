@@ -108,6 +108,58 @@
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
     min-height: 100vh;
+    /* Improve touch scrolling */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Mobile device specific improvements */
+  .mobile-device {
+    font-size: 16px;
+  }
+
+  .mobile-device input,
+  .mobile-device textarea,
+  .mobile-device select {
+    font-size: 16px;
+    transform: translateZ(0);
+  }
+
+  /* Touch-friendly improvements for mobile */
+  @media (max-width: 768px) {
+    button,
+    .btn,
+    [role="button"] {
+      min-height: 48px;
+      min-width: 48px;
+      padding: 12px 16px;
+      font-size: 16px;
+      touch-action: manipulation;
+    }
+    
+    /* Improve text legibility */
+    body {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    
+    /* Better container spacing */
+    .container {
+      padding-left: 16px;
+      padding-right: 16px;
+      max-width: 100%;
+    }
+    
+    /* Prevent text overflow */
+    * {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    
+    /* Ensure fixed navbar doesn't overlap content */
+    main,
+    .main-content {
+      padding-top: 4rem;
+    }
   }
 
   /* Mobile viewport fixes */

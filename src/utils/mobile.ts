@@ -64,6 +64,22 @@ export const optimizeForMobile = (): void => {
         addMetaTag('mobile-web-app-capable', 'yes');
         addMetaTag('apple-mobile-web-app-capable', 'yes');
         addMetaTag('apple-mobile-web-app-status-bar-style', 'default');
+        
+        // Add CSS class to body for mobile-specific styling
+        document.body.classList.add('mobile-device');
+        
+        // Prevent double-tap zoom
+        document.addEventListener('gesturestart', (e) => e.preventDefault());
+        
+        // Optimize viewport on orientation change
+        window.addEventListener('orientationchange', () => {
+          const viewport = document.querySelector('meta[name="viewport"]');
+          if (viewport) {
+            viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes');
+          }
+        });
+        
+        console.log('Mobile optimizations applied successfully');
       }
     }
   } catch (error) {

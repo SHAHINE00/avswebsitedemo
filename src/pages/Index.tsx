@@ -52,14 +52,15 @@ const Index = () => {
   ]);
 
   return (
-    <div className="min-h-screen bg-blue-50">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       <SEOHead 
         {...pageSEO.home} 
         canonicalUrl="https://avs.ma/"
         jsonLd={[faqJsonLd, reviewJsonLd, breadcrumbJsonLd]}
       />
       
-      <div style={{ paddingTop: '4rem' }}>
+      {/* Add proper top padding to account for fixed navbar on mobile */}
+      <div className="pt-16 sm:pt-18">
         <DynamicPageRenderer pageName="home" />
       </div>
     </div>

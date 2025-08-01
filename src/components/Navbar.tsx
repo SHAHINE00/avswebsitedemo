@@ -41,7 +41,7 @@ const Navbar = () => {
   return (
     <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-50 top-0 overflow-visible">
       <div className="container mx-auto px-6">
-        <div className="flex items-center h-16 relative overflow-visible">
+        <div className="flex items-center h-16 sm:h-18 relative overflow-visible">
           {/* Logo - Desktop Left */}
           <div className="hidden lg:flex items-center flex-shrink-0">
             <Link to="/" className="flex items-center py-2">
@@ -127,7 +127,7 @@ const Navbar = () => {
               variant="ghost"
               size="sm"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="flex-shrink-0"
+              className="flex-shrink-0 min-h-[44px] min-w-[44px] touch-manipulation"
             >
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
@@ -142,7 +142,7 @@ const Navbar = () => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
+                  className={`block px-4 py-3 rounded-md text-base font-medium transition-colors duration-200 min-h-[44px] touch-manipulation ${
                     isActive(item.href)
                       ? 'text-academy-blue bg-academy-blue/10'
                       : 'text-gray-700 hover:text-academy-blue hover:bg-gray-50'
