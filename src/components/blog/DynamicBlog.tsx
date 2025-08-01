@@ -119,73 +119,6 @@ const DynamicBlog = () => {
             </Card>
           )}
 
-          {/* Recent Posts Grid */}
-          <div className="space-y-6">
-            <h3 className="text-2xl font-bold">Articles récents</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {loading ? (
-                Array.from({ length: 6 }).map((_, index) => (
-                  <Card key={index} className="animate-pulse">
-                    <div className="bg-gray-200 h-48 rounded-t-lg"></div>
-                    <CardContent className="p-6">
-                      <div className="space-y-3">
-                        <div className="bg-gray-200 h-4 rounded w-3/4"></div>
-                        <div className="bg-gray-200 h-3 rounded w-full"></div>
-                        <div className="bg-gray-200 h-3 rounded w-2/3"></div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              ) : filteredPosts.slice(1).length === 0 ? (
-                <div className="col-span-full text-center py-12">
-                  <h3 className="text-lg font-semibold mb-2">Aucun article trouvé</h3>
-                  <p className="text-gray-500">
-                    Essayez de modifier vos critères de recherche ou de filtrage.
-                  </p>
-                </div>
-              ) : (
-                filteredPosts.slice(1).map((post) => (
-                  <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1">
-                    {post.featured_image_url && (
-                      <OptimizedImage
-                        src={post.featured_image_url}
-                        alt={post.title}
-                        className="w-full h-48 object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      />
-                    )}
-                    <CardContent className="p-6">
-                      <div className="flex justify-between items-center text-sm text-gray-500 mb-3">
-                        <span>{formatDate(post.created_at)}</span>
-                        <Badge variant="secondary" className="text-xs">
-                          {post.blog_categories?.name || 'Général'}
-                        </Badge>
-                      </div>
-                      <h3 className="text-lg font-bold mb-3 hover:text-primary transition-colors">
-                        <Link to={`/blog/${post.slug}`}>
-                          {post.title}
-                        </Link>
-                      </h3>
-                      <p className="text-gray-600 mb-4 line-clamp-3">
-                        {post.excerpt}
-                      </p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-500">
-                          Par {post.profiles?.full_name || 'Auteur'}
-                        </span>
-                        <Link 
-                          to={`/blog/${post.slug}`}
-                          className="text-primary font-medium flex items-center hover:underline text-sm"
-                        >
-                          Lire plus <ArrowRight className="ml-1 w-3 h-3" />
-                        </Link>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              )}
-            </div>
-          </div>
 
           {/* Load More Button */}
           {filteredPosts.length > 7 && (
@@ -199,28 +132,6 @@ const DynamicBlog = () => {
 
         {/* Sidebar */}
         <div className="space-y-6">
-          {/* Trending Articles */}
-          <Card className="p-6">
-            <h4 className="text-lg font-bold mb-4">Articles populaires</h4>
-            <div className="space-y-4">
-              {filteredPosts.slice(0, 4).map((post, index) => (
-                <div key={post.id} className="flex gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
-                    {index + 1}
-                  </div>
-                  <div className="flex-1">
-                    <Link to={`/blog/${post.slug}`} className="text-sm font-medium hover:text-primary transition-colors line-clamp-2">
-                      {post.title}
-                    </Link>
-                    <div className="text-xs text-gray-500 mt-1">
-                      {post.view_count} vues
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
-
           {/* Categories Widget */}
           <Card className="p-6">
             <h4 className="text-lg font-bold mb-4">Catégories</h4>
