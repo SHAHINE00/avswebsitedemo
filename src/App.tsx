@@ -4,6 +4,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
 import AdminRouteGuard from "@/components/admin/AdminRouteGuard";
 import { GlobalErrorBoundary } from "@/components/ui/global-error-boundary";
+import ScrollToTop from "@/components/ui/ScrollToTop";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ElementorExport from "./pages/ElementorExport";
@@ -36,6 +37,7 @@ const App = () => {
   return (
     <GlobalErrorBoundary>
       <Router>
+        <ScrollToTop />
         <AuthProvider>
         <Routes>
           <Route path="/" element={<Index />} />
