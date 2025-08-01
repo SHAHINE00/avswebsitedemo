@@ -52,6 +52,12 @@
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Academy Brand Colors */
+    --academy-blue: 226 32% 44%;
+    --academy-purple: 253 24% 55%;
+    --academy-lightblue: 197 76% 65%;
+    --academy-gray: 210 20% 98%;
   }
 
   .dark {
@@ -90,6 +96,12 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Academy Brand Colors - Dark Mode */
+    --academy-blue: 226 42% 54%;
+    --academy-purple: 253 34% 65%;
+    --academy-lightblue: 197 86% 75%;
+    --academy-gray: 210 20% 15%;
   }
 }
 
