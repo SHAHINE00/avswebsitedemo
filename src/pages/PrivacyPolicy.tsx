@@ -65,7 +65,7 @@ const PrivacyPolicy = () => {
             <h2>Contact</h2>
             <p>
               Pour toute question concernant cette politique de confidentialité ou pour exercer vos droits, 
-              veuillez nous contacter à info@avs.ma.
+              veuillez nous contacter à privacy@avs.ma.
             </p>
           </div>
         </div>
