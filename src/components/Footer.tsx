@@ -76,9 +76,14 @@ const Footer: React.FC = () => {
                   <p>+212 5 24 31 19 82</p>
                 </div>
               </div>
-              <div className="flex items-center">
-                <Mail className="text-academy-blue mr-2 flex-shrink-0" size={16} />
-                <p className="text-xs sm:text-sm">info@avs.ma</p>
+              <div className="flex items-start">
+                <Mail className="text-academy-blue mr-2 mt-1 flex-shrink-0" size={16} />
+                <div className="text-xs sm:text-sm">
+                  <p>info@avs.ma</p>
+                  <p>admissions@avs.ma</p>
+                  <p>careers@avs.ma</p>
+                  <p>partnerships@avs.ma</p>
+                </div>
               </div>
             </div>
           </div>
