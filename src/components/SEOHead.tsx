@@ -7,6 +7,9 @@ interface SEOHeadProps {
   ogImage?: string;
   canonicalUrl?: string;
   noIndex?: boolean;
+  ogType?: string;
+  ogSiteName?: string;
+  ogUrl?: string;
 }
 
 const SEOHead: React.FC<SEOHeadProps> = ({
@@ -15,11 +18,42 @@ const SEOHead: React.FC<SEOHeadProps> = ({
   keywords = "formation ia, intelligence artificielle, machine learning, programmation, cybersécurité, formation en ligne",
   ogImage = "https://lovable.dev/opengraph-image-p98pqg.png",
   canonicalUrl,
-  noIndex = false
+  noIndex = false,
+  ogType = "website",
+  ogSiteName = "AVS - Institut de l'Innovation et de l'Intelligence Artificielle",
+  ogUrl
 }) => {
   useEffect(() => {
     // Update document title
     document.title = title;
+
+    // Helper function to convert relative URLs to absolute URLs
+    const getAbsoluteUrl = (url: string): string => {
+      if (!url) return ogImage; // Fallback to default image
+      
+      // If already absolute URL, return as is
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        return url;
+      }
+      
+      // If relative URL starting with /src/assets, convert to absolute
+      if (url.startsWith('/src/assets/')) {
+        const baseUrl = window.location.origin;
+        return `${baseUrl}${url.replace('/src/assets/', '/src/assets/')}`;
+      }
+      
+      // If relative URL, make it absolute
+      if (url.startsWith('/')) {
+        return `${window.location.origin}${url}`;
+      }
+      
+      // Return the fallback image for any other case
+      return ogImage;
+    };
+
+    // Get current page URL if not provided
+    const currentUrl = ogUrl || window.location.href;
+    const absoluteImageUrl = getAbsoluteUrl(ogImage);
 
     // Update or create meta tags
     const updateMetaTag = (name: string, content: string, property?: string) => {
@@ -45,14 +79,17 @@ const SEOHead: React.FC<SEOHeadProps> = ({
     // Open Graph tags
     updateMetaTag('og:title', title, 'property');
     updateMetaTag('og:description', description, 'property');
-    updateMetaTag('og:image', ogImage, 'property');
-    updateMetaTag('og:type', 'website', 'property');
+    updateMetaTag('og:image', absoluteImageUrl, 'property');
+    updateMetaTag('og:type', ogType, 'property');
+    updateMetaTag('og:url', currentUrl, 'property');
+    updateMetaTag('og:site_name', ogSiteName, 'property');
     
     // Twitter Card tags
     updateMetaTag('twitter:card', 'summary_large_image');
     updateMetaTag('twitter:title', title);
     updateMetaTag('twitter:description', description);
-    updateMetaTag('twitter:image', ogImage);
+    updateMetaTag('twitter:image', absoluteImageUrl);
+    updateMetaTag('twitter:site', '@AVSInstitut');
 
     // Canonical URL
     if (canonicalUrl) {
@@ -72,7 +109,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       updateMetaTag('robots', 'index, follow');
     }
 
-  }, [title, description, keywords, ogImage, canonicalUrl, noIndex]);
+  }, [title, description, keywords, ogImage, canonicalUrl, noIndex, ogType, ogSiteName, ogUrl]);
 
   return null; // This component doesn't render anything
 };

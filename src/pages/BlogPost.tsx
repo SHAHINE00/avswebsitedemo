@@ -52,14 +52,23 @@ const BlogPost = () => {
   const shareOnSocial = (platform: string) => {
     const url = window.location.href;
     const title = post?.title || '';
+    const description = post?.excerpt || '';
     
     const shareUrls = {
       linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
       twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
+      facebook: `https://www.facebook.com/dialog/share?app_id=0&href=${encodeURIComponent(url)}&quote=${encodeURIComponent(`${title} - ${description}`)}&display=popup`
     };
     
-    window.open(shareUrls[platform as keyof typeof shareUrls], '_blank');
+    // Log for debugging
+    console.log('Sharing on', platform, 'with URL:', shareUrls[platform as keyof typeof shareUrls]);
+    
+    const newWindow = window.open(shareUrls[platform as keyof typeof shareUrls], '_blank', 'width=600,height=400');
+    
+    // Focus the new window if possible
+    if (newWindow) {
+      newWindow.focus();
+    }
   };
 
   if (loading) {
@@ -100,6 +109,9 @@ const BlogPost = () => {
         title={post?.title || 'Article de blog'}
         description={post?.excerpt || ''}
         ogImage={post?.featured_image_url || ''}
+        ogType="article"
+        canonicalUrl={window.location.href}
+        ogUrl={window.location.href}
       />
       <Navbar />
       
