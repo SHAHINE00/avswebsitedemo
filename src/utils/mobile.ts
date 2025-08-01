@@ -43,27 +43,30 @@ export const preventZoom = (): void => {
 export const optimizeForMobile = (): void => {
   if (typeof window === 'undefined') return;
 
-  // Add mobile-specific meta tags if they don't exist
-  const addMetaTag = (name: string, content: string) => {
-    if (!document.querySelector(`meta[name="${name}"]`)) {
-      const meta = document.createElement('meta');
-      meta.name = name;
-      meta.content = content;
-      document.head.appendChild(meta);
-    }
-  };
+  try {
+    // Add mobile-specific meta tags if they don't exist
+    const addMetaTag = (name: string, content: string) => {
+      try {
+        if (!document.querySelector(`meta[name="${name}"]`)) {
+          const meta = document.createElement('meta');
+          meta.name = name;
+          meta.content = content;
+          document.head.appendChild(meta);
+        }
+      } catch (error) {
+        console.warn(`Failed to add meta tag ${name}:`, error);
+      }
+    };
 
-  if (isMobileDevice()) {
-    addMetaTag('mobile-web-app-capable', 'yes');
-    addMetaTag('apple-mobile-web-app-capable', 'yes');
-    addMetaTag('apple-mobile-web-app-status-bar-style', 'default');
-    
-    // Add viewport meta if not exists
-    if (!document.querySelector('meta[name="viewport"]')) {
-      const viewport = document.createElement('meta');
-      viewport.name = 'viewport';
-      viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
-      document.head.appendChild(viewport);
+    if (isMobileDevice()) {
+      // Only add meta tags if document is ready and head exists
+      if (document.head) {
+        addMetaTag('mobile-web-app-capable', 'yes');
+        addMetaTag('apple-mobile-web-app-capable', 'yes');
+        addMetaTag('apple-mobile-web-app-status-bar-style', 'default');
+      }
     }
+  } catch (error) {
+    console.warn('Mobile optimization failed:', error);
   }
 };
