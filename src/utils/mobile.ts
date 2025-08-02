@@ -279,10 +279,8 @@ const setupMobileSpecificOptimizations = (): void => {
     });
   }
 
-  // Enhanced touch improvements for mobile scrolling
+  // Natural touch scrolling for mobile
   document.body.style.touchAction = 'pan-y pinch-zoom';
-  (document.body.style as any).webkitTouchCallout = 'none';
-  (document.body.style as any).webkitUserSelect = 'none';
   (document.body.style as any).webkitOverflowScrolling = 'touch';
   
   // Add scroll momentum and smooth scrolling
@@ -307,70 +305,34 @@ const setupMobileSpecificOptimizations = (): void => {
 // iOS-specific fixes for Safari compatibility
 const setupIOSSpecificFixes = (): void => {
   try {
-    // Enhanced iOS Safari viewport handling
-    const setVH = () => {
+    // Simple iOS Safari viewport handling - no dynamic updates during scroll
+    const setStaticVH = () => {
+      // Use static viewport height only on initial load
       const vh = window.innerHeight * 0.01;
-      const vvh = (window.visualViewport?.height || window.innerHeight) * 0.01;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
-      document.documentElement.style.setProperty('--vvh', `${vvh}px`);
-      
-      // Also set dynamic viewport height
-      document.documentElement.style.setProperty('--dvh', `${vvh}px`);
     };
     
-    setVH();
+    // Set viewport height only once on load
+    setStaticVH();
     
-    // Enhanced resize handling for iOS address bar
-    let resizeTimer: NodeJS.Timeout;
-    const handleResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(setVH, 150);
-    };
-    
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('orientationchange', () => setTimeout(setVH, 300));
-    
-    // Visual viewport handling for better scroll behavior
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', setVH);
-      window.visualViewport.addEventListener('scroll', setVH);
-    }
-
-    // Enhanced scroll behavior for iOS
-    document.addEventListener('touchmove', (e) => {
-      // Only prevent pinch zoom, allow normal scrolling
-      if ((e as any).scale !== 1 || e.touches.length > 1) {
-        e.preventDefault();
-      }
-    }, { passive: false });
-    
-    // Prevent overscroll/rubber band effect on body
-    document.body.addEventListener('touchmove', (e) => {
-      // Allow scrolling within scrollable containers
-      let element = e.target as Element;
-      while (element && element !== document.body) {
-        const style = window.getComputedStyle(element);
-        if (style.overflow === 'scroll' || style.overflow === 'auto' || 
-            style.overflowY === 'scroll' || style.overflowY === 'auto') {
-          return; // Allow scrolling in this container
-        }
-        element = element.parentElement!;
-      }
-      
-      // Prevent body scrolling beyond bounds
-      if (window.scrollY <= 0 && e.touches[0].clientY > (e as any).startY) {
-        e.preventDefault();
-      }
-      if (window.scrollY >= document.body.scrollHeight - window.innerHeight && 
-          e.touches[0].clientY < (e as any).startY) {
-        e.preventDefault();
-      }
-    }, { passive: false });
-    
-    // Track initial touch position
-    document.body.addEventListener('touchstart', (e) => {
-      (e as any).startY = e.touches[0].clientY;
+    // Only update on orientation change, not resize/scroll
+    window.addEventListener('orientationchange', () => {
+      setTimeout(setStaticVH, 500);
     });
+
+    // Minimal touch handling - only prevent pinch zoom
+    document.addEventListener('touchstart', (e) => {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+    
+    document.addEventListener('touchmove', (e) => {
+      // Only prevent multi-touch pinch zoom
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    }, { passive: false });
 
     // Force iOS to respect our Service Worker registration
     if ('serviceWorker' in navigator) {
