@@ -37,6 +37,28 @@ EMAIL="admin@avs.ma"  # Replace with your email
 
 log "Starting AVS.ma deployment..."
 
+# Step 0: Fix permissions and handle git conflicts
+log "Fixing file permissions..."
+chown -R appuser:www-data $APP_DIR
+find $APP_DIR -type d -exec chmod 755 {} \;
+find $APP_DIR -type f -exec chmod 644 {} \;
+
+log "Handling git conflicts and updating repository..."
+cd $APP_DIR
+
+# Stash any local changes and clean untracked files
+sudo -u appuser git stash || true
+sudo -u appuser git clean -fd || true
+
+# Force pull latest changes
+sudo -u appuser git pull origin main --force || {
+    warn "Git pull failed, attempting reset..."
+    sudo -u appuser git fetch origin
+    sudo -u appuser git reset --hard origin/main
+}
+
+log "Repository updated successfully"
+
 # Step 1: Deploy Nginx Configuration
 log "Deploying Nginx configuration..."
 if [ -f "$APP_DIR/nginx.conf" ]; then
