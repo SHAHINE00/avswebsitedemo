@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, User, Shield, Database, Settings } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import ResponsiveTestSuite from '@/components/testing/ResponsiveTestSuite';
 
 interface TestResult {
   name: string;
@@ -239,6 +240,8 @@ const AdminTest = () => {
                 )}
               </CardContent>
             </Card>
+
+            <ResponsiveTestSuite />
 
             <Card>
               <CardHeader>
