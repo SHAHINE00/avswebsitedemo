@@ -1,7 +1,7 @@
 module.exports = {
   apps: [{
     name: 'education-platform',
-    script: 'server.js',
+    script: 'server.cjs',
     instances: 1,
     exec_mode: 'fork',
     env: {
