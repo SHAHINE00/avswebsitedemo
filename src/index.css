@@ -208,6 +208,55 @@
     overflow: hidden;
   }
 
+  /* Enhanced mobile-specific improvements */
+  @media (max-width: 768px) {
+    body {
+      -webkit-overflow-scrolling: touch;
+      touch-action: manipulation;
+    }
+    
+    .mobile-device {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Improve button touch targets */
+    button, .btn, a[role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 12px 16px;
+    }
+
+    /* Better input handling */
+    input, textarea, select {
+      font-size: 16px; /* Prevent zoom on iOS */
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    /* Improve scrolling performance */
+    .scroll-container {
+      -webkit-overflow-scrolling: touch;
+      transform: translateZ(0);
+    }
+  }
+
+  /* iOS specific improvements */
+  .ios-device {
+    /* Handle safe areas */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Android specific improvements */
+  .android-device {
+    /* Android specific optimizations */
+    -webkit-font-smoothing: antialiased;
+  }
+
   /* Mobile-first responsive utilities */
   .container {
     width: 100%;

@@ -1,25 +1,46 @@
-// Mobile detection and optimization utilities
+// Enhanced Mobile Detection and Optimization Utilities
 
+// Enhanced Device and Viewport Detection
 export const isMobileDevice = (): boolean => {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  if (typeof window === 'undefined') return false;
+  
+  // Check for touch capability and screen size
+  const hasTouchScreen = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  const isSmallScreen = window.innerWidth <= 768;
+  const isMobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
+  
+  return isMobileUserAgent || (hasTouchScreen && isSmallScreen);
 };
 
 export const isIOS = (): boolean => {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent);
+  if (typeof window === 'undefined') return false;
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 };
 
 export const isAndroid = (): boolean => {
+  if (typeof window === 'undefined') return false;
   return /Android/.test(navigator.userAgent);
 };
 
 export const getViewportHeight = (): number => {
-  // Handle iOS viewport height issues
-  if (isIOS()) {
-    return window.innerHeight;
-  }
-  return window.visualViewport?.height || window.innerHeight;
+  if (typeof window === 'undefined') return 0;
+  // Account for iOS Safari's dynamic viewport and other mobile browsers
+  return window.visualViewport?.height || 
+         document.documentElement.clientHeight || 
+         window.innerHeight;
 };
 
+export const getViewportWidth = (): number => {
+  if (typeof window === 'undefined') return 0;
+  return window.visualViewport?.width || 
+         document.documentElement.clientWidth || 
+         window.innerWidth;
+};
+
+// User Interaction Prevention
 export const preventZoom = (): void => {
   // Prevent zoom on double-tap for mobile
   if (isMobileDevice()) {
@@ -27,7 +48,7 @@ export const preventZoom = (): void => {
       if (event.touches.length > 1) {
         event.preventDefault();
       }
-    });
+    }, { passive: false });
 
     let lastTouchEnd = 0;
     document.addEventListener('touchend', (event) => {
@@ -40,6 +61,7 @@ export const preventZoom = (): void => {
   }
 };
 
+// Compatibility Checks
 export const checkMobileCompatibility = (): { compatible: boolean; issues: string[] } => {
   const issues: string[] = [];
   
@@ -55,9 +77,12 @@ export const checkMobileCompatibility = (): { compatible: boolean; issues: strin
   if (!window.Set) issues.push('Set not supported');
 
   // Check for modern CSS features
-  const testElement = document.createElement('div');
-  if (!CSS.supports('display', 'grid')) issues.push('CSS Grid not supported');
-  if (!CSS.supports('display', 'flex')) issues.push('CSS Flexbox not supported');
+  try {
+    if (!CSS.supports('display', 'grid')) issues.push('CSS Grid not supported');
+    if (!CSS.supports('display', 'flex')) issues.push('CSS Flexbox not supported');
+  } catch (e) {
+    issues.push('CSS.supports not available');
+  }
 
   return {
     compatible: issues.length === 0,
@@ -65,6 +90,7 @@ export const checkMobileCompatibility = (): { compatible: boolean; issues: strin
   };
 };
 
+// Error Reporting
 export const initMobileErrorReporting = (): void => {
   if (typeof window === 'undefined') return;
 
@@ -100,98 +126,122 @@ export const initMobileErrorReporting = (): void => {
   });
 };
 
+// Enhanced Mobile Optimization Logic
 export const optimizeForMobile = (): void => {
   if (typeof window === 'undefined') return;
 
-  try {
-    // Initialize mobile error reporting
-    initMobileErrorReporting();
+  // Initialize mobile error reporting
+  initMobileErrorReporting();
 
-    // Check compatibility
-    const compatibility = checkMobileCompatibility();
-    if (!compatibility.compatible) {
-      console.warn('Mobile compatibility issues detected:', compatibility.issues);
-    }
-
-    // Add mobile-specific meta tags if they don't exist - mobile safe
-    const addMetaTag = (name: string, content: string) => {
-      try {
-        if (document && document.querySelector && document.head && !document.querySelector(`meta[name="${name}"]`)) {
-          const meta = document.createElement('meta');
-          meta.name = name;
-          meta.content = content;
-          document.head.appendChild(meta);
-        }
-      } catch (error) {
-        // Silent fail to prevent mobile crashes
-      }
-    };
-
-    if (isMobileDevice()) {
-      // Only add meta tags if document is ready and head exists
-      if (document && document.head && document.body) {
-        addMetaTag('mobile-web-app-capable', 'yes');
-        addMetaTag('apple-mobile-web-app-capable', 'yes');
-        addMetaTag('apple-mobile-web-app-status-bar-style', 'default');
-        addMetaTag('theme-color', '#2563eb');
-        
-        // Add CSS class to body for mobile-specific styling
-        try {
-          document.body.classList.add('mobile-device');
-          if (isIOS()) document.body.classList.add('ios-device');
-          if (isAndroid()) document.body.classList.add('android-device');
-        } catch (e) {
-          // Silent fail if classList not supported
-        }
-        
-        // Prevent double-tap zoom - with error handling
-        try {
-          if (document.addEventListener) {
-            document.addEventListener('gesturestart', (e) => {
-              try {
-                e.preventDefault();
-              } catch (preventError) {
-                // Silent fail
-              }
-            }, { passive: false });
-          }
-        } catch (e) {
-          // Silent fail if gesture events not supported
-        }
-        
-        // Optimize viewport on orientation change - with error handling
-        try {
-          if (window.addEventListener) {
-            window.addEventListener('orientationchange', () => {
-              try {
-                setTimeout(() => {
-                  const viewport = document.querySelector('meta[name="viewport"]');
-                  if (viewport && viewport.setAttribute) {
-                    viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes');
-                  }
-                }, 300); // Delay for iOS
-              } catch (e) {
-                // Silent fail
-              }
-            }, { passive: true });
-          }
-        } catch (e) {
-          // Silent fail if orientation events not supported
-        }
-
-        // Preload critical resources for mobile
-        try {
-          const link = document.createElement('link');
-          link.rel = 'prefetch';
-          link.href = '/';
-          document.head.appendChild(link);
-        } catch (e) {
-          // Silent fail
-        }
-      }
-    }
-  } catch (error) {
-    // Silent fail to prevent mobile optimization from crashing the app
-    console.error('Mobile optimization failed:', error);
+  // Check compatibility
+  const compatibility = checkMobileCompatibility();
+  if (!compatibility.compatible) {
+    console.warn('Mobile compatibility issues detected:', compatibility.issues);
   }
+
+  // Add universal optimizations (not just mobile)
+  setupUniversalOptimizations();
+
+  // Add device-specific optimizations
+  if (isMobileDevice()) {
+    setupMobileSpecificOptimizations();
+  }
+
+  console.log('Universal optimizations applied');
+};
+
+// Universal optimizations for all devices
+const setupUniversalOptimizations = (): void => {
+  // Improve viewport handling
+  const viewport = document.querySelector('meta[name="viewport"]');
+  if (viewport) {
+    viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, viewport-fit=cover');
+  }
+
+  // Add device classes for styling
+  document.body.classList.add(isMobileDevice() ? 'mobile-device' : 'desktop-device');
+  if (isIOS()) document.body.classList.add('ios-device');
+  if (isAndroid()) document.body.classList.add('android-device');
+
+  // Register Service Worker for all devices
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .then(registration => {
+        console.log('SW registered successfully:', registration.scope);
+        
+        // Handle updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          if (newWorker) {
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('New version available');
+                // Optionally notify user of update
+                if (window.confirm?.('New version available. Reload to update?')) {
+                  window.location.reload();
+                }
+              }
+            });
+          }
+        });
+      })
+      .catch(error => {
+        console.error('SW registration failed:', error);
+      });
+  }
+
+  // Add performance monitoring
+  if ('PerformanceObserver' in window) {
+    try {
+      const observer = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          if (entry.entryType === 'navigation') {
+            const navEntry = entry as PerformanceNavigationTiming;
+            console.log('Navigation timing:', {
+              loadComplete: navEntry.loadEventEnd,
+              domContentLoaded: navEntry.domContentLoadedEventEnd,
+              device: isMobileDevice() ? 'mobile' : 'desktop'
+            });
+          }
+        }
+      });
+      observer.observe({ entryTypes: ['navigation'] });
+    } catch (error) {
+      console.warn('Performance observer not supported:', error);
+    }
+  }
+};
+
+// Mobile-specific optimizations
+const setupMobileSpecificOptimizations = (): void => {
+  // Prevent zoom on mobile
+  preventZoom();
+
+  // Handle orientation changes
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+      // Recalculate viewport
+      const newViewport = document.querySelector('meta[name="viewport"]');
+      if (newViewport) {
+        newViewport.setAttribute('content', 'width=device-width, initial-scale=1.0, viewport-fit=cover');
+      }
+      
+      // Trigger resize event for components
+      window.dispatchEvent(new Event('resize'));
+    }, 500);
+  });
+
+  // Add touch improvements
+  document.body.style.touchAction = 'manipulation';
+  (document.body.style as any).webkitTouchCallout = 'none';
+  (document.body.style as any).webkitUserSelect = 'none';
+  
+  // Preload critical mobile resources
+  const criticalResources = ['/manifest.json', '/favicon.png'];
+  criticalResources.forEach(resource => {
+    const link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.href = resource;
+    document.head.appendChild(link);
+  });
 };

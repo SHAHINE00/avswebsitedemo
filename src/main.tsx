@@ -11,18 +11,15 @@ initializeProductionLogging();
 // Initialize mobile optimizations
 optimizeForMobile();
 
-// Register service worker for mobile optimization
-if ('serviceWorker' in navigator && isMobileDevice()) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then((registration) => {
-        logInfo('Service Worker registered:', registration.scope);
-      })
-      .catch((error) => {
-        logError('Service Worker registration failed:', error);
-      });
+// Debug mobile session in development
+if (process.env.NODE_ENV === 'development') {
+  import('@/utils/mobile-testing').then(({ debugMobileSession }) => {
+    debugMobileSession();
   });
 }
+
+// Service Worker is now registered in optimizeForMobile() for all devices
+// This ensures better reliability and universal PWA support
 
 // Global async error handler with mobile-specific handling
 window.addEventListener('unhandledrejection', (event) => {

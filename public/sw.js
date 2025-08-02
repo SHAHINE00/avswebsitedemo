@@ -1,23 +1,32 @@
-// Service Worker for mobile optimization and offline support
-const CACHE_NAME = 'avs-website-v1';
-const STATIC_CACHE = 'avs-static-v1';
+// Enhanced Service Worker for all devices with better error handling
+const CACHE_NAME = 'avs-website-v2';
+const STATIC_CACHE = 'avs-static-v2';
+const RUNTIME_CACHE = 'avs-runtime-v2';
 
 // Critical resources to cache
 const CRITICAL_RESOURCES = [
   '/',
   '/index.html',
-  '/manifest.json'
+  '/manifest.json',
+  '/favicon.png'
 ];
 
-// Install event - cache critical resources
+// Install event - cache critical resources with better error handling
 self.addEventListener('install', (event) => {
+  console.log('Service Worker installing...');
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then((cache) => {
-        return cache.addAll(CRITICAL_RESOURCES);
+        console.log('Caching critical resources...');
+        return cache.addAll(CRITICAL_RESOURCES).catch((error) => {
+          console.error('Failed to cache some resources:', error);
+          // Continue installation even if some resources fail
+          return Promise.resolve();
+        });
       })
       .catch((error) => {
         console.error('Service Worker install failed:', error);
+        return Promise.resolve();
       })
   );
   self.skipWaiting();
@@ -25,75 +34,113 @@ self.addEventListener('install', (event) => {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
+  console.log('Service Worker activating...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME && cacheName !== STATIC_CACHE) {
+          if (cacheName !== CACHE_NAME && cacheName !== STATIC_CACHE && cacheName !== RUNTIME_CACHE) {
+            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
+    }).then(() => {
+      console.log('Service Worker activated');
+      return self.clients.claim();
     })
   );
-  self.clients.claim();
 });
 
-// Fetch event - network first, fallback to cache
+// Enhanced fetch event with better caching strategy
 self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (event.request.method !== 'GET') {
     return;
   }
 
-  // Skip external requests
-  if (!event.request.url.startsWith(self.location.origin)) {
+  // Skip external requests (except for allowed CDNs)
+  const url = new URL(event.request.url);
+  if (url.origin !== self.location.origin && 
+      !url.hostname.includes('fonts.googleapis.com') && 
+      !url.hostname.includes('fonts.gstatic.com')) {
     return;
   }
 
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // Don't cache non-successful responses
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
-        }
-
-        // Cache successful responses
-        const responseToCache = response.clone();
-        caches.open(CACHE_NAME)
-          .then((cache) => {
-            cache.put(event.request, responseToCache);
-          })
-          .catch((error) => {
-            console.error('Cache put failed:', error);
-          });
-
-        return response;
-      })
-      .catch(() => {
-        // Network failed, try cache
-        return caches.match(event.request)
-          .then((response) => {
-            if (response) {
-              return response;
-            }
-            
-            // If it's a navigation request and we don't have it cached,
-            // return the cached index.html
-            if (event.request.mode === 'navigate') {
-              return caches.match('/index.html');
-            }
-            
-            // For other requests, return a simple error response
-            return new Response('Network error and no cached version available', {
-              status: 408,
-              statusText: 'Network error'
-            });
-          });
-      })
-  );
+  // Handle different types of requests
+  if (event.request.destination === 'document') {
+    // For navigation requests, try network first, fallback to cache
+    event.respondWith(handleNavigationRequest(event.request));
+  } else if (event.request.url.includes('/static/') || 
+             event.request.url.includes('.css') || 
+             event.request.url.includes('.js')) {
+    // For static assets, try cache first, fallback to network
+    event.respondWith(handleStaticRequest(event.request));
+  } else {
+    // For other requests, try network first with cache fallback
+    event.respondWith(handleDefaultRequest(event.request));
+  }
 });
+
+// Handle navigation requests
+async function handleNavigationRequest(request) {
+  try {
+    const response = await fetch(request);
+    if (response && response.status === 200) {
+      const cache = await caches.open(RUNTIME_CACHE);
+      cache.put(request, response.clone());
+      return response;
+    }
+  } catch (error) {
+    console.log('Network failed for navigation, trying cache');
+  }
+  
+  // Try cache
+  const cachedResponse = await caches.match(request);
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+  
+  // Fallback to index.html for SPA routing
+  return caches.match('/index.html') || new Response('Offline', { status: 503 });
+}
+
+// Handle static asset requests
+async function handleStaticRequest(request) {
+  const cachedResponse = await caches.match(request);
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+  
+  try {
+    const response = await fetch(request);
+    if (response && response.status === 200) {
+      const cache = await caches.open(CACHE_NAME);
+      cache.put(request, response.clone());
+      return response;
+    }
+  } catch (error) {
+    console.log('Failed to fetch static asset:', request.url);
+  }
+  
+  return new Response('Resource not available offline', { status: 503 });
+}
+
+// Handle default requests
+async function handleDefaultRequest(request) {
+  try {
+    const response = await fetch(request);
+    if (response && response.status === 200) {
+      const cache = await caches.open(RUNTIME_CACHE);
+      cache.put(request, response.clone());
+      return response;
+    }
+    return response;
+  } catch (error) {
+    const cachedResponse = await caches.match(request);
+    return cachedResponse || new Response('Network error', { status: 503 });
+  }
+}
 
 // Handle messages from the main thread
 self.addEventListener('message', (event) => {

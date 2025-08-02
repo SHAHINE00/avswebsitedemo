@@ -74,8 +74,12 @@
       /* Mobile touch target sizing and improvements */
       button, a, input, select, textarea {
         min-height: 44px;
-        min-width: 44px;
         touch-action: manipulation;
+      }
+      /* Ensure buttons have proper touch targets */
+      button {
+        min-width: 44px;
+        padding: 8px 16px;
       }
       /* Prevent horizontal scroll on small screens */
       .container {
