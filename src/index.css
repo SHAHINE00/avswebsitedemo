@@ -416,6 +416,88 @@
   }
 }
 
+/* Android-specific optimizations */
+.android-device {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.android-device [data-radix-select-trigger] {
+  min-height: 48px;
+  touch-action: auto;
+  border-radius: 8px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: white;
+  border: 2px solid hsl(var(--border));
+}
+
+.android-device [data-radix-select-content] {
+  touch-action: pan-y;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  background: white;
+  border: 1px solid hsl(var(--border));
+  z-index: 50;
+}
+
+/* Android responsive container system */
+.android-device .container {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .android-device .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .android-device .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Android touch targets */
+.android-device button,
+.android-device [role="button"],
+.android-device input,
+.android-device select,
+.android-device textarea {
+  min-height: 48px;
+  min-width: 48px;
+  touch-action: manipulation;
+}
+
+.android-device a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Android typography optimizations */
+.android-device {
+  font-feature-settings: "kern" 1, "liga" 1;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Android viewport and scrolling */
+.android-device {
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
+
+.android-device .scroll-container {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
 .gradient-text {
   @apply bg-clip-text text-transparent bg-gradient-to-r from-academy-blue to-academy-purple;
 }

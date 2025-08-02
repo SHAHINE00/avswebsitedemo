@@ -170,6 +170,15 @@ export const optimizeForMobile = (): void => {
   // Add device-specific optimizations
   if (isMobileDevice()) {
     setupMobileSpecificOptimizations();
+    
+    // Add device class for CSS targeting
+    if (isIOS()) {
+      document.body.classList.add('ios-device', 'mobile-device');
+      setupIOSSpecificFixes();
+    } else if (isAndroid()) {
+      document.body.classList.add('android-device', 'mobile-device');
+      setupAndroidSpecificFixes();
+    }
   }
 
   console.log('Universal optimizations applied');
@@ -363,5 +372,73 @@ const setupIOSSpecificFixes = (): void => {
     console.log('iOS-specific optimizations applied');
   } catch (error) {
     console.warn('iOS-specific fixes failed:', error);
+  }
+};
+
+// Android-specific fixes for Chrome and WebView compatibility
+const setupAndroidSpecificFixes = (): void => {
+  try {
+    // Android Chrome viewport handling
+    const updateViewport = () => {
+      const viewport = document.querySelector('meta[name="viewport"]');
+      if (viewport) {
+        viewport.setAttribute('content', 
+          'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover'
+        );
+      }
+    };
+    
+    updateViewport();
+    
+    // Handle Android keyboard resize
+    const handleResize = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    
+    // Android touch optimization
+    document.addEventListener('touchstart', () => {}, { passive: true });
+    
+    // Prevent zoom on form inputs while allowing user zoom
+    const preventInputZoom = (e: TouchEvent) => {
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    };
+    
+    document.addEventListener('touchstart', preventInputZoom);
+    
+    // Fix Android Chrome address bar height changes
+    let ticking = false;
+    const updateVH = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const vh = window.innerHeight * 0.01;
+          document.documentElement.style.setProperty('--vh', `${vh}px`);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    
+    window.addEventListener('scroll', updateVH, { passive: true });
+    window.addEventListener('orientationchange', () => {
+      setTimeout(updateVH, 100);
+    });
+
+    // Android-specific font rendering
+    document.documentElement.style.fontFeatureSettings = '"kern" 1, "liga" 1';
+    document.documentElement.style.textRendering = 'optimizeLegibility';
+    
+    // Improve Android scrolling performance
+    document.documentElement.style.overflowX = 'hidden';
+    document.documentElement.style.overscrollBehaviorX = 'none';
+
+    console.log('Android-specific optimizations applied');
+  } catch (error) {
+    console.warn('Android-specific fixes failed:', error);
   }
 };

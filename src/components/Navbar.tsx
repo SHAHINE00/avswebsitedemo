@@ -41,8 +41,8 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-50 top-0 overflow-visible will-change-transform">
-      <div className="container mx-auto px-6">
-        <div className="flex items-center h-16 sm:h-18 relative overflow-visible">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center h-16 sm:h-18 lg:h-20 relative overflow-visible">
           {/* Logo - Desktop Left */}
           <div className="hidden lg:flex items-center flex-shrink-0">
             <Link to="/" className="flex items-center py-2">
