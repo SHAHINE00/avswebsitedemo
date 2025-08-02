@@ -39,15 +39,27 @@ const mimeTypes = {
 };
 
 // Get common headers for web content
-const getCommonHeaders = (mimeType, isCompressible = false) => {
+const getCommonHeaders = (mimeType, isCompressible = false, userAgent = '') => {
   const headers = {
     'Content-Type': mimeType,
-    'Content-Disposition': 'inline',
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
     'X-XSS-Protection': '1; mode=block',
     'Cache-Control': mimeType.includes('html') ? 'no-cache, no-store, must-revalidate' : 'public, max-age=31536000'
   };
+  
+  // Only add Content-Disposition for non-HTML content to prevent Android download issues
+  if (!mimeType.includes('html')) {
+    headers['Content-Disposition'] = 'inline';
+  }
+  
+  // Add Android-specific headers
+  if (userAgent.toLowerCase().includes('android')) {
+    headers['X-UA-Compatible'] = 'IE=edge';
+    if (mimeType.includes('html')) {
+      headers['Content-Type'] = 'text/html; charset=utf-8';
+    }
+  }
   
   if (isCompressible) {
     headers['Vary'] = 'Accept-Encoding';
@@ -67,9 +79,10 @@ const shouldCompress = (mimeType) => {
 const server = http.createServer((req, res) => {
   const parsedUrl = url.parse(req.url);
   let pathname = parsedUrl.pathname;
+  const userAgent = req.headers['user-agent'] || '';
   
   // Log requests for debugging
-  console.log(`Request: ${req.method} ${pathname} - User-Agent: ${req.headers['user-agent']}`);
+  console.log(`Request: ${req.method} ${pathname} - User-Agent: ${userAgent}`);
   
   // Remove leading slash and default to index.html
   if (pathname === '/') {
@@ -80,7 +93,7 @@ const server = http.createServer((req, res) => {
   
   // Security: prevent directory traversal
   if (pathname.includes('..') || pathname.includes('~')) {
-    res.writeHead(403, getCommonHeaders('text/plain; charset=utf-8'));
+    res.writeHead(403, getCommonHeaders('text/plain; charset=utf-8', false, userAgent));
     res.end('Forbidden');
     return;
   }
@@ -99,17 +112,17 @@ const server = http.createServer((req, res) => {
       fs.readFile(indexPath, (err, content) => {
         if (err) {
           console.error('Error loading index.html:', err);
-          const headers = getCommonHeaders('text/html; charset=utf-8');
+          const headers = getCommonHeaders('text/html; charset=utf-8', false, userAgent);
           res.writeHead(500, headers);
           res.end('<!DOCTYPE html><html><head><title>Error</title></head><body><h1>500 - Server Error</h1><p>Unable to load application</p></body></html>');
         } else {
-          const headers = getCommonHeaders('text/html; charset=utf-8', isCompressible);
+          const headers = getCommonHeaders('text/html; charset=utf-8', isCompressible, userAgent);
           
           if (isCompressible && acceptsGzip) {
             headers['Content-Encoding'] = 'gzip';
             zlib.gzip(content, (err, compressed) => {
               if (err) {
-                res.writeHead(200, getCommonHeaders('text/html; charset=utf-8'));
+                res.writeHead(200, getCommonHeaders('text/html; charset=utf-8', false, userAgent));
                 res.end(content);
               } else {
                 res.writeHead(200, headers);
@@ -127,17 +140,17 @@ const server = http.createServer((req, res) => {
       fs.readFile(filePath, (err, content) => {
         if (err) {
           console.error('Error loading file:', filePath, err);
-          const headers = getCommonHeaders('text/html; charset=utf-8');
+          const headers = getCommonHeaders('text/html; charset=utf-8', false, userAgent);
           res.writeHead(500, headers);
           res.end('<!DOCTYPE html><html><head><title>Error</title></head><body><h1>500 - Server Error</h1><p>Unable to load file</p></body></html>');
         } else {
-          const headers = getCommonHeaders(mimeType, isCompressible);
+          const headers = getCommonHeaders(mimeType, isCompressible, userAgent);
           
           if (isCompressible && acceptsGzip) {
             headers['Content-Encoding'] = 'gzip';
             zlib.gzip(content, (err, compressed) => {
               if (err) {
-                res.writeHead(200, getCommonHeaders(mimeType));
+                res.writeHead(200, getCommonHeaders(mimeType, false, userAgent));
                 res.end(content);
               } else {
                 res.writeHead(200, headers);
