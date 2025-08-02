@@ -21,6 +21,7 @@ const AICourse = lazy(() => import("./pages/AICourse"));
 const ProgrammingCourse = lazy(() => import("./pages/ProgrammingCourse"));
 const CybersecurityCourse = lazy(() => import("./pages/CybersecurityCourse"));
 const GenericCourse = lazy(() => import("./pages/GenericCourse"));
+const CourseDetailPage = lazy(() => import("./components/course-detail/CourseDetailPage"));
 const CoursePlayer = lazy(() => import("./pages/CoursePlayer"));
 const Instructors = lazy(() => import("./pages/Instructors"));
 const Register = lazy(() => import("./pages/Register"));

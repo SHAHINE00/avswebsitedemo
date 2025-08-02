@@ -17,6 +17,7 @@ const AICourse = lazy(() => import("@/pages/AICourse"));
 const ProgrammingCourse = lazy(() => import("@/pages/ProgrammingCourse"));
 const CybersecurityCourse = lazy(() => import("@/pages/CybersecurityCourse"));
 const GenericCourse = lazy(() => import("@/pages/GenericCourse"));
+const CourseDetailPage = lazy(() => import("@/components/course-detail/CourseDetailPage"));
 const CoursePlayer = lazy(() => import("@/pages/CoursePlayer"));
 const Instructors = lazy(() => import("@/pages/Instructors"));
 const Testimonials = lazy(() => import("@/pages/Testimonials"));
@@ -69,6 +70,7 @@ const AnalyticsWrapper: React.FC = () => {
           <Route path="/ai-course" element={<LazyWrapper><AICourse /></LazyWrapper>} />
           <Route path="/programming-course" element={<LazyWrapper><ProgrammingCourse /></LazyWrapper>} />
           <Route path="/cybersecurity-course" element={<LazyWrapper><CybersecurityCourse /></LazyWrapper>} />
+          <Route path="/course/:courseSlug" element={<LazyWrapper><CourseDetailPage /></LazyWrapper>} />
           <Route path="/course/:slug" element={<LazyWrapper><GenericCourse /></LazyWrapper>} />
           <Route path="/learn/:slug" element={<LazyWrapper><CoursePlayer /></LazyWrapper>} />
           <Route path="/instructors" element={<LazyWrapper><Instructors /></LazyWrapper>} />
