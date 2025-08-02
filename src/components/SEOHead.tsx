@@ -19,7 +19,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
   title = "AVS - Institut de l'Innovation et de l'Intelligence Artificielle",
   description = "Rejoignez notre programme complet AVS IA Course et maîtrisez les technologies d'intelligence artificielle de pointe avec des instructeurs experts.",
   keywords = "formation ia, intelligence artificielle, machine learning, programmation, cybersécurité, formation en ligne",
-  ogImage = "https://lovable.dev/opengraph-image-p98pqg.png",
+  ogImage = "/src/assets/avs-blog-default.jpg",
   canonicalUrl,
   noIndex = false,
   ogType = "website",
@@ -33,7 +33,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
 
     // Helper function to convert relative URLs to absolute URLs
     const getAbsoluteUrl = (url: string): string => {
-      if (!url) return ogImage; // Fallback to default image
+      if (!url) return `${window.location.origin}/src/assets/avs-blog-default.jpg`; // AVS Institute default
       
       // If already absolute URL, return as is
       if (url.startsWith('http://') || url.startsWith('https://')) {
@@ -43,7 +43,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       // If relative URL starting with /src/assets, convert to absolute
       if (url.startsWith('/src/assets/')) {
         const baseUrl = window.location.origin;
-        return `${baseUrl}${url.replace('/src/assets/', '/src/assets/')}`;
+        return `${baseUrl}${url}`;
       }
       
       // If relative URL, make it absolute
@@ -51,8 +51,8 @@ const SEOHead: React.FC<SEOHeadProps> = ({
         return `${window.location.origin}${url}`;
       }
       
-      // Return the fallback image for any other case
-      return ogImage;
+      // Return the AVS Institute default image for any other case
+      return `${window.location.origin}/src/assets/avs-blog-default.jpg`;
     };
 
     // Get current page URL if not provided
