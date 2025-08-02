@@ -3,7 +3,7 @@ import * as SelectPrimitive from "@radix-ui/react-select"
 import { Check, ChevronDown, ChevronUp } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { useIsIOS, useIsAndroid } from "@/hooks/useIsIOS"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 const Select = SelectPrimitive.Root
 
@@ -15,30 +15,15 @@ const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
 >(({ className, children, ...props }, ref) => {
-  const isIOS = useIsIOS();
-  const isAndroid = useIsAndroid();
-
-  const handleTouchStart = React.useCallback((e: React.TouchEvent) => {
-    if (isIOS) {
-      // Prevent iOS from interpreting rapid touches as double-tap to zoom
-      e.preventDefault();
-    }
-  }, [isIOS]);
-
+  const isMobile = useIsMobile();
 
   return (
     <SelectPrimitive.Trigger
       ref={ref}
-      onTouchStart={handleTouchStart}
-      
       className={cn(
         "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
-        // Mobile-specific touch handling - iOS: 44px, Android: 48px minimum
-        "min-h-[48px] ios:min-h-[44px] touch-manipulation",
-        // iOS specific fixes
-        isIOS && "touch-action-manipulation select-none [-webkit-tap-highlight-color:transparent] [-webkit-user-select:none]",
-        // Android specific optimizations
-        isAndroid && "touch-action-manipulation",
+        // Mobile-specific optimizations
+        isMobile && "min-h-[48px] touch-manipulation [-webkit-tap-highlight-color:transparent]",
         // Responsive heights
         "h-12 md:h-10 lg:h-10",
         className
@@ -93,23 +78,20 @@ const SelectContent = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
 >(({ className, children, position = "popper", ...props }, ref) => {
-  const isIOS = useIsIOS();
-  const isAndroid = useIsAndroid();
+  const isMobile = useIsMobile();
 
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
         ref={ref}
         className={cn(
-          "relative z-[99999] max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-card text-card-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+          "relative z-[999999] max-h-96 min-w-[8rem] overflow-hidden rounded-md border shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
           position === "popper" &&
             "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
-          // iOS-specific fixes for dropdown stability
-          isIOS && "touch-action-manipulation [-webkit-touch-callout:none] [-webkit-user-select:none] will-change-transform",
           // Mobile-specific improvements
-          "ios:max-h-[50vh] android:max-h-[60vh] mobile:overflow-y-auto",
-          // Ensure proper background for visibility
-          "bg-white dark:bg-gray-800",
+          isMobile && "max-h-[50vh] touch-manipulation",
+          // Ensure proper background for visibility with semantic colors
+          "bg-popover text-popover-foreground",
           className
         )}
         position={position}
@@ -148,25 +130,15 @@ const SelectItem = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
 >(({ className, children, ...props }, ref) => {
-  const isIOS = useIsIOS();
-
-  const handleTouchStart = React.useCallback((e: React.TouchEvent) => {
-    if (isIOS) {
-      // Prevent iOS from interpreting touches as scrolling
-      e.stopPropagation();
-    }
-  }, [isIOS]);
+  const isMobile = useIsMobile();
 
   return (
     <SelectPrimitive.Item
       ref={ref}
-      onTouchStart={handleTouchStart}
       className={cn(
         "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-        // Mobile-specific touch targets - Android: 48px, iOS: 44px minimum
-        "min-h-[48px] ios:min-h-[44px] md:min-h-auto",
-        // iOS-specific touch improvements
-        isIOS && "touch-action-manipulation [-webkit-tap-highlight-color:transparent]",
+        // Mobile-specific touch targets
+        isMobile && "min-h-[48px] touch-manipulation [-webkit-tap-highlight-color:transparent]",
         className
       )}
       {...props}
