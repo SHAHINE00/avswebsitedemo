@@ -15,8 +15,24 @@ export const LazyWrapper: React.FC<LazyWrapperProps> = ({
     </div>
   )
 }) => {
+  console.log('iOS Debug: LazyWrapper rendering');
+  
+  React.useEffect(() => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+      console.log('iOS Debug: LazyWrapper mounted on iOS');
+    }
+  }, []);
+
   return (
-    <Suspense fallback={fallback}>
+    <Suspense 
+      fallback={
+        <>
+          {console.log('iOS Debug: Suspense fallback triggered')}
+          {fallback}
+        </>
+      }
+    >
       {children}
     </Suspense>
   );

@@ -8,7 +8,7 @@ import ScrollToTop from "@/components/ui/ScrollToTop";
 import { usePageTracking, useScrollTracking } from "@/hooks/useAnalytics";
 import AnalyticsWrapper from "@/components/AnalyticsWrapper";
 import UTMTracker from "@/components/marketing/UTMTracker";
-import { lazy } from "react";
+import { lazy, useEffect } from "react";
 
 // Core pages (loaded immediately)
 import Index from "./pages/Index";
@@ -46,6 +46,18 @@ const ElementorExport = lazy(() => import("./pages/ElementorExport"));
 const WordPressGuide = lazy(() => import("./pages/WordPressGuide"));
 
 const App = () => {
+  console.log('iOS Debug: App component rendering');
+  
+  // iOS-specific initialization check
+  useEffect(() => {
+    console.log('iOS Debug: App useEffect running');
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    console.log('iOS Debug: In App, isIOS:', isIOS);
+    if (isIOS) {
+      console.log('iOS Debug: iOS device detected in App component');
+    }
+  }, []);
+
   return (
     <GlobalErrorBoundary>
       <Router>

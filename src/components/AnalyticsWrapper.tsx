@@ -36,9 +36,21 @@ const Blog = lazy(() => import("@/pages/Blog"));
 const BlogPost = lazy(() => import("@/pages/BlogPost"));
 
 const AnalyticsWrapper: React.FC = () => {
+  console.log('iOS Debug: AnalyticsWrapper rendering');
+  
   // Initialize analytics tracking inside Router context
   usePageTracking();
   useScrollTracking();
+  
+  React.useEffect(() => {
+    console.log('iOS Debug: AnalyticsWrapper mounted');
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+      console.log('iOS Debug: iOS device in AnalyticsWrapper');
+      console.log('iOS Debug: Window location:', window.location.href);
+      console.log('iOS Debug: Document ready state:', document.readyState);
+    }
+  }, []);
 
   return (
     <>
