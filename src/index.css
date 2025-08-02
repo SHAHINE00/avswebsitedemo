@@ -307,6 +307,25 @@
       }
     }
 
+    /* Android-specific select optimizations */
+    .android-device [data-radix-select-trigger] {
+      touch-action: auto !important;
+      min-height: 48px !important;
+      -webkit-appearance: none;
+    }
+    
+    .android-device [data-radix-select-content] {
+      touch-action: pan-y !important;
+      max-height: 60vh !important;
+      z-index: 9999 !important;
+      overflow-y: auto;
+    }
+    
+    .android-device [data-radix-select-item] {
+      touch-action: auto !important;
+      min-height: 48px !important;
+    }
+
     /* Improve scrolling performance */
     .scroll-container {
       -webkit-overflow-scrolling: touch;
