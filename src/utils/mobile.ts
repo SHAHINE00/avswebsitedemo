@@ -305,20 +305,7 @@ const setupMobileSpecificOptimizations = (): void => {
 // iOS-specific fixes for Safari compatibility
 const setupIOSSpecificFixes = (): void => {
   try {
-    // Simple iOS Safari viewport handling - no dynamic updates during scroll
-    const setStaticVH = () => {
-      // Use static viewport height only on initial load
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-    };
-    
-    // Set viewport height only once on load
-    setStaticVH();
-    
-    // Only update on orientation change, not resize/scroll
-    window.addEventListener('orientationchange', () => {
-      setTimeout(setStaticVH, 500);
-    });
+    // No viewport height manipulation - let CSS handle with 100dvh
 
     // Minimal touch handling - only prevent pinch zoom
     document.addEventListener('touchstart', (e) => {
