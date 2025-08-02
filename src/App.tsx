@@ -9,6 +9,8 @@ import ScrollToTop from "@/components/ui/ScrollToTop";
 import { usePageTracking, useScrollTracking } from "@/hooks/useAnalytics";
 import AnalyticsWrapper from "@/components/AnalyticsWrapper";
 import UTMTracker from "@/components/marketing/UTMTracker";
+import SEOAnalytics from "@/components/SEOAnalytics";
+import StructuredData from "@/components/StructuredData";
 
 // Core pages (loaded immediately)
 import Index from "./pages/Index";
@@ -63,6 +65,8 @@ const App = () => {
     <GlobalErrorBoundary>
       <Router>
         <UTMTracker />
+        <SEOAnalytics />
+        <StructuredData type="website" />
         <AnalyticsWrapper />
       </Router>
     </GlobalErrorBoundary>
