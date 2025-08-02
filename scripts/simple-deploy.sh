@@ -26,8 +26,9 @@ VPS_HOST="213.210.20.104"
 VPS_USER="appuser"
 VPS_PATH="/var/www/avswebsite"
 
-# Upload dist files
+# Upload dist files and nginx config
 scp -r dist/* ${VPS_USER}@${VPS_HOST}:${VPS_PATH}/dist/
+scp nginx.conf ${VPS_USER}@${VPS_HOST}:${VPS_PATH}/
 
 echo "✅ Files uploaded successfully!"
 
@@ -40,8 +41,18 @@ cd /var/www/avswebsite
 sudo chown -R appuser:www-data dist/
 sudo chmod -R 755 dist/
 
-# Reload nginx
-sudo systemctl reload nginx
+# Update nginx configuration 
+sudo cp nginx.conf /etc/nginx/sites-available/avs.ma.conf
+sudo ln -sf /etc/nginx/sites-available/avs.ma.conf /etc/nginx/sites-enabled/
+
+# Test and reload nginx
+if sudo nginx -t; then
+    sudo systemctl reload nginx
+    echo "✅ Nginx configuration updated and reloaded"
+else
+    echo "❌ Nginx configuration test failed"
+    exit 1
+fi
 
 # Restart PM2 (using correct .cjs extension)
 pm2 reload ecosystem.config.cjs --env production || pm2 start ecosystem.config.cjs --env production

@@ -36,8 +36,19 @@ export const clearMobileCache = async (): Promise<void> => {
 // Auto-clear cache on mobile if download issue detected
 export const autoFixMobileDownload = (): void => {
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  
+  // Check if we're getting wrong content type or download behavior
   const hasDownloadIssue = document.contentType !== 'text/html' || 
-                           document.location.href.includes('download');
+                           document.URL.includes('download') ||
+                           document.querySelector('meta[http-equiv="Content-Type"]')?.getAttribute('content') !== 'text/html' ||
+                           window.location.href.includes('attachment');
+  
+  console.log('🔍 Mobile download check:', { 
+    isMobile, 
+    contentType: document.contentType,
+    url: document.URL,
+    hasDownloadIssue 
+  });
   
   if (isMobile && hasDownloadIssue) {
     console.log('🚨 Mobile download issue detected, clearing cache...');
