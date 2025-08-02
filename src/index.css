@@ -114,7 +114,6 @@
     @apply bg-background text-foreground font-sans;
     /* Enhanced mobile scrolling fixes */
     width: 100%;
-    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
@@ -265,7 +264,6 @@
   @media (max-width: 768px) {
     body {
       -webkit-overflow-scrolling: touch;
-      touch-action: pan-y pinch-zoom;
     }
     
     .mobile-device {

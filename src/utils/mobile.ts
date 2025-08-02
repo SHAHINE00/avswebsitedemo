@@ -256,13 +256,7 @@ const setupMobileSpecificOptimizations = (): void => {
         newViewport.setAttribute('content', 'width=device-width, initial-scale=1.0, viewport-fit=cover');
       }
       
-      // iOS Safari viewport fix
-      if (isIOS()) {
-        document.body.style.height = window.innerHeight + 'px';
-        setTimeout(() => {
-          document.body.style.height = 'auto';
-        }, 100);
-      }
+      // Let CSS handle viewport - no manual height manipulation
       
       // Trigger resize event for components
       window.dispatchEvent(new Event('resize'));
@@ -286,10 +280,10 @@ const setupMobileSpecificOptimizations = (): void => {
   // Add scroll momentum and smooth scrolling
   document.documentElement.style.scrollBehavior = 'smooth';
   
-  // Prevent zoom on form elements while allowing vertical scrolling
+  // Use consistent touch action for all elements
   const formElements = document.querySelectorAll('input, textarea, select');
   formElements.forEach(element => {
-    (element as HTMLElement).style.touchAction = 'manipulation';
+    (element as HTMLElement).style.touchAction = 'pan-y pinch-zoom';
   });
   
   // Preload critical mobile resources

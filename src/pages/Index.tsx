@@ -52,7 +52,7 @@ const Index = () => {
   ]);
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="min-h-[100dvh] bg-white">
       <SEOHead 
         {...pageSEO.home} 
         canonicalUrl="https://avs.ma/"
