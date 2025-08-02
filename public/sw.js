@@ -1,7 +1,13 @@
-// Enhanced Service Worker for all devices with better error handling
-const CACHE_NAME = 'avs-website-v2';
-const STATIC_CACHE = 'avs-static-v2';
-const RUNTIME_CACHE = 'avs-runtime-v2';
+// Enhanced Service Worker for all devices with iOS Safari compatibility
+const CACHE_NAME = 'avs-website-v3';
+const STATIC_CACHE = 'avs-static-v3';
+const RUNTIME_CACHE = 'avs-runtime-v3';
+
+// iOS Safari detection in Service Worker
+const isIOSSafari = () => {
+  const userAgent = (self.navigator && self.navigator.userAgent) || '';
+  return /iPad|iPhone|iPod/.test(userAgent) || (userAgent.includes('Safari') && userAgent.includes('Mobile'));
+};
 
 // Critical resources to cache
 const CRITICAL_RESOURCES = [
@@ -11,26 +17,55 @@ const CRITICAL_RESOURCES = [
   '/favicon.png'
 ];
 
-// Install event - cache critical resources with better error handling
+// Install event - cache critical resources with iOS compatibility
 self.addEventListener('install', (event) => {
   console.log('Service Worker installing...');
-  event.waitUntil(
-    caches.open(STATIC_CACHE)
-      .then((cache) => {
-        console.log('Caching critical resources...');
-        return cache.addAll(CRITICAL_RESOURCES).catch((error) => {
-          console.error('Failed to cache some resources:', error);
-          // Continue installation even if some resources fail
-          return Promise.resolve();
-        });
-      })
-      .catch((error) => {
-        console.error('Service Worker install failed:', error);
-        return Promise.resolve();
-      })
-  );
+  
+  // iOS Safari needs special handling
+  const installPromise = isIOSSafari() 
+    ? handleIOSInstall()
+    : handleStandardInstall();
+  
+  event.waitUntil(installPromise);
   self.skipWaiting();
 });
+
+// Standard installation for non-iOS devices
+async function handleStandardInstall() {
+  try {
+    const cache = await caches.open(STATIC_CACHE);
+    console.log('Caching critical resources...');
+    await cache.addAll(CRITICAL_RESOURCES);
+    return Promise.resolve();
+  } catch (error) {
+    console.error('Standard install failed:', error);
+    return Promise.resolve();
+  }
+}
+
+// iOS-specific installation with progressive caching
+async function handleIOSInstall() {
+  try {
+    const cache = await caches.open(STATIC_CACHE);
+    console.log('iOS Safari: Progressive caching...');
+    
+    // Cache resources one by one to avoid iOS memory limits
+    for (const resource of CRITICAL_RESOURCES) {
+      try {
+        const response = await fetch(resource);
+        if (response.ok) {
+          await cache.put(resource, response);
+        }
+      } catch (error) {
+        console.warn(`iOS: Failed to cache ${resource}:`, error);
+      }
+    }
+    return Promise.resolve();
+  } catch (error) {
+    console.error('iOS install failed:', error);
+    return Promise.resolve();
+  }
+}
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {

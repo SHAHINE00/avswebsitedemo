@@ -244,11 +244,30 @@
 
   /* iOS specific improvements */
   .ios-device {
+    /* Fix for iOS Safari dynamic viewport using CSS custom property */
+    min-height: 100vh;
+    min-height: calc(var(--vh, 1vh) * 100);
+    min-height: -webkit-fill-available;
+    
     /* Handle safe areas */
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
+  }
+  
+  .ios-device #root {
+    /* Ensure root container uses correct height */
+    min-height: 100vh;
+    min-height: calc(var(--vh, 1vh) * 100);
+    width: 100%;
+    position: relative;
+  }
+  
+  /* Better font rendering on iOS */
+  .ios-device * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   /* Android specific improvements */

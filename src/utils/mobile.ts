@@ -16,8 +16,24 @@ export const isMobileDevice = (): boolean => {
 
 export const isIOS = (): boolean => {
   if (typeof window === 'undefined') return false;
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  
+  // Enhanced iOS detection including newer devices
+  const userAgent = navigator.userAgent;
+  const platform = navigator.platform;
+  
+  // Traditional iOS detection
+  if (/iPad|iPhone|iPod/.test(userAgent)) return true;
+  
+  // Modern iPad detection (iOS 13+)
+  if (platform === 'MacIntel' && navigator.maxTouchPoints > 1) return true;
+  
+  // Additional iOS detection for standalone mode
+  if ((window.navigator as any).standalone !== undefined) return true;
+  
+  // Check for iOS-specific properties
+  if ('DeviceMotionEvent' in window && typeof (DeviceMotionEvent as any).requestPermission === 'function') return true;
+  
+  return false;
 };
 
 export const isAndroid = (): boolean => {
@@ -212,13 +228,18 @@ const setupUniversalOptimizations = (): void => {
   }
 };
 
-// Mobile-specific optimizations
+// Mobile-specific optimizations with enhanced iOS support
 const setupMobileSpecificOptimizations = (): void => {
   // Prevent zoom on mobile
   preventZoom();
 
-  // Handle orientation changes
-  window.addEventListener('orientationchange', () => {
+  // iOS-specific fixes
+  if (isIOS()) {
+    setupIOSSpecificFixes();
+  }
+
+  // Handle orientation changes with iOS-specific handling
+  const handleOrientationChange = () => {
     setTimeout(() => {
       // Recalculate viewport
       const newViewport = document.querySelector('meta[name="viewport"]');
@@ -226,10 +247,28 @@ const setupMobileSpecificOptimizations = (): void => {
         newViewport.setAttribute('content', 'width=device-width, initial-scale=1.0, viewport-fit=cover');
       }
       
+      // iOS Safari viewport fix
+      if (isIOS()) {
+        document.body.style.height = window.innerHeight + 'px';
+        setTimeout(() => {
+          document.body.style.height = 'auto';
+        }, 100);
+      }
+      
       // Trigger resize event for components
       window.dispatchEvent(new Event('resize'));
-    }, 500);
-  });
+    }, isIOS() ? 800 : 500); // iOS needs more time
+  };
+
+  window.addEventListener('orientationchange', handleOrientationChange);
+  
+  // iOS Safari resize handling
+  if (isIOS()) {
+    window.addEventListener('resize', () => {
+      clearTimeout((window as any)._resizeTimer);
+      (window as any)._resizeTimer = setTimeout(handleOrientationChange, 300);
+    });
+  }
 
   // Add touch improvements
   document.body.style.touchAction = 'manipulation';
@@ -244,4 +283,74 @@ const setupMobileSpecificOptimizations = (): void => {
     link.href = resource;
     document.head.appendChild(link);
   });
+};
+
+// iOS-specific fixes for Safari compatibility
+const setupIOSSpecificFixes = (): void => {
+  try {
+    // Fix iOS Safari 100vh issue
+    const setVH = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+    setVH();
+    window.addEventListener('resize', setVH);
+    window.addEventListener('orientationchange', () => setTimeout(setVH, 100));
+
+    // Fix iOS Safari bounce/scroll issues
+    document.addEventListener('touchmove', (e) => {
+      if ((e as any).scale !== 1) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    // Force iOS to respect our Service Worker registration
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        if (registrations.length === 0) {
+          // Force re-registration on iOS if it failed
+          navigator.serviceWorker.register('/sw.js', { scope: '/' })
+            .catch(error => console.warn('iOS Service Worker registration failed:', error));
+        }
+      });
+    }
+
+    // iOS-specific error handling for module loading
+    window.addEventListener('error', (event) => {
+      if (event.message && event.message.includes('Loading chunk')) {
+        console.warn('iOS chunk loading error detected, attempting recovery');
+        setTimeout(() => {
+          if ('caches' in window) {
+            caches.keys().then(names => {
+              names.forEach(name => caches.delete(name));
+            }).finally(() => location.reload());
+          } else {
+            location.reload();
+          }
+        }, 1000);
+      }
+    });
+
+    // iOS Safari memory management
+    const cleanupMemory = () => {
+      if ((performance as any).memory) {
+        const memory = (performance as any).memory;
+        if (memory.usedJSHeapSize / memory.totalJSHeapSize > 0.9) {
+          console.warn('iOS memory usage high, clearing caches');
+          if ('caches' in window) {
+            caches.keys().then(names => {
+              names.forEach(name => caches.delete(name));
+            });
+          }
+        }
+      }
+    };
+    
+    // Check memory every 30 seconds on iOS
+    setInterval(cleanupMemory, 30000);
+
+    console.log('iOS-specific optimizations applied');
+  } catch (error) {
+    console.warn('iOS-specific fixes failed:', error);
+  }
 };
