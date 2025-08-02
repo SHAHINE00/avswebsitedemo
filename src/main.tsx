@@ -5,6 +5,7 @@ import { initializeProductionLogging } from '@/utils/cleanupConsole'
 import { logError, logInfo } from '@/utils/logger'
 import { optimizeForMobile, isMobileDevice, isIOS } from '@/utils/mobile'
 import { mountIOSFallbackLoader } from '@/components/ui/ios-fallback-loader'
+import { autoFixMobileDownload } from '@/utils/clear-mobile-cache'
 
 // Initialize production monitoring and logging
 initializeProductionLogging();
@@ -16,6 +17,9 @@ console.log('iOS Debug: Is iOS?', /iPad|iPhone|iPod/.test(navigator.userAgent));
 
 // Initialize mobile optimizations
 optimizeForMobile();
+
+// Auto-fix mobile download issues
+autoFixMobileDownload();
 
 console.log('iOS Debug: Mobile optimizations complete');
 
