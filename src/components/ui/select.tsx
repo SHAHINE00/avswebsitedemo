@@ -25,26 +25,12 @@ const SelectTrigger = React.forwardRef<
     }
   }, [isIOS]);
 
-  const handleClick = React.useCallback((e: React.MouseEvent) => {
-    if (isIOS) {
-      // Add a small delay to prevent iOS Safari from rapid open/close
-      e.preventDefault();
-      setTimeout(() => {
-        const event = new MouseEvent('click', {
-          bubbles: true,
-          cancelable: true,
-          view: window
-        });
-        e.currentTarget.dispatchEvent(event);
-      }, 50);
-    }
-  }, [isIOS]);
 
   return (
     <SelectPrimitive.Trigger
       ref={ref}
       onTouchStart={handleTouchStart}
-      onClick={isIOS ? handleClick : props.onClick}
+      
       className={cn(
         "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
         // Mobile-specific touch handling - iOS: 44px, Android: 48px minimum
