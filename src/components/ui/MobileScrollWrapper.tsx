@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { isIOS } from '@/utils/mobile';
+import IOSScrollWrapper from './IOSScrollWrapper';
 
 interface MobileScrollWrapperProps {
   children: React.ReactNode;
@@ -88,6 +90,11 @@ const MobileScrollWrapper = ({ children, className = '' }: MobileScrollWrapperPr
       wrapper.removeEventListener('scroll', handleScroll);
     };
   }, [isMobile]);
+
+  // Use iOS-specific wrapper for iOS devices
+  if (isMobile && isIOS()) {
+    return <IOSScrollWrapper className={className}>{children}</IOSScrollWrapper>;
+  }
 
   if (!isMobile) {
     return <div className={className}>{children}</div>;

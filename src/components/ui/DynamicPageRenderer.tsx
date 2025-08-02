@@ -3,6 +3,7 @@ import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 import { supabase } from '@/integrations/supabase/client';
 import { logWarn } from '@/utils/logger';
 import MobileScrollWrapper from '@/components/ui/MobileScrollWrapper';
+import { useIOSViewport } from '@/hooks/useIOSViewport';
 
 // Global components
 import Navbar from '@/components/Navbar';
@@ -82,6 +83,9 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
   children 
 }) => {
   const { getSectionsByPage, loading, refetch } = useSectionVisibility();
+  
+  // Initialize iOS viewport handling
+  useIOSViewport();
 
   // Set up real-time subscriptions for section visibility changes
   useEffect(() => {
