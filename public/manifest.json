@@ -3,7 +3,7 @@
   "short_name": "AVS",
   "description": "Formation professionnelle en cybersécurité et technologie",
   "start_url": "/",
-  "display": "standalone",
+  "display": "browser",
   "background_color": "#ffffff",
   "theme_color": "#2563eb",
   "orientation": "any",
@@ -51,7 +51,7 @@
   "prefer_related_applications": false,
   "id": "/",
   "dir": "ltr",
-  "display_override": ["standalone", "minimal-ui"],
+  "display_override": ["browser"],
   "edge_side_panel": {
     "preferred_width": 480
   }
