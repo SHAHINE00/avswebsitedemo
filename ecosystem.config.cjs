@@ -1,7 +1,7 @@
 module.exports = {
   apps: [{
     name: 'education-platform',
-    script: 'serve',
+    script: '/usr/bin/serve',
     args: ['-s', 'dist', '-p', '3000'],
     instances: 2,
     exec_mode: 'cluster',
