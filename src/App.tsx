@@ -1,4 +1,5 @@
 
+import React, { lazy, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
@@ -8,7 +9,6 @@ import ScrollToTop from "@/components/ui/ScrollToTop";
 import { usePageTracking, useScrollTracking } from "@/hooks/useAnalytics";
 import AnalyticsWrapper from "@/components/AnalyticsWrapper";
 import UTMTracker from "@/components/marketing/UTMTracker";
-import { lazy, useEffect } from "react";
 
 // Core pages (loaded immediately)
 import Index from "./pages/Index";

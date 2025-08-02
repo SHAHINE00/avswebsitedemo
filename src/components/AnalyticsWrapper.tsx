@@ -1,4 +1,5 @@
-import React, { lazy } from 'react';
+
+import React, { lazy, useEffect } from 'react';
 import { usePageTracking, useScrollTracking } from '@/hooks/useAnalytics';
 import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -42,7 +43,7 @@ const AnalyticsWrapper: React.FC = () => {
   usePageTracking();
   useScrollTracking();
   
-  React.useEffect(() => {
+  useEffect(() => {
     console.log('iOS Debug: AnalyticsWrapper mounted');
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     if (isIOS) {

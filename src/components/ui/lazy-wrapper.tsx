@@ -1,5 +1,6 @@
+
 // Lazy loading wrapper component for better performance
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 
 interface LazyWrapperProps {
@@ -17,7 +18,7 @@ export const LazyWrapper: React.FC<LazyWrapperProps> = ({
 }) => {
   console.log('iOS Debug: LazyWrapper rendering');
   
-  React.useEffect(() => {
+  useEffect(() => {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     if (isIOS) {
       console.log('iOS Debug: LazyWrapper mounted on iOS');
