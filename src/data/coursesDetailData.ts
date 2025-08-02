@@ -2835,5 +2835,583 @@ export const coursesDetailData: Record<string, CourseDetailData> = {
       { title: "Expertise IA", icon: "Brain", gradient: "from-purple-500 to-pink-600", details: ["Outils maîtrisés", "Automatisation experte", "Personnalisation avancée", "Analytics prédictifs"] },
       { title: "Opportunités Marché", icon: "TrendingUp", gradient: "from-green-500 to-emerald-600", details: ["Demande croissante", "Postes stratégiques", "Salaires attractifs", "Évolution rapide"] }
     ]
+  },
+
+  // Programming & Infrastructure Courses (Remaining 6)
+  "advanced-python-programming": {
+    id: "advanced-python-programming",
+    slug: "advanced-python-programming",
+    heroTitle: "Formation Python Avancé Programmation",
+    heroSubtitle: "Maîtrisez les concepts avancés de Python et développez des applications robustes et performantes",
+    presentationSections: [
+      { title: "Programme Professionnel", icon: "BookOpen", color: "bg-blue-100", content: "Formation avancée en Python couvrant la programmation orientée objet, les design patterns, l'optimisation et les frameworks modernes." },
+      { title: "Objectifs de Formation", icon: "Target", color: "bg-green-100", content: "Former des développeurs Python experts capables de créer des applications complexes et maintenir du code de qualité professionnelle." },
+      { title: "Compétences Acquises", icon: "Award", color: "bg-purple-100", content: "Python expert, OOP avancée, design patterns, async programming, testing, frameworks Django/Flask, optimisation performance." },
+      { title: "Public Cible", icon: "Users", color: "bg-orange-100", content: "Développeurs Python intermédiaires souhaitant approfondir leurs compétences et adopter les meilleures pratiques." }
+    ],
+    keyAreas: [
+      { title: "OOP Avancée", description: "Programmation orientée objet experte", icon: "Code", gradient: "from-yellow-500 to-orange-600" },
+      { title: "Design Patterns", description: "Patterns de conception et architecture", icon: "Puzzle", gradient: "from-blue-500 to-indigo-600" },
+      { title: "Async Programming", description: "Programmation asynchrone et concurrence", icon: "Zap", gradient: "from-purple-500 to-violet-600" },
+      { title: "Performance", description: "Optimisation et profiling", icon: "Gauge", gradient: "from-green-500 to-emerald-600" }
+    ],
+    firstYearModules: [
+      { code: "PYA101", title: "OOP Avancée Python", duration: "40h" },
+      { code: "PAT201", title: "Design Patterns", duration: "35h" },
+      { code: "ASY301", title: "Async Programming", duration: "40h" },
+      { code: "TEST401", title: "Testing Avancé", duration: "35h" },
+      { code: "PERF501", title: "Optimisation Performance", duration: "40h" },
+      { code: "FRAM601", title: "Frameworks Python", duration: "45h" }
+    ],
+    secondYearModules: [
+      { code: "ARCH701", title: "Architecture Applications", duration: "40h" },
+      { code: "API801", title: "APIs Avancées", duration: "35h" },
+      { code: "SEC901", title: "Sécurité Python", duration: "30h" },
+      { code: "PROJ1001", title: "Projet Architecture", duration: "50h" }
+    ],
+    programGoals: [
+      { id: "mastery", title: "Maîtrise Expert", description: "Expertise avancée en Python", icon: "Award", color: "bg-gradient-to-r from-yellow-500 to-orange-600", details: ["Python expert", "Best practices", "Code quality", "Architecture skills"] },
+      { id: "patterns", title: "Design Patterns", description: "Maîtrise des patterns de conception", icon: "Puzzle", color: "bg-gradient-to-r from-blue-500 to-indigo-600", details: ["Gang of Four", "Python patterns", "Architecture patterns", "Anti-patterns"] },
+      { id: "performance", title: "Performance", description: "Optimisation et scalabilité", icon: "Gauge", color: "bg-gradient-to-r from-purple-500 to-violet-600", details: ["Profiling", "Memory optimization", "Async programming", "Multiprocessing"] },
+      { id: "frameworks", title: "Frameworks", description: "Maîtrise des frameworks modernes", icon: "Package", color: "bg-gradient-to-r from-green-500 to-emerald-600", details: ["Django expert", "Flask advanced", "FastAPI", "Web frameworks"] }
+    ],
+    objectives: {
+      mainTitle: "Objectifs Généraux",
+      description: "Former des développeurs Python experts capables de concevoir et maintenir des applications complexes de niveau professionnel.",
+      leftColumn: { title: "Expertise Avancée", skills: ["Programmation orientée objet experte", "Design patterns et architecture", "Programmation asynchrone", "Testing et qualité code", "Optimisation performance", "Frameworks modernes"], description: "Compétences avancées pour développer des applications Python robustes et maintenir du code de qualité enterprise." },
+      rightColumn: { sections: [{ title: "Code Quality", description: "Focus sur la qualité, la maintenabilité et les bonnes pratiques de développement." }, { title: "Architecture", description: "Conception d'architectures scalables et maintenables pour applications complexes." }, { title: "Performance", description: "Techniques d'optimisation et de monitoring des performances." }] }
+    },
+    teachingStrategies: [
+      { title: "Code Reviews", icon: "Code", color: "from-yellow-500 to-orange-600", content: "Reviews de code intensives et pair programming", features: ["Peer reviews", "Code quality", "Best practices", "Refactoring"] },
+      { title: "Architecture Focus", icon: "Puzzle", color: "from-blue-500 to-indigo-600", content: "Conception d'architectures scalables et maintenir", features: ["Design patterns", "SOLID principles", "Clean architecture", "Microservices"] },
+      { title: "Performance Lab", icon: "Gauge", color: "from-purple-500 to-violet-600", content: "Laboratoire d'optimisation et profiling", features: ["Performance profiling", "Memory optimization", "Async programming", "Load testing"] },
+      { title: "Industry Projects", icon: "Briefcase", color: "from-green-500 to-emerald-600", content: "Projets réels avec contraintes industrielles", features: ["Enterprise code", "Production deployment", "CI/CD", "Monitoring"] }
+    ],
+    tableOfContents: [
+      { section: "01", title: "Présentation du Programme", anchor: "presentation", icon: "FileText" },
+      { section: "02", title: "Domaines Clés", anchor: "key-areas", icon: "Target" },
+      { section: "03", title: "Curriculum 1ère Année", anchor: "curriculum-year1", icon: "BookOpen" },
+      { section: "04", title: "Curriculum 2ème Année", anchor: "curriculum-year2", icon: "GraduationCap" },
+      { section: "05", title: "Objectifs du Programme", anchor: "objectives", icon: "Goal" },
+      { section: "06", title: "Objectifs Généraux", anchor: "general-objectives", icon: "Target" },
+      { section: "07", title: "Stratégies Pédagogiques", anchor: "teaching-strategies", icon: "Users" },
+      { section: "08", title: "Synthèse du Programme", anchor: "synthesis", icon: "CheckCircle" }
+    ],
+    synthesis: [
+      { title: "Excellence Python", icon: "Award", gradient: "from-yellow-500 to-orange-600", details: ["Expertise reconnue", "Code de qualité", "Architecture solide", "Performance optimale"] },
+      { title: "Compétences Avancées", icon: "Code", gradient: "from-blue-500 to-indigo-600", details: ["Design patterns", "Async programming", "Testing expert", "Frameworks maîtrisés"] },
+      { title: "Opportunités Elite", icon: "TrendingUp", gradient: "from-green-500 to-emerald-600", details: ["Postes seniors", "Tech lead", "Architecture", "Salaires élevés"] }
+    ]
+  },
+
+  "web-development": {
+    id: "web-development",
+    slug: "web-development",
+    heroTitle: "Formation Développement Web (HTML, CSS, JS)",
+    heroSubtitle: "Maîtrisez le développement web moderne avec HTML5, CSS3, JavaScript et les frameworks actuels",
+    presentationSections: [
+      { title: "Programme Professionnel", icon: "BookOpen", color: "bg-blue-100", content: "Formation complète en développement web couvrant HTML5, CSS3, JavaScript moderne, frameworks et outils de développement." },
+      { title: "Objectifs de Formation", icon: "Target", color: "bg-green-100", content: "Former des développeurs web full-stack capables de créer des applications web modernes et responsives." },
+      { title: "Compétences Acquises", icon: "Award", color: "bg-purple-100", content: "HTML5, CSS3, JavaScript ES6+, React, Vue.js, Node.js, APIs REST, responsive design, performance web." },
+      { title: "Public Cible", icon: "Users", color: "bg-orange-100", content: "Débutants en développement, reconversion professionnelle, développeurs souhaitant actualiser leurs compétences web." }
+    ],
+    keyAreas: [
+      { title: "Frontend Moderne", description: "HTML5, CSS3, JavaScript ES6+", icon: "Monitor", gradient: "from-blue-500 to-cyan-600" },
+      { title: "Frameworks JS", description: "React, Vue.js, Angular", icon: "Package", gradient: "from-green-500 to-emerald-600" },
+      { title: "Backend Node.js", description: "Serveur JavaScript et APIs", icon: "Server", gradient: "from-purple-500 to-violet-600" },
+      { title: "Responsive Design", description: "Design adaptatif et mobile-first", icon: "Smartphone", gradient: "from-orange-500 to-amber-600" }
+    ],
+    firstYearModules: [
+      { code: "WEB101", title: "HTML5 & CSS3", duration: "40h" },
+      { code: "JS201", title: "JavaScript Moderne", duration: "50h" },
+      { code: "RESP301", title: "Responsive Design", duration: "35h" },
+      { code: "REACT401", title: "React.js", duration: "45h" },
+      { code: "NODE501", title: "Node.js & APIs", duration: "40h" },
+      { code: "PROJ601", title: "Projet Full-Stack", duration: "45h" }
+    ],
+    secondYearModules: [
+      { code: "VUE701", title: "Vue.js Avancé", duration: "40h" },
+      { code: "PERF801", title: "Performance Web", duration: "35h" },
+      { code: "PWA901", title: "Progressive Web Apps", duration: "35h" },
+      { code: "DEPLOY1001", title: "Déploiement & DevOps", duration: "40h" }
+    ],
+    programGoals: [
+      { id: "frontend", title: "Frontend Expert", description: "Maîtrise du développement frontend", icon: "Monitor", color: "bg-gradient-to-r from-blue-500 to-cyan-600", details: ["HTML5/CSS3", "JavaScript ES6+", "Frameworks modernes", "UI/UX"] },
+      { id: "fullstack", title: "Full-Stack", description: "Développement complet frontend/backend", icon: "Layers", color: "bg-gradient-to-r from-green-500 to-emerald-600", details: ["Frontend/Backend", "APIs REST", "Bases de données", "Déploiement"] },
+      { id: "modern", title: "Technologies Modernes", description: "Maîtrise des outils actuels", icon: "Sparkles", color: "bg-gradient-to-r from-purple-500 to-violet-600", details: ["Frameworks récents", "Outils build", "Testing", "CI/CD"] },
+      { id: "responsive", title: "Responsive Design", description: "Design adaptatif et mobile", icon: "Smartphone", color: "bg-gradient-to-r from-orange-500 to-amber-600", details: ["Mobile-first", "Cross-browser", "Performance", "Accessibility"] }
+    ],
+    objectives: {
+      mainTitle: "Objectifs Généraux",
+      description: "Former des développeurs web full-stack capables de créer des applications web modernes, performantes et responsives.",
+      leftColumn: { title: "Expertise Web", skills: ["HTML5 et CSS3 avancés", "JavaScript moderne (ES6+)", "Frameworks React/Vue.js", "Backend Node.js", "APIs REST et GraphQL", "Responsive design"], description: "Compétences complètes pour développer des applications web de qualité professionnelle." },
+      rightColumn: { sections: [{ title: "Projets Pratiques", description: "Développement d'applications web complètes avec technologies modernes." }, { title: "Industry Standards", description: "Application des standards et bonnes pratiques de l'industrie web." }, { title: "Performance Focus", description: "Optimisation des performances et expérience utilisateur." }] }
+    },
+    teachingStrategies: [
+      { title: "Coding Bootcamp", icon: "Code", color: "from-blue-500 to-cyan-600", content: "Apprentissage intensif par la pratique", features: ["Live coding", "Projets guidés", "Code reviews", "Pair programming"] },
+      { title: "Portfolio Building", icon: "Briefcase", color: "from-green-500 to-emerald-600", content: "Construction d'un portfolio professionnel", features: ["Projets réels", "GitHub portfolio", "Deployment", "Showcase projects"] },
+      { title: "Industry Tools", icon: "Settings", color: "from-purple-500 to-violet-600", content: "Formation sur les outils professionnels", features: ["VS Code", "Git/GitHub", "Build tools", "Testing frameworks"] },
+      { title: "Job Ready", icon: "Briefcase", color: "from-orange-500 to-amber-600", content: "Préparation à l'emploi développeur", features: ["Interview prep", "Technical tests", "Portfolio review", "Career guidance"] }
+    ],
+    tableOfContents: [
+      { section: "01", title: "Présentation du Programme", anchor: "presentation", icon: "FileText" },
+      { section: "02", title: "Domaines Clés", anchor: "key-areas", icon: "Target" },
+      { section: "03", title: "Curriculum 1ère Année", anchor: "curriculum-year1", icon: "BookOpen" },
+      { section: "04", title: "Curriculum 2ème Année", anchor: "curriculum-year2", icon: "GraduationCap" },
+      { section: "05", title: "Objectifs du Programme", anchor: "objectives", icon: "Goal" },
+      { section: "06", title: "Objectifs Généraux", anchor: "general-objectives", icon: "Target" },
+      { section: "07", title: "Stratégies Pédagogiques", anchor: "teaching-strategies", icon: "Users" },
+      { section: "08", title: "Synthèse du Programme", anchor: "synthesis", icon: "CheckCircle" }
+    ],
+    synthesis: [
+      { title: "Compétences Modernes", icon: "Sparkles", gradient: "from-blue-500 to-cyan-600", details: ["Technologies actuelles", "Frameworks populaires", "Outils professionnels", "Standards industrie"] },
+      { title: "Portfolio Professionnel", icon: "Briefcase", gradient: "from-green-500 to-emerald-600", details: ["Projets déployés", "Code quality", "GitHub actif", "Références clients"] },
+      { title: "Marché Porteur", icon: "TrendingUp", gradient: "from-purple-500 to-violet-600", details: ["Forte demande", "Opportunités multiples", "Télétravail possible", "Évolution rapide"] }
+    ]
+  },
+
+  "mobile-app-development": {
+    id: "mobile-app-development",
+    slug: "mobile-app-development",
+    heroTitle: "Formation Développement d'Applications Mobiles",
+    heroSubtitle: "Créez des applications mobiles natives et cross-platform avec React Native et Flutter",
+    presentationSections: [
+      { title: "Programme Professionnel", icon: "BookOpen", color: "bg-blue-100", content: "Formation complète en développement mobile couvrant iOS, Android, React Native, Flutter et les bonnes pratiques mobiles." },
+      { title: "Objectifs de Formation", icon: "Target", color: "bg-green-100", content: "Former des développeurs mobiles capables de créer des applications natives et cross-platform performantes." },
+      { title: "Compétences Acquises", icon: "Award", color: "bg-purple-100", content: "React Native, Flutter, Swift/Kotlin, UI/UX mobile, APIs, stores deployment, performance mobile." },
+      { title: "Public Cible", icon: "Users", color: "bg-orange-100", content: "Développeurs web, développeurs souhaitant se spécialiser mobile, entrepreneurs avec projets d'apps." }
+    ],
+    keyAreas: [
+      { title: "React Native", description: "Développement cross-platform avec React", icon: "Smartphone", gradient: "from-blue-500 to-cyan-600" },
+      { title: "Flutter", description: "Framework Google pour mobile", icon: "Zap", gradient: "from-purple-500 to-violet-600" },
+      { title: "Native Development", description: "iOS Swift et Android Kotlin", icon: "Code", gradient: "from-green-500 to-emerald-600" },
+      { title: "App Store Deployment", description: "Publication et distribution apps", icon: "Upload", gradient: "from-orange-500 to-amber-600" }
+    ],
+    firstYearModules: [
+      { code: "MOB101", title: "Fondamentaux Mobile", duration: "30h" },
+      { code: "RN201", title: "React Native", duration: "45h" },
+      { code: "FLU301", title: "Flutter Development", duration: "45h" },
+      { code: "UI401", title: "UI/UX Mobile", duration: "35h" },
+      { code: "API501", title: "APIs & Backend", duration: "40h" },
+      { code: "DEPLOY601", title: "Store Deployment", duration: "30h" }
+    ],
+    secondYearModules: [
+      { code: "NAT701", title: "Développement Natif", duration: "45h" },
+      { code: "PERF801", title: "Performance Mobile", duration: "35h" },
+      { code: "ADV901", title: "Features Avancées", duration: "40h" },
+      { code: "PROJ1001", title: "Projet App Complète", duration: "50h" }
+    ],
+    programGoals: [
+      { id: "crossplatform", title: "Cross-Platform", description: "Maîtrise React Native et Flutter", icon: "Smartphone", color: "bg-gradient-to-r from-blue-500 to-cyan-600", details: ["React Native expert", "Flutter proficiency", "Code sharing", "Performance optimization"] },
+      { id: "native", title: "Native Development", description: "Développement iOS et Android natif", icon: "Code", color: "bg-gradient-to-r from-purple-500 to-violet-600", details: ["Swift/iOS", "Kotlin/Android", "Platform APIs", "Native performance"] },
+      { id: "ux", title: "Mobile UX", description: "Expérience utilisateur mobile experte", icon: "Heart", color: "bg-gradient-to-r from-green-500 to-emerald-600", details: ["Mobile design patterns", "Gesture handling", "Accessibility", "User testing"] },
+      { id: "deployment", title: "Store Success", description: "Publication et succès sur stores", icon: "Upload", color: "bg-gradient-to-r from-orange-500 to-amber-600", details: ["App Store", "Google Play", "Store optimization", "Monetization"] }
+    ],
+    objectives: {
+      mainTitle: "Objectifs Généraux",
+      description: "Former des développeurs mobiles experts capables de créer des applications performantes pour iOS et Android.",
+      leftColumn: { title: "Expertise Mobile", skills: ["React Native et Flutter", "Développement natif iOS/Android", "UI/UX mobile", "Intégration APIs", "Performance optimization", "Store deployment"], description: "Compétences complètes pour développer et publier des applications mobiles de qualité professionnelle." },
+      rightColumn: { sections: [{ title: "Projets Réels", description: "Développement d'applications complètes avec publication sur les stores." }, { title: "Best Practices", description: "Application des meilleures pratiques de développement mobile." }, { title: "Market Ready", description: "Préparation pour le marché du développement mobile." }] }
+    },
+    teachingStrategies: [
+      { title: "App Development", icon: "Smartphone", color: "from-blue-500 to-cyan-600", content: "Développement d'applications complètes", features: ["Real apps", "Store publication", "User feedback", "Iterative development"] },
+      { title: "Multi-Platform", icon: "Layers", color: "from-purple-500 to-violet-600", content: "Formation sur plusieurs frameworks", features: ["React Native", "Flutter", "Native iOS/Android", "Comparison analysis"] },
+      { title: "UX Focus", icon: "Heart", color: "from-green-500 to-emerald-600", content: "Accent sur l'expérience utilisateur mobile", features: ["Mobile UX patterns", "User testing", "Accessibility", "Performance"] },
+      { title: "Industry Mentoring", icon: "Users", color: "from-orange-500 to-amber-600", content: "Mentorat par des développeurs mobiles experts", features: ["Senior developers", "Code reviews", "Architecture guidance", "Career advice"] }
+    ],
+    tableOfContents: [
+      { section: "01", title: "Présentation du Programme", anchor: "presentation", icon: "FileText" },
+      { section: "02", title: "Domaines Clés", anchor: "key-areas", icon: "Target" },
+      { section: "03", title: "Curriculum 1ère Année", anchor: "curriculum-year1", icon: "BookOpen" },
+      { section: "04", title: "Curriculum 2ème Année", anchor: "curriculum-year2", icon: "GraduationCap" },
+      { section: "05", title: "Objectifs du Programme", anchor: "objectives", icon: "Goal" },
+      { section: "06", title: "Objectifs Généraux", anchor: "general-objectives", icon: "Target" },
+      { section: "07", title: "Stratégies Pédagogiques", anchor: "teaching-strategies", icon: "Users" },
+      { section: "08", title: "Synthèse du Programme", anchor: "synthesis", icon: "CheckCircle" }
+    ],
+    synthesis: [
+      { title: "Expertise Multi-Platform", icon: "Smartphone", gradient: "from-blue-500 to-cyan-600", details: ["React Native", "Flutter", "iOS natif", "Android natif"] },
+      { title: "Portfolio Apps", icon: "Package", gradient: "from-purple-500 to-violet-600", details: ["Apps publiées", "Store presence", "User reviews", "Download metrics"] },
+      { title: "Marché Dynamique", icon: "TrendingUp", gradient: "from-green-500 to-emerald-600", details: ["Croissance mobile", "Opportunités startup", "Freelance possible", "Innovation constante"] }
+    ]
+  },
+
+  "cloud-computing": {
+    id: "cloud-computing",
+    slug: "cloud-computing",
+    heroTitle: "Formation Cloud Computing (AWS, Azure)",
+    heroSubtitle: "Maîtrisez les plateformes cloud et l'architecture de systèmes distribués modernes",
+    presentationSections: [
+      { title: "Programme Professionnel", icon: "BookOpen", color: "bg-blue-100", content: "Formation complète en cloud computing couvrant AWS, Microsoft Azure, architecture cloud et DevOps moderne." },
+      { title: "Objectifs de Formation", icon: "Target", color: "bg-green-100", content: "Former des architectes cloud capables de concevoir et gérer des infrastructures cloud scalables et sécurisées." },
+      { title: "Compétences Acquises", icon: "Award", color: "bg-purple-100", content: "AWS/Azure, architecture cloud, containers Docker/Kubernetes, CI/CD, sécurité cloud, monitoring." },
+      { title: "Public Cible", icon: "Users", color: "bg-orange-100", content: "Administrateurs système, développeurs, ingénieurs DevOps, architectes souhaitant maîtriser le cloud." }
+    ],
+    keyAreas: [
+      { title: "AWS Platform", description: "Amazon Web Services complet", icon: "Cloud", gradient: "from-orange-500 to-amber-600" },
+      { title: "Microsoft Azure", description: "Plateforme cloud Microsoft", icon: "Server", gradient: "from-blue-500 to-indigo-600" },
+      { title: "DevOps & CI/CD", description: "Automatisation et déploiement", icon: "GitBranch", gradient: "from-green-500 to-emerald-600" },
+      { title: "Container Orchestration", description: "Docker et Kubernetes", icon: "Package", gradient: "from-purple-500 to-violet-600" }
+    ],
+    firstYearModules: [
+      { code: "CLD101", title: "Cloud Fundamentals", duration: "35h" },
+      { code: "AWS201", title: "AWS Core Services", duration: "45h" },
+      { code: "AZU301", title: "Microsoft Azure", duration: "45h" },
+      { code: "DOC401", title: "Docker & Containers", duration: "35h" },
+      { code: "KUB501", title: "Kubernetes", duration: "40h" },
+      { code: "SEC601", title: "Cloud Security", duration: "35h" }
+    ],
+    secondYearModules: [
+      { code: "ARCH701", title: "Cloud Architecture", duration: "45h" },
+      { code: "DEVOPS801", title: "DevOps Avancé", duration: "40h" },
+      { code: "MON901", title: "Monitoring & Logs", duration: "35h" },
+      { code: "PROJ1001", title: "Projet Infrastructure", duration: "50h" }
+    ],
+    programGoals: [
+      { id: "platforms", title: "Multi-Cloud", description: "Expertise AWS et Azure", icon: "Cloud", color: "bg-gradient-to-r from-orange-500 to-amber-600", details: ["AWS certified", "Azure certified", "Multi-cloud strategies", "Cost optimization"] },
+      { id: "architecture", title: "Architecture Cloud", description: "Conception systèmes distribués", icon: "Network", color: "bg-gradient-to-r from-blue-500 to-indigo-600", details: ["Scalable architectures", "Microservices", "Serverless", "High availability"] },
+      { id: "devops", title: "DevOps Expert", description: "Automatisation et CI/CD", icon: "GitBranch", color: "bg-gradient-to-r from-green-500 to-emerald-600", details: ["CI/CD pipelines", "Infrastructure as Code", "Automation", "Release management"] },
+      { id: "containers", title: "Container Mastery", description: "Docker et Kubernetes expert", icon: "Package", color: "bg-gradient-to-r from-purple-500 to-violet-600", details: ["Docker expert", "Kubernetes certified", "Container orchestration", "Service mesh"] }
+    ],
+    objectives: {
+      mainTitle: "Objectifs Généraux",
+      description: "Former des experts cloud capables de concevoir, implémenter et gérer des infrastructures cloud modernes.",
+      leftColumn: { title: "Expertise Cloud", skills: ["Plateformes AWS et Azure", "Architecture cloud et microservices", "DevOps et CI/CD", "Containers et Kubernetes", "Sécurité et monitoring", "Cost optimization"], description: "Compétences complètes pour exceller dans l'écosystème cloud moderne." },
+      rightColumn: { sections: [{ title: "Hands-on Labs", description: "Laboratoires pratiques sur infrastructures cloud réelles." }, { title: "Certifications", description: "Préparation aux certifications AWS et Azure officielles." }, { title: "Production Ready", description: "Compétences pour gérer des environnements de production." }] }
+    },
+    teachingStrategies: [
+      { title: "Labs Pratiques", icon: "Server", color: "from-orange-500 to-amber-600", content: "Laboratoires hands-on sur AWS et Azure", features: ["Real cloud accounts", "Practical exercises", "Infrastructure setup", "Troubleshooting"] },
+      { title: "Certification Prep", icon: "Award", color: "from-blue-500 to-indigo-600", content: "Préparation certifications officielles", features: ["AWS Solutions Architect", "Azure Administrator", "Mock exams", "Study groups"] },
+      { title: "Project-Based", icon: "Briefcase", color: "from-green-500 to-emerald-600", content: "Projets d'infrastructure réels", features: ["End-to-end projects", "Production scenarios", "Best practices", "Performance optimization"] },
+      { title: "Industry Experts", icon: "Users", color: "from-purple-500 to-violet-600", content: "Formateurs certifiés cloud", features: ["AWS/Azure certified", "Industry experience", "Real-world insights", "Career guidance"] }
+    ],
+    tableOfContents: [
+      { section: "01", title: "Présentation du Programme", anchor: "presentation", icon: "FileText" },
+      { section: "02", title: "Domaines Clés", anchor: "key-areas", icon: "Target" },
+      { section: "03", title: "Curriculum 1ère Année", anchor: "curriculum-year1", icon: "BookOpen" },
+      { section: "04", title: "Curriculum 2ème Année", anchor: "curriculum-year2", icon: "GraduationCap" },
+      { section: "05", title: "Objectifs du Programme", anchor: "objectives", icon: "Goal" },
+      { section: "06", title: "Objectifs Généraux", anchor: "general-objectives", icon: "Target" },
+      { section: "07", title: "Stratégies Pédagogiques", anchor: "teaching-strategies", icon: "Users" },
+      { section: "08", title: "Synthèse du Programme", anchor: "synthesis", icon: "CheckCircle" }
+    ],
+    synthesis: [
+      { title: "Certifications Cloud", icon: "Award", gradient: "from-orange-500 to-amber-600", details: ["AWS certified", "Azure certified", "Expertise reconnue", "Standards industrie"] },
+      { title: "Architecture Moderne", icon: "Network", gradient: "from-blue-500 to-indigo-600", details: ["Microservices", "Serverless", "Container orchestration", "Scalabilité"] },
+      { title: "Marché Porteur", icon: "TrendingUp", gradient: "from-green-500 to-emerald-600", details: ["Forte demande", "Salaires élevés", "Télétravail", "Innovation continue"] }
+    ]
+  },
+
+  "internet-of-things": {
+    id: "internet-of-things",
+    slug: "internet-of-things",
+    heroTitle: "Formation Internet des Objets (IoT)",
+    heroSubtitle: "Développez des solutions IoT innovantes et connectez le monde physique au digital",
+    presentationSections: [
+      { title: "Programme Professionnel", icon: "BookOpen", color: "bg-blue-100", content: "Formation complète en IoT couvrant les capteurs, microcontrôleurs, protocoles de communication et plateformes cloud IoT." },
+      { title: "Objectifs de Formation", icon: "Target", color: "bg-green-100", content: "Former des spécialistes IoT capables de concevoir et déployer des systèmes d'objets connectés innovants." },
+      { title: "Compétences Acquises", icon: "Award", color: "bg-purple-100", content: "Arduino/Raspberry Pi, capteurs, protocoles IoT, cloud platforms, sécurité IoT, edge computing." },
+      { title: "Public Cible", icon: "Users", color: "bg-orange-100", content: "Ingénieurs, développeurs, techniciens souhaitant se spécialiser dans l'Internet des Objets." }
+    ],
+    keyAreas: [
+      { title: "Hardware IoT", description: "Microcontrôleurs et capteurs", icon: "Cpu", gradient: "from-blue-500 to-cyan-600" },
+      { title: "Protocoles Communication", description: "WiFi, Bluetooth, LoRaWAN, 5G", icon: "Wifi", gradient: "from-green-500 to-emerald-600" },
+      { title: "Cloud IoT", description: "Plateformes AWS IoT, Azure IoT", icon: "Cloud", gradient: "from-purple-500 to-violet-600" },
+      { title: "Edge Computing", description: "Traitement local et intelligence", icon: "Zap", gradient: "from-orange-500 to-amber-600" }
+    ],
+    firstYearModules: [
+      { code: "IOT101", title: "Fondamentaux IoT", duration: "30h" },
+      { code: "HARD201", title: "Hardware & Capteurs", duration: "40h" },
+      { code: "COMM301", title: "Protocoles Communication", duration: "35h" },
+      { code: "PROG401", title: "Programmation IoT", duration: "40h" },
+      { code: "CLOUD501", title: "Plateformes Cloud IoT", duration: "35h" },
+      { code: "SEC601", title: "Sécurité IoT", duration: "30h" }
+    ],
+    secondYearModules: [
+      { code: "EDGE701", title: "Edge Computing", duration: "35h" },
+      { code: "AI801", title: "IA pour IoT", duration: "40h" },
+      { code: "IND901", title: "IoT Industriel", duration: "35h" },
+      { code: "PROJ1001", title: "Projet IoT Complet", duration: "50h" }
+    ],
+    programGoals: [
+      { id: "hardware", title: "Hardware Mastery", description: "Expertise microcontrôleurs et capteurs", icon: "Cpu", color: "bg-gradient-to-r from-blue-500 to-cyan-600", details: ["Arduino/Raspberry Pi", "Sensors integration", "Circuit design", "Prototyping"] },
+      { id: "connectivity", title: "Connectivity Expert", description: "Maîtrise protocoles communication", icon: "Wifi", color: "bg-gradient-to-r from-green-500 to-emerald-600", details: ["WiFi/Bluetooth", "LoRaWAN/Sigfox", "5G/NB-IoT", "Mesh networks"] },
+      { id: "cloud", title: "Cloud IoT", description: "Plateformes cloud pour IoT", icon: "Cloud", color: "bg-gradient-to-r from-purple-500 to-violet-600", details: ["AWS IoT Core", "Azure IoT Hub", "Google Cloud IoT", "Data processing"] },
+      { id: "security", title: "IoT Security", description: "Sécurisation des objets connectés", icon: "Shield", color: "bg-gradient-to-r from-orange-500 to-amber-600", details: ["Device security", "Data encryption", "Network security", "Privacy"] }
+    ],
+    objectives: {
+      mainTitle: "Objectifs Généraux",
+      description: "Former des spécialistes IoT capables de concevoir des solutions d'objets connectés sécurisées et évolutives.",
+      leftColumn: { title: "Expertise IoT", skills: ["Hardware et microcontrôleurs", "Protocoles de communication", "Plateformes cloud IoT", "Sécurité et privacy", "Edge computing et IA", "Applications industrielles"], description: "Compétences complètes pour développer des solutions IoT de bout en bout." },
+      rightColumn: { sections: [{ title: "Projets Concrets", description: "Développement de prototypes IoT fonctionnels avec déploiement réel." }, { title: "Industry 4.0", description: "Applications dans l'industrie 4.0 et la transformation digitale." }, { title: "Innovation", description: "Développement de solutions IoT innovantes pour différents secteurs." }] }
+    },
+    teachingStrategies: [
+      { title: "Hardware Labs", icon: "Cpu", color: "from-blue-500 to-cyan-600", content: "Laboratoires pratiques avec vrais composants", features: ["Arduino/Raspberry Pi", "Sensors & actuators", "Circuit building", "Prototyping"] },
+      { title: "Real Deployments", icon: "Satellite", color: "from-green-500 to-emerald-600", content: "Déploiements IoT réels et monitoring", features: ["Live deployments", "Data collection", "Remote monitoring", "Performance analysis"] },
+      { title: "Industry Projects", icon: "Factory", color: "from-purple-500 to-violet-600", content: "Projets avec partenaires industriels", features: ["Industry 4.0", "Smart cities", "Agriculture", "Healthcare IoT"] },
+      { title: "Innovation Focus", icon: "Lightbulb", color: "from-orange-500 to-amber-600", content: "Développement de solutions innovantes", features: ["Creative thinking", "Problem solving", "Market research", "Patent potential"] }
+    ],
+    tableOfContents: [
+      { section: "01", title: "Présentation du Programme", anchor: "presentation", icon: "FileText" },
+      { section: "02", title: "Domaines Clés", anchor: "key-areas", icon: "Target" },
+      { section: "03", title: "Curriculum 1ère Année", anchor: "curriculum-year1", icon: "BookOpen" },
+      { section: "04", title: "Curriculum 2ème Année", anchor: "curriculum-year2", icon: "GraduationCap" },
+      { section: "05", title: "Objectifs du Programme", anchor: "objectives", icon: "Goal" },
+      { section: "06", title: "Objectifs Généraux", anchor: "general-objectives", icon: "Target" },
+      { section: "07", title: "Stratégies Pédagogiques", anchor: "teaching-strategies", icon: "Users" },
+      { section: "08", title: "Synthèse du Programme", anchor: "synthesis", icon: "CheckCircle" }
+    ],
+    synthesis: [
+      { title: "Innovation IoT", icon: "Lightbulb", gradient: "from-blue-500 to-cyan-600", details: ["Solutions créatives", "Prototypes fonctionnels", "Market potential", "Technology leadership"] },
+      { title: "Expertise Technique", icon: "Cpu", gradient: "from-green-500 to-emerald-600", details: ["Hardware mastery", "Cloud integration", "Security expertise", "Protocol knowledge"] },
+      { title: "Marché Émergent", icon: "TrendingUp", gradient: "from-purple-500 to-violet-600", details: ["Croissance rapide", "Secteurs multiples", "Startup opportunities", "Innovation continue"] }
+    ]
+  },
+
+  "blockchain-cryptocurrency": {
+    id: "blockchain-cryptocurrency",
+    slug: "blockchain-cryptocurrency",
+    heroTitle: "Formation Blockchain et Cryptomonnaies",
+    heroSubtitle: "Maîtrisez la technologie blockchain et développez des applications décentralisées",
+    presentationSections: [
+      { title: "Programme Professionnel", icon: "BookOpen", color: "bg-blue-100", content: "Formation complète en blockchain couvrant Bitcoin, Ethereum, smart contracts, DeFi et développement d'applications décentralisées." },
+      { title: "Objectifs de Formation", icon: "Target", color: "bg-green-100", content: "Former des développeurs blockchain capables de créer des solutions décentralisées et de comprendre l'écosystème crypto." },
+      { title: "Compétences Acquises", icon: "Award", color: "bg-purple-100", content: "Solidity, smart contracts, Web3, DeFi, NFTs, consensus algorithms, cryptographie, trading crypto." },
+      { title: "Public Cible", icon: "Users", color: "bg-orange-100", content: "Développeurs, investisseurs, entrepreneurs, professionnels finance intéressés par la blockchain." }
+    ],
+    keyAreas: [
+      { title: "Smart Contracts", description: "Développement avec Solidity", icon: "FileCode", gradient: "from-blue-500 to-indigo-600" },
+      { title: "DeFi Protocols", description: "Finance décentralisée", icon: "Coins", gradient: "from-green-500 to-emerald-600" },
+      { title: "Web3 Development", description: "Applications décentralisées", icon: "Globe", gradient: "from-purple-500 to-violet-600" },
+      { title: "Crypto Trading", description: "Analyse et stratégies trading", icon: "TrendingUp", gradient: "from-orange-500 to-amber-600" }
+    ],
+    firstYearModules: [
+      { code: "BCH101", title: "Blockchain Fundamentals", duration: "35h" },
+      { code: "SOL201", title: "Solidity & Smart Contracts", duration: "45h" },
+      { code: "ETH301", title: "Ethereum Ecosystem", duration: "40h" },
+      { code: "WEB3401", title: "Web3 Development", duration: "40h" },
+      { code: "DEFI501", title: "DeFi Protocols", duration: "35h" },
+      { code: "CRYPTO601", title: "Cryptographie", duration: "30h" }
+    ],
+    secondYearModules: [
+      { code: "NFT701", title: "NFTs & Marketplace", duration: "35h" },
+      { code: "TRADE801", title: "Crypto Trading", duration: "40h" },
+      { code: "DAO901", title: "DAOs & Governance", duration: "30h" },
+      { code: "PROJ1001", title: "Projet DApp", duration: "50h" }
+    ],
+    programGoals: [
+      { id: "development", title: "Development Expert", description: "Maîtrise développement blockchain", icon: "Code", color: "bg-gradient-to-r from-blue-500 to-indigo-600", details: ["Solidity expert", "Smart contracts", "Web3 integration", "Gas optimization"] },
+      { id: "defi", title: "DeFi Specialist", description: "Expertise finance décentralisée", icon: "Coins", color: "bg-gradient-to-r from-green-500 to-emerald-600", details: ["Liquidity pools", "Yield farming", "DEX protocols", "Risk assessment"] },
+      { id: "trading", title: "Crypto Trading", description: "Stratégies trading crypto", icon: "TrendingUp", color: "bg-gradient-to-r from-purple-500 to-violet-600", details: ["Technical analysis", "Risk management", "Portfolio strategy", "Market psychology"] },
+      { id: "innovation", title: "Blockchain Innovation", description: "Innovation et entrepreneuriat", icon: "Lightbulb", color: "bg-gradient-to-r from-orange-500 to-amber-600", details: ["New protocols", "Startup creation", "Token economics", "Ecosystem building"] }
+    ],
+    objectives: {
+      mainTitle: "Objectifs Généraux",
+      description: "Former des experts blockchain capables de développer des solutions décentralisées et de naviguer dans l'écosystème crypto.",
+      leftColumn: { title: "Expertise Blockchain", skills: ["Développement smart contracts", "Protocoles DeFi", "Applications Web3", "Cryptographie avancée", "Trading et investissement", "Analyse de projets crypto"], description: "Compétences complètes pour exceller dans l'écosystème blockchain et crypto." },
+      rightColumn: { sections: [{ title: "Projets Réels", description: "Développement de DApps déployées sur mainnet avec utilisateurs réels." }, { title: "Market Analysis", description: "Analyse des marchés crypto et identification d'opportunités." }, { title: "Innovation Lab", description: "Laboratoire d'innovation pour tester de nouveaux concepts blockchain." }] }
+    },
+    teachingStrategies: [
+      { title: "DApp Development", icon: "Code", color: "from-blue-500 to-indigo-600", content: "Développement d'applications décentralisées", features: ["Smart contracts", "Frontend Web3", "Mainnet deployment", "User testing"] },
+      { title: "Live Trading", icon: "TrendingUp", color: "from-green-500 to-emerald-600", content: "Trading en conditions réelles avec simulation", features: ["Paper trading", "Strategy backtesting", "Risk management", "Portfolio tracking"] },
+      { title: "Ecosystem Immersion", icon: "Globe", color: "from-purple-500 to-violet-600", content: "Immersion complète dans l'écosystème crypto", features: ["DeFi protocols", "NFT marketplaces", "DAO participation", "Community building"] },
+      { title: "Expert Network", icon: "Users", color: "from-orange-500 to-amber-600", content: "Réseau d'experts blockchain et crypto", features: ["Industry veterans", "Protocol founders", "VC insights", "Startup mentoring"] }
+    ],
+    tableOfContents: [
+      { section: "01", title: "Présentation du Programme", anchor: "presentation", icon: "FileText" },
+      { section: "02", title: "Domaines Clés", anchor: "key-areas", icon: "Target" },
+      { section: "03", title: "Curriculum 1ère Année", anchor: "curriculum-year1", icon: "BookOpen" },
+      { section: "04", title: "Curriculum 2ème Année", anchor: "curriculum-year2", icon: "GraduationCap" },
+      { section: "05", title: "Objectifs du Programme", anchor: "objectives", icon: "Goal" },
+      { section: "06", title: "Objectifs Généraux", anchor: "general-objectives", icon: "Target" },
+      { section: "07", title: "Stratégies Pédagogiques", anchor: "teaching-strategies", icon: "Users" },
+      { section: "08", title: "Synthèse du Programme", anchor: "synthesis", icon: "CheckCircle" }
+    ],
+    synthesis: [
+      { title: "Innovation Disruptive", icon: "Lightbulb", gradient: "from-blue-500 to-indigo-600", details: ["Technologies révolutionnaires", "Nouveaux modèles économiques", "Décentralisation", "Innovation continue"] },
+      { title: "Expertise Technique", icon: "Code", gradient: "from-green-500 to-emerald-600", details: ["Smart contracts", "DeFi mastery", "Web3 development", "Cryptographie"] },
+      { title: "Opportunités Uniques", icon: "TrendingUp", gradient: "from-purple-500 to-violet-600", details: ["Marché émergent", "Startup potential", "Investment opportunities", "Global ecosystem"] }
+    ]
+  },
+
+  // Marketing & Creative Courses (Remaining 3)
+  "ecommerce-marketing": {
+    id: "ecommerce-marketing",
+    slug: "ecommerce-marketing",
+    heroTitle: "Formation Marketing E-commerce",
+    heroSubtitle: "Maîtrisez les stratégies marketing pour booster vos ventes en ligne et développer votre business",
+    presentationSections: [
+      { title: "Programme Professionnel", icon: "BookOpen", color: "bg-blue-100", content: "Formation complète en marketing e-commerce couvrant SEO, publicité payante, conversion optimization et growth hacking." },
+      { title: "Objectifs de Formation", icon: "Target", color: "bg-green-100", content: "Former des spécialistes marketing e-commerce capables d'augmenter significativement les ventes en ligne." },
+      { title: "Compétences Acquises", icon: "Award", color: "bg-purple-100", content: "SEO e-commerce, Google Ads, Facebook Ads, email marketing, CRO, analytics, marketplace optimization." },
+      { title: "Public Cible", icon: "Users", color: "bg-orange-100", content: "E-commerçants, marketeurs digital, entrepreneurs, responsables marketing souhaitant booster leurs ventes online." }
+    ],
+    keyAreas: [
+      { title: "SEO E-commerce", description: "Référencement naturel pour boutiques", icon: "Search", gradient: "from-green-500 to-emerald-600" },
+      { title: "Publicité Payante", description: "Google Ads, Facebook Ads, Amazon", icon: "Target", gradient: "from-blue-500 to-cyan-600" },
+      { title: "Conversion Optimization", description: "CRO et augmentation des ventes", icon: "TrendingUp", gradient: "from-purple-500 to-violet-600" },
+      { title: "Email Marketing", description: "Automation et fidélisation", icon: "Mail", gradient: "from-orange-500 to-amber-600" }
+    ],
+    firstYearModules: [
+      { code: "ECM101", title: "E-commerce Fundamentals", duration: "30h" },
+      { code: "SEO201", title: "SEO E-commerce", duration: "40h" },
+      { code: "ADS301", title: "Publicité Payante", duration: "45h" },
+      { code: "CRO401", title: "Conversion Optimization", duration: "35h" },
+      { code: "EMAIL501", title: "Email Marketing", duration: "30h" },
+      { code: "MARK601", title: "Marketplace Marketing", duration: "35h" }
+    ],
+    programGoals: [
+      { id: "seo", title: "SEO E-commerce", description: "Référencement boutiques en ligne", icon: "Search", color: "bg-gradient-to-r from-green-500 to-emerald-600", details: ["SEO technique", "Content marketing", "Link building", "Local SEO"] },
+      { id: "ads", title: "Publicité Performante", description: "Campagnes payantes rentables", icon: "Target", color: "bg-gradient-to-r from-blue-500 to-cyan-600", details: ["Google Ads", "Facebook Ads", "Amazon PPC", "ROI optimization"] },
+      { id: "conversion", title: "Conversion Expert", description: "Optimisation taux de conversion", icon: "TrendingUp", color: "bg-gradient-to-r from-purple-500 to-violet-600", details: ["A/B testing", "UX optimization", "Funnel analysis", "Psychology pricing"] },
+      { id: "growth", title: "Growth Hacking", description: "Croissance accélérée", icon: "Rocket", color: "bg-gradient-to-r from-orange-500 to-amber-600", details: ["Viral marketing", "Referral programs", "Retention strategies", "Scaling methods"] }
+    ],
+    objectives: {
+      mainTitle: "Objectifs Généraux",
+      description: "Former des experts marketing e-commerce capables de générer une croissance mesurable des ventes en ligne.",
+      leftColumn: { title: "Expertise E-commerce", skills: ["SEO e-commerce avancé", "Publicité payante ROI+", "Conversion rate optimization", "Email marketing automation", "Analytics et tracking", "Growth hacking strategies"], description: "Compétences pour maximiser les performances marketing et les ventes e-commerce." },
+      rightColumn: { sections: [{ title: "ROI Focus", description: "Accent sur le retour sur investissement et la rentabilité des actions marketing." }, { title: "Data-Driven", description: "Approche basée sur les données et l'analyse des performances." }, { title: "Scaling Strategies", description: "Méthodes pour passer à l'échelle et développer rapidement." }] }
+    },
+    teachingStrategies: [
+      { title: "Boutiques Réelles", icon: "ShoppingCart", color: "from-green-500 to-emerald-600", content: "Optimisation de vraies boutiques e-commerce", features: ["Live optimization", "Real sales data", "A/B testing", "Performance tracking"] },
+      { title: "Budget Ads Réel", icon: "DollarSign", color: "from-blue-500 to-cyan-600", content: "Gestion de budgets publicitaires réels", features: ["Google Ads live", "Facebook Ads", "Budget optimization", "ROAS tracking"] },
+      { title: "Case Studies", icon: "BarChart3", color: "from-purple-500 to-violet-600", content: "Analyse de success stories e-commerce", features: ["Success stories", "Failure analysis", "Strategy deconstruction", "Lessons learned"] },
+      { title: "Tools Mastery", icon: "Settings", color: "from-orange-500 to-amber-600", content: "Maîtrise des outils marketing leaders", features: ["Google Analytics", "Shopify Plus", "Klaviyo", "Hotjar"] }
+    ],
+    tableOfContents: [
+      { section: "01", title: "Présentation du Programme", anchor: "presentation", icon: "FileText" },
+      { section: "02", title: "Domaines Clés", anchor: "key-areas", icon: "Target" },
+      { section: "03", title: "Curriculum Formation", anchor: "curriculum-year1", icon: "BookOpen" },
+      { section: "04", title: "Objectifs du Programme", anchor: "objectives", icon: "Goal" },
+      { section: "05", title: "Objectifs Généraux", anchor: "general-objectives", icon: "Target" },
+      { section: "06", title: "Stratégies Pédagogiques", anchor: "teaching-strategies", icon: "Users" },
+      { section: "07", title: "Synthèse du Programme", anchor: "synthesis", icon: "CheckCircle" },
+      { section: "08", title: "Appel à l'Action", anchor: "cta", icon: "ArrowRight" }
+    ],
+    synthesis: [
+      { title: "ROI Garanti", icon: "DollarSign", gradient: "from-green-500 to-emerald-600", details: ["Méthodes prouvées", "Résultats mesurables", "ROI positif", "Growth strategies"] },
+      { title: "Expertise Reconnue", icon: "Award", gradient: "from-blue-500 to-cyan-600", details: ["Certifications Google", "Facebook Blueprint", "Expertise validée", "Success stories"] },
+      { title: "Marché Porteur", icon: "TrendingUp", gradient: "from-purple-500 to-violet-600", details: ["E-commerce en croissance", "Opportunités multiples", "Freelance possible", "Revenus élevés"] }
+    ]
+  },
+
+  "video-production-ai-editing": {
+    id: "video-production-ai-editing",
+    slug: "video-production-ai-editing",
+    heroTitle: "Formation Production Vidéo et Montage IA",
+    heroSubtitle: "Créez des contenus vidéo professionnels avec les outils IA et les techniques de montage avancées",
+    presentationSections: [
+      { title: "Programme Professionnel", icon: "BookOpen", color: "bg-blue-100", content: "Formation complète en production vidéo moderne intégrant l'IA pour le montage, les effets et l'optimisation du workflow." },
+      { title: "Objectifs de Formation", icon: "Target", color: "bg-green-100", content: "Former des créateurs vidéo capables d'utiliser l'IA pour produire du contenu de qualité professionnelle rapidement." },
+      { title: "Compétences Acquises", icon: "Award", color: "bg-purple-100", content: "Montage IA, motion graphics, color grading, audio design, streaming, outils Adobe, stabilisation IA." },
+      { title: "Public Cible", icon: "Users", color: "bg-orange-100", content: "Créateurs de contenu, monteurs vidéo, YouTubers, agences marketing, entrepreneurs du digital." }
+    ],
+    keyAreas: [
+      { title: "Montage IA", description: "Outils de montage assistés par IA", icon: "Scissors", gradient: "from-blue-500 to-indigo-600" },
+      { title: "Motion Graphics", description: "Animations et effets visuels", icon: "Sparkles", gradient: "from-purple-500 to-pink-600" },
+      { title: "Color Grading", description: "Étalonnage et correction couleur", icon: "Palette", gradient: "from-green-500 to-emerald-600" },
+      { title: "Streaming & Live", description: "Production en direct et streaming", icon: "Radio", gradient: "from-orange-500 to-amber-600" }
+    ],
+    firstYearModules: [
+      { code: "VID101", title: "Production Vidéo Basics", duration: "35h" },
+      { code: "AI201", title: "Montage IA", duration: "40h" },
+      { code: "MOT301", title: "Motion Graphics", duration: "40h" },
+      { code: "COL401", title: "Color Grading", duration: "35h" },
+      { code: "AUD501", title: "Audio Design", duration: "30h" },
+      { code: "LIVE601", title: "Streaming & Live", duration: "35h" }
+    ],
+    programGoals: [
+      { id: "ai-editing", title: "Montage IA", description: "Maîtrise des outils de montage IA", icon: "Scissors", color: "bg-gradient-to-r from-blue-500 to-indigo-600", details: ["Auto-editing", "Scene detection", "Face tracking", "Audio sync"] },
+      { id: "visual-effects", title: "Effets Visuels", description: "Création d'effets et animations", icon: "Sparkles", color: "bg-gradient-to-r from-purple-500 to-pink-600", details: ["Motion graphics", "VFX compositing", "3D integration", "Particle effects"] },
+      { id: "professional", title: "Qualité Pro", description: "Standards professionnels", icon: "Award", color: "bg-gradient-to-r from-green-500 to-emerald-600", details: ["Broadcast quality", "Color science", "Audio mastering", "Delivery formats"] },
+      { id: "workflow", title: "Workflow Optimisé", description: "Production efficace avec IA", icon: "Zap", color: "bg-gradient-to-r from-orange-500 to-amber-600", details: ["Automated workflows", "Batch processing", "Template systems", "Asset management"] }
+    ],
+    objectives: {
+      mainTitle: "Objectifs Généraux",
+      description: "Former des professionnels de la vidéo capables d'exploiter l'IA pour créer du contenu de qualité avec efficacité.",
+      leftColumn: { title: "Expertise Vidéo IA", skills: ["Montage assisté par IA", "Motion graphics avancés", "Color grading professionnel", "Audio design et mixage", "Streaming et live production", "Workflow automation"], description: "Compétences pour créer du contenu vidéo professionnel en exploitant la puissance de l'IA." },
+      rightColumn: { sections: [{ title: "Production Moderne", description: "Maîtrise des derniers outils et techniques de production vidéo." }, { title: "Efficiency Focus", description: "Optimisation du temps de production grâce aux outils IA." }, { title: "Creative Excellence", description: "Développement de la créativité et de la vision artistique." }] }
+    },
+    teachingStrategies: [
+      { title: "Projets Créatifs", icon: "Film", color: "from-blue-500 to-indigo-600", content: "Production de vidéos complètes avec brief client", features: ["Client briefs", "Creative process", "Production pipeline", "Delivery standards"] },
+      { title: "IA Tools Mastery", icon: "Sparkles", color: "from-purple-500 to-pink-600", content: "Formation sur les derniers outils IA vidéo", features: ["Runway ML", "Descript", "Adobe Sensei", "Topaz Video AI"] },
+      { title: "Industry Standards", icon: "Award", color: "from-green-500 to-emerald-600", content: "Formation aux standards professionnels", features: ["Broadcast specs", "Color workflows", "Audio standards", "Delivery formats"] },
+      { title: "Portfolio Building", icon: "Briefcase", color: "from-orange-500 to-amber-600", content: "Construction d'un portfolio professionnel", features: ["Demo reel", "Case studies", "Client testimonials", "Showreel creation"] }
+    ],
+    tableOfContents: [
+      { section: "01", title: "Présentation du Programme", anchor: "presentation", icon: "FileText" },
+      { section: "02", title: "Domaines Clés", anchor: "key-areas", icon: "Target" },
+      { section: "03", title: "Curriculum Formation", anchor: "curriculum-year1", icon: "BookOpen" },
+      { section: "04", title: "Objectifs du Programme", anchor: "objectives", icon: "Goal" },
+      { section: "05", title: "Objectifs Généraux", anchor: "general-objectives", icon: "Target" },
+      { section: "06", title: "Stratégies Pédagogiques", anchor: "teaching-strategies", icon: "Users" },
+      { section: "07", title: "Synthèse du Programme", anchor: "synthesis", icon: "CheckCircle" },
+      { section: "08", title: "Appel à l'Action", anchor: "cta", icon: "ArrowRight" }
+    ],
+    synthesis: [
+      { title: "Innovation Créative", icon: "Lightbulb", gradient: "from-blue-500 to-indigo-600", details: ["Outils IA maîtrisés", "Workflow optimisé", "Créativité augmentée", "Production accélérée"] },
+      { title: "Qualité Professionnelle", icon: "Award", gradient: "from-purple-500 to-pink-600", details: ["Standards broadcast", "Portfolio solide", "Clients satisfaits", "Reconnaissance industrie"] },
+      { title: "Marché Dynamique", icon: "TrendingUp", gradient: "from-green-500 to-emerald-600", details: ["Demande croissante", "Opportunités créatives", "Freelance lucratif", "Innovation continue"] }
+    ]
+  },
+
+  "social-media-content-creation": {
+    id: "social-media-content-creation",
+    slug: "social-media-content-creation",
+    heroTitle: "Formation Création de Contenu Réseaux Sociaux",
+    heroSubtitle: "Créez du contenu viral et engageant pour tous les réseaux sociaux avec les stratégies les plus efficaces",
+    presentationSections: [
+      { title: "Programme Professionnel", icon: "BookOpen", color: "bg-blue-100", content: "Formation complète en création de contenu social media couvrant la stratégie, la production et l'optimisation pour tous les réseaux." },
+      { title: "Objectifs de Formation", icon: "Target", color: "bg-green-100", content: "Former des créateurs de contenu capables de développer une audience et générer de l'engagement sur tous les réseaux sociaux." },
+      { title: "Compétences Acquises", icon: "Award", color: "bg-purple-100", content: "Stratégie content, création visuelle, vidéo mobile, copywriting, analytics, influencer marketing, personal branding." },
+      { title: "Public Cible", icon: "Users", color: "bg-orange-100", content: "Community managers, créateurs de contenu, entrepreneurs, influenceurs, responsables marketing digital." }
+    ],
+    keyAreas: [
+      { title: "Stratégie Contenu", description: "Planification et stratégie éditoriale", icon: "Calendar", gradient: "from-blue-500 to-cyan-600" },
+      { title: "Création Visuelle", description: "Design et vidéo pour réseaux sociaux", icon: "Image", gradient: "from-purple-500 to-pink-600" },
+      { title: "Copywriting Social", description: "Rédaction persuasive et engageante", icon: "PenTool", gradient: "from-green-500 to-emerald-600" },
+      { title: "Engagement & Growth", description: "Croissance d'audience et engagement", icon: "Users", gradient: "from-orange-500 to-amber-600" }
+    ],
+    firstYearModules: [
+      { code: "SMC101", title: "Social Media Strategy", duration: "30h" },
+      { code: "VIS201", title: "Création Visuelle", duration: "40h" },
+      { code: "VID301", title: "Vidéo Mobile", duration: "35h" },
+      { code: "COPY401", title: "Copywriting Social", duration: "30h" },
+      { code: "ENG501", title: "Engagement & Growth", duration: "35h" },
+      { code: "ANAL601", title: "Analytics & Insights", duration: "25h" }
+    ],
+    programGoals: [
+      { id: "strategy", title: "Stratégie Expert", description: "Maîtrise de la stratégie social media", icon: "Target", color: "bg-gradient-to-r from-blue-500 to-cyan-600", details: ["Content planning", "Platform optimization", "Audience analysis", "Trend identification"] },
+      { id: "creation", title: "Création Pro", description: "Production de contenu professionnel", icon: "Palette", color: "bg-gradient-to-r from-purple-500 to-pink-600", details: ["Visual design", "Video editing", "Photo editing", "Template creation"] },
+      { id: "engagement", title: "Engagement Master", description: "Maximisation de l'engagement", icon: "Heart", color: "bg-gradient-to-r from-green-500 to-emerald-600", details: ["Community building", "Viral content", "User interaction", "Brand loyalty"] },
+      { id: "growth", title: "Growth Hacking", description: "Croissance d'audience rapide", icon: "TrendingUp", color: "bg-gradient-to-r from-orange-500 to-amber-600", details: ["Follower growth", "Reach expansion", "Cross-platform", "Influencer partnerships"] }
+    ],
+    objectives: {
+      mainTitle: "Objectifs Généraux",
+      description: "Former des experts en création de contenu social media capables de développer des communautés engagées et des stratégies virales.",
+      leftColumn: { title: "Expertise Social Media", skills: ["Stratégie de contenu multi-plateforme", "Création visuelle et vidéo", "Copywriting persuasif", "Analytics et optimisation", "Community management", "Personal branding"], description: "Compétences pour créer du contenu engageant et développer une présence social media forte." },
+      rightColumn: { sections: [{ title: "Multi-Platform", description: "Maîtrise de tous les réseaux sociaux majeurs et leurs spécificités." }, { title: "Viral Strategies", description: "Techniques pour créer du contenu viral et maximiser la portée." }, { title: "Business Impact", description: "Conversion de l'audience en résultats business mesurables." }] }
+    },
+    teachingStrategies: [
+      { title: "Comptes Réels", icon: "Smartphone", color: "from-blue-500 to-cyan-600", content: "Gestion de vrais comptes social media", features: ["Live account management", "Real audience", "Performance tracking", "Optimization cycles"] },
+      { title: "Trend Analysis", icon: "TrendingUp", color: "from-purple-500 to-pink-600", content: "Analyse des tendances et création adaptée", features: ["Trend identification", "Viral content analysis", "Platform algorithms", "Timing optimization"] },
+      { title: "Creative Challenges", icon: "Lightbulb", color: "from-green-500 to-emerald-600", content: "Défis créatifs et concours de contenu", features: ["Creative contests", "Peer feedback", "Innovation challenges", "Portfolio building"] },
+      { title: "Influencer Network", icon: "Users", color: "from-orange-500 to-amber-600", content: "Réseau d'influenceurs et créateurs", features: ["Influencer insights", "Collaboration opportunities", "Network building", "Industry connections"] }
+    ],
+    tableOfContents: [
+      { section: "01", title: "Présentation du Programme", anchor: "presentation", icon: "FileText" },
+      { section: "02", title: "Domaines Clés", anchor: "key-areas", icon: "Target" },
+      { section: "03", title: "Curriculum Formation", anchor: "curriculum-year1", icon: "BookOpen" },
+      { section: "04", title: "Objectifs du Programme", anchor: "objectives", icon: "Goal" },
+      { section: "05", title: "Objectifs Généraux", anchor: "general-objectives", icon: "Target" },
+      { section: "06", title: "Stratégies Pédagogiques", anchor: "teaching-strategies", icon: "Users" },
+      { section: "07", title: "Synthèse du Programme", anchor: "synthesis", icon: "CheckCircle" },
+      { section: "08", title: "Appel à l'Action", anchor: "cta", icon: "ArrowRight" }
+    ],
+    synthesis: [
+      { title: "Créativité Virale", icon: "Sparkles", gradient: "from-blue-500 to-cyan-600", details: ["Contenu viral", "Engagement élevé", "Audience fidèle", "Impact mesurable"] },
+      { title: "Expertise Reconnue", icon: "Award", gradient: "from-purple-500 to-pink-600", details: ["Portfolio impressionnant", "Résultats prouvés", "Certifications", "Réputation établie"] },
+      { title: "Opportunités Infinies", icon: "TrendingUp", gradient: "from-green-500 to-emerald-600", details: ["Marché en expansion", "Freelance lucratif", "Personal branding", "Entrepreneuriat digital"] }
+    ]
   }
 };
