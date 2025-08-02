@@ -134,6 +134,33 @@
     -webkit-overflow-scrolling: touch;
   }
 
+  /* iOS-specific dropdown fixes */
+  .ios-dropdown-fix {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* iOS Select component optimizations */
+  @supports (-webkit-touch-callout: none) {
+    .select-trigger-ios {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    
+    .select-content-ios {
+      will-change: transform;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+  }
+
   .mobile-device input,
   .mobile-device textarea,
   .mobile-device select {
