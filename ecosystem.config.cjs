@@ -1,8 +1,7 @@
 module.exports = {
   apps: [{
     name: 'education-platform',
-    script: 'node',
-    args: ['-e', 'const express=require("express");const path=require("path");const app=express();app.use(express.static("dist"));app.get("*",(req,res)=>res.sendFile(path.join(__dirname,"dist","index.html")));app.listen(3000,()=>console.log("Server running on port 3000"));'],
+    script: 'server.js',
     instances: 1,
     exec_mode: 'fork',
     env: {
