@@ -35,36 +35,73 @@ export default defineConfig(({ mode }) => {
     cssCodeSplit: true,
     assetsInlineLimit: 4096,
     // Mobile-optimized chunk size
-    chunkSizeWarningLimit: 600,
+    chunkSizeWarningLimit: 500,
     // Performance optimizations
     rollupOptions: {
       output: {
         manualChunks: {
-          // Mobile-optimized smaller chunks
+          // Core React chunks
           'vendor-react': ['react', 'react-dom'],
           'vendor-router': ['react-router-dom'],
-          'vendor-ui': [
+          
+          // UI Library chunks - split Radix UI more granularly
+          'vendor-ui-core': [
             '@radix-ui/react-dialog',
             '@radix-ui/react-dropdown-menu',
-            '@radix-ui/react-tabs'
+            '@radix-ui/react-tabs',
+            '@radix-ui/react-toast'
           ],
-          'vendor-ui-extended': [
-            '@radix-ui/react-toast',
-            'lucide-react'
+          'vendor-ui-forms': [
+            '@radix-ui/react-checkbox',
+            '@radix-ui/react-radio-group',
+            '@radix-ui/react-select',
+            '@radix-ui/react-switch'
           ],
+          'vendor-ui-display': [
+            '@radix-ui/react-accordion',
+            '@radix-ui/react-avatar',
+            '@radix-ui/react-progress',
+            '@radix-ui/react-separator'
+          ],
+          'vendor-ui-navigation': [
+            '@radix-ui/react-navigation-menu',
+            '@radix-ui/react-popover',
+            '@radix-ui/react-tooltip'
+          ],
+          'vendor-icons': ['lucide-react'],
+          
+          // Form handling
           'vendor-forms': [
             'react-hook-form',
             '@hookform/resolvers',
             'zod'
           ],
+          
+          // Utility chunks
           'vendor-utils': [
             'clsx',
             'class-variance-authority',
             'tailwind-merge'
           ],
-          'vendor-data': ['date-fns'],
+          'vendor-date': ['date-fns'],
           'vendor-query': ['@tanstack/react-query'],
-          'vendor-supabase': ['@supabase/supabase-js']
+          'vendor-supabase': ['@supabase/supabase-js'],
+          
+          // Charts and data visualization
+          'vendor-charts': ['recharts'],
+          
+          // DnD and interactions
+          'vendor-dnd': [
+            '@dnd-kit/core',
+            '@dnd-kit/sortable',
+            '@dnd-kit/utilities'
+          ],
+          
+          // Markdown and content
+          'vendor-content': [
+            'react-markdown',
+            'embla-carousel-react'
+          ]
         }
       }
     },
