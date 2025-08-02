@@ -157,26 +157,25 @@
     touch-action: manipulation;
   }
   
-  /* iOS scroll wrapper specific styles */
-  .ios-scroll-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    height: calc(var(--vh, 1vh) * 100);
-    overflow: hidden;
-  }
-  
-  .ios-scroll-container {
+  /* Unified Mobile Scrolling */
+  .unified-mobile-wrapper {
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: none;
-    scroll-behavior: smooth;
     touch-action: pan-y;
   }
-  
-  .ios-scroll-content {
-    position: relative;
-    min-height: 100%;
-    width: 100%;
+
+  /* iOS Safari momentum scrolling */
+  @supports (-webkit-touch-callout: none) {
+    body {
+      /* Use dynamic viewport height */
+      min-height: calc(var(--dvh, 1dvh) * 100);
+    }
+    
+    .unified-mobile-wrapper {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: none;
+      scroll-snap-type: none;
+    }
   }
 
   /* Touch-friendly improvements for mobile */
