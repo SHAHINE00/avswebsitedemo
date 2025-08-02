@@ -7,6 +7,8 @@ import { GlobalErrorBoundary } from "@/components/ui/global-error-boundary";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import { usePageTracking, useScrollTracking } from "@/hooks/useAnalytics";
 import AnalyticsWrapper from "@/components/AnalyticsWrapper";
+import NewsletterPopup from "@/components/marketing/NewsletterPopup";
+import UTMTracker from "@/components/marketing/UTMTracker";
 import { lazy } from "react";
 
 // Core pages (loaded immediately)
@@ -48,7 +50,9 @@ const App = () => {
   return (
     <GlobalErrorBoundary>
       <Router>
+        <UTMTracker />
         <AnalyticsWrapper />
+        <NewsletterPopup />
       </Router>
     </GlobalErrorBoundary>
   );

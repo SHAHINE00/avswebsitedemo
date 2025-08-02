@@ -165,7 +165,9 @@ export const generateOrganizationJsonLd = () => ({
   },
   "sameAs": [
     "https://linkedin.com/company/avs-institut",
-    "https://twitter.com/AVSInstitut"
+    "https://twitter.com/AVSInstitut",
+    "https://facebook.com/avsacademy",
+    "https://instagram.com/avsacademy"
   ],
   "educationalOrganizationSubType": "Professional Training Institute"
 });

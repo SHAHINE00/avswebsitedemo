@@ -1,98 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://your-domain.com/</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://avs.ma/</loc>
+    <lastmod>2024-12-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://your-domain.com/features</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://avs.ma/features</loc>
+    <lastmod>2024-12-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://your-domain.com/curriculum</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://avs.ma/curriculum</loc>
+    <lastmod>2024-12-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://your-domain.com/ai-course</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://avs.ma/ai-course</loc>
+    <lastmod>2024-12-02</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://your-domain.com/programming-course</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://avs.ma/programming-course</loc>
+    <lastmod>2024-12-02</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://your-domain.com/cybersecurity-course</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://avs.ma/cybersecurity-course</loc>
+    <lastmod>2024-12-02</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://your-domain.com/instructors</loc>
-    <lastmod>2024-01-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://your-domain.com/about</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://avs.ma/instructors</loc>
+    <lastmod>2024-12-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://your-domain.com/careers</loc>
-    <lastmod>2024-01-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://your-domain.com/contact</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://avs.ma/about</loc>
+    <lastmod>2024-12-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://your-domain.com/appointment</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://avs.ma/careers</loc>
+    <lastmod>2024-12-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://your-domain.com/blog</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://avs.ma/contact</loc>
+    <lastmod>2024-12-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://avs.ma/appointment</loc>
+    <lastmod>2024-12-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://avs.ma/blog</loc>
+    <lastmod>2024-12-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://your-domain.com/register</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://avs.ma/register</loc>
+    <lastmod>2024-12-02</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://your-domain.com/privacy-policy</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://avs.ma/privacy-policy</loc>
+    <lastmod>2024-12-02</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://your-domain.com/terms-of-use</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://avs.ma/terms-of-use</loc>
+    <lastmod>2024-12-02</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://your-domain.com/cookies-policy</loc>
-    <lastmod>2024-01-01</lastmod>
+    <loc>https://avs.ma/cookies-policy</loc>
+    <lastmod>2024-12-02</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

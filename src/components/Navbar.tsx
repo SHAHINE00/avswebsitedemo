@@ -6,6 +6,7 @@ import { Button } from './ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import NotificationBell from './user/NotificationBell';
 import OptimizedImage from '@/components/OptimizedImage';
+import SocialShareButtons from '@/components/marketing/SocialShareButtons';
 import {
   DropdownMenu,
   DropdownMenuContent,

@@ -7,6 +7,7 @@ import { pageSEO } from '@/utils/seoData';
 import BlogHeroSection from '@/components/blog/BlogHeroSection';
 import BlogCategories from '@/components/blog/BlogCategories';
 import BlogNewsletter from '@/components/blog/BlogNewsletter';
+import EmailCaptureForm from '@/components/marketing/EmailCaptureForm';
 
 const Blog = () => {
   return (
@@ -22,7 +23,19 @@ const Blog = () => {
       
       <main className="flex-grow py-16">
         <div className="container mx-auto px-6">
-          <DynamicBlog />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <DynamicBlog />
+            </div>
+            <div className="space-y-8">
+              <EmailCaptureForm 
+                source="blog-sidebar"
+                title="Guides IA Exclusifs"
+                description="Accédez à nos ressources premium"
+                incentive="eBook: Guide complet de l'IA en 2024"
+              />
+            </div>
+          </div>
         </div>
       </main>
 
