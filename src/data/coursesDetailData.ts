@@ -390,7 +390,103 @@ export const coursesDetailData: Record<string, CourseDetailData> = {
         icon: "Users2",
         color: "bg-gradient-to-r from-orange-500 to-amber-600",
         details: ["Conduite de projets", "Formation équipes", "Change management", "Data culture"]
+  },
+
+  "ai-for-business": {
+    id: "04929948-3bae-4ddb-861a-6259699daa63",
+    slug: "ai-for-business",
+    heroTitle: "Formation AI for Business",
+    heroSubtitle: "Transformez votre entreprise avec l'intelligence artificielle",
+    presentationSections: [
+      {
+        title: "Programme Business",
+        icon: "BookOpen",
+        color: "bg-blue-100",
+        content: "Formation dédiée aux dirigeants et managers pour intégrer l'IA dans leur stratégie d'entreprise."
+      },
+      {
+        title: "Objectifs Stratégiques", 
+        icon: "Target",
+        color: "bg-green-100",
+        content: "Développer une vision stratégique de l'IA et identifier les opportunités business."
+      },
+      {
+        title: "Compétences Business",
+        icon: "Award", 
+        color: "bg-purple-100",
+        content: "ROI de l'IA, gestion de projets IA, transformation digitale, innovation."
+      },
+      {
+        title: "Public Dirigeants",
+        icon: "Users",
+        color: "bg-orange-100", 
+        content: "Dirigeants, managers, consultants, entrepreneurs souhaitant intégrer l'IA."
       }
+    ],
+    keyAreas: [
+      {
+        title: "Stratégie IA",
+        description: "Développement de stratégies IA alignées business",
+        icon: "Target",
+        gradient: "from-blue-500 to-purple-600"
+      },
+      {
+        title: "ROI & Performance",
+        description: "Mesure de l'impact et du retour sur investissement",
+        icon: "TrendingUp", 
+        gradient: "from-green-500 to-blue-600"
+      }
+    ],
+    firstYearModules: [
+      { code: "AIB101", title: "IA pour le Business", duration: "20h" },
+      { code: "STR201", title: "Stratégie IA", duration: "25h" },
+      { code: "ROI301", title: "ROI de l'IA", duration: "15h" }
+    ],
+    programGoals: [
+      {
+        id: "strategy",
+        title: "Vision Stratégique",
+        description: "Développer une stratégie IA cohérente",
+        icon: "Target",
+        color: "bg-gradient-to-r from-blue-500 to-purple-600",
+        details: ["Analyse des opportunités", "Roadmap IA", "Transformation digitale"]
+      }
+    ],
+    objectives: {
+      mainTitle: "Objectifs Business",
+      description: "Former les dirigeants à l'intégration stratégique de l'IA",
+      leftColumn: {
+        title: "Leadership IA",
+        skills: ["Vision stratégique", "ROI de l'IA", "Gestion de projets IA"],
+        description: "Développez votre leadership dans l'ère de l'IA"
+      },
+      rightColumn: {
+        sections: [
+          { title: "Approche Business", description: "Focus sur les enjeux business et la rentabilité" }
+        ]
+      }
+    },
+    teachingStrategies: [
+      {
+        title: "Cas d'Entreprise",
+        icon: "Briefcase",
+        color: "from-blue-500 to-purple-600", 
+        content: "Études de cas réels d'implémentation IA en entreprise",
+        features: ["Success stories", "Échecs analysés", "ROI calculé"]
+      }
+    ],
+    tableOfContents: [
+      { section: "01", title: "Vision Stratégique", anchor: "strategy", icon: "Target" }
+    ],
+    synthesis: [
+      {
+        title: "Leadership IA",
+        icon: "Award",
+        gradient: "from-blue-500 to-purple-600",
+        details: ["Vision claire", "Stratégie alignée", "ROI démontré"]
+      }
+    ]
+  }
     ],
     objectives: {
       mainTitle: "Objectifs Généraux",
