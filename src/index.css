@@ -286,6 +286,27 @@
       padding: 12px;
     }
 
+    /* iOS-specific select fixes */
+    @supports (-webkit-touch-callout: none) {
+      [data-radix-select-trigger] {
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent;
+        min-height: 44px !important;
+      }
+      
+      [data-radix-select-content] {
+        touch-action: pan-y !important;
+        -webkit-overflow-scrolling: touch;
+        max-height: 50vh !important;
+        z-index: 9999 !important;
+      }
+      
+      [data-radix-select-item] {
+        touch-action: manipulation !important;
+        min-height: 44px !important;
+      }
+    }
+
     /* Improve scrolling performance */
     .scroll-container {
       -webkit-overflow-scrolling: touch;
