@@ -2,6 +2,7 @@ import React, { useMemo, useEffect } from 'react';
 import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 import { supabase } from '@/integrations/supabase/client';
 import { logWarn } from '@/utils/logger';
+import MobileScrollWrapper from '@/components/ui/MobileScrollWrapper';
 
 // Global components
 import Navbar from '@/components/Navbar';
@@ -155,9 +156,22 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
     return <>{children}</>;
   }
 
+  // Separate navbar from content sections for proper wrapping
+  const navbar = orderedSections.find(section => section.section_key === 'global_navbar');
+  const footer = orderedSections.find(section => section.section_key === 'global_footer');
+  const contentSections = orderedSections.filter(section => 
+    section.section_key !== 'global_navbar' && section.section_key !== 'global_footer'
+  );
+
   return (
     <>
-      {orderedSections.map(section => renderSection(section.section_key))}
+      {navbar && renderSection(navbar.section_key)}
+      <MobileScrollWrapper className="ios-safe-height">
+        <main className="min-h-screen">
+          {contentSections.map(section => renderSection(section.section_key))}
+        </main>
+      </MobileScrollWrapper>
+      {footer && renderSection(footer.section_key)}
     </>
   );
 };

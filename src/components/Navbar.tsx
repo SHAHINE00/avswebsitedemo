@@ -40,7 +40,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-50 top-0 overflow-visible">
+    <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-50 top-0 overflow-visible will-change-transform">
       <div className="container mx-auto px-6">
         <div className="flex items-center h-16 sm:h-18 relative overflow-visible">
           {/* Logo - Desktop Left */}
@@ -138,7 +138,7 @@ const Navbar = () => {
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
           <div className="lg:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
+            <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t scroll-container">
               {navigation.map((item) => (
                 <Link
                   key={item.name}

@@ -43,10 +43,19 @@ export const isAndroid = (): boolean => {
 
 export const getViewportHeight = (): number => {
   if (typeof window === 'undefined') return 0;
-  // Account for iOS Safari's dynamic viewport and other mobile browsers
-  return window.visualViewport?.height || 
-         document.documentElement.clientHeight || 
-         window.innerHeight;
+  
+  // Enhanced viewport height calculation for mobile scrolling
+  if (window.visualViewport) {
+    return window.visualViewport.height;
+  }
+  
+  // For iOS Safari with dynamic address bar
+  if (isIOS()) {
+    // Use innerHeight for consistent behavior during scroll
+    return window.innerHeight;
+  }
+  
+  return document.documentElement.clientHeight || window.innerHeight;
 };
 
 export const getViewportWidth = (): number => {
@@ -270,10 +279,20 @@ const setupMobileSpecificOptimizations = (): void => {
     });
   }
 
-  // Add touch improvements
-  document.body.style.touchAction = 'manipulation';
+  // Enhanced touch improvements for mobile scrolling
+  document.body.style.touchAction = 'pan-y pinch-zoom';
   (document.body.style as any).webkitTouchCallout = 'none';
   (document.body.style as any).webkitUserSelect = 'none';
+  (document.body.style as any).webkitOverflowScrolling = 'touch';
+  
+  // Add scroll momentum and smooth scrolling
+  document.documentElement.style.scrollBehavior = 'smooth';
+  
+  // Prevent zoom on form elements while allowing vertical scrolling
+  const formElements = document.querySelectorAll('input, textarea, select');
+  formElements.forEach(element => {
+    (element as HTMLElement).style.touchAction = 'manipulation';
+  });
   
   // Preload critical mobile resources
   const criticalResources = ['/manifest.json', '/favicon.png'];
@@ -288,21 +307,70 @@ const setupMobileSpecificOptimizations = (): void => {
 // iOS-specific fixes for Safari compatibility
 const setupIOSSpecificFixes = (): void => {
   try {
-    // Fix iOS Safari 100vh issue
+    // Enhanced iOS Safari viewport handling
     const setVH = () => {
       const vh = window.innerHeight * 0.01;
+      const vvh = (window.visualViewport?.height || window.innerHeight) * 0.01;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
+      document.documentElement.style.setProperty('--vvh', `${vvh}px`);
+      
+      // Also set dynamic viewport height
+      document.documentElement.style.setProperty('--dvh', `${vvh}px`);
     };
+    
     setVH();
-    window.addEventListener('resize', setVH);
-    window.addEventListener('orientationchange', () => setTimeout(setVH, 100));
+    
+    // Enhanced resize handling for iOS address bar
+    let resizeTimer: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(setVH, 150);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', () => setTimeout(setVH, 300));
+    
+    // Visual viewport handling for better scroll behavior
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', setVH);
+      window.visualViewport.addEventListener('scroll', setVH);
+    }
 
-    // Fix iOS Safari bounce/scroll issues
+    // Enhanced scroll behavior for iOS
     document.addEventListener('touchmove', (e) => {
-      if ((e as any).scale !== 1) {
+      // Only prevent pinch zoom, allow normal scrolling
+      if ((e as any).scale !== 1 || e.touches.length > 1) {
         e.preventDefault();
       }
     }, { passive: false });
+    
+    // Prevent overscroll/rubber band effect on body
+    document.body.addEventListener('touchmove', (e) => {
+      // Allow scrolling within scrollable containers
+      let element = e.target as Element;
+      while (element && element !== document.body) {
+        const style = window.getComputedStyle(element);
+        if (style.overflow === 'scroll' || style.overflow === 'auto' || 
+            style.overflowY === 'scroll' || style.overflowY === 'auto') {
+          return; // Allow scrolling in this container
+        }
+        element = element.parentElement!;
+      }
+      
+      // Prevent body scrolling beyond bounds
+      if (window.scrollY <= 0 && e.touches[0].clientY > (e as any).startY) {
+        e.preventDefault();
+      }
+      if (window.scrollY >= document.body.scrollHeight - window.innerHeight && 
+          e.touches[0].clientY < (e as any).startY) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+    
+    // Track initial touch position
+    document.body.addEventListener('touchstart', (e) => {
+      (e as any).startY = e.touches[0].clientY;
+    });
 
     // Force iOS to respect our Service Worker registration
     if ('serviceWorker' in navigator) {
