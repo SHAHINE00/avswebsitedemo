@@ -2,8 +2,6 @@ import React, { useMemo, useEffect } from 'react';
 import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 import { supabase } from '@/integrations/supabase/client';
 import { logWarn } from '@/utils/logger';
-import UnifiedMobileWrapper from '@/components/ui/UnifiedMobileWrapper';
-import { useUnifiedViewport } from '@/hooks/useUnifiedViewport';
 
 // Global components
 import Navbar from '@/components/Navbar';
@@ -83,9 +81,6 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
   children 
 }) => {
   const { getSectionsByPage, loading, refetch } = useSectionVisibility();
-  
-  // Initialize unified viewport handling
-  useUnifiedViewport();
 
   // Set up real-time subscriptions for section visibility changes
   useEffect(() => {
@@ -168,23 +163,19 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
   );
 
   return (
-    <UnifiedMobileWrapper className="min-h-screen">
-      <div className="min-h-screen flex flex-col bg-background">
-        {/* Render navbar */}
-        {navbar && renderSection(navbar.section_key)}
-        
-        {/* Render main content sections */}
-        <main className="flex-grow">
-          {contentSections.map(section => renderSection(section.section_key))}
-          {children}
-        </main>
-        
-        {/* Render footer - properly positioned within scroll area */}
-        <div className="mt-auto">
-          {footer && renderSection(footer.section_key)}
-        </div>
-      </div>
-    </UnifiedMobileWrapper>
+    <div className="min-h-screen flex flex-col bg-background">
+      {/* Render navbar */}
+      {navbar && renderSection(navbar.section_key)}
+      
+      {/* Render main content sections */}
+      <main className="flex-grow">
+        {contentSections.map(section => renderSection(section.section_key))}
+        {children}
+      </main>
+      
+      {/* Render footer */}
+      {footer && renderSection(footer.section_key)}
+    </div>
   );
 };
 
