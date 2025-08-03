@@ -16,7 +16,7 @@ import { usePhoneFormatter } from '@/hooks/usePhoneFormatter';
 import { useCourses } from '@/hooks/useCourses';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { AlertTriangle, RefreshCw, CheckCircle2, Calendar, Users, Star } from 'lucide-react';
+import { AlertTriangle, RefreshCw, CheckCircle2, Calendar, Users, Star, Loader2, CheckCircle, X } from 'lucide-react';
 
 interface FormationData {
   formationType: string;
@@ -37,6 +37,8 @@ interface FormData {
 interface EnhancedMultiStepFormProps {
   onSubmit: (data: FormData) => Promise<void>;
   loading: boolean;
+  submissionStatus?: 'idle' | 'submitting' | 'success' | 'error';
+  statusMessage?: string;
 }
 
 const INITIAL_FORM_DATA: FormData = {
@@ -55,8 +57,14 @@ const INITIAL_FORM_DATA: FormData = {
 
 const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({ 
   onSubmit, 
-  loading 
+  loading,
+  submissionStatus = 'idle',
+  statusMessage
 }) => {
+  const [inlineStatus, setInlineStatus] = React.useState<{
+    type: 'idle' | 'submitting' | 'success' | 'error';
+    message: string;
+  }>({ type: 'idle', message: '' });
   const { data: formData, updateData } = useFormPersistence<FormData>(
     'enhanced-registration-form',
     INITIAL_FORM_DATA
@@ -238,6 +246,23 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
     }
   }, [touch, validate, validatePhone, formData]);
 
+  // Sync external status with inline status
+  React.useEffect(() => {
+    if (submissionStatus && statusMessage) {
+      setInlineStatus({ type: submissionStatus, message: statusMessage });
+    }
+  }, [submissionStatus, statusMessage]);
+
+  // Clear inline status when user starts typing after an error
+  React.useEffect(() => {
+    if (inlineStatus.type === 'error' && (formData.firstName || formData.lastName || formData.email || formData.phone)) {
+      const timer = setTimeout(() => {
+        setInlineStatus({ type: 'idle', message: '' });
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [formData.firstName, formData.lastName, formData.email, formData.phone, inlineStatus.type]);
+
   const handleSubmit = React.useCallback(async (e?: React.FormEvent | React.MouseEvent) => {
     if (e) {
       e.preventDefault();
@@ -249,8 +274,11 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
     console.log("Network status:", networkStatus);
     console.log("Loading state:", loading);
     
+    setInlineStatus({ type: 'submitting', message: 'Vérification en cours...' });
+    
     if (!networkStatus.isOnline) {
       console.log("❌ Network offline");
+      setInlineStatus({ type: 'error', message: 'Pas de connexion internet' });
       toast({
         title: "Pas de connexion internet",
         description: "Veuillez vérifier votre connexion et réessayer.",
@@ -262,6 +290,7 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
     // Check terms acceptance first
     if (!formData.acceptTerms) {
       console.log("❌ Terms not accepted");
+      setInlineStatus({ type: 'error', message: 'Veuillez accepter les conditions d\'utilisation' });
       toast({
         title: "Conditions d'utilisation",
         description: "Veuillez accepter les conditions d'utilisation.",
@@ -273,6 +302,7 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
     // Check if formation is properly selected
     if (!formData.formation.formationType || !formData.formation.domaine || !formData.formation.programme) {
       console.log("❌ Formation incomplete:", formData.formation);
+      setInlineStatus({ type: 'error', message: 'Veuillez compléter votre sélection de formation' });
       toast({
         title: "Formation incomplète",
         description: "Veuillez sélectionner tous les éléments de votre formation.",
@@ -303,6 +333,7 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
       console.log("❌ Validation failed");
       const errorFields = Object.keys(errors).filter(key => errors[key]);
       console.log("Error fields:", errorFields);
+      setInlineStatus({ type: 'error', message: 'Veuillez corriger les erreurs du formulaire' });
       toast({
         title: "Formulaire invalide",
         description: `Veuillez corriger les erreurs: ${errorFields.join(', ')}`,
@@ -677,21 +708,36 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
                   </label>
                 </div>
                 
-                <div className="flex justify-center">
+                <div className="flex flex-col items-center space-y-4">
                   <Button
                     onClick={handleSubmit}
                     disabled={!formData.acceptTerms || !networkStatus.isOnline || loading}
                     className="px-8 py-3 bg-gradient-to-r from-academy-blue to-academy-purple text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50"
                   >
-                    {loading ? (
+                    {loading || inlineStatus.type === 'submitting' ? (
                       <>
-                        <RefreshCw className="w-4 h-4 animate-spin mr-2" />
+                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
                         Inscription en cours...
                       </>
                     ) : (
                       "Finaliser l'inscription"
                     )}
                   </Button>
+                  
+                  {/* Inline Status Message */}
+                  {inlineStatus.type !== 'idle' && inlineStatus.message && (
+                    <div className={cn(
+                      'flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300',
+                      inlineStatus.type === 'success' && 'bg-green-50 text-green-800 border border-green-200',
+                      inlineStatus.type === 'error' && 'bg-red-50 text-red-800 border border-red-200',
+                      inlineStatus.type === 'submitting' && 'bg-blue-50 text-blue-800 border border-blue-200'
+                    )}>
+                      {inlineStatus.type === 'success' && <CheckCircle className="w-4 h-4" />}
+                      {inlineStatus.type === 'error' && <X className="w-4 h-4" />}
+                      {inlineStatus.type === 'submitting' && <Loader2 className="w-4 h-4 animate-spin" />}
+                      <span>{inlineStatus.message}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

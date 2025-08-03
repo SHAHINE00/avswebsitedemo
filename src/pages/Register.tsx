@@ -13,11 +13,15 @@ import { logError } from '@/utils/logger';
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
+  const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [statusMessage, setStatusMessage] = useState('');
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleFormSubmit = async (formData: any) => {
     setLoading(true);
+    setSubmissionStatus('submitting');
+    setStatusMessage('Envoi en cours...');
     
     try {
       const fullName = `${formData.firstName} ${formData.lastName}`;
@@ -46,14 +50,19 @@ const Register = () => {
       
       if (error) {
         logError('Subscription error:', error);
+        setSubmissionStatus('error');
+        const errorMsg = error.message === 'duplicate key value violates unique constraint "subscribers_email_key"' 
+          ? "Cette adresse email est déjà enregistrée."
+          : "Une erreur s'est produite lors de l'inscription.";
+        setStatusMessage(errorMsg);
         toast({
           title: "Erreur d'inscription",
-          description: error.message === 'duplicate key value violates unique constraint "subscribers_email_key"' 
-            ? "Cette adresse email est déjà enregistrée."
-            : "Une erreur s'est produite lors de l'inscription. Veuillez réessayer.",
+          description: errorMsg,
           variant: "destructive",
         });
       } else {
+        setSubmissionStatus('success');
+        setStatusMessage(`Inscription réussie ! Nous vous contacterons bientôt.`);
         toast({
           title: "Inscription réussie !",
           description: `Merci ${formData.firstName} ! Votre inscription au programme "${formData.formation.programmeDetails?.title}" a été enregistrée. Nous vous contacterons bientôt.`,
@@ -66,6 +75,8 @@ const Register = () => {
       }
     } catch (error: any) {
       logError('Registration error:', error);
+      setSubmissionStatus('error');
+      setStatusMessage("Une erreur s'est produite lors de l'inscription.");
       toast({
         title: "Erreur d'inscription",
         description: "Une erreur s'est produite lors de l'inscription. Veuillez réessayer.",
@@ -101,6 +112,8 @@ const Register = () => {
               <EnhancedMultiStepForm 
                 onSubmit={handleFormSubmit}
                 loading={loading}
+                submissionStatus={submissionStatus}
+                statusMessage={statusMessage}
               />
             </SimpleErrorBoundary>
           </div>
