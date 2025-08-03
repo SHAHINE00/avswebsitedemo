@@ -73,7 +73,19 @@ const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
 // Safe Toaster wrapper that only renders after React is confirmed
 const SafeToaster: React.FC = () => {
-  const [isReactReady, setIsReactReady] = React.useState(false);
+  // Enhanced React safety check
+  if (typeof React === 'undefined' || React === null || !React.useState || !React.useEffect || !React.useContext) {
+    return null;
+  }
+  
+  let isReactReady, setIsReactReady;
+  
+  try {
+    [isReactReady, setIsReactReady] = React.useState(false);
+  } catch (error) {
+    console.warn('SafeToaster: useState failed:', error);
+    return null;
+  }
   
   React.useEffect(() => {
     // Double-check React is available before allowing Toaster
@@ -86,11 +98,16 @@ const SafeToaster: React.FC = () => {
     return null;
   }
   
-  return <Toaster />;
+  try {
+    return <Toaster />;
+  } catch (error) {
+    console.error('SafeToaster render failed:', error);
+    return null;
+  }
 };
 
 const App = () => {
-  // Enhanced React validation check
+  // Enhanced React validation check with early return
   if (typeof React === 'undefined' || React === null) {
     return (
       <div style={{ padding: '20px', textAlign: 'center' }}>
@@ -101,7 +118,7 @@ const App = () => {
   }
   
   // Validate React hooks are available
-  if (!React.useState || !React.useEffect || !React.useContext) {
+  if (!React.useState || !React.useEffect || !React.useContext || !React.Suspense) {
     return (
       <div style={{ padding: '20px', textAlign: 'center' }}>
         <h1>Initialisation React...</h1>
@@ -109,6 +126,7 @@ const App = () => {
       </div>
     );
   }
+
   return (
     <GlobalErrorBoundary>
       <React.Suspense fallback={
@@ -126,43 +144,43 @@ const App = () => {
               <CookieConsentBanner />
             </SafeGDPRWrapper>
             <AuthProvider>
-          <Routes>
-            {/* Critical routes - no lazy loading */}
-            <Route path="/" element={<Index />} />
-            <Route path="/features" element={<Features />} />
-            <Route path="*" element={<NotFound />} />
-            
-            {/* Secondary routes - lazy loaded */}
-            <Route path="/auth" element={<LazyWrapper><Auth /></LazyWrapper>} />
-            <Route path="/dashboard" element={<LazyWrapper><Dashboard /></LazyWrapper>} />
-            <Route path="/curriculum" element={<LazyWrapper><Curriculum /></LazyWrapper>} />
-            <Route path="/ai-course" element={<LazyWrapper><AICourse /></LazyWrapper>} />
-            <Route path="/programming-course" element={<LazyWrapper><ProgrammingCourse /></LazyWrapper>} />
-            <Route path="/cybersecurity-course" element={<LazyWrapper><CybersecurityCourse /></LazyWrapper>} />
-            <Route path="/course/:slug" element={<LazyWrapper><GenericCourse /></LazyWrapper>} />
-            <Route path="/learn/:slug" element={<LazyWrapper><CoursePlayer /></LazyWrapper>} />
-            <Route path="/instructors" element={<LazyWrapper><Instructors /></LazyWrapper>} />
-            <Route path="/testimonials" element={<LazyWrapper><Testimonials /></LazyWrapper>} />
-            <Route path="/about" element={<LazyWrapper><About /></LazyWrapper>} />
-            <Route path="/register" element={<LazyWrapper><Register /></LazyWrapper>} />
-            <Route path="/careers" element={<LazyWrapper><Careers /></LazyWrapper>} />
-            <Route path="/contact" element={<LazyWrapper><Contact /></LazyWrapper>} />
-            <Route path="/appointment" element={<LazyWrapper><Appointment /></LazyWrapper>} />
-            <Route path="/blog" element={<LazyWrapper><Blog /></LazyWrapper>} />
-            <Route path="/blog/:slug" element={<LazyWrapper><BlogPost /></LazyWrapper>} />
-            <Route path="/privacy-policy" element={<LazyWrapper><PrivacyPolicy /></LazyWrapper>} />
-            <Route path="/terms-of-use" element={<LazyWrapper><TermsOfUse /></LazyWrapper>} />
-            <Route path="/cookies-policy" element={<LazyWrapper><CookiesPolicy /></LazyWrapper>} />
-            
-            {/* Admin routes - protected and lazy loaded */}
-            <Route path="/admin" element={<AdminRouteGuard><LazyWrapper><Admin /></LazyWrapper></AdminRouteGuard>} />
-            <Route path="/admin/courses" element={<AdminRouteGuard><LazyWrapper><AdminCourses /></LazyWrapper></AdminRouteGuard>} />
-            <Route path="/admin/test" element={<AdminRouteGuard><LazyWrapper><AdminTest /></LazyWrapper></AdminRouteGuard>} />
-          </Routes>
-          
-          {/* Safe Toaster that only renders when React is confirmed ready */}
-          <SafeToaster />
-          </AuthProvider>
+              <Routes>
+                {/* Critical routes - no lazy loading */}
+                <Route path="/" element={<Index />} />
+                <Route path="/features" element={<Features />} />
+                <Route path="*" element={<NotFound />} />
+                
+                {/* Secondary routes - lazy loaded */}
+                <Route path="/auth" element={<LazyWrapper><Auth /></LazyWrapper>} />
+                <Route path="/dashboard" element={<LazyWrapper><Dashboard /></LazyWrapper>} />
+                <Route path="/curriculum" element={<LazyWrapper><Curriculum /></LazyWrapper>} />
+                <Route path="/ai-course" element={<LazyWrapper><AICourse /></LazyWrapper>} />
+                <Route path="/programming-course" element={<LazyWrapper><ProgrammingCourse /></LazyWrapper>} />
+                <Route path="/cybersecurity-course" element={<LazyWrapper><CybersecurityCourse /></LazyWrapper>} />
+                <Route path="/course/:slug" element={<LazyWrapper><GenericCourse /></LazyWrapper>} />
+                <Route path="/learn/:slug" element={<LazyWrapper><CoursePlayer /></LazyWrapper>} />
+                <Route path="/instructors" element={<LazyWrapper><Instructors /></LazyWrapper>} />
+                <Route path="/testimonials" element={<LazyWrapper><Testimonials /></LazyWrapper>} />
+                <Route path="/about" element={<LazyWrapper><About /></LazyWrapper>} />
+                <Route path="/register" element={<LazyWrapper><Register /></LazyWrapper>} />
+                <Route path="/careers" element={<LazyWrapper><Careers /></LazyWrapper>} />
+                <Route path="/contact" element={<LazyWrapper><Contact /></LazyWrapper>} />
+                <Route path="/appointment" element={<LazyWrapper><Appointment /></LazyWrapper>} />
+                <Route path="/blog" element={<LazyWrapper><Blog /></LazyWrapper>} />
+                <Route path="/blog/:slug" element={<LazyWrapper><BlogPost /></LazyWrapper>} />
+                <Route path="/privacy-policy" element={<LazyWrapper><PrivacyPolicy /></LazyWrapper>} />
+                <Route path="/terms-of-use" element={<LazyWrapper><TermsOfUse /></LazyWrapper>} />
+                <Route path="/cookies-policy" element={<LazyWrapper><CookiesPolicy /></LazyWrapper>} />
+                
+                {/* Admin routes - protected and lazy loaded */}
+                <Route path="/admin" element={<AdminRouteGuard><LazyWrapper><Admin /></LazyWrapper></AdminRouteGuard>} />
+                <Route path="/admin/courses" element={<AdminRouteGuard><LazyWrapper><AdminCourses /></LazyWrapper></AdminRouteGuard>} />
+                <Route path="/admin/test" element={<AdminRouteGuard><LazyWrapper><AdminTest /></LazyWrapper></AdminRouteGuard>} />
+              </Routes>
+              
+              {/* Safe Toaster that only renders when React is confirmed ready */}
+              <SafeToaster />
+            </AuthProvider>
           </AnalyticsProvider>
         </Router>
       </React.Suspense>

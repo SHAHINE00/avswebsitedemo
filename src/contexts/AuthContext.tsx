@@ -23,9 +23,29 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  // Add safety checks for React hooks
+  if (typeof React === 'undefined' || React === null) {
+    console.error('AuthProvider: React is not available');
+    return <div>Loading...</div>;
+  }
+
+  if (!React.useState || !React.useEffect || !React.useContext) {
+    console.error('AuthProvider: React hooks not available');
+    return <div>Loading...</div>;
+  }
+
+  let user, setUser;
+  let session, setSession;
+  let loading, setLoading;
+
+  try {
+    [user, setUser] = useState<User | null>(null);
+    [session, setSession] = useState<Session | null>(null);
+    [loading, setLoading] = useState(true);
+  } catch (error) {
+    console.error('AuthProvider: useState failed:', error);
+    return <div>Authentication system unavailable</div>;
+  }
 
   useEffect(() => {
     // Set up auth state listener

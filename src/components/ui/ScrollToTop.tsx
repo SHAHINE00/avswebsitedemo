@@ -3,7 +3,27 @@ import React, { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const ScrollToTop = () => {
-  const { pathname } = useLocation();
+  // Add safety check for React
+  if (typeof React === 'undefined' || React === null) {
+    console.warn('ScrollToTop: React is not available');
+    return null;
+  }
+
+  // Add safety check for hooks
+  if (!React.useState || !React.useEffect) {
+    console.warn('ScrollToTop: React hooks not available');
+    return null;
+  }
+
+  let location;
+  try {
+    location = useLocation();
+  } catch (error) {
+    console.warn('ScrollToTop: useLocation failed:', error);
+    return null;
+  }
+
+  const { pathname } = location;
   const isDropdownOpen = useRef(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 

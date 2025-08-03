@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface SafeGDPRWrapperProps {
@@ -6,16 +7,46 @@ interface SafeGDPRWrapperProps {
 }
 
 const SafeGDPRWrapper: React.FC<SafeGDPRWrapperProps> = ({ children, fallback }) => {
-  const [isReactReady, setIsReactReady] = React.useState(false);
-  const [hasError, setHasError] = React.useState(false);
+  // Enhanced React validation with better error handling
+  if (typeof React === 'undefined' || React === null) {
+    console.warn('SafeGDPRWrapper: React is not available');
+    return fallback || null;
+  }
+
+  // Validate React hooks are available
+  if (!React.useState || !React.useEffect || !React.useContext) {
+    console.warn('SafeGDPRWrapper: React hooks not available');
+    return fallback || null;
+  }
+
+  // Validate browser environment
+  if (typeof window === 'undefined' || !window.localStorage) {
+    console.warn('SafeGDPRWrapper: Browser environment not available');
+    return fallback || null;
+  }
+
+  let isReactReady, setIsReactReady;
+  let hasError, setHasError;
+
+  try {
+    [isReactReady, setIsReactReady] = React.useState(false);
+    [hasError, setHasError] = React.useState(false);
+  } catch (error) {
+    console.error('SafeGDPRWrapper: useState failed:', error);
+    return fallback || (
+      <div className="hidden">
+        {/* GDPR component failed to load */}
+      </div>
+    );
+  }
 
   React.useEffect(() => {
     try {
-      // Validate React and localStorage are available
+      // Double-check everything is still available
       if (React && React.useState && React.useEffect && typeof window !== 'undefined' && window.localStorage) {
         setIsReactReady(true);
       } else {
-        console.warn('GDPR components: React or localStorage not available');
+        console.warn('GDPR components: React or localStorage not available in effect');
         setHasError(true);
       }
     } catch (error) {

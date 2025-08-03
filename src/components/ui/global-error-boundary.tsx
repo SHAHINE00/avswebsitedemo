@@ -1,10 +1,7 @@
 
 import React from 'react';
-import { AlertTriangle, RotateCcw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { logError } from '@/utils/logger';
-import { MobileErrorHandler } from '@/components/ui/mobile-error-handler';
+import SafeErrorFallback from '@/components/ui/SafeErrorFallback';
 
 interface Props {
   children: React.ReactNode;
@@ -28,13 +25,6 @@ export class GlobalErrorBoundary extends React.Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     try {
-      // Validate React is available before proceeding
-      if (typeof React === 'undefined' || React === null) {
-        console.error('React is null in error boundary - critical issue');
-        this.setState({ errorInfo: { componentStack: 'React unavailable in error boundary' } });
-        return;
-      }
-
       logError('Global Error Boundary caught an error:', { error, errorInfo });
       this.setState({ errorInfo });
       
@@ -45,15 +35,6 @@ export class GlobalErrorBoundary extends React.Component<Props, State> {
           error.message.includes('useEffect') ||
           error.message.includes('useContext'))) {
         logError('React hooks null error detected:', error.message);
-      }
-      
-      // Track mobile-specific errors
-      if (typeof window !== 'undefined' && error.message) {
-        if (error.message.includes('Failed to fetch dynamically imported module') ||
-            error.message.includes('Loading chunk') ||
-            error.message.includes('Loading CSS chunk')) {
-          logError('Mobile loading error detected:', error.message);
-        }
       }
     } catch (e) {
       // Prevent error boundary from crashing
@@ -67,10 +48,10 @@ export class GlobalErrorBoundary extends React.Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
-      // Use mobile-specific error handler for better mobile experience
+      // Use SafeErrorFallback that doesn't use React hooks
       return (
-        <MobileErrorHandler 
-          error={this.state.error} 
+        <SafeErrorFallback 
+          error={this.state.error || undefined} 
           onRetry={this.handleRetry}
         />
       );
