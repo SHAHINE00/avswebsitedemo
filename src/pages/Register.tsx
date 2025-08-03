@@ -55,33 +55,26 @@ const Register = () => {
           ? "Cette adresse email est déjà enregistrée."
           : "Une erreur s'est produite lors de l'inscription.";
         setStatusMessage(errorMsg);
-        toast({
-          title: "Erreur d'inscription",
-          description: errorMsg,
-          variant: "destructive",
-        });
       } else {
         setSubmissionStatus('success');
-        setStatusMessage(`Inscription réussie ! Nous vous contacterons bientôt.`);
-        toast({
-          title: "Inscription réussie !",
-          description: `Merci ${formData.firstName} ! Votre inscription au programme "${formData.formation.programmeDetails?.title}" a été enregistrée. Nous vous contacterons bientôt.`,
-        });
+        setStatusMessage(`Inscription réussie !`);
         
-        // Redirect to home page after successful registration
-        setTimeout(() => {
-          navigate('/');
-        }, 3000);
+        // Start countdown and redirect
+        let countdown = 3;
+        const countdownTimer = setInterval(() => {
+          countdown--;
+          if (countdown > 0) {
+            setStatusMessage(`Inscription réussie ! Redirection dans ${countdown}...`);
+          } else {
+            clearInterval(countdownTimer);
+            navigate('/');
+          }
+        }, 1000);
       }
     } catch (error: any) {
       logError('Registration error:', error);
       setSubmissionStatus('error');
       setStatusMessage("Une erreur s'est produite lors de l'inscription.");
-      toast({
-        title: "Erreur d'inscription",
-        description: "Une erreur s'est produite lors de l'inscription. Veuillez réessayer.",
-        variant: "destructive",
-      });
     } finally {
       setLoading(false);
     }

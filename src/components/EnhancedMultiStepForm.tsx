@@ -278,36 +278,21 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
     
     if (!networkStatus.isOnline) {
       console.log("❌ Network offline");
-      setInlineStatus({ type: 'error', message: 'Pas de connexion internet' });
-      toast({
-        title: "Pas de connexion internet",
-        description: "Veuillez vérifier votre connexion et réessayer.",
-        variant: "destructive",
-      });
+      setInlineStatus({ type: 'error', message: 'Pas de connexion internet. Vérifiez votre connexion.' });
       return;
     }
-
+    
     // Check terms acceptance first
     if (!formData.acceptTerms) {
       console.log("❌ Terms not accepted");
       setInlineStatus({ type: 'error', message: 'Veuillez accepter les conditions d\'utilisation' });
-      toast({
-        title: "Conditions d'utilisation",
-        description: "Veuillez accepter les conditions d'utilisation.",
-        variant: "destructive",
-      });
       return;
     }
-
+    
     // Check if formation is properly selected
     if (!formData.formation.formationType || !formData.formation.domaine || !formData.formation.programme) {
       console.log("❌ Formation incomplete:", formData.formation);
       setInlineStatus({ type: 'error', message: 'Veuillez compléter votre sélection de formation' });
-      toast({
-        title: "Formation incomplète",
-        description: "Veuillez sélectionner tous les éléments de votre formation.",
-        variant: "destructive",
-      });
       return;
     }
 
@@ -334,11 +319,6 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
       const errorFields = Object.keys(errors).filter(key => errors[key]);
       console.log("Error fields:", errorFields);
       setInlineStatus({ type: 'error', message: 'Veuillez corriger les erreurs du formulaire' });
-      toast({
-        title: "Formulaire invalide",
-        description: `Veuillez corriger les erreurs: ${errorFields.join(', ')}`,
-        variant: "destructive",
-      });
       return;
     }
 
@@ -360,13 +340,10 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
     try {
       await onSubmit(formData);
       console.log("✅ Submission completed successfully");
+      // Status will be managed by parent component
     } catch (error) {
       console.error("❌ Submission failed:", error);
-      toast({
-        title: "Erreur de soumission",
-        description: "Une erreur s'est produite lors de l'envoi du formulaire.",
-        variant: "destructive",
-      });
+      setInlineStatus({ type: 'error', message: 'Erreur lors de l\'inscription' });
     }
   }, [formData, validateAll, onSubmit, networkStatus, getValidationResult, toast, errors, loading]);
 
