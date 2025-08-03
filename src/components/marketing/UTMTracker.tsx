@@ -26,13 +26,23 @@ const UTMTracker: React.FC = () => {
     if (Object.keys(filteredUtmData).length > 0) {
       sessionStorage.setItem('utm_data', JSON.stringify(filteredUtmData));
       
-      // Track the campaign source
-      analytics.trackEvent({
-        action: 'campaign_visit',
-        category: 'Marketing',
-        label: utmData.utm_campaign || 'direct',
-        custom_parameters: filteredUtmData
-      });
+      // Only track if user consents to marketing cookies
+      const consent = localStorage.getItem('gdpr-consent');
+      if (consent) {
+        try {
+          const consentData = JSON.parse(consent);
+          if (consentData.marketing) {
+            analytics.trackEvent({
+              action: 'campaign_visit',
+              category: 'Marketing',
+              label: utmData.utm_campaign || 'direct',
+              custom_parameters: filteredUtmData
+            });
+          }
+        } catch (error) {
+          console.warn('GDPR consent parsing error:', error);
+        }
+      }
     }
   }, [location]);
 

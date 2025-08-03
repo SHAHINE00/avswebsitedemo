@@ -7,6 +7,7 @@ import DashboardNotifications from './DashboardNotifications';
 import DashboardAchievements from './DashboardAchievements';
 import DashboardProfile from './DashboardProfile';
 import GamificationDashboard from '@/components/gamification/GamificationDashboard';
+import GDPRDashboard from '@/components/gdpr/GDPRDashboard';
 import type { Notification } from '@/hooks/useNotifications';
 import type { UserAchievement } from '@/hooks/useUserProfile';
 import type { CourseBookmark } from '@/hooks/useCourseInteractions';
@@ -58,7 +59,7 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
 }) => {
   return (
     <Tabs value={activeTab} onValueChange={onTabChange} className="space-y-6">
-      <TabsList className="grid w-full grid-cols-6">
+      <TabsList className="grid w-full grid-cols-7">
         <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
         <TabsTrigger value="courses">Formations</TabsTrigger>
         <TabsTrigger value="gamification">Récompenses</TabsTrigger>
@@ -72,6 +73,7 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
         </TabsTrigger>
         <TabsTrigger value="achievements">Succès</TabsTrigger>
         <TabsTrigger value="profile">Profil</TabsTrigger>
+        <TabsTrigger value="privacy">Confidentialité</TabsTrigger>
       </TabsList>
 
       <TabsContent value="overview" className="space-y-6">
@@ -96,6 +98,10 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
 
       <TabsContent value="profile" className="space-y-6">
         <DashboardProfile bookmarks={bookmarks} />
+      </TabsContent>
+
+      <TabsContent value="privacy" className="space-y-6">
+        <GDPRDashboard />
       </TabsContent>
     </Tabs>
   );

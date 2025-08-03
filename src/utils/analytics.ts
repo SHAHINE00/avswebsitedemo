@@ -32,6 +32,13 @@ class AnalyticsService {
       return;
     }
 
+    // Check GDPR consent before initializing
+    const consent = this.getGDPRConsent();
+    if (!consent.analytics) {
+      logInfo('Analytics blocked - no consent for analytics cookies');
+      return;
+    }
+
     try {
       // Check if gtag is available - mobile safe
       if (window.gtag && typeof window.gtag === 'function') {
@@ -57,9 +64,30 @@ class AnalyticsService {
     }
   }
 
+  private getGDPRConsent() {
+    if (typeof window === 'undefined') return { analytics: false };
+    
+    const consent = localStorage.getItem('gdpr-consent');
+    if (!consent) return { analytics: false };
+    
+    try {
+      return JSON.parse(consent);
+    } catch {
+      return { analytics: false };
+    }
+  }
+
   // Track custom events - mobile safe
   trackEvent(event: GAEvent) {
-    if (!this.isInitialized || !this.isEnabled || typeof window === 'undefined') return;
+    if (!this.isEnabled || typeof window === 'undefined') return;
+
+    // Check consent before tracking
+    const consent = this.getGDPRConsent();
+    if (!consent.analytics) {
+      return; // Silently skip tracking without consent
+    }
+
+    if (!this.isInitialized) return;
 
     try {
       if (window.gtag && typeof window.gtag === 'function') {
@@ -80,7 +108,15 @@ class AnalyticsService {
 
   // Track page views - mobile safe
   trackPageView(pagePath: string, pageTitle?: string) {
-    if (!this.isInitialized || !this.isEnabled || typeof window === 'undefined') return;
+    if (!this.isEnabled || typeof window === 'undefined') return;
+
+    // Check consent before tracking
+    const consent = this.getGDPRConsent();
+    if (!consent.analytics) {
+      return; // Silently skip tracking without consent
+    }
+
+    if (!this.isInitialized) return;
 
     try {
       if (window.gtag && typeof window.gtag === 'function') {
