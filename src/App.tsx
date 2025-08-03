@@ -12,7 +12,6 @@ import SEOAnalytics from "@/components/SEOAnalytics";
 import StructuredData from "@/components/StructuredData";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import RealtimeNotifications from "@/components/interactive/RealtimeNotifications";
-import { PersonalizationPanel } from "@/components/ui/PersonalizationPanel";
 import { usePageTransition } from "@/hooks/usePageTransition";
 
 // Critical pages (loaded immediately for better performance)
@@ -137,7 +136,6 @@ const App = () => {
             <Route path="/admin/test" element={<AdminRouteGuard><LazyWrapper><AdminTest /></LazyWrapper></AdminRouteGuard>} />
             </Routes>
             <RealtimeNotifications />
-            <PersonalizationPanel />
             <Toaster />
           </AuthProvider>
           </AnalyticsProvider>
