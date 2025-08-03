@@ -315,14 +315,13 @@
     .responsive-spacing-sm { margin: 1rem; padding: 1rem; }
     .responsive-spacing-md { margin: 1.5rem; padding: 1.5rem; }
     .responsive-spacing-lg { margin: 2.5rem; padding: 2.5rem; }
-    }
-    
-    /* Improved scroll containers for mobile */
-    .scroll-container {
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
-    }
+  }
+  
+  /* Improved scroll containers for mobile */
+  .scroll-container {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
   }
 
   /* Enhanced mobile viewport fixes */
@@ -346,7 +345,6 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-montserrat font-bold;
   }
-}
 
 @layer utilities {
 /* Enhanced mobile scrolling utilities */
@@ -398,7 +396,6 @@
       position: fixed !important;
       transform: translateZ(0) !important;
     }
-    scroll-behavior: smooth;
   }
   
   .prevent-overscroll {
