@@ -674,11 +674,11 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
                   />
                   <label htmlFor="acceptTerms" className="text-sm text-gray-700 leading-relaxed cursor-pointer">
                     J'accepte les{' '}
-                    <a href="/terms" target="_blank" className="text-academy-blue hover:underline">
+                    <a href="/terms-of-use" target="_blank" className="text-academy-blue hover:underline">
                       conditions d'utilisation
                     </a>{' '}
                     et la{' '}
-                    <a href="/privacy" target="_blank" className="text-academy-blue hover:underline">
+                    <a href="/privacy-policy" target="_blank" className="text-academy-blue hover:underline">
                       politique de confidentialité
                     </a>
                     . J'autorise AVS Innovation Institute à me contacter concernant ma formation.
