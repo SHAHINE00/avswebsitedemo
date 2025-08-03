@@ -3,9 +3,9 @@ import App from './App.tsx'
 import './index.css'
 import { initializeProductionLogging } from '@/utils/cleanupConsole'
 import { logError, logInfo } from '@/utils/logger'
-import { optimizeForMobile, isMobileDevice, isIOS } from '@/utils/mobile'
+import { isMobileDevice, isIOS } from '@/utils/mobile'
 import { mountIOSFallbackLoader } from '@/components/ui/ios-fallback-loader'
-import { autoFixMobileDownload } from '@/utils/clear-mobile-cache'
+import { initMobileFix } from '@/utils/mobile-cache-clear'
 import { initializeResourcePreloading } from '@/utils/resourcePreloader'
 
 // Initialize performance optimizations
@@ -19,11 +19,8 @@ if (process.env.NODE_ENV === 'development') {
   console.log('iOS Debug: Is iOS?', /iPad|iPhone|iPod/.test(navigator.userAgent));
 }
 
-// Initialize mobile optimizations
-optimizeForMobile();
-
-// Auto-fix mobile download issues
-autoFixMobileDownload();
+// Initialize mobile fix for download issues
+initMobileFix();
 
 if (process.env.NODE_ENV === 'development') {
   console.log('iOS Debug: Mobile optimizations complete');
