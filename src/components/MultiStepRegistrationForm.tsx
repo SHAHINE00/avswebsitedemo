@@ -511,16 +511,24 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                     <SelectTrigger className="w-full h-12 border-2 border-gray-200 hover:border-academy-blue transition-colors rounded-xl">
                       <SelectValue placeholder="Sélectionnez votre type de formation" className="text-gray-500" />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl border-2 shadow-xl max-h-[80vh] overflow-auto">
-                      {formationTypes.map((type) => (
-                        <SelectItem key={type.value} value={type.value} className="h-auto p-4 hover:bg-blue-50 cursor-pointer">
-                          <div className="space-y-2">
-                            <div className="font-semibold text-gray-800">{type.label}</div>
-                            <div className="text-sm text-gray-600 leading-relaxed">{type.description}</div>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
+                     <SelectContent className="max-h-[60vh] sm:max-h-[50vh] md:max-h-[40vh] rounded-xl border-2 shadow-xl bg-white">
+                       {formationTypes.map((type) => (
+                         <SelectItem 
+                           key={type.value} 
+                           value={type.value} 
+                           className="p-3 sm:p-4 md:p-3 hover:bg-blue-50 cursor-pointer rounded-lg mx-1 my-1 focus:bg-blue-50"
+                         >
+                           <div className="space-y-2 w-full">
+                             <div className="font-semibold text-gray-800 text-sm sm:text-base md:text-sm leading-tight">
+                               {type.label}
+                             </div>
+                             <div className="text-xs sm:text-sm md:text-xs text-gray-600 leading-relaxed">
+                               {type.description}
+                             </div>
+                           </div>
+                         </SelectItem>
+                       ))}
+                     </SelectContent>
                   </Select>
                 </FieldLoading>
               
@@ -555,16 +563,24 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                   <SelectTrigger className="w-full h-12 border-2 border-gray-200 hover:border-academy-purple transition-colors rounded-xl">
                     <SelectValue placeholder="Choisissez votre domaine d'expertise" className="text-gray-500" />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl border-2 shadow-xl max-h-[80vh] overflow-auto">
-                    {domaines.map((domaine) => (
-                      <SelectItem key={domaine.value} value={domaine.value} className="h-auto p-4 hover:bg-purple-50 cursor-pointer">
-                        <div className="space-y-2">
-                          <div className="font-semibold text-gray-800">{domaine.label}</div>
-                          <div className="text-sm text-gray-600 leading-relaxed">{domaine.description}</div>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
+                   <SelectContent className="max-h-[60vh] sm:max-h-[50vh] md:max-h-[40vh] rounded-xl border-2 shadow-xl bg-white">
+                     {domaines.map((domaine) => (
+                       <SelectItem 
+                         key={domaine.value} 
+                         value={domaine.value} 
+                         className="p-3 sm:p-4 md:p-3 hover:bg-purple-50 cursor-pointer rounded-lg mx-1 my-1 focus:bg-purple-50"
+                       >
+                         <div className="space-y-2 w-full">
+                           <div className="font-semibold text-gray-800 text-sm sm:text-base md:text-sm leading-tight">
+                             {domaine.label}
+                           </div>
+                           <div className="text-xs sm:text-sm md:text-xs text-gray-600 leading-relaxed">
+                             {domaine.description}
+                           </div>
+                         </div>
+                       </SelectItem>
+                     ))}
+                   </SelectContent>
                 </Select>
                 
                 {selectedDomaine && (
@@ -603,30 +619,38 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                     <SelectTrigger className="w-full h-12 border-2 border-gray-200 hover:border-academy-blue transition-colors rounded-xl">
                       <SelectValue placeholder="Sélectionnez votre programme spécifique" className="text-gray-500" />
                     </SelectTrigger>
-                    <SelectContent className="max-h-[80vh] rounded-xl border-2 shadow-xl overflow-auto">
-                      {availableCourses.length === 0 ? (
-                        <div className="py-8 px-6 text-center">
-                          <div className="text-gray-500 text-lg font-medium">Aucun programme disponible</div>
-                          <div className="text-gray-400 text-sm mt-2">pour ce domaine actuellement</div>
-                        </div>
-                      ) : (
-                        availableCourses.map((course) => (
-                          <SelectItem key={course.id} value={course.id} className="h-auto p-4 hover:bg-green-50 cursor-pointer">
-                            <div className="space-y-2">
-                              <div className="font-semibold text-gray-800">{course.title}</div>
-                              {course.subtitle && (
-                                <div className="text-sm text-gray-600 leading-relaxed">{course.subtitle}</div>
-                              )}
-                              {course.duration && (
-                                <div className="text-xs text-academy-blue font-medium bg-academy-blue/10 px-2 py-1 rounded-full inline-block">
-                                  {course.duration}
-                                </div>
-                              )}
-                            </div>
-                          </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
+                     <SelectContent className="max-h-[60vh] sm:max-h-[50vh] md:max-h-[40vh] rounded-xl border-2 shadow-xl bg-white">
+                       {availableCourses.length === 0 ? (
+                         <div className="py-8 px-6 text-center">
+                           <div className="text-gray-500 text-base sm:text-lg font-medium">Aucun programme disponible</div>
+                           <div className="text-gray-400 text-sm mt-2">pour ce domaine actuellement</div>
+                         </div>
+                       ) : (
+                         availableCourses.map((course) => (
+                           <SelectItem 
+                             key={course.id} 
+                             value={course.id} 
+                             className="p-3 sm:p-4 md:p-3 hover:bg-green-50 cursor-pointer rounded-lg mx-1 my-1 focus:bg-green-50"
+                           >
+                             <div className="space-y-2 w-full">
+                               <div className="font-semibold text-gray-800 text-sm sm:text-base md:text-sm leading-tight">
+                                 {course.title}
+                               </div>
+                               {course.subtitle && (
+                                 <div className="text-xs sm:text-sm md:text-xs text-gray-600 leading-relaxed">
+                                   {course.subtitle}
+                                 </div>
+                               )}
+                               {course.duration && (
+                                 <div className="text-xs text-academy-blue font-medium bg-academy-blue/10 px-2 py-1 rounded-full inline-block mt-1">
+                                   {course.duration}
+                                 </div>
+                               )}
+                             </div>
+                           </SelectItem>
+                         ))
+                       )}
+                     </SelectContent>
                   </Select>
                 </FieldLoading>
                 
