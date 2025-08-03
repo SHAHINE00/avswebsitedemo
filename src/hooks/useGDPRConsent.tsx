@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 
 export interface ConsentPreferences {
   necessary: boolean;
@@ -15,25 +15,11 @@ const DEFAULT_CONSENT: ConsentPreferences = {
 };
 
 export const useGDPRConsent = () => {
-  // Enhanced error handling and validation
-  if (!React || !React.useState) {
-    console.warn('React not available in useGDPRConsent');
-    return {
-      consent: DEFAULT_CONSENT,
-      hasChosenConsent: false,
-      showBanner: false,
-      updateConsent: () => {},
-      acceptAll: () => {},
-      rejectOptional: () => {},
-      revokeConsent: () => {},
-    };
-  }
+  const [consent, setConsent] = useState<ConsentPreferences>(DEFAULT_CONSENT);
+  const [hasChosenConsent, setHasChosenConsent] = useState(false);
+  const [showBanner, setShowBanner] = useState(false);
 
-  const [consent, setConsent] = React.useState<ConsentPreferences>(DEFAULT_CONSENT);
-  const [hasChosenConsent, setHasChosenConsent] = React.useState(false);
-  const [showBanner, setShowBanner] = React.useState(false);
-
-  React.useEffect(() => {
+  useEffect(() => {
     try {
       // Validate localStorage is available
       if (typeof window === 'undefined' || !window.localStorage) {
@@ -78,6 +64,9 @@ export const useGDPRConsent = () => {
       console.error('GDPR consent initialization error:', error);
       setShowBanner(true);
     }
+    
+    // Debug logging
+    console.log('useGDPRConsent: showBanner =', showBanner, 'hasChosenConsent =', hasChosenConsent);
   }, []);
 
   const updateConsent = (newConsent: ConsentPreferences) => {

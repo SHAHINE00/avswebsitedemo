@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 interface GDPRError {
   type: 'consent_parsing' | 'component_render' | 'analytics_init' | 'data_corruption';
@@ -8,20 +8,9 @@ interface GDPRError {
 }
 
 export const useGDPRMonitoring = () => {
-  // Add React null safety
-  if (!React || !React.useState || !React.useCallback || !React.useEffect) {
-    console.warn('useGDPRMonitoring: React hooks not available');
-    return {
-      errors: [],
-      logGDPRError: () => {},
-      validateConsentData: () => true,
-      recoverCorruptedData: () => false,
-    };
-  }
+  const [errors, setErrors] = useState<GDPRError[]>([]);
 
-  const [errors, setErrors] = React.useState<GDPRError[]>([]);
-
-  const logGDPRError = React.useCallback((type: GDPRError['type'], message: string, details?: any) => {
+  const logGDPRError = useCallback((type: GDPRError['type'], message: string, details?: any) => {
     const error: GDPRError = {
       type,
       message,
@@ -33,7 +22,7 @@ export const useGDPRMonitoring = () => {
     console.error(`GDPR Error [${type}]:`, message, details);
   }, []);
 
-  const validateConsentData = React.useCallback(() => {
+  const validateConsentData = useCallback(() => {
     try {
       if (typeof window === 'undefined' || !window.localStorage) {
         return false;
@@ -74,7 +63,7 @@ export const useGDPRMonitoring = () => {
     }
   }, [logGDPRError]);
 
-  const recoverCorruptedData = React.useCallback(() => {
+  const recoverCorruptedData = useCallback(() => {
     try {
       if (typeof window === 'undefined' || !window.localStorage) {
         return false;
@@ -93,7 +82,7 @@ export const useGDPRMonitoring = () => {
     }
   }, [logGDPRError]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Validate data on mount
     if (!validateConsentData()) {
       recoverCorruptedData();

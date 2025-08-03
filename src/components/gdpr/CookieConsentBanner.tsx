@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -7,48 +7,19 @@ import { useGDPRConsent, ConsentPreferences } from '@/hooks/useGDPRConsent';
 import { useGDPRMonitoring } from '@/hooks/useGDPRMonitoring';
 import { Shield, Cookie, BarChart3, Target, Settings } from 'lucide-react';
 
-const CookieConsentBanner: React.FC = () => {
-  // Add React null safety
-  if (!React || !React.useState || !React.useEffect) {
-    console.warn('CookieConsentBanner: React hooks not available');
-    return null;
-  }
+const CookieConsentBanner = () => {
+  const { consent, showBanner, updateConsent, acceptAll, rejectOptional } = useGDPRConsent();
+  const { logGDPRError } = useGDPRMonitoring();
+  
+  const [showDetails, setShowDetails] = useState(false);
+  const [tempConsent, setTempConsent] = useState<ConsentPreferences>(consent);
 
-  let consent, showBanner, updateConsent, acceptAll, rejectOptional;
-  let logGDPRError;
-  let showDetails, setShowDetails;
-  let tempConsent, setTempConsent;
+  // Debug logging
+  console.log('CookieConsentBanner: showBanner =', showBanner, 'consent =', consent);
 
-  try {
-    ({ consent, showBanner, updateConsent, acceptAll, rejectOptional } = useGDPRConsent());
-  } catch (error) {
-    console.warn('CookieConsentBanner: useGDPRConsent failed:', error);
-    return null;
-  }
-
-  try {
-    ({ logGDPRError } = useGDPRMonitoring());
-  } catch (error) {
-    console.warn('CookieConsentBanner: useGDPRMonitoring failed:', error);
-    logGDPRError = () => {};
-  }
-
-  try {
-    [showDetails, setShowDetails] = useState(false);
-    [tempConsent, setTempConsent] = useState<ConsentPreferences>(consent);
-  } catch (error) {
-    console.warn('CookieConsentBanner: useState failed:', error);
-    return null;
-  }
-
-  // Enhanced error handling for component rendering
-  React.useEffect(() => {
-    try {
-      setTempConsent(consent);
-    } catch (error) {
-      logGDPRError('component_render', 'Failed to sync consent state', error);
-    }
-  }, [consent, logGDPRError]);
+  useEffect(() => {
+    setTempConsent(consent);
+  }, [consent]);
 
   if (!showBanner) return null;
 
