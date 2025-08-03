@@ -8,6 +8,17 @@ interface GDPRError {
 }
 
 export const useGDPRMonitoring = () => {
+  // Add React null safety
+  if (!React || !React.useState || !React.useCallback || !React.useEffect) {
+    console.warn('useGDPRMonitoring: React hooks not available');
+    return {
+      errors: [],
+      logGDPRError: () => {},
+      validateConsentData: () => true,
+      recoverCorruptedData: () => false,
+    };
+  }
+
   const [errors, setErrors] = React.useState<GDPRError[]>([]);
 
   const logGDPRError = React.useCallback((type: GDPRError['type'], message: string, details?: any) => {

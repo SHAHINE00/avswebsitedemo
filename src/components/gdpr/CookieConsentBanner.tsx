@@ -8,10 +8,38 @@ import { useGDPRMonitoring } from '@/hooks/useGDPRMonitoring';
 import { Shield, Cookie, BarChart3, Target, Settings } from 'lucide-react';
 
 const CookieConsentBanner: React.FC = () => {
-  const { consent, showBanner, updateConsent, acceptAll, rejectOptional } = useGDPRConsent();
-  const { logGDPRError } = useGDPRMonitoring();
-  const [showDetails, setShowDetails] = useState(false);
-  const [tempConsent, setTempConsent] = useState<ConsentPreferences>(consent);
+  // Add React null safety
+  if (!React || !React.useState || !React.useEffect) {
+    console.warn('CookieConsentBanner: React hooks not available');
+    return null;
+  }
+
+  let consent, showBanner, updateConsent, acceptAll, rejectOptional;
+  let logGDPRError;
+  let showDetails, setShowDetails;
+  let tempConsent, setTempConsent;
+
+  try {
+    ({ consent, showBanner, updateConsent, acceptAll, rejectOptional } = useGDPRConsent());
+  } catch (error) {
+    console.warn('CookieConsentBanner: useGDPRConsent failed:', error);
+    return null;
+  }
+
+  try {
+    ({ logGDPRError } = useGDPRMonitoring());
+  } catch (error) {
+    console.warn('CookieConsentBanner: useGDPRMonitoring failed:', error);
+    logGDPRError = () => {};
+  }
+
+  try {
+    [showDetails, setShowDetails] = useState(false);
+    [tempConsent, setTempConsent] = useState<ConsentPreferences>(consent);
+  } catch (error) {
+    console.warn('CookieConsentBanner: useState failed:', error);
+    return null;
+  }
 
   // Enhanced error handling for component rendering
   React.useEffect(() => {

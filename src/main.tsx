@@ -9,6 +9,13 @@ if (!React || React === null) {
 if (!React.useState || !React.useEffect || !React.useContext) {
   throw new Error('React hooks are not available - import issue detected');
 }
+
+// Initialize React safety utilities
+import { initializeReactSafety } from '@/utils/reactSafety';
+if (!initializeReactSafety()) {
+  throw new Error('React safety initialization failed');
+}
+
 console.log('React and hooks validated successfully in main.tsx');
 
 import App from './App.tsx';

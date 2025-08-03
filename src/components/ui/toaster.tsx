@@ -11,7 +11,19 @@ import {
 } from "@/components/ui/toast"
 
 export function Toaster() {
-  const { toasts } = useToast()
+  // Add React null safety
+  if (!React) {
+    console.warn('Toaster: React not available');
+    return null;
+  }
+
+  let toasts;
+  try {
+    ({ toasts } = useToast());
+  } catch (error) {
+    console.warn('Toaster: useToast failed:', error);
+    return null;
+  }
 
   return (
     <ToastProvider>

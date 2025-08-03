@@ -169,23 +169,47 @@ function toast({ ...props }: Toast) {
 }
 
 function useToast() {
-  const [state, setState] = React.useState<State>(memoryState)
+  // Add React null safety
+  if (!React || !React.useState || !React.useEffect) {
+    console.warn('useToast: React hooks not available');
+    return {
+      toasts: [],
+      toast: () => ({ id: '', dismiss: () => {}, update: () => {} }),
+      dismiss: () => {}
+    };
+  }
+
+  let state, setState;
+  try {
+    [state, setState] = React.useState<State>(memoryState);
+  } catch (error) {
+    console.warn('useToast: useState failed:', error);
+    return {
+      toasts: [],
+      toast: () => ({ id: '', dismiss: () => {}, update: () => {} }),
+      dismiss: () => {}
+    };
+  }
 
   React.useEffect(() => {
-    listeners.push(setState)
-    return () => {
-      const index = listeners.indexOf(setState)
-      if (index > -1) {
-        listeners.splice(index, 1)
-      }
+    try {
+      listeners.push(setState);
+      return () => {
+        const index = listeners.indexOf(setState);
+        if (index > -1) {
+          listeners.splice(index, 1);
+        }
+      };
+    } catch (error) {
+      console.warn('useToast: useEffect failed:', error);
     }
-  }, [state])
+  }, [state]);
 
   return {
     ...state,
     toast,
     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
-  }
+  };
 }
 
 export { useToast, toast }

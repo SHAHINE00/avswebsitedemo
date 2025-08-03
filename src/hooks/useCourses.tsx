@@ -31,6 +31,19 @@ export interface Course {
 }
 
 export const useCourses = () => {
+  // Add React null safety
+  if (!React || !React.useState || !React.useEffect || !React.useRef || !React.useCallback) {
+    console.warn('useCourses: React hooks not available');
+    return {
+      courses: [],
+      loading: false,
+      error: 'React hooks not available',
+      retryCount: 0,
+      refetch: () => Promise.resolve(),
+      retry: () => {}
+    };
+  }
+
   const [courses, setCourses] = React.useState<Course[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);

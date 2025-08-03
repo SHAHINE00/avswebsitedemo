@@ -18,8 +18,37 @@ export interface Notification {
 }
 
 export const useNotifications = () => {
-  const { user } = useAuth();
-  const { toast } = useToast();
+  // Add React null safety
+  if (!React || !React.useState || !React.useEffect) {
+    console.warn('useNotifications: React hooks not available');
+    return {
+      notifications: [],
+      unreadCount: 0,
+      loading: false,
+      fetchNotifications: () => Promise.resolve(),
+      markAsRead: () => Promise.resolve(),
+      markAllAsRead: () => Promise.resolve(),
+      createNotification: () => Promise.resolve(),
+    };
+  }
+
+  let user, toast;
+  try {
+    ({ user } = useAuth());
+    ({ toast } = useToast());
+  } catch (error) {
+    console.warn('useNotifications: hook dependencies failed:', error);
+    return {
+      notifications: [],
+      unreadCount: 0,
+      loading: false,
+      fetchNotifications: () => Promise.resolve(),
+      markAsRead: () => Promise.resolve(),
+      markAllAsRead: () => Promise.resolve(),
+      createNotification: () => Promise.resolve(),
+    };
+  }
+
   const [notifications, setNotifications] = React.useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
