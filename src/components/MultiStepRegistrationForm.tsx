@@ -181,14 +181,19 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
     return getCoursesForDomain(formData.formation.domaine);
   }, [courses, formData.formation.domaine]);
 
+  // Prevent re-render loops by using stable references for effects
+  const formationDomaineRef = React.useRef(formData.formation.domaine);
+  const formationProgrammeRef = React.useRef(formData.formation.programme);
+
   // Reset downstream selections when domain changes
-  const prevDomainRef = React.useRef(formData.formation.domaine);
   React.useEffect(() => {
     // Only run if domain actually changed
-    if (prevDomainRef.current !== formData.formation.domaine) {
-      prevDomainRef.current = formData.formation.domaine;
+    if (formationDomaineRef.current !== formData.formation.domaine) {
+      const oldDomaine = formationDomaineRef.current;
+      formationDomaineRef.current = formData.formation.domaine;
       
-      if (formData.formation.domaine) {
+      // Only reset if there was a previous domain and it actually changed
+      if (oldDomaine && formData.formation.domaine !== oldDomaine) {
         setFormData(prev => {
           // Only update if programme is currently set (to avoid unnecessary updates)
           if (prev.formation.programme || prev.formation.programmeDetails) {
@@ -208,33 +213,27 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
   }, [formData.formation.domaine, setFormData]);
 
   // Update program details when programme selection changes
-  const prevProgrammeRef = React.useRef(formData.formation.programme);
-  const prevDetailsRef = React.useRef(formData.formation.programmeDetails);
-  
   React.useEffect(() => {
-    // Only run if programme actually changed or if we have courses but no details yet
-    if (prevProgrammeRef.current !== formData.formation.programme || 
-        (formData.formation.programme && availableCourses.length > 0 && !formData.formation.programmeDetails)) {
-      
-      prevProgrammeRef.current = formData.formation.programme;
+    // Only run if programme actually changed
+    if (formationProgrammeRef.current !== formData.formation.programme) {
+      formationProgrammeRef.current = formData.formation.programme;
       
       if (formData.formation.programme && availableCourses.length > 0) {
         const selectedCourse = availableCourses.find(course => course.id === formData.formation.programme);
         if (selectedCourse) {
-          // Deep comparison to prevent unnecessary updates
-          const detailsChanged = !prevDetailsRef.current ||
-            prevDetailsRef.current.id !== selectedCourse.id;
-            
-          if (detailsChanged) {
-            prevDetailsRef.current = selectedCourse;
-            setFormData(prev => ({
-              ...prev,
-              formation: {
-                ...prev.formation,
-                programmeDetails: selectedCourse
-              }
-            }));
-          }
+          setFormData(prev => {
+            // Only update if details actually changed
+            if (!prev.formation.programmeDetails || prev.formation.programmeDetails.id !== selectedCourse.id) {
+              return {
+                ...prev,
+                formation: {
+                  ...prev.formation,
+                  programmeDetails: selectedCourse
+                }
+              };
+            }
+            return prev;
+          });
         }
       }
     }

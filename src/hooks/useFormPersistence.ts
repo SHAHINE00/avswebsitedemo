@@ -1,8 +1,17 @@
 import * as React from 'react';
 
 export const useFormPersistence = <T>(key: string, initialData: T) => {
-  const initialDataRef = React.useRef<T>(initialData);
-  const [data, setData] = React.useState<T>(initialData);
+  // Create stable reference to initial data to prevent re-renders
+  const initialDataRef = React.useRef<T>();
+  const isInitializedRef = React.useRef(false);
+  
+  // Only set initial data once to prevent infinite loops
+  if (!isInitializedRef.current) {
+    initialDataRef.current = initialData;
+    isInitializedRef.current = true;
+  }
+  
+  const [data, setData] = React.useState<T>(initialDataRef.current!);
 
   // Load from localStorage on mount (only once)
   React.useEffect(() => {
@@ -10,15 +19,21 @@ export const useFormPersistence = <T>(key: string, initialData: T) => {
       const saved = localStorage.getItem(key);
       if (saved) {
         const parsedData = JSON.parse(saved);
-        setData({ ...initialDataRef.current, ...parsedData });
+        setData({ ...initialDataRef.current!, ...parsedData });
       }
     } catch (error) {
       console.warn('Failed to load form data from localStorage:', error);
     }
-  }, [key]);
+  }, [key]); // Only depend on key, not initialData
 
-  // Save to localStorage whenever data changes
+  // Save to localStorage whenever data changes (but not on initial load)
+  const isFirstRender = React.useRef(true);
   React.useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return; // Skip saving on first render
+    }
+    
     try {
       localStorage.setItem(key, JSON.stringify(data));
     } catch (error) {
@@ -26,26 +41,20 @@ export const useFormPersistence = <T>(key: string, initialData: T) => {
     }
   }, [key, data]);
 
-  // Use useRef to create a truly stable function reference
-  const updateDataRef = React.useRef<(updates: Partial<T> | ((prev: T) => T)) => void>();
-  
-  if (!updateDataRef.current) {
-    updateDataRef.current = (updates: Partial<T> | ((prev: T) => T)) => {
-      setData(prev => {
-        if (typeof updates === 'function') {
-          return updates(prev);
-        }
-        return { ...prev, ...updates };
-      });
-    };
-  }
-  
-  const updateData = updateDataRef.current;
+  // Create stable update function using useCallback
+  const updateData = React.useCallback((updates: Partial<T> | ((prev: T) => T)) => {
+    setData(prev => {
+      if (typeof updates === 'function') {
+        return updates(prev);
+      }
+      return { ...prev, ...updates };
+    });
+  }, []);
 
   const clearData = React.useCallback(() => {
     try {
       localStorage.removeItem(key);
-      setData(initialDataRef.current);
+      setData(initialDataRef.current!);
     } catch (error) {
       console.warn('Failed to clear form data from localStorage:', error);
     }
