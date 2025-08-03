@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import * as React from 'react';
 
 export function useIsIOS(): boolean {
-  const [isIOS, setIsIOS] = useState(false);
+  const [isIOS, setIsIOS] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const detectIOS = () => {
       const userAgent = navigator.userAgent.toLowerCase();
       const isIOSDevice = /iphone|ipad|ipod|ios/.test(userAgent) || 
@@ -19,9 +19,9 @@ export function useIsIOS(): boolean {
 }
 
 export function useIsAndroid(): boolean {
-  const [isAndroid, setIsAndroid] = useState(false);
+  const [isAndroid, setIsAndroid] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const detectAndroid = () => {
       const userAgent = navigator.userAgent.toLowerCase();
       return /android/.test(userAgent);

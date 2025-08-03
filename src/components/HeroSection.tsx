@@ -1,5 +1,5 @@
 
-import React from 'react';
+import * as React from 'react';
 import HeroBanner from './hero/HeroBanner';
 
 const HeroSection: React.FC = () => {

@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { useState, useEffect, useCallback } from 'react';
 
 export const useFormPersistence = <T>(key: string, initialData: T) => {
-  const [data, setData] = useState<T>(initialData);
+  const [data, setData] = React.useState<T>(initialData);
 
   // Load from localStorage on mount
-  useEffect(() => {
+  React.useEffect(() => {
     try {
       const saved = localStorage.getItem(key);
       if (saved) {
@@ -18,7 +17,7 @@ export const useFormPersistence = <T>(key: string, initialData: T) => {
   }, [key, initialData]);
 
   // Save to localStorage whenever data changes
-  useEffect(() => {
+  React.useEffect(() => {
     try {
       localStorage.setItem(key, JSON.stringify(data));
     } catch (error) {
@@ -26,7 +25,7 @@ export const useFormPersistence = <T>(key: string, initialData: T) => {
     }
   }, [key, data]);
 
-  const updateData = useCallback((updates: Partial<T> | ((prev: T) => T)) => {
+  const updateData = React.useCallback((updates: Partial<T> | ((prev: T) => T)) => {
     setData(prev => {
       if (typeof updates === 'function') {
         return updates(prev);
@@ -35,7 +34,7 @@ export const useFormPersistence = <T>(key: string, initialData: T) => {
     });
   }, []);
 
-  const clearData = useCallback(() => {
+  const clearData = React.useCallback(() => {
     try {
       localStorage.removeItem(key);
       setData(initialData);

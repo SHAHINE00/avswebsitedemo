@@ -1,6 +1,5 @@
 
 import * as React from 'react';
-import { useState, useEffect, useRef } from 'react';
 import { optimizeImageUrl, generateResponsiveSizes, checkWebPSupport } from '@/utils/imageOptimization';
 
 interface OptimizedImageProps {
@@ -28,19 +27,19 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   onError,
   onLoad
 }) => {
-  const [imageError, setImageError] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [optimizedSrc, setOptimizedSrc] = useState(src);
-  const [webpSupported, setWebpSupported] = useState<boolean | null>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
+  const [imageError, setImageError] = React.useState(false);
+  const [isLoaded, setIsLoaded] = React.useState(false);
+  const [optimizedSrc, setOptimizedSrc] = React.useState(src);
+  const [webpSupported, setWebpSupported] = React.useState<boolean | null>(null);
+  const imgRef = React.useRef<HTMLImageElement>(null);
 
   // Check WebP support on mount
-  useEffect(() => {
+  React.useEffect(() => {
     checkWebPSupport().then(setWebpSupported);
   }, []);
 
   // Update optimized source when WebP support is determined
-  useEffect(() => {
+  React.useEffect(() => {
     if (webpSupported !== null) {
       const optimized = webpSupported ? optimizeImageUrl(src, width, quality) : src;
       setOptimizedSrc(optimized);

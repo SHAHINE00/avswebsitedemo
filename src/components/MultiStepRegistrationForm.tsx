@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -188,7 +187,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
   const availableCourses = getCoursesForDomain(formData.formation.domaine);
 
   // Reset downstream selections when upstream changes
-  useEffect(() => {
+  React.useEffect(() => {
     if (formData.formation.domaine) {
       setFormData(prev => ({
         ...prev,
@@ -201,7 +200,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
     }
   }, [formData.formation.domaine]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (formData.formation.programme) {
       const selectedCourse = availableCourses.find(course => course.id === formData.formation.programme);
       setFormData(prev => ({

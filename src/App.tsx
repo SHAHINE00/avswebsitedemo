@@ -1,6 +1,5 @@
 
 import * as React from "react";
-import { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
@@ -19,36 +18,36 @@ import NotFound from "./pages/NotFound";
 import Features from "./pages/Features";
 
 // Lazy load secondary pages
-const Curriculum = lazy(() => import("./pages/Curriculum"));
-const AICourse = lazy(() => import("./pages/AICourse"));
-const ProgrammingCourse = lazy(() => import("./pages/ProgrammingCourse"));
-const CybersecurityCourse = lazy(() => import("./pages/CybersecurityCourse"));
-const GenericCourse = lazy(() => import("./pages/GenericCourse"));
-const CourseDetailPage = lazy(() => import("./components/course-detail/CourseDetailPage"));
-const CoursePlayer = lazy(() => import("./pages/CoursePlayer"));
-const Instructors = lazy(() => import("./pages/Instructors"));
-const Testimonials = lazy(() => import("./pages/Testimonials"));
-const Register = lazy(() => import("./pages/Register"));
-const About = lazy(() => import("./pages/About"));
-const Careers = lazy(() => import("./pages/Careers"));
-const Contact = lazy(() => import("./pages/Contact"));
-const Appointment = lazy(() => import("./pages/Appointment"));
-const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
-const TermsOfUse = lazy(() => import("./pages/TermsOfUse"));
-const CookiesPolicy = lazy(() => import("./pages/CookiesPolicy"));
-const Auth = lazy(() => import("./pages/Auth"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const Blog = lazy(() => import("./pages/Blog"));
-const BlogPost = lazy(() => import("./pages/BlogPost"));
+const Curriculum = React.lazy(() => import("./pages/Curriculum"));
+const AICourse = React.lazy(() => import("./pages/AICourse"));
+const ProgrammingCourse = React.lazy(() => import("./pages/ProgrammingCourse"));
+const CybersecurityCourse = React.lazy(() => import("./pages/CybersecurityCourse"));
+const GenericCourse = React.lazy(() => import("./pages/GenericCourse"));
+const CourseDetailPage = React.lazy(() => import("./components/course-detail/CourseDetailPage"));
+const CoursePlayer = React.lazy(() => import("./pages/CoursePlayer"));
+const Instructors = React.lazy(() => import("./pages/Instructors"));
+const Testimonials = React.lazy(() => import("./pages/Testimonials"));
+const Register = React.lazy(() => import("./pages/Register"));
+const About = React.lazy(() => import("./pages/About"));
+const Careers = React.lazy(() => import("./pages/Careers"));
+const Contact = React.lazy(() => import("./pages/Contact"));
+const Appointment = React.lazy(() => import("./pages/Appointment"));
+const PrivacyPolicy = React.lazy(() => import("./pages/PrivacyPolicy"));
+const TermsOfUse = React.lazy(() => import("./pages/TermsOfUse"));
+const CookiesPolicy = React.lazy(() => import("./pages/CookiesPolicy"));
+const Auth = React.lazy(() => import("./pages/Auth"));
+const Dashboard = React.lazy(() => import("./pages/Dashboard"));
+const Blog = React.lazy(() => import("./pages/Blog"));
+const BlogPost = React.lazy(() => import("./pages/BlogPost"));
 
 // Admin pages (heavy components - lazy load)
-const AdminCourses = lazy(() => import("./pages/AdminCourses"));
-const AdminTest = lazy(() => import("./pages/AdminTest"));
-const Admin = lazy(() => import("./pages/Admin"));
+const AdminCourses = React.lazy(() => import("./pages/AdminCourses"));
+const AdminTest = React.lazy(() => import("./pages/AdminTest"));
+const Admin = React.lazy(() => import("./pages/Admin"));
 
 // Optimized lazy wrapper component
 const LazyWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <Suspense 
+  <React.Suspense 
     fallback={
       <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner />
@@ -56,7 +55,7 @@ const LazyWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
     }
   >
     {children}
-  </Suspense>
+  </React.Suspense>
 );
 
 // Analytics wrapper component to handle hooks inside Router context

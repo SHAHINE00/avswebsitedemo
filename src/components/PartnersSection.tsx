@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import OptimizedImage from '@/components/OptimizedImage';
 // Updated with AVS Innovation Institute logo and bigger sizes
 

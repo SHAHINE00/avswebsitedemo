@@ -1,6 +1,5 @@
 
 import * as React from 'react';
-import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, User, LogOut, Settings } from 'lucide-react';
 import { Button } from './ui/button';
@@ -17,7 +16,7 @@ import {
 } from './ui/dropdown-menu';
 
 const Navbar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const location = useLocation();
   const { user, signOut } = useAuth();
 

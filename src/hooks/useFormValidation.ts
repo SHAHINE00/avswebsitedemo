@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useState, useCallback } from 'react';
 
 export interface ValidationRule {
   required?: boolean;
@@ -14,10 +13,10 @@ export interface ValidationErrors {
 }
 
 export const useFormValidation = (rules: { [key: string]: ValidationRule }) => {
-  const [errors, setErrors] = useState<ValidationErrors>({});
-  const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
+  const [errors, setErrors] = React.useState<ValidationErrors>({});
+  const [touched, setTouched] = React.useState<{ [key: string]: boolean }>({});
 
-  const validateField = useCallback((name: string, value: string): string | null => {
+  const validateField = React.useCallback((name: string, value: string): string | null => {
     const rule = rules[name];
     if (!rule) return null;
 
@@ -46,13 +45,13 @@ export const useFormValidation = (rules: { [key: string]: ValidationRule }) => {
     return null;
   }, [rules]);
 
-  const validate = useCallback((name: string, value: string) => {
+  const validate = React.useCallback((name: string, value: string) => {
     const error = validateField(name, value);
     setErrors(prev => ({ ...prev, [name]: error }));
     return error === null;
   }, [validateField]);
 
-  const validateAll = useCallback((values: { [key: string]: string }) => {
+  const validateAll = React.useCallback((values: { [key: string]: string }) => {
     const newErrors: ValidationErrors = {};
     let isValid = true;
 
@@ -66,11 +65,11 @@ export const useFormValidation = (rules: { [key: string]: ValidationRule }) => {
     return isValid;
   }, [rules, validateField]);
 
-  const touch = useCallback((name: string) => {
+  const touch = React.useCallback((name: string) => {
     setTouched(prev => ({ ...prev, [name]: true }));
   }, []);
 
-  const clearErrors = useCallback(() => {
+  const clearErrors = React.useCallback(() => {
     setErrors({});
     setTouched({});
   }, []);

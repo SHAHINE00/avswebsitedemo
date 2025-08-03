@@ -1,5 +1,5 @@
 
-import React from 'react';
+import * as React from 'react';
 import { Linkedin, Twitter } from 'lucide-react';
 import OptimizedImage from '@/components/OptimizedImage';
 import drMoroccanMale1 from '@/assets/dr-moroccan-male-1.jpg';

@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { analytics } from '@/utils/analytics';
 
 const UTMTracker: React.FC = () => {
   const location = useLocation();
 
-  useEffect(() => {
+  React.useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const utmData = {
       utm_source: urlParams.get('utm_source'),

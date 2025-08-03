@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const SEOAnalytics = () => {
   const location = useLocation();
 
-  useEffect(() => {
+  React.useEffect(() => {
     // Google Search Console verification
     const addSearchConsoleVerification = () => {
       if (!document.querySelector('meta[name="google-site-verification"]')) {
@@ -81,7 +80,7 @@ const SEOAnalytics = () => {
   }, []);
 
   // Track page views for analytics
-  useEffect(() => {
+  React.useEffect(() => {
     // Send page view to analytics
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('config', 'GA_MEASUREMENT_ID', {

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import * as React from 'react';
 import JsonLd from './JsonLd';
 import { generateOrganizationJsonLd } from '@/utils/seoData';
 
@@ -27,7 +27,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
   ogUrl,
   jsonLd = []
 }) => {
-  useEffect(() => {
+  React.useEffect(() => {
     // Update document title
     document.title = title;
 
