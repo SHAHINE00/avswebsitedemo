@@ -1,3 +1,5 @@
+
+import { useState, useEffect, useContext } from 'react';
 import * as React from 'react';
 import { isReactAvailable } from '@/utils/reactInitialization';
 
@@ -13,7 +15,7 @@ export function useSafeState<T>(initialState: T): [T, React.Dispatch<React.SetSt
   }
   
   try {
-    return React.useState(initialState);
+    return useState(initialState);
   } catch (error) {
     console.warn('useSafeState failed:', error);
     return [initialState, () => {}];
@@ -27,7 +29,7 @@ export function useSafeEffect(effect: React.EffectCallback, deps?: React.Depende
   }
   
   try {
-    React.useEffect(effect, deps);
+    useEffect(effect, deps);
   } catch (error) {
     console.warn('useSafeEffect failed:', error);
   }
@@ -40,7 +42,7 @@ export function useSafeContext<T>(context: React.Context<T>): T | null {
   }
   
   try {
-    return React.useContext(context);
+    return useContext(context);
   } catch (error) {
     console.warn('useSafeContext failed:', error);
     return null;
