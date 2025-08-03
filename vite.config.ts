@@ -132,7 +132,7 @@ export default defineConfig(({ mode }) => {
     })
   },
   
-  // Performance optimizations
+  // Performance optimizations - CRITICAL: Ensure React singleton
   optimizeDeps: {
     include: [
       'react',
@@ -142,6 +142,11 @@ export default defineConfig(({ mode }) => {
       '@supabase/supabase-js'
     ],
     exclude: ['@vite/client', '@vite/env']
+  },
+  
+  // CRITICAL FIX: Ensure single React instance
+  define: {
+    global: 'globalThis',
   },
   
   // Preview configuration for production builds
