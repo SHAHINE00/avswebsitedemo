@@ -1,5 +1,5 @@
-// Mobile-specific error handler component
-import * as React from 'react';
+
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { AlertTriangle, RefreshCw, Wifi, WifiOff, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';

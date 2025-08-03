@@ -1,20 +1,22 @@
-// Ensure React is loaded first
-import * as React from 'react'
-// Test React availability immediately
+
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+
+// Early React validation check
 if (!React || !React.useState) {
   throw new Error('React is not properly loaded');
 }
 console.log('React loaded successfully in main.tsx');
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
-import { initializeProductionLogging } from '@/utils/cleanupConsole'
-import { logError, logInfo } from '@/utils/logger'
-import { isMobileDevice, isIOS } from '@/utils/mobile'
-import { mountIOSFallbackLoader } from '@/components/ui/ios-fallback-loader'
-import { initMobileFix } from '@/utils/mobile-cache-clear'
-import { initializeResourcePreloading } from '@/utils/resourcePreloader'
-import { initializeCrossBrowserOptimizations, handleResponsiveChanges, fixCompatibilityIssues } from '@/utils/cross-browser-optimization'
+
+import App from './App.tsx';
+import './index.css';
+import { initializeProductionLogging } from '@/utils/cleanupConsole';
+import { logError, logInfo } from '@/utils/logger';
+import { isMobileDevice, isIOS } from '@/utils/mobile';
+import { mountIOSFallbackLoader } from '@/components/ui/ios-fallback-loader';
+import { initMobileFix } from '@/utils/mobile-cache-clear';
+import { initializeResourcePreloading } from '@/utils/resourcePreloader';
+import { initializeCrossBrowserOptimizations, handleResponsiveChanges, fixCompatibilityIssues } from '@/utils/cross-browser-optimization';
 
 // Initialize performance optimizations
 initializeProductionLogging();
