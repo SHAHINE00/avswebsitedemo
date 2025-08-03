@@ -39,11 +39,19 @@ export default {
 			'xl': '1280px',
 			'2xl': '1400px',
 			'3xl': '1600px',
+			// Enhanced Android breakpoints
+			'android-sm': '360px',
+			'android-md': '414px', 
+			'android-lg': '480px',
+			// Device-specific media queries
 			'ios': { 'raw': '(-webkit-touch-callout: none)' },
 			'android': { 'raw': '(pointer: coarse) and (hover: none)' },
 			'mobile': { 'max': '767px' },
 			'tablet': { 'min': '768px', 'max': '1023px' },
 			'desktop': { 'min': '1024px' },
+			// Common Android device sizes
+			'mobile-sm': { 'max': '414px' },
+			'mobile-md': { 'min': '415px', 'max': '767px' },
 		},
 		extend: {
 			colors: {

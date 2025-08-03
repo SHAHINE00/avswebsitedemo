@@ -453,24 +453,64 @@
       }
     }
 
-    /* Android-specific select optimizations */
-    .android-device [data-radix-select-trigger] {
-      touch-action: auto !important;
-      min-height: 48px !important;
-      -webkit-appearance: none;
+  /* Enhanced Android-specific optimizations */
+  .android-device [data-radix-select-trigger] {
+    touch-action: auto !important;
+    min-height: 48px !important;
+    -webkit-appearance: none;
+    font-size: 16px !important; /* Prevent zoom */
+    padding: 12px 16px;
+  }
+  
+  .android-device [data-radix-select-content] {
+    touch-action: pan-y !important;
+    max-height: 60vh !important;
+    z-index: 9999 !important;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  .android-device [data-radix-select-item] {
+    touch-action: auto !important;
+    min-height: 48px !important;
+    font-size: 16px;
+    padding: 12px 16px;
+  }
+
+  /* Android form field improvements */
+  .android-device input,
+  .android-device textarea,
+  .android-device select {
+    font-size: 16px !important; /* Prevent zoom */
+    min-height: 48px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    touch-action: manipulation;
+  }
+
+  /* Android keyboard handling */
+  .android-device .form-container {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+  }
+
+  /* Android grid improvements */
+  @media (max-width: 414px) {
+    .android-responsive-grid {
+      grid-template-columns: 1fr !important;
+      gap: 12px;
     }
-    
-    .android-device [data-radix-select-content] {
-      touch-action: pan-y !important;
-      max-height: 60vh !important;
-      z-index: 9999 !important;
-      overflow-y: auto;
+  }
+
+  @media (min-width: 415px) and (max-width: 767px) {
+    .android-responsive-grid {
+      grid-template-columns: 1fr !important;
+      gap: 16px;
     }
-    
-    .android-device [data-radix-select-item] {
-      touch-action: auto !important;
-      min-height: 48px !important;
-    }
+  }
 
     /* Improve scrolling performance */
     .scroll-container {

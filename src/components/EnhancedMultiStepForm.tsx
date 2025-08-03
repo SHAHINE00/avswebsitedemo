@@ -15,6 +15,7 @@ import { useFormProgress } from '@/hooks/useFormProgress';
 import { usePhoneFormatter } from '@/hooks/usePhoneFormatter';
 import { useCourses } from '@/hooks/useCourses';
 import { useToast } from '@/hooks/use-toast';
+import { useIsAndroid, useIsIOS } from '@/hooks/use-mobile-simple';
 import { cn } from '@/lib/utils';
 import { AlertTriangle, RefreshCw, CheckCircle2, Calendar, Users, Star, Loader2, CheckCircle, X } from 'lucide-react';
 
@@ -75,6 +76,10 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
   const networkStatus = useNetworkStatus();
   const { formatPhone, validatePhone } = usePhoneFormatter();
   const { toast } = useToast();
+  
+  // Device detection for responsive optimization
+  const isAndroid = useIsAndroid();
+  const isIOS = useIsIOS();
 
   const { 
     errors, 
@@ -605,51 +610,62 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
                       <p className="text-gray-600 mt-2">Chargement des programmes...</p>
                     </div>
                   ) : availableCourses.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {availableCourses.map((course) => (
-                        <Card 
-                          key={course.id}
-                          className={cn(
-                            'cursor-pointer border-2 transition-all duration-200 hover:shadow-md',
-                            formData.formation.programme === course.id
-                              ? 'border-academy-blue bg-blue-50' 
-                              : 'border-gray-200 hover:border-gray-300'
-                          )}
-                          onClick={() => handleFormationChange('formation.programme', course.id)}
-                        >
-                          <CardContent className="p-4">
-                            <div className="space-y-3">
-                              <div className="flex items-start space-x-3">
-                                <div className={cn(
-                                  'w-4 h-4 rounded-full border-2 mt-1 flex-shrink-0',
-                                  formData.formation.programme === course.id
-                                    ? 'bg-academy-blue border-academy-blue'
-                                    : 'border-gray-300'
-                                )} />
-                                <div className="flex-1 min-w-0">
-                                  <h5 className="font-semibold text-gray-800 leading-tight">{course.title}</h5>
-                                  {course.subtitle && (
-                                    <p className="text-sm text-gray-600 mt-1">{course.subtitle}</p>
-                                  )}
-                                </div>
-                              </div>
-                              
-                              <div className="flex items-center space-x-4 text-xs text-gray-500">
-                                {course.duration && (
-                                  <div className="flex items-center space-x-1">
-                                    <Calendar className="w-3 h-3" />
-                                    <span>{course.duration}</span>
-                                  </div>
-                                )}
-                                {course.modules && (
-                                  <div className="flex items-center space-x-1">
-                                    <Users className="w-3 h-3" />
-                                    <span>{course.modules}</span>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </CardContent>
+                     <div className={cn(
+                       "grid gap-3 sm:gap-4",
+                       "grid-cols-1 sm:grid-cols-1 md:grid-cols-2",
+                       isAndroid && "android-responsive-grid"
+                     )}>
+                       {availableCourses.map((course) => (
+                         <Card 
+                           key={course.id}
+                           className={cn(
+                             'cursor-pointer border-2 transition-all duration-200 hover:shadow-md',
+                             'min-h-[120px] sm:min-h-[140px]', // Better touch targets
+                             'touch-manipulation', // Android touch optimization
+                             formData.formation.programme === course.id
+                               ? 'border-academy-blue bg-blue-50' 
+                               : 'border-gray-200 hover:border-gray-300'
+                           )}
+                           onClick={() => handleFormationChange('formation.programme', course.id)}
+                         >
+                           <CardContent className="p-3 sm:p-4">
+                             <div className="space-y-2 sm:space-y-3">
+                               <div className="flex items-start space-x-2 sm:space-x-3">
+                                 <div className={cn(
+                                   'w-5 h-5 sm:w-4 sm:h-4 rounded-full border-2 mt-0.5 sm:mt-1 flex-shrink-0',
+                                   'touch-manipulation', // Better touch interaction
+                                   formData.formation.programme === course.id
+                                     ? 'bg-academy-blue border-academy-blue'
+                                     : 'border-gray-300'
+                                 )} />
+                                 <div className="flex-1 min-w-0">
+                                   <h5 className="font-semibold text-gray-800 leading-tight text-sm sm:text-base">
+                                     {course.title}
+                                   </h5>
+                                   {course.subtitle && (
+                                     <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">
+                                       {course.subtitle}
+                                     </p>
+                                   )}
+                                 </div>
+                               </div>
+                               
+                               <div className="flex items-center space-x-3 sm:space-x-4 text-xs text-gray-500">
+                                 {course.duration && (
+                                   <div className="flex items-center space-x-1">
+                                     <Calendar className="w-3 h-3" />
+                                     <span className="text-xs">{course.duration}</span>
+                                   </div>
+                                 )}
+                                 {course.modules && (
+                                   <div className="flex items-center space-x-1">
+                                     <Users className="w-3 h-3" />
+                                     <span className="text-xs">{course.modules}</span>
+                                   </div>
+                                 )}
+                               </div>
+                             </div>
+                           </CardContent>
                         </Card>
                       ))}
                     </div>
@@ -685,21 +701,26 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
                   </label>
                 </div>
                 
-                <div className="flex flex-col items-center space-y-4">
-                  <Button
-                    onClick={handleSubmit}
-                    disabled={!formData.acceptTerms || !networkStatus.isOnline || loading}
-                    className="px-8 py-3 bg-gradient-to-r from-academy-blue to-academy-purple text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50"
-                  >
-                    {loading || inlineStatus.type === 'submitting' ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                        Inscription en cours...
-                      </>
-                    ) : (
-                      "Finaliser l'inscription"
-                    )}
-                  </Button>
+                 <div className="flex flex-col items-center space-y-4">
+                   <Button
+                     onClick={handleSubmit}
+                     disabled={!formData.acceptTerms || !networkStatus.isOnline || loading}
+                     className={cn(
+                       "w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4",
+                       "min-h-[48px] touch-manipulation", // Android requirements
+                       "bg-gradient-to-r from-academy-blue to-academy-purple text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50",
+                       "text-sm sm:text-base"
+                     )}
+                   >
+                     {loading || inlineStatus.type === 'submitting' ? (
+                       <>
+                         <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                         <span className="text-sm sm:text-base">Inscription en cours...</span>
+                       </>
+                     ) : (
+                       <span className="text-sm sm:text-base">Finaliser l'inscription</span>
+                     )}
+                   </Button>
                   
                   {/* Inline Status Message */}
                   {inlineStatus.type !== 'idle' && inlineStatus.message && (
