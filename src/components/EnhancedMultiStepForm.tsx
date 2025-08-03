@@ -238,19 +238,49 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
     }
   }, [touch, validate, validatePhone, formData]);
 
-  const handleSubmit = React.useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Form submission started', { formData, networkStatus });
+  const handleSubmit = React.useCallback(async (e?: React.FormEvent | React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    console.log("=== FORM SUBMISSION STARTED ===");
+    console.log("Form data:", formData);
+    console.log("Network status:", networkStatus);
+    console.log("Loading state:", loading);
     
     if (!networkStatus.isOnline) {
+      console.log("❌ Network offline");
       toast({
-        title: "Connexion requise",
-        description: "Veuillez vérifier votre connexion internet.",
-        variant: "destructive"
+        title: "Pas de connexion internet",
+        description: "Veuillez vérifier votre connexion et réessayer.",
+        variant: "destructive",
       });
       return;
     }
-    
+
+    // Check terms acceptance first
+    if (!formData.acceptTerms) {
+      console.log("❌ Terms not accepted");
+      toast({
+        title: "Conditions d'utilisation",
+        description: "Veuillez accepter les conditions d'utilisation.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if formation is properly selected
+    if (!formData.formation.formationType || !formData.formation.domaine || !formData.formation.programme) {
+      console.log("❌ Formation incomplete:", formData.formation);
+      toast({
+        title: "Formation incomplète",
+        description: "Veuillez sélectionner tous les éléments de votre formation.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Prepare values for validation
     const validationValues = {
       firstName: formData.firstName,
@@ -263,21 +293,29 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
       acceptTerms: formData.acceptTerms ? 'true' : ''
     };
     
-    console.log('Validating form with values:', validationValues);
+    console.log("🔍 Starting validation...");
+    console.log("Validation values:", validationValues);
     const isFormValid = validateAll(validationValues);
-    console.log('Form validation result:', isFormValid);
+    console.log("Validation result:", isFormValid);
+    console.log("Current errors:", errors);
     
     if (!isFormValid) {
+      console.log("❌ Validation failed");
+      const errorFields = Object.keys(errors).filter(key => errors[key]);
+      console.log("Error fields:", errorFields);
       toast({
-        title: "Formulaire incomplet",
-        description: "Veuillez remplir tous les champs obligatoires.",
-        variant: "destructive"
+        title: "Formulaire invalide",
+        description: `Veuillez corriger les erreurs: ${errorFields.join(', ')}`,
+        variant: "destructive",
       });
       return;
     }
-    
+
+    // Check email validation
     const emailResult = getValidationResult(formData.email);
+    console.log("Email validation result:", emailResult);
     if (emailResult?.isDuplicate) {
+      console.log("❌ Email already exists");
       toast({
         title: "Email déjà utilisé",
         description: "Cette adresse email est déjà enregistrée.",
@@ -285,10 +323,21 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
       });
       return;
     }
+
+    console.log("✅ All validations passed, submitting...");
     
-    console.log('Submitting form data:', formData);
-    await onSubmit(formData);
-  }, [formData, validateAll, onSubmit, networkStatus.isOnline, getValidationResult, toast]);
+    try {
+      await onSubmit(formData);
+      console.log("✅ Submission completed successfully");
+    } catch (error) {
+      console.error("❌ Submission failed:", error);
+      toast({
+        title: "Erreur de soumission",
+        description: "Une erreur s'est produite lors de l'envoi du formulaire.",
+        variant: "destructive",
+      });
+    }
+  }, [formData, validateAll, onSubmit, networkStatus, getValidationResult, toast, errors, loading]);
 
   const getStepStatus = React.useCallback((step: number): 'completed' | 'current' | 'pending' => {
     switch (step) {
@@ -630,7 +679,6 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
                 
                 <div className="flex justify-center">
                   <Button
-                    type="submit"
                     onClick={handleSubmit}
                     disabled={!formData.acceptTerms || !networkStatus.isOnline || loading}
                     className="px-8 py-3 bg-gradient-to-r from-academy-blue to-academy-purple text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50"
