@@ -30,13 +30,20 @@ const SelectTrigger = React.forwardRef<
       )}
       data-radix-select-trigger
       onFocus={(e) => {
-        // Prevent focus from causing unwanted scroll
-        e.preventDefault();
+        // Allow natural focus behavior without scroll intervention
+        if (isMobile) {
+          e.currentTarget.scrollIntoView = () => {}; // Disable scrollIntoView on mobile
+        }
       }}
       onTouchStart={(e) => {
-        // Prevent default touch behavior that causes page jumping
+        // Prevent page jumping on touch without interfering with Radix behavior
         if (isMobile) {
-          e.preventDefault();
+          e.stopPropagation();
+          // Temporarily disable scroll behavior during dropdown interaction
+          document.documentElement.style.scrollBehavior = 'auto';
+          setTimeout(() => {
+            document.documentElement.style.scrollBehavior = '';
+          }, 500);
         }
       }}
       {...props}
@@ -111,6 +118,8 @@ const SelectContent = React.forwardRef<
         onCloseAutoFocus={(e) => {
           // Prevent auto-focus from scrolling the page
           e.preventDefault();
+          // Restore scroll behavior
+          document.documentElement.style.scrollBehavior = '';
         }}
         onPointerDownOutside={(e) => {
           // Prevent unwanted interactions
