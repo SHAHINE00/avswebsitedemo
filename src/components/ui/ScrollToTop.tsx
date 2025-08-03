@@ -1,15 +1,14 @@
 
-import React, { useRef } from 'react';
-import SafeComponentWrapper from '@/components/ui/SafeComponentWrapper';
-import { useSafeLocation, useSafeEffect } from '@/hooks/useSafeHooks';
+import React, { useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
-const ScrollToTopCore = () => {
-  const location = useSafeLocation();
+const ScrollToTop = () => {
+  const location = useLocation();
   const { pathname } = location;
   const isDropdownOpen = useRef(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  useSafeEffect(() => {
+  useEffect(() => {
     // Listen for dropdown state changes
     const handleDropdownState = (event: CustomEvent) => {
       isDropdownOpen.current = event.detail.isOpen;
@@ -32,7 +31,7 @@ const ScrollToTopCore = () => {
     };
   }, []);
 
-  useSafeEffect(() => {
+  useEffect(() => {
     // Clear any existing timeout
     if (scrollTimeout.current) {
       clearTimeout(scrollTimeout.current);
@@ -47,17 +46,6 @@ const ScrollToTopCore = () => {
   }, [pathname]);
 
   return null;
-};
-
-const ScrollToTop = () => {
-  return (
-    <SafeComponentWrapper 
-      componentName="ScrollToTop" 
-      requiresRouter={true}
-    >
-      <ScrollToTopCore />
-    </SafeComponentWrapper>
-  );
 };
 
 export default ScrollToTop;

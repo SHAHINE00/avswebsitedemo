@@ -1,6 +1,5 @@
 
 import React from 'react';
-import SafeComponentWrapper from '@/components/ui/SafeComponentWrapper';
 
 interface SafeGDPRWrapperProps {
   children: React.ReactNode;
@@ -8,14 +7,7 @@ interface SafeGDPRWrapperProps {
 }
 
 const SafeGDPRWrapper: React.FC<SafeGDPRWrapperProps> = ({ children, fallback }) => {
-  return (
-    <SafeComponentWrapper
-      componentName="SafeGDPRWrapper"
-      fallback={fallback}
-    >
-      {children}
-    </SafeComponentWrapper>
-  );
+  return <>{children}</>;
 };
 
 export default SafeGDPRWrapper;

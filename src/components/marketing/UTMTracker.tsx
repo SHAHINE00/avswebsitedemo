@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { analytics } from '@/utils/analytics';
-import SafeComponentWrapper from '@/components/ui/SafeComponentWrapper';
-import { useSafeLocation, useSafeEffect } from '@/hooks/useSafeHooks';
+import { useLocation } from 'react-router-dom';
 
-const UTMTrackerCore: React.FC = () => {
-  const location = useSafeLocation();
+const UTMTracker: React.FC = () => {
+  const location = useLocation();
 
-  useSafeEffect(() => {
+  useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const utmData = {
       utm_source: urlParams.get('utm_source'),
@@ -48,17 +47,6 @@ const UTMTrackerCore: React.FC = () => {
   }, [location.pathname, location.search]);
 
   return null;
-};
-
-const UTMTracker: React.FC = () => {
-  return (
-    <SafeComponentWrapper 
-      componentName="UTMTracker" 
-      requiresRouter={true}
-    >
-      <UTMTrackerCore />
-    </SafeComponentWrapper>
-  );
 };
 
 export default UTMTracker;

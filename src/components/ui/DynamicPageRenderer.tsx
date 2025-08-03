@@ -80,17 +80,33 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
   pageName, 
   children 
 }) => {
-  // Check React availability first
-  if (!React?.useMemo || !React?.useEffect) {
-    console.warn('DynamicPageRenderer: React hooks not available, rendering children only');
-    return <div className="min-h-screen flex flex-col bg-background">{children}</div>;
-  }
-
   let sectionData;
   try {
     sectionData = useSectionVisibility();
   } catch (error) {
-    console.warn('DynamicPageRenderer: useSectionVisibility failed:', error);
+    console.warn('DynamicPageRenderer: useSectionVisibility failed, using fallback content');
+    // Fallback content for home page
+    if (pageName === 'home') {
+      return (
+        <div className="min-h-screen flex flex-col bg-background">
+          <Navbar />
+          <main className="flex-grow">
+            <HeroSection />
+            <CareerPaths />
+            <CourseUniverseSection />
+            <PartnersSection />
+            <FeaturesSection />
+            <EnhancedCourseSelectionGuide />
+            <InstructorsSection />
+            <TestimonialsSection />
+            <FAQSection />
+            <CTASection />
+            {children}
+          </main>
+          <Footer />
+        </div>
+      );
+    }
     return <div className="min-h-screen flex flex-col bg-background">{children}</div>;
   }
   

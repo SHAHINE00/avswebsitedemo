@@ -71,61 +71,8 @@ const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   return <>{children}</>;
 };
 
-// Safe Toaster wrapper that only renders after React is confirmed
-const SafeToaster: React.FC = () => {
-  // Enhanced React safety check
-  if (typeof React === 'undefined' || React === null || !React.useState || !React.useEffect || !React.useContext) {
-    return null;
-  }
-  
-  let isReactReady, setIsReactReady;
-  
-  try {
-    [isReactReady, setIsReactReady] = React.useState(false);
-  } catch (error) {
-    console.warn('SafeToaster: useState failed:', error);
-    return null;
-  }
-  
-  React.useEffect(() => {
-    // Double-check React is available before allowing Toaster
-    if (React && React.useState && React.useEffect && React.useContext) {
-      setIsReactReady(true);
-    }
-  }, []);
-  
-  if (!isReactReady) {
-    return null;
-  }
-  
-  try {
-    return <Toaster />;
-  } catch (error) {
-    console.error('SafeToaster render failed:', error);
-    return null;
-  }
-};
 
 const App = () => {
-  // Enhanced React validation check with early return
-  if (typeof React === 'undefined' || React === null) {
-    return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <h1>Chargement en cours...</h1>
-        <p>Application en cours de démarrage</p>
-      </div>
-    );
-  }
-  
-  // Validate React hooks are available
-  if (!React.useState || !React.useEffect || !React.useContext || !React.Suspense) {
-    return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <h1>Initialisation React...</h1>
-        <p>Chargement des composants</p>
-      </div>
-    );
-  }
 
   return (
     <GlobalErrorBoundary>
@@ -140,9 +87,7 @@ const App = () => {
             <UTMTracker />
             <SEOAnalytics />
             <StructuredData type="website" />
-            <SafeGDPRWrapper>
-              <CookieConsentBanner />
-            </SafeGDPRWrapper>
+            <CookieConsentBanner />
             <AuthProvider>
               <Routes>
                 {/* Critical routes - no lazy loading */}
@@ -178,8 +123,7 @@ const App = () => {
                 <Route path="/admin/test" element={<AdminRouteGuard><LazyWrapper><AdminTest /></LazyWrapper></AdminRouteGuard>} />
               </Routes>
               
-              {/* Safe Toaster that only renders when React is confirmed ready */}
-              <SafeToaster />
+              <Toaster />
             </AuthProvider>
           </AnalyticsProvider>
         </Router>
