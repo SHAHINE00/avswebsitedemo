@@ -1,12 +1,13 @@
 
 import * as React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, User, LogOut, Settings } from 'lucide-react';
+import { Menu, X, User, LogOut, Settings, Search } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import NotificationBell from './user/NotificationBell';
 import OptimizedImage from '@/components/OptimizedImage';
-import SocialShareButtons from '@/components/marketing/SocialShareButtons';
+import GlobalSearch from '@/components/search/GlobalSearch';
+import { useButtonFeedback } from '@/hooks/useTouchFeedback';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,8 +18,10 @@ import {
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const [isSearchOpen, setIsSearchOpen] = React.useState(false);
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const buttonFeedback = useButtonFeedback();
 
   const navigation = [
     { name: 'Accueil', href: '/' },
@@ -76,6 +79,16 @@ const Navbar = () => {
 
           {/* Desktop Auth - Right */}
           <div className="hidden lg:flex items-center space-x-4 flex-shrink-0">
+            {/* Search Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsSearchOpen(true)}
+              {...buttonFeedback.buttonProps}
+            >
+              <Search className="h-4 w-4" />
+            </Button>
+
             {user ? (
               <>
                 <NotificationBell />
@@ -129,6 +142,7 @@ const Navbar = () => {
               size="sm"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="flex-shrink-0 min-h-[44px] min-w-[44px] touch-manipulation"
+              {...buttonFeedback.buttonProps}
             >
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
@@ -139,6 +153,16 @@ const Navbar = () => {
         {isMobileMenuOpen && (
           <div className="lg:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t scroll-container">
+              {/* Mobile Search */}
+              <Button
+                variant="ghost"
+                className="w-full justify-start mb-2"
+                onClick={() => { setIsSearchOpen(true); setIsMobileMenuOpen(false); }}
+              >
+                <Search className="h-4 w-4 mr-2" />
+                Rechercher
+              </Button>
+
               {navigation.map((item) => (
                 <Link
                   key={item.name}
@@ -193,6 +217,9 @@ const Navbar = () => {
             </div>
           </div>
         )}
+
+        {/* Global Search */}
+        <GlobalSearch isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
       </div>
     </nav>
   );

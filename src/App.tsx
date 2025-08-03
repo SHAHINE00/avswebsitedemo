@@ -11,6 +11,7 @@ import UTMTracker from "@/components/marketing/UTMTracker";
 import SEOAnalytics from "@/components/SEOAnalytics";
 import StructuredData from "@/components/StructuredData";
 import LoadingSpinner from "@/components/ui/loading-spinner";
+import RealtimeNotifications from "@/components/interactive/RealtimeNotifications";
 
 // Critical pages (loaded immediately for better performance)
 import Index from "./pages/Index";
@@ -126,6 +127,7 @@ const App = () => {
             <Route path="/admin/courses" element={<AdminRouteGuard><LazyWrapper><AdminCourses /></LazyWrapper></AdminRouteGuard>} />
             <Route path="/admin/test" element={<AdminRouteGuard><LazyWrapper><AdminTest /></LazyWrapper></AdminRouteGuard>} />
           </Routes>
+            <RealtimeNotifications />
             <Toaster />
           </AuthProvider>
           </AnalyticsProvider>
