@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Clock, BookOpen, Award, CheckCircle, type LucideIcon } from 'lucide-react';
 import EnrollmentButton from './EnrollmentButton';
+import { useCardFeedback } from '@/hooks/useTouchFeedback';
 
 interface FormationCardProps {
   id?: string;
@@ -40,8 +41,13 @@ const FormationCard: React.FC<FormationCardProps> = ({
   floatingColor1,
   floatingColor2,
 }) => {
+  const cardFeedback = useCardFeedback({ intensity: 'light' });
+
   return (
-    <Card className="group relative overflow-hidden border-0 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-white">
+    <Card 
+      {...cardFeedback.cardProps}
+      className="group relative overflow-hidden border-0 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-white"
+    >
       {/* Background gradient */}
       <div className={`absolute inset-0 bg-gradient-to-br ${gradientFrom} ${gradientTo} opacity-5 group-hover:opacity-10 transition-opacity duration-300`}></div>
       
