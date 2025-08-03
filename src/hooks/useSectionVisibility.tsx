@@ -3,6 +3,32 @@ import React from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { logError } from '@/utils/logger';
 
+// Safe hooks that handle React null states
+const useSafeState = function<T>(initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] {
+  if (!React?.useState) {
+    console.warn('useSectionVisibility: React.useState not available, using fallback');
+    return [initialValue, () => {}];
+  }
+  try {
+    return React.useState(initialValue);
+  } catch (error) {
+    console.warn('useSectionVisibility: useState failed, using fallback:', error);
+    return [initialValue, () => {}];
+  }
+};
+
+const useSafeEffect = (effect: React.EffectCallback, deps?: React.DependencyList) => {
+  if (!React?.useEffect) {
+    console.warn('useSectionVisibility: React.useEffect not available');
+    return;
+  }
+  try {
+    return React.useEffect(effect, deps);
+  } catch (error) {
+    console.warn('useSectionVisibility: useEffect failed:', error);
+  }
+};
+
 interface SectionVisibility {
   id: string;
   section_key: string;
@@ -17,9 +43,25 @@ interface SectionVisibility {
 }
 
 export const useSectionVisibility = () => {
-  const [sections, setSections] = React.useState<SectionVisibility[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
+  // Check React availability first
+  if (!React) {
+    console.warn('useSectionVisibility: React not available, returning fallback');
+    return {
+      sections: [],
+      loading: false,
+      error: 'React not available',
+      isSectionVisible: () => true,
+      getSectionsByPage: () => [],
+      updateSectionVisibility: async () => {},
+      updateSectionOrder: async () => {},
+      moveSection: async () => {},
+      refetch: async () => {}
+    };
+  }
+
+  const [sections, setSections] = useSafeState<SectionVisibility[]>([]);
+  const [loading, setLoading] = useSafeState(true);
+  const [error, setError] = useSafeState<string | null>(null);
 
   const fetchSections = async () => {
     try {
@@ -130,7 +172,7 @@ export const useSectionVisibility = () => {
       .sort((a, b) => a.display_order - b.display_order);
   };
 
-  React.useEffect(() => {
+  useSafeEffect(() => {
     fetchSections();
   }, []);
 

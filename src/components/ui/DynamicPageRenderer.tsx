@@ -80,7 +80,21 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
   pageName, 
   children 
 }) => {
-  const { getSectionsByPage, loading, refetch } = useSectionVisibility();
+  // Check React availability first
+  if (!React?.useMemo || !React?.useEffect) {
+    console.warn('DynamicPageRenderer: React hooks not available, rendering children only');
+    return <div className="min-h-screen flex flex-col bg-background">{children}</div>;
+  }
+
+  let sectionData;
+  try {
+    sectionData = useSectionVisibility();
+  } catch (error) {
+    console.warn('DynamicPageRenderer: useSectionVisibility failed:', error);
+    return <div className="min-h-screen flex flex-col bg-background">{children}</div>;
+  }
+  
+  const { getSectionsByPage, loading, refetch } = sectionData;
 
   // Set up real-time subscriptions for section visibility changes
   useEffect(() => {
