@@ -71,15 +71,29 @@ const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 };
 
 const App = () => {
+  // Early React validation check
+  if (typeof React === 'undefined' || React === null) {
+    return (
+      <div style={{ padding: '20px', textAlign: 'center' }}>
+        <h1>Chargement en cours...</h1>
+        <p>Application en cours de démarrage</p>
+      </div>
+    );
+  }
   return (
     <GlobalErrorBoundary>
-      <Router>
-        <AnalyticsProvider>
-          <ScrollToTop />
-          <UTMTracker />
-          <SEOAnalytics />
-          <StructuredData type="website" />
-          <AuthProvider>
+      <React.Suspense fallback={
+        <div style={{ padding: '20px', textAlign: 'center' }}>
+          <div>Chargement de l'application...</div>
+        </div>
+      }>
+        <Router>
+          <AnalyticsProvider>
+            <ScrollToTop />
+            <UTMTracker />
+            <SEOAnalytics />
+            <StructuredData type="website" />
+            <AuthProvider>
           <Routes>
             {/* Critical routes - no lazy loading */}
             <Route path="/" element={<Index />} />
@@ -113,10 +127,11 @@ const App = () => {
             <Route path="/admin/courses" element={<AdminRouteGuard><LazyWrapper><AdminCourses /></LazyWrapper></AdminRouteGuard>} />
             <Route path="/admin/test" element={<AdminRouteGuard><LazyWrapper><AdminTest /></LazyWrapper></AdminRouteGuard>} />
           </Routes>
-          <Toaster />
-        </AuthProvider>
-        </AnalyticsProvider>
-      </Router>
+            <Toaster />
+          </AuthProvider>
+          </AnalyticsProvider>
+        </Router>
+      </React.Suspense>
     </GlobalErrorBoundary>
   );
 };

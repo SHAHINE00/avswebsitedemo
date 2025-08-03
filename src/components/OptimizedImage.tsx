@@ -1,5 +1,6 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import * as React from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { optimizeImageUrl, generateResponsiveSizes, checkWebPSupport } from '@/utils/imageOptimization';
 
 interface OptimizedImageProps {
