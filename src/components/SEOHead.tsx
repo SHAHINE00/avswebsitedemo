@@ -19,7 +19,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
   title = "AVS - Institut de l'Innovation et de l'Intelligence Artificielle",
   description = "Rejoignez notre programme complet AVS IA Course et maîtrisez les technologies d'intelligence artificielle de pointe avec des instructeurs experts.",
   keywords = "formation ia, intelligence artificielle, machine learning, programmation, cybersécurité, formation en ligne",
-  ogImage = "/images/avs-blog-default.jpg",
+  ogImage = "/images/avs-social-share.jpg",
   canonicalUrl,
   noIndex = false,
   ogType = "website",
@@ -33,7 +33,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
 
     // Helper function to convert relative URLs to absolute URLs
     const getAbsoluteUrl = (url: string): string => {
-      if (!url) return `${window.location.origin}/images/avs-blog-default.jpg`; // AVS Institute default
+      if (!url) return `${window.location.origin}/images/avs-social-share.jpg`; // AVS Institute default
       
       // If already absolute URL, return as is
       if (url.startsWith('http://') || url.startsWith('https://')) {
@@ -51,7 +51,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       }
       
       // Return the AVS Institute default image for any other case
-      return `${window.location.origin}/images/avs-blog-default.jpg`;
+      return `${window.location.origin}/images/avs-social-share.jpg`;
     };
 
     // Get current page URL if not provided
@@ -83,6 +83,9 @@ const SEOHead: React.FC<SEOHeadProps> = ({
     updateMetaTag('og:title', title, 'property');
     updateMetaTag('og:description', description, 'property');
     updateMetaTag('og:image', absoluteImageUrl, 'property');
+    updateMetaTag('og:image:width', '1200', 'property');
+    updateMetaTag('og:image:height', '630', 'property');
+    updateMetaTag('og:image:alt', 'AVS Institut de l\'Innovation et de l\'Intelligence Artificielle', 'property');
     updateMetaTag('og:type', ogType, 'property');
     updateMetaTag('og:url', currentUrl, 'property');
     updateMetaTag('og:site_name', ogSiteName, 'property');
