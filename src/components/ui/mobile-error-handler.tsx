@@ -12,6 +12,15 @@ interface MobileErrorHandlerProps {
 }
 
 export const MobileErrorHandler: React.FC<MobileErrorHandlerProps> = ({ error, onRetry }) => {
+  // Early return if React is not available - don't use any hooks
+  if (typeof React === 'undefined' || React === null || !React.useState) {
+    return (
+      <div style={{ padding: '20px', textAlign: 'center' }}>
+        Une erreur s'est produite. Veuillez rafraîchir la page.
+      </div>
+    );
+  }
+
   const [isOnline, setIsOnline] = useState(typeof navigator !== 'undefined' ? navigator.onLine : true);
   const [retryCount, setRetryCount] = useState(0);
 

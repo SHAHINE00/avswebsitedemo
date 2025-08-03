@@ -3,15 +3,8 @@ import React, { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const ScrollToTop = () => {
-  // Add safety check for React
-  if (typeof React === 'undefined' || React === null) {
-    console.warn('ScrollToTop: React is not available');
-    return null;
-  }
-
-  // Add safety check for hooks
-  if (!React.useState || !React.useEffect) {
-    console.warn('ScrollToTop: React hooks not available');
+  // Early return if React is not available - don't use any hooks
+  if (typeof React === 'undefined' || React === null || !React.useState) {
     return null;
   }
 

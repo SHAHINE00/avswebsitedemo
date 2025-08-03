@@ -23,15 +23,9 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Add safety checks for React hooks
-  if (typeof React === 'undefined' || React === null) {
-    console.error('AuthProvider: React is not available');
-    return <div>Loading...</div>;
-  }
-
-  if (!React.useState || !React.useEffect || !React.useContext) {
-    console.error('AuthProvider: React hooks not available');
-    return <div>Loading...</div>;
+  // Early return if React is not available - don't use any hooks
+  if (typeof React === 'undefined' || React === null || !React.useState) {
+    return <div>Loading authentication...</div>;
   }
 
   let user, setUser;
