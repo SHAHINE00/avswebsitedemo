@@ -7,10 +7,16 @@ import { isMobileDevice, isIOS } from '@/utils/mobile'
 import { mountIOSFallbackLoader } from '@/components/ui/ios-fallback-loader'
 import { initMobileFix } from '@/utils/mobile-cache-clear'
 import { initializeResourcePreloading } from '@/utils/resourcePreloader'
+import { initializeCrossBrowserOptimizations, handleResponsiveChanges, fixCompatibilityIssues } from '@/utils/cross-browser-optimization'
 
 // Initialize performance optimizations
 initializeProductionLogging();
 initializeResourcePreloading();
+
+// Initialize comprehensive cross-browser optimizations
+initializeCrossBrowserOptimizations();
+handleResponsiveChanges();
+fixCompatibilityIssues();
 
 // Production logging only shows errors
 if (process.env.NODE_ENV === 'development') {
