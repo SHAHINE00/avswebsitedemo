@@ -1,5 +1,5 @@
 
-import * as React from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { logInfo, logError } from '@/utils/logger';
 
@@ -31,29 +31,16 @@ export interface Course {
 }
 
 export const useCourses = () => {
-  // Add React null safety
-  if (!React || !React.useState || !React.useEffect || !React.useRef || !React.useCallback) {
-    console.warn('useCourses: React hooks not available');
-    return {
-      courses: [],
-      loading: false,
-      error: 'React hooks not available',
-      retryCount: 0,
-      refetch: () => Promise.resolve(),
-      retry: () => {}
-    };
-  }
-
-  const [courses, setCourses] = React.useState<Course[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
-  const [retryCount, setRetryCount] = React.useState(0);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   // Use useRef to create a stable fetch function
-  const fetchCoursesRef = React.useRef<(attempt?: number) => Promise<void>>();
-  const isMountedRef = React.useRef(true);
+  const fetchCoursesRef = useRef<(attempt?: number) => Promise<void>>();
+  const isMountedRef = useRef(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Cleanup function to prevent state updates on unmounted component
     return () => {
       isMountedRef.current = false;
@@ -112,12 +99,12 @@ export const useCourses = () => {
     };
   }
 
-  const retry = React.useCallback(() => {
+  const retry = useCallback(() => {
     fetchCoursesRef.current!(1);
   }, []);
 
   // Only fetch once on mount - no dependencies needed since state setters are stable
-  React.useEffect(() => {
+  useEffect(() => {
     fetchCoursesRef.current!();
   }, []); // Empty dependency array - fetch only once on mount
 

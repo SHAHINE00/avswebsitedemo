@@ -21,11 +21,6 @@ export default defineConfig(({ mode }) => {
     mode === 'development' &&
     componentTagger(),
   ].filter(Boolean),
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
@@ -40,11 +35,7 @@ export default defineConfig(({ mode }) => {
     rollupOptions: {
       output: {
         manualChunks: {
-          // Core React chunks
-          'vendor-react': ['react', 'react-dom'],
-          'vendor-router': ['react-router-dom'],
-          
-          // UI Library chunks - split Radix UI more granularly
+          // UI Library chunks
           'vendor-ui-core': [
             '@radix-ui/react-dialog',
             '@radix-ui/react-dropdown-menu',
@@ -56,17 +47,6 @@ export default defineConfig(({ mode }) => {
             '@radix-ui/react-radio-group',
             '@radix-ui/react-select',
             '@radix-ui/react-switch'
-          ],
-          'vendor-ui-display': [
-            '@radix-ui/react-accordion',
-            '@radix-ui/react-avatar',
-            '@radix-ui/react-progress',
-            '@radix-ui/react-separator'
-          ],
-          'vendor-ui-navigation': [
-            '@radix-ui/react-navigation-menu',
-            '@radix-ui/react-popover',
-            '@radix-ui/react-tooltip'
           ],
           'vendor-icons': ['lucide-react'],
           
@@ -83,30 +63,8 @@ export default defineConfig(({ mode }) => {
             'class-variance-authority',
             'tailwind-merge'
           ],
-          'vendor-date': ['date-fns'],
-          'vendor-query': ['@tanstack/react-query'],
           'vendor-supabase': ['@supabase/supabase-js'],
-          
-          // Charts and data visualization
-          'vendor-charts': ['recharts'],
-          
-          // DnD and interactions
-          'vendor-dnd': [
-            '@dnd-kit/core',
-            '@dnd-kit/sortable',
-            '@dnd-kit/utilities'
-          ],
-          
-          // Markdown and content
-          'vendor-content': [
-            'react-markdown',
-            'embla-carousel-react'
-          ],
-          
-          // Animation and themes
-          'vendor-animations': [
-            'next-themes'
-          ]
+          'vendor-charts': ['recharts']
         }
       }
     },
@@ -145,8 +103,14 @@ export default defineConfig(({ mode }) => {
   },
   
   // CRITICAL FIX: Ensure single React instance
-  define: {
-    global: 'globalThis',
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+      // Ensure single React instance
+      "react": path.resolve(__dirname, "./node_modules/react"),
+      "react-dom": path.resolve(__dirname, "./node_modules/react-dom")
+    },
+    dedupe: ['react', 'react-dom']
   },
   
   // Preview configuration for production builds
