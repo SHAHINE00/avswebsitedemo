@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { logError } from '@/utils/logger';
 
@@ -16,6 +16,17 @@ export const useAdvancedAnalytics = (
   endDate: string = new Date().toISOString().split('T')[0],
   metricTypes: string[] | null = null
 ) => {
+  // Add React null safety
+  if (!React || !React.useState || !React.useEffect) {
+    console.warn('useAdvancedAnalytics: React hooks not available');
+    return {
+      data: [],
+      loading: false,
+      error: 'React hooks not available',
+      refetch: () => Promise.resolve()
+    };
+  }
+
   const [data, setData] = useState<AnalyticsData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

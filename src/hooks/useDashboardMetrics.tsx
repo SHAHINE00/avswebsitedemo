@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { logError } from '@/utils/logger';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -17,6 +17,17 @@ interface DashboardMetrics {
 }
 
 export const useDashboardMetrics = () => {
+  // Add React null safety
+  if (!React || !React.useState || !React.useEffect) {
+    console.warn('useDashboardMetrics: React hooks not available');
+    return {
+      metrics: null,
+      loading: false,
+      error: 'React hooks not available',
+      refetch: () => Promise.resolve()
+    };
+  }
+
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

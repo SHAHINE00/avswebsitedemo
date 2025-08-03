@@ -14,8 +14,24 @@ interface ContactFormData {
 }
 
 export const useContactForm = () => {
+  // Add React null safety
+  if (!React || !React.useState) {
+    console.warn('useContactForm: React hooks not available');
+    return {
+      submitContactForm: () => Promise.resolve(false),
+      loading: false
+    };
+  }
+
   const [loading, setLoading] = React.useState(false);
-  const { toast } = useToast();
+  
+  let toast;
+  try {
+    ({ toast } = useToast());
+  } catch (error) {
+    console.warn('useContactForm: useToast failed:', error);
+    toast = () => {};
+  }
 
   const submitContactForm = async (formData: ContactFormData) => {
     setLoading(true);

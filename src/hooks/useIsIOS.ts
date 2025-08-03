@@ -1,6 +1,12 @@
 import * as React from 'react';
 
 export function useIsIOS(): boolean {
+  // Add React null safety
+  if (!React || !React.useState || !React.useEffect) {
+    console.warn('useIsIOS: React hooks not available');
+    return false;
+  }
+
   const [isIOS, setIsIOS] = React.useState(false);
 
   React.useEffect(() => {
@@ -19,6 +25,12 @@ export function useIsIOS(): boolean {
 }
 
 export function useIsAndroid(): boolean {
+  // Add React null safety
+  if (!React || !React.useState || !React.useEffect) {
+    console.warn('useIsAndroid: React hooks not available');
+    return false;
+  }
+
   const [isAndroid, setIsAndroid] = React.useState(false);
 
   React.useEffect(() => {

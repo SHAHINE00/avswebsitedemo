@@ -16,9 +16,37 @@ import {
 } from './ui/dropdown-menu';
 
 const Navbar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  const location = useLocation();
-  const { user, signOut } = useAuth();
+  // Add React null safety checks
+  if (!React || !React.useState || !React.useEffect) {
+    console.warn('Navbar: React hooks not available');
+    return null;
+  }
+
+  let isMobileMenuOpen, setIsMobileMenuOpen;
+  let location;
+  let user, signOut;
+
+  try {
+    [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  } catch (error) {
+    console.warn('Navbar: useState failed:', error);
+    return null;
+  }
+
+  try {
+    location = useLocation();
+  } catch (error) {
+    console.warn('Navbar: useLocation failed:', error);
+    location = { pathname: '/' };
+  }
+
+  try {
+    ({ user, signOut } = useAuth());
+  } catch (error) {
+    console.warn('Navbar: useAuth failed:', error);
+    user = null;
+    signOut = async () => {};
+  }
 
   const navigation = [
     { name: 'Accueil', href: '/' },

@@ -4,6 +4,12 @@ const MOBILE_BREAKPOINT = 768
 const TABLET_BREAKPOINT = 1024
 
 export function useIsMobile() {
+  // Add React null safety
+  if (!React || !React.useState || !React.useEffect) {
+    console.warn('useIsMobile: React hooks not available');
+    return false;
+  }
+
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
 
   React.useEffect(() => {
@@ -20,6 +26,12 @@ export function useIsMobile() {
 }
 
 export function useIsTablet() {
+  // Add React null safety
+  if (!React || !React.useState || !React.useEffect) {
+    console.warn('useIsTablet: React hooks not available');
+    return false;
+  }
+
   const [isTablet, setIsTablet] = React.useState<boolean | undefined>(undefined)
 
   React.useEffect(() => {

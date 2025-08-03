@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { logError } from '@/utils/logger';
 
@@ -14,6 +14,18 @@ interface ActivityLog {
 }
 
 export const useAdminActivityLogs = (limit = 10) => {
+  // Add React null safety
+  if (!React || !React.useState || !React.useEffect) {
+    console.warn('useAdminActivityLogs: React hooks not available');
+    return {
+      logs: [],
+      loading: false,
+      error: 'React hooks not available',
+      refetch: () => Promise.resolve(),
+      logActivity: () => Promise.resolve()
+    };
+  }
+
   const [logs, setLogs] = useState<ActivityLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
