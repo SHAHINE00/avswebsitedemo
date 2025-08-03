@@ -182,44 +182,63 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
   }, [courses, formData.formation.domaine]);
 
   // Reset downstream selections when domain changes
+  const prevDomainRef = React.useRef(formData.formation.domaine);
   React.useEffect(() => {
-    if (formData.formation.domaine) {
-      setFormData(prev => {
-        // Only update if programme is currently set (to avoid unnecessary updates)
-        if (prev.formation.programme || prev.formation.programmeDetails) {
-          return {
-            ...prev,
-            formation: {
-              ...prev.formation,
-              programme: '',
-              programmeDetails: undefined
-            }
-          };
-        }
-        return prev;
-      });
+    // Only run if domain actually changed
+    if (prevDomainRef.current !== formData.formation.domaine) {
+      prevDomainRef.current = formData.formation.domaine;
+      
+      if (formData.formation.domaine) {
+        setFormData(prev => {
+          // Only update if programme is currently set (to avoid unnecessary updates)
+          if (prev.formation.programme || prev.formation.programmeDetails) {
+            return {
+              ...prev,
+              formation: {
+                ...prev.formation,
+                programme: '',
+                programmeDetails: undefined
+              }
+            };
+          }
+          return prev;
+        });
+      }
     }
   }, [formData.formation.domaine]);
 
   // Update program details when programme selection changes
+  const prevProgrammeRef = React.useRef(formData.formation.programme);
+  const prevDetailsRef = React.useRef(formData.formation.programmeDetails);
+  
   React.useEffect(() => {
-    if (formData.formation.programme && availableCourses.length > 0) {
-      const selectedCourse = availableCourses.find(course => course.id === formData.formation.programme);
-      if (selectedCourse) {
-        // Use JSON comparison to prevent unnecessary updates
-        const currentDetails = formData.formation.programmeDetails;
-        if (!currentDetails || currentDetails.id !== selectedCourse.id) {
-          setFormData(prev => ({
-            ...prev,
-            formation: {
-              ...prev.formation,
-              programmeDetails: selectedCourse
-            }
-          }));
+    // Only run if programme actually changed or if we have courses but no details yet
+    if (prevProgrammeRef.current !== formData.formation.programme || 
+        (formData.formation.programme && availableCourses.length > 0 && !formData.formation.programmeDetails)) {
+      
+      prevProgrammeRef.current = formData.formation.programme;
+      
+      if (formData.formation.programme && availableCourses.length > 0) {
+        const selectedCourse = availableCourses.find(course => course.id === formData.formation.programme);
+        if (selectedCourse) {
+          // Deep comparison to prevent unnecessary updates
+          const detailsChanged = !prevDetailsRef.current ||
+            prevDetailsRef.current.id !== selectedCourse.id;
+            
+          if (detailsChanged) {
+            prevDetailsRef.current = selectedCourse;
+            setFormData(prev => ({
+              ...prev,
+              formation: {
+                ...prev.formation,
+                programmeDetails: selectedCourse
+              }
+            }));
+          }
         }
       }
     }
-  }, [formData.formation.programme, availableCourses, formData.formation.programmeDetails]);
+  }, [formData.formation.programme, availableCourses]);
 
   // Memoize input change handler to prevent unnecessary re-renders
   const handleInputChange = React.useCallback((field: string, value: string) => {

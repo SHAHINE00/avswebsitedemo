@@ -26,14 +26,21 @@ export const useFormPersistence = <T>(key: string, initialData: T) => {
     }
   }, [key, data]);
 
-  const updateData = React.useCallback((updates: Partial<T> | ((prev: T) => T)) => {
-    setData(prev => {
-      if (typeof updates === 'function') {
-        return updates(prev);
-      }
-      return { ...prev, ...updates };
-    });
-  }, []);
+  // Use useRef to create a truly stable function reference
+  const updateDataRef = React.useRef<(updates: Partial<T> | ((prev: T) => T)) => void>();
+  
+  if (!updateDataRef.current) {
+    updateDataRef.current = (updates: Partial<T> | ((prev: T) => T)) => {
+      setData(prev => {
+        if (typeof updates === 'function') {
+          return updates(prev);
+        }
+        return { ...prev, ...updates };
+      });
+    };
+  }
+  
+  const updateData = updateDataRef.current;
 
   const clearData = React.useCallback(() => {
     try {
