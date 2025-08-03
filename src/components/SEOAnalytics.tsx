@@ -1,24 +1,12 @@
 
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import SafeComponentWrapper from '@/components/ui/SafeComponentWrapper';
+import { useSafeLocation, useSafeEffect } from '@/hooks/useSafeHooks';
 
-const SEOAnalytics = () => {
-  // Check React availability first
-  if (!React?.useEffect) {
-    console.warn('SEOAnalytics: React hooks not available');
-    return null;
-  }
+const SEOAnalyticsCore = () => {
+  const location = useSafeLocation();
 
-  let location;
-  try {
-    location = useLocation();
-  } catch (error) {
-    console.warn('SEOAnalytics: useLocation failed:', error);
-    location = { pathname: '/', search: '' };
-  }
-
-  try {
-    React.useEffect(() => {
+  useSafeEffect(() => {
       // Google Search Console verification
       const addSearchConsoleVerification = () => {
         if (!document.querySelector('meta[name="google-site-verification"]')) {
@@ -92,13 +80,9 @@ const SEOAnalytics = () => {
       addSEOMetaTags();
       addPreconnects();
     }, []);
-  } catch (error) {
-    console.warn('SEOAnalytics: First useEffect failed:', error);
-  }
 
-  // Track page views for analytics
-  try {
-    React.useEffect(() => {
+    // Track page views for analytics
+    useSafeEffect(() => {
       // Send page view to analytics
       if (typeof window !== 'undefined' && (window as any).gtag) {
         (window as any).gtag('config', 'GA_MEASUREMENT_ID', {
@@ -107,12 +91,20 @@ const SEOAnalytics = () => {
           page_path: location.pathname
         });
       }
-    }, [location]);
-  } catch (error) {
-    console.warn('SEOAnalytics: Second useEffect failed:', error);
-  }
+    }, [location.pathname]);
 
   return null;
+};
+
+const SEOAnalytics = () => {
+  return (
+    <SafeComponentWrapper 
+      componentName="SEOAnalytics" 
+      requiresRouter={true}
+    >
+      <SEOAnalyticsCore />
+    </SafeComponentWrapper>
+  );
 };
 
 export default SEOAnalytics;

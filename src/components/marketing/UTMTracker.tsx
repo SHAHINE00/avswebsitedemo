@@ -1,22 +1,12 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { analytics } from '@/utils/analytics';
+import SafeComponentWrapper from '@/components/ui/SafeComponentWrapper';
+import { useSafeLocation, useSafeEffect } from '@/hooks/useSafeHooks';
 
-const UTMTracker: React.FC = () => {
-  // Early return if React is not available - don't use any hooks
-  if (typeof React === 'undefined' || React === null || !React.useEffect) {
-    return null;
-  }
+const UTMTrackerCore: React.FC = () => {
+  const location = useSafeLocation();
 
-  let location;
-  try {
-    location = useLocation();
-  } catch (error) {
-    console.warn('UTMTracker: useLocation failed - React may be null:', error);
-    return null;
-  }
-
-  React.useEffect(() => {
+  useSafeEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const utmData = {
       utm_source: urlParams.get('utm_source'),
@@ -55,9 +45,20 @@ const UTMTracker: React.FC = () => {
         }
       }
     }
-  }, [location]);
+  }, [location.pathname, location.search]);
 
   return null;
+};
+
+const UTMTracker: React.FC = () => {
+  return (
+    <SafeComponentWrapper 
+      componentName="UTMTracker" 
+      requiresRouter={true}
+    >
+      <UTMTrackerCore />
+    </SafeComponentWrapper>
+  );
 };
 
 export default UTMTracker;

@@ -1,7 +1,9 @@
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import SafeComponentWrapper from '@/components/ui/SafeComponentWrapper';
+import { useSafeState, useSafeEffect, useSafeContext } from '@/hooks/useSafeHooks';
 
 interface AuthContextType {
   user: User | null;
@@ -15,33 +17,27 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+  const context = useSafeContext(AuthContext);
+  if (context === undefined || context === null) {
+    console.warn('useAuth called outside AuthProvider or React not ready');
+    return {
+      user: null,
+      session: null,
+      loading: false,
+      signIn: async () => ({ error: 'Auth not available' }),
+      signUp: async () => ({ error: 'Auth not available' }),
+      signOut: async () => {}
+    };
   }
   return context;
 };
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Early return if React is not available - don't use any hooks
-  if (typeof React === 'undefined' || React === null || !React.useState) {
-    return <div>Loading authentication...</div>;
-  }
+const AuthProviderCore: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useSafeState<User | null>(null);
+  const [session, setSession] = useSafeState<Session | null>(null);
+  const [loading, setLoading] = useSafeState(true);
 
-  let user, setUser;
-  let session, setSession;
-  let loading, setLoading;
-
-  try {
-    [user, setUser] = useState<User | null>(null);
-    [session, setSession] = useState<Session | null>(null);
-    [loading, setLoading] = useState(true);
-  } catch (error) {
-    console.error('AuthProvider: useState failed:', error);
-    return <div>Authentication system unavailable</div>;
-  }
-
-  useEffect(() => {
+  useSafeEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
@@ -100,4 +96,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return (
+    <SafeComponentWrapper 
+      componentName="AuthProvider"
+      fallback={<div>Loading authentication...</div>}
+    >
+      <AuthProviderCore>{children}</AuthProviderCore>
+    </SafeComponentWrapper>
+  );
 };

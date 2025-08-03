@@ -1,12 +1,12 @@
 
 import * as React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Menu, X, User, LogOut, Settings } from 'lucide-react';
 import { Button } from './ui/button';
-import { useAuth } from '@/contexts/AuthContext';
 import NotificationBell from './user/NotificationBell';
 import OptimizedImage from '@/components/OptimizedImage';
-import SocialShareButtons from '@/components/marketing/SocialShareButtons';
+import SafeComponentWrapper from '@/components/ui/SafeComponentWrapper';
+import { useSafeState, useSafeLocation, useSafeAuth } from '@/hooks/useSafeHooks';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,38 +15,10 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 
-const Navbar = () => {
-  // Add React null safety checks
-  if (!React || !React.useState || !React.useEffect) {
-    console.warn('Navbar: React hooks not available');
-    return null;
-  }
-
-  let isMobileMenuOpen, setIsMobileMenuOpen;
-  let location;
-  let user, signOut;
-
-  try {
-    [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  } catch (error) {
-    console.warn('Navbar: useState failed:', error);
-    return null;
-  }
-
-  try {
-    location = useLocation();
-  } catch (error) {
-    console.warn('Navbar: useLocation failed:', error);
-    location = { pathname: '/' };
-  }
-
-  try {
-    ({ user, signOut } = useAuth());
-  } catch (error) {
-    console.warn('Navbar: useAuth failed:', error);
-    user = null;
-    signOut = async () => {};
-  }
+const NavbarCore = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useSafeState(false);
+  const location = useSafeLocation();
+  const { user, signOut } = useSafeAuth();
 
   const navigation = [
     { name: 'Accueil', href: '/' },
@@ -223,6 +195,18 @@ const Navbar = () => {
         )}
       </div>
     </nav>
+  );
+};
+
+const Navbar = () => {
+  return (
+    <SafeComponentWrapper 
+      componentName="Navbar" 
+      requiresRouter={true}
+      requiresAuth={true}
+    >
+      <NavbarCore />
+    </SafeComponentWrapper>
   );
 };
 

@@ -1,6 +1,8 @@
 import React from 'react';
 import JsonLd from './JsonLd';
 import { generateOrganizationJsonLd } from '@/utils/seoData';
+import SafeComponentWrapper from '@/components/ui/SafeComponentWrapper';
+import { useSafeEffect } from '@/hooks/useSafeHooks';
 
 interface SEOHeadProps {
   title?: string;
@@ -15,7 +17,7 @@ interface SEOHeadProps {
   jsonLd?: any[];
 }
 
-const SEOHead: React.FC<SEOHeadProps> = ({
+const SEOHeadCore: React.FC<SEOHeadProps> = ({
   title = "AVS - Institut de l'Innovation et de l'Intelligence Artificielle",
   description = "Rejoignez notre programme complet AVS IA Course et maîtrisez les technologies d'intelligence artificielle de pointe avec des instructeurs experts.",
   keywords = "formation ia, intelligence artificielle, machine learning, programmation, cybersécurité, formation en ligne",
@@ -46,7 +48,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
 
   // Wrap useEffect in try-catch for additional safety
   try {
-    React.useEffect(() => {
+    useSafeEffect(() => {
       // Additional safety check inside useEffect
       if (typeof React === 'undefined' || React === null) {
         console.warn('SEOHead: React became null inside useEffect');
@@ -161,6 +163,16 @@ const SEOHead: React.FC<SEOHeadProps> = ({
     console.error('SEOHead: JsonLd rendering failed:', error);
     return null;
   }
+};
+
+const SEOHead: React.FC<SEOHeadProps> = (props) => {
+  return (
+    <SafeComponentWrapper 
+      componentName="SEOHead"
+    >
+      <SEOHeadCore {...props} />
+    </SafeComponentWrapper>
+  );
 };
 
 export default SEOHead;
