@@ -1,5 +1,5 @@
 
-import React, { lazy, useEffect } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
@@ -7,17 +7,17 @@ import AdminRouteGuard from "@/components/admin/AdminRouteGuard";
 import { GlobalErrorBoundary } from "@/components/ui/global-error-boundary";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import { usePageTracking, useScrollTracking } from "@/hooks/useAnalytics";
-import AnalyticsWrapper from "@/components/AnalyticsWrapper";
 import UTMTracker from "@/components/marketing/UTMTracker";
 import SEOAnalytics from "@/components/SEOAnalytics";
 import StructuredData from "@/components/StructuredData";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 
-// Core pages (loaded immediately)
+// Critical pages (loaded immediately for better performance)
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import Features from "./pages/Features";
 
-// Lazy load heavy pages and admin components
-const Features = lazy(() => import("./pages/Features"));
+// Lazy load secondary pages
 const Curriculum = lazy(() => import("./pages/Curriculum"));
 const AICourse = lazy(() => import("./pages/AICourse"));
 const ProgrammingCourse = lazy(() => import("./pages/ProgrammingCourse"));
@@ -26,6 +26,7 @@ const GenericCourse = lazy(() => import("./pages/GenericCourse"));
 const CourseDetailPage = lazy(() => import("./components/course-detail/CourseDetailPage"));
 const CoursePlayer = lazy(() => import("./pages/CoursePlayer"));
 const Instructors = lazy(() => import("./pages/Instructors"));
+const Testimonials = lazy(() => import("./pages/Testimonials"));
 const Register = lazy(() => import("./pages/Register"));
 const About = lazy(() => import("./pages/About"));
 const Careers = lazy(() => import("./pages/Careers"));
@@ -39,35 +40,75 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 
-// Admin pages (heavy components)
+// Admin pages (heavy components - lazy load)
 const AdminCourses = lazy(() => import("./pages/AdminCourses"));
 const AdminTest = lazy(() => import("./pages/AdminTest"));
 const Admin = lazy(() => import("./pages/Admin"));
 
-// WordPress/Export tools
-const ElementorExport = lazy(() => import("./pages/ElementorExport"));
-const WordPressGuide = lazy(() => import("./pages/WordPressGuide"));
+// Optimized lazy wrapper component
+const LazyWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <Suspense 
+    fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    }
+  >
+    {children}
+  </Suspense>
+);
 
 const App = () => {
-  console.log('iOS Debug: App component rendering');
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   
-  // iOS-specific initialization check
-  useEffect(() => {
-    console.log('iOS Debug: App useEffect running');
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    console.log('iOS Debug: In App, isIOS:', isIOS);
-    if (isIOS) {
-      console.log('iOS Debug: iOS device detected in App component');
-    }
-  }, []);
+  // Initialize analytics tracking
+  usePageTracking();
+  useScrollTracking();
 
   return (
     <GlobalErrorBoundary>
       <Router>
+        <ScrollToTop />
         <UTMTracker />
         <SEOAnalytics />
         <StructuredData type="website" />
-        <AnalyticsWrapper />
+        <AuthProvider>
+          <Routes>
+            {/* Critical routes - no lazy loading */}
+            <Route path="/" element={<Index />} />
+            <Route path="/features" element={<Features />} />
+            <Route path="*" element={<NotFound />} />
+            
+            {/* Secondary routes - lazy loaded */}
+            <Route path="/auth" element={<LazyWrapper><Auth /></LazyWrapper>} />
+            <Route path="/dashboard" element={<LazyWrapper><Dashboard /></LazyWrapper>} />
+            <Route path="/curriculum" element={<LazyWrapper><Curriculum /></LazyWrapper>} />
+            <Route path="/ai-course" element={<LazyWrapper><AICourse /></LazyWrapper>} />
+            <Route path="/programming-course" element={<LazyWrapper><ProgrammingCourse /></LazyWrapper>} />
+            <Route path="/cybersecurity-course" element={<LazyWrapper><CybersecurityCourse /></LazyWrapper>} />
+            <Route path="/course/:courseSlug" element={<LazyWrapper><CourseDetailPage /></LazyWrapper>} />
+            <Route path="/course/:slug" element={<LazyWrapper><GenericCourse /></LazyWrapper>} />
+            <Route path="/learn/:slug" element={<LazyWrapper><CoursePlayer /></LazyWrapper>} />
+            <Route path="/instructors" element={<LazyWrapper><Instructors /></LazyWrapper>} />
+            <Route path="/testimonials" element={<LazyWrapper><Testimonials /></LazyWrapper>} />
+            <Route path="/about" element={<LazyWrapper><About /></LazyWrapper>} />
+            <Route path="/register" element={<LazyWrapper><Register /></LazyWrapper>} />
+            <Route path="/careers" element={<LazyWrapper><Careers /></LazyWrapper>} />
+            <Route path="/contact" element={<LazyWrapper><Contact /></LazyWrapper>} />
+            <Route path="/appointment" element={<LazyWrapper><Appointment /></LazyWrapper>} />
+            <Route path="/blog" element={<LazyWrapper><Blog /></LazyWrapper>} />
+            <Route path="/blog/:slug" element={<LazyWrapper><BlogPost /></LazyWrapper>} />
+            <Route path="/privacy-policy" element={<LazyWrapper><PrivacyPolicy /></LazyWrapper>} />
+            <Route path="/terms-of-use" element={<LazyWrapper><TermsOfUse /></LazyWrapper>} />
+            <Route path="/cookies-policy" element={<LazyWrapper><CookiesPolicy /></LazyWrapper>} />
+            
+            {/* Admin routes - protected and lazy loaded */}
+            <Route path="/admin" element={<AdminRouteGuard><LazyWrapper><Admin /></LazyWrapper></AdminRouteGuard>} />
+            <Route path="/admin/courses" element={<AdminRouteGuard><LazyWrapper><AdminCourses /></LazyWrapper></AdminRouteGuard>} />
+            <Route path="/admin/test" element={<AdminRouteGuard><LazyWrapper><AdminTest /></LazyWrapper></AdminRouteGuard>} />
+          </Routes>
+          <Toaster />
+        </AuthProvider>
       </Router>
     </GlobalErrorBoundary>
   );

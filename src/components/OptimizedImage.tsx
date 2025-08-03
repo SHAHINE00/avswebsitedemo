@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { optimizeImageUrl, generateResponsiveSizes, checkWebPSupport } from '@/utils/imageOptimization';
 
 interface OptimizedImageProps {
   src: string;
@@ -7,7 +8,11 @@ interface OptimizedImageProps {
   className?: string;
   priority?: boolean;
   sizes?: string;
+  width?: number;
+  height?: number;
+  quality?: number;
   onError?: (e: React.SyntheticEvent<HTMLImageElement>) => void;
+  onLoad?: () => void;
 }
 
 const OptimizedImage: React.FC<OptimizedImageProps> = ({
@@ -16,57 +21,70 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   className = '',
   priority = false,
   sizes,
-  onError
+  width,
+  height,
+  quality = 85,
+  onError,
+  onLoad
 }) => {
   const [imageError, setImageError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [optimizedSrc, setOptimizedSrc] = useState(src);
+  const [webpSupported, setWebpSupported] = useState<boolean | null>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
 
-  // Check if the browser supports WebP
-  const supportsWebP = () => {
-    const canvas = document.createElement('canvas');
-    return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
-  };
+  // Check WebP support on mount
+  useEffect(() => {
+    checkWebPSupport().then(setWebpSupported);
+  }, []);
 
-  // Generate WebP version if supported
-  const getOptimizedSrc = (originalSrc: string) => {
-    if (originalSrc.includes('unsplash.com')) {
-      // For Unsplash images, add WebP format parameter
-      const url = new URL(originalSrc);
-      url.searchParams.set('fm', 'webp');
-      url.searchParams.set('auto', 'format,compress');
-      return url.toString();
+  // Update optimized source when WebP support is determined
+  useEffect(() => {
+    if (webpSupported !== null) {
+      const optimized = webpSupported ? optimizeImageUrl(src, width, quality) : src;
+      setOptimizedSrc(optimized);
     }
-    return originalSrc;
-  };
+  }, [src, webpSupported, width, quality]);
+
+  // Generate responsive sizes if width is provided
+  const responsiveSizes = sizes || (width ? generateResponsiveSizes(width) : undefined);
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     setImageError(true);
-    if (onError) {
+    // Fallback to original source on error
+    if (imageError && optimizedSrc !== src) {
+      setOptimizedSrc(src);
+      setImageError(false);
+    } else if (onError) {
       onError(e);
     }
   };
 
   const handleImageLoad = () => {
     setIsLoaded(true);
+    onLoad?.();
   };
 
-  const optimizedSrc = supportsWebP() ? getOptimizedSrc(src) : src;
-
   return (
-    <div className={`relative ${!isLoaded ? 'bg-gray-200 animate-pulse' : ''}`}>
+    <div className={`relative overflow-hidden ${!isLoaded ? 'bg-muted animate-pulse' : ''}`}>
       <img
-        src={imageError ? src : optimizedSrc}
+        ref={imgRef}
+        src={optimizedSrc}
         alt={alt}
-        className={className}
+        className={`transition-opacity duration-300 ${className} ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
         loading={priority ? 'eager' : 'lazy'}
-        sizes={sizes}
+        sizes={responsiveSizes}
+        width={width}
+        height={height}
         onError={handleImageError}
         onLoad={handleImageLoad}
         style={{
-          transition: 'opacity 0.3s ease-in-out',
-          opacity: isLoaded ? 1 : 0
+          aspectRatio: width && height ? `${width}/${height}` : undefined,
         }}
       />
+      {!isLoaded && (
+        <div className="absolute inset-0 bg-muted animate-pulse rounded" />
+      )}
     </div>
   );
 };

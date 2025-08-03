@@ -1,15 +1,10 @@
-// Enhanced Service Worker for all devices with iOS Safari compatibility
-const CACHE_NAME = 'avs-website-v3';
-const STATIC_CACHE = 'avs-static-v3';
-const RUNTIME_CACHE = 'avs-runtime-v3';
+// Optimized Service Worker for performance
+const CACHE_NAME = 'avs-website-v4';
+const STATIC_CACHE = 'avs-static-v4';
+const RUNTIME_CACHE = 'avs-runtime-v4';
+const IMAGE_CACHE = 'avs-images-v4';
 
-// iOS Safari detection in Service Worker
-const isIOSSafari = () => {
-  const userAgent = (self.navigator && self.navigator.userAgent) || '';
-  return /iPad|iPhone|iPod/.test(userAgent) || (userAgent.includes('Safari') && userAgent.includes('Mobile'));
-};
-
-// Critical resources to cache
+// Critical resources to cache immediately
 const CRITICAL_RESOURCES = [
   '/',
   '/index.html',
@@ -17,130 +12,106 @@ const CRITICAL_RESOURCES = [
   '/favicon.png'
 ];
 
-// Install event - cache critical resources with iOS compatibility
+// Install event - optimized caching
 self.addEventListener('install', (event) => {
   console.log('Service Worker installing...');
-  
-  // iOS Safari needs special handling
-  const installPromise = isIOSSafari() 
-    ? handleIOSInstall()
-    : handleStandardInstall();
-  
-  event.waitUntil(installPromise);
+  event.waitUntil(
+    caches.open(STATIC_CACHE)
+      .then(cache => cache.addAll(CRITICAL_RESOURCES))
+      .catch(error => console.warn('Cache install failed:', error))
+  );
   self.skipWaiting();
 });
-
-// Standard installation for non-iOS devices
-async function handleStandardInstall() {
-  try {
-    const cache = await caches.open(STATIC_CACHE);
-    console.log('Caching critical resources...');
-    await cache.addAll(CRITICAL_RESOURCES);
-    return Promise.resolve();
-  } catch (error) {
-    console.error('Standard install failed:', error);
-    return Promise.resolve();
-  }
-}
-
-// iOS-specific installation with progressive caching
-async function handleIOSInstall() {
-  try {
-    const cache = await caches.open(STATIC_CACHE);
-    console.log('iOS Safari: Progressive caching...');
-    
-    // Cache resources one by one to avoid iOS memory limits
-    for (const resource of CRITICAL_RESOURCES) {
-      try {
-        const response = await fetch(resource);
-        if (response.ok) {
-          await cache.put(resource, response);
-        }
-      } catch (error) {
-        console.warn(`iOS: Failed to cache ${resource}:`, error);
-      }
-    }
-    return Promise.resolve();
-  } catch (error) {
-    console.error('iOS install failed:', error);
-    return Promise.resolve();
-  }
-}
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
   console.log('Service Worker activating...');
+  const validCaches = [CACHE_NAME, STATIC_CACHE, RUNTIME_CACHE, IMAGE_CACHE];
+  
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME && cacheName !== STATIC_CACHE && cacheName !== RUNTIME_CACHE) {
+    caches.keys()
+      .then(cacheNames => Promise.all(
+        cacheNames.map(cacheName => {
+          if (!validCaches.includes(cacheName)) {
             console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
-      );
-    }).then(() => {
-      console.log('Service Worker activated');
-      return self.clients.claim();
-    })
+      ))
+      .then(() => self.clients.claim())
   );
 });
 
-// Enhanced fetch event with better caching strategy
+// Optimized fetch event with smart caching
 self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
-  if (event.request.method !== 'GET') {
-    return;
-  }
+  if (event.request.method !== 'GET') return;
 
-  // Skip external requests (except for allowed CDNs)
   const url = new URL(event.request.url);
-  if (url.origin !== self.location.origin && 
-      !url.hostname.includes('fonts.googleapis.com') && 
-      !url.hostname.includes('fonts.gstatic.com')) {
-    return;
-  }
+  const isExternal = url.origin !== self.location.origin;
+  const isAllowedExternal = url.hostname.includes('fonts.googleapis.com') || 
+                           url.hostname.includes('fonts.gstatic.com') ||
+                           url.hostname.includes('unsplash.com');
 
-  // Handle different types of requests
+  if (isExternal && !isAllowedExternal) return;
+
+  // Route requests based on type
   if (event.request.destination === 'document') {
-    // For navigation requests, try network first, fallback to cache
     event.respondWith(handleNavigationRequest(event.request));
-  } else if (event.request.url.includes('/static/') || 
-             event.request.url.includes('.css') || 
-             event.request.url.includes('.js')) {
-    // For static assets, try cache first, fallback to network
+  } else if (event.request.destination === 'image') {
+    event.respondWith(handleImageRequest(event.request));
+  } else if (url.pathname.includes('/assets/') || 
+             event.request.destination === 'script' || 
+             event.request.destination === 'style') {
     event.respondWith(handleStaticRequest(event.request));
   } else {
-    // For other requests, try network first with cache fallback
     event.respondWith(handleDefaultRequest(event.request));
   }
 });
 
-// Handle navigation requests
+// Handle navigation requests - network first
 async function handleNavigationRequest(request) {
   try {
     const response = await fetch(request);
-    if (response && response.status === 200) {
+    if (response?.ok) {
       const cache = await caches.open(RUNTIME_CACHE);
       cache.put(request, response.clone());
       return response;
     }
   } catch (error) {
-    console.log('Network failed for navigation, trying cache');
+    // Network failed, try cache
   }
   
-  // Try cache
+  return await caches.match(request) || 
+         await caches.match('/index.html') || 
+         new Response('Offline', { status: 503 });
+}
+
+// Handle image requests - cache first with optimization
+async function handleImageRequest(request) {
   const cachedResponse = await caches.match(request);
   if (cachedResponse) {
     return cachedResponse;
   }
   
-  // Fallback to index.html for SPA routing
-  return caches.match('/index.html') || new Response('Offline', { status: 503 });
+  try {
+    const response = await fetch(request);
+    if (response?.ok) {
+      const cache = await caches.open(IMAGE_CACHE);
+      // Only cache images under 1MB
+      const contentLength = response.headers.get('content-length');
+      if (!contentLength || parseInt(contentLength) < 1048576) {
+        cache.put(request, response.clone());
+      }
+      return response;
+    }
+  } catch (error) {
+    // Network failed
+  }
+  
+  return new Response('Image not available', { status: 503 });
 }
 
-// Handle static asset requests
+// Handle static assets - cache first
 async function handleStaticRequest(request) {
   const cachedResponse = await caches.match(request);
   if (cachedResponse) {
@@ -149,31 +120,29 @@ async function handleStaticRequest(request) {
   
   try {
     const response = await fetch(request);
-    if (response && response.status === 200) {
+    if (response?.ok) {
       const cache = await caches.open(CACHE_NAME);
-      cache.put(request, response.clone());
-      return response;
-    }
-  } catch (error) {
-    console.log('Failed to fetch static asset:', request.url);
-  }
-  
-  return new Response('Resource not available offline', { status: 503 });
-}
-
-// Handle default requests
-async function handleDefaultRequest(request) {
-  try {
-    const response = await fetch(request);
-    if (response && response.status === 200) {
-      const cache = await caches.open(RUNTIME_CACHE);
       cache.put(request, response.clone());
       return response;
     }
     return response;
   } catch (error) {
-    const cachedResponse = await caches.match(request);
-    return cachedResponse || new Response('Network error', { status: 503 });
+    return new Response('Asset unavailable', { status: 503 });
+  }
+}
+
+// Handle other requests - network first
+async function handleDefaultRequest(request) {
+  try {
+    const response = await fetch(request);
+    if (response?.ok) {
+      const cache = await caches.open(RUNTIME_CACHE);
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (error) {
+    return await caches.match(request) || 
+           new Response('Network error', { status: 503 });
   }
 }
 

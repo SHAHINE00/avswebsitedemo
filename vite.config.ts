@@ -34,8 +34,8 @@ export default defineConfig(({ mode }) => {
     cssTarget: ['chrome58', 'safari11', 'firefox57'],
     cssCodeSplit: true,
     assetsInlineLimit: 4096,
-    // Mobile-optimized chunk size
-    chunkSizeWarningLimit: 500,
+    // Optimized chunk size for faster loading
+    chunkSizeWarningLimit: 400,
     // Performance optimizations
     rollupOptions: {
       output: {
@@ -101,6 +101,11 @@ export default defineConfig(({ mode }) => {
           'vendor-content': [
             'react-markdown',
             'embla-carousel-react'
+          ],
+          
+          // Animation and themes
+          'vendor-animations': [
+            'next-themes'
           ]
         }
       }

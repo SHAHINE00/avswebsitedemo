@@ -6,9 +6,11 @@ import { logError, logInfo } from '@/utils/logger'
 import { optimizeForMobile, isMobileDevice, isIOS } from '@/utils/mobile'
 import { mountIOSFallbackLoader } from '@/components/ui/ios-fallback-loader'
 import { autoFixMobileDownload } from '@/utils/clear-mobile-cache'
+import { initializeResourcePreloading } from '@/utils/resourcePreloader'
 
-// Initialize production monitoring and logging
+// Initialize performance optimizations
 initializeProductionLogging();
+initializeResourcePreloading();
 
 // iOS Debug logging
 console.log('iOS Debug: Starting app initialization');
