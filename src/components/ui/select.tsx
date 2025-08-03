@@ -10,25 +10,6 @@ const Select = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root>
 >(({ onOpenChange, ...props }, ref) => {
   const handleOpenChange = (open: boolean) => {
-    // Prevent scroll jumping when dropdown opens
-    if (open) {
-      // Store current scroll position
-      const scrollY = window.scrollY;
-      // Prevent body scroll and maintain position
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-    } else {
-      // Restore scroll position
-      const scrollY = parseInt(document.body.style.top || '0') * -1;
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      window.scrollTo(0, scrollY);
-    }
-    
     // Dispatch custom event for ScrollToTop component
     document.dispatchEvent(new CustomEvent('dropdown-state-change', { 
       detail: { isOpen: open } 
