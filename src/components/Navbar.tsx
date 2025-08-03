@@ -40,7 +40,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-30 top-0 will-change-transform">
+    <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-40 top-0 will-change-transform">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-16 sm:h-18 lg:h-20 relative">
           {/* Logo - Desktop Left */}
@@ -86,7 +86,7 @@ const Navbar = () => {
                       {user.email?.split('@')[0]}
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuContent align="end" sideOffset={8} className="w-56">
                     <DropdownMenuItem asChild>
                       <Link to="/dashboard" className="flex items-center gap-2">
                         <Settings className="w-4 h-4" />

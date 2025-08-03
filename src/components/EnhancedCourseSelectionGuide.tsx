@@ -395,11 +395,14 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
                       {q.options.map((option) => (
                         <label 
                           key={option.value} 
-                          className={`flex items-start p-3 md:p-4 rounded-lg md:rounded-xl border-2 transition-all cursor-pointer hover:bg-blue-50 ${
+                          className={cn(
+                            "flex items-start p-3 md:p-4 rounded-lg md:rounded-xl border-2 transition-all cursor-pointer hover:bg-blue-50",
+                            // Android optimizations for better touch targets
+                            isAndroid && "min-h-[48px] touch-manipulation [-webkit-tap-highlight-color:transparent] active:scale-[0.98]",
                             selectedAnswers[q.id] === option.value 
                               ? 'border-blue-500 bg-blue-50' 
                               : 'border-gray-200'
-                          }`}
+                          )}
                         >
                           <input
                             type="radio"
@@ -418,7 +421,10 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
                               <div className="w-2 h-2 bg-white rounded-full" />
                             )}
                           </div>
-                          <span className="font-medium text-sm md:text-base leading-tight">{option.label}</span>
+                          <span className={cn(
+                            "font-medium leading-tight",
+                            isAndroid ? "text-base" : "text-sm md:text-base"
+                          )}>{option.label}</span>
                         </label>
                       ))}
                     </div>

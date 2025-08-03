@@ -292,6 +292,14 @@
       position: relative;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
+      min-height: 100vh;
+    }
+    
+    /* Force dropdown positioning for Android */
+    [data-radix-popper-content-wrapper] {
+      z-index: 100000 !important;
+      position: fixed !important;
+      transform: translateZ(0) !important;
     }
     scroll-behavior: smooth;
   }
