@@ -67,7 +67,7 @@ const DropdownMenuContent = React.forwardRef<
         ref={ref}
         sideOffset={sideOffset}
         className={cn(
-          "z-[60] min-w-[8rem] overflow-hidden rounded-md border shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+          "z-50 min-w-[8rem] overflow-hidden rounded-md border shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
           // Mobile-specific optimizations
           isMobile && "touch-manipulation p-2 [-webkit-tap-highlight-color:transparent]",
           !isMobile && "p-1",
@@ -75,24 +75,30 @@ const DropdownMenuContent = React.forwardRef<
           "bg-popover text-popover-foreground border-border",
           className
         )}
-        style={{
-          touchAction: isMobile ? 'manipulation' : 'auto',
-          WebkitTapHighlightColor: isMobile ? 'transparent' : 'inherit'
-        }}
-        onPointerDown={(e) => {
-          // Prevent page jumping on mobile
+        onCloseAutoFocus={(e) => {
+          e.preventDefault();
+          
           if (isMobile) {
-            e.stopPropagation();
-            // Temporarily disable scroll behavior
-            document.documentElement.style.scrollBehavior = 'auto';
-            setTimeout(() => {
-              document.documentElement.style.scrollBehavior = '';
-            }, 300);
+            const scrollY = document.body.style.top;
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            window.scrollTo(0, parseInt(scrollY || '0') * -1);
           }
+          
+          // Notify dropdown is closed
+          document.dispatchEvent(new CustomEvent('dropdown-state-change', { 
+            detail: { isOpen: false } 
+          }));
         }}
         onPointerDownOutside={(e) => {
-          // Prevent unwanted interactions
-          e.preventDefault();
+          if (isMobile) {
+            const scrollY = document.body.style.top;
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            window.scrollTo(0, parseInt(scrollY || '0') * -1);
+          }
         }}
         {...props}
       />

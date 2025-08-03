@@ -30,20 +30,21 @@ const SelectTrigger = React.forwardRef<
       )}
       data-radix-select-trigger
       onFocus={(e) => {
-        // Allow natural focus behavior without scroll intervention
-        if (isMobile) {
-          e.currentTarget.scrollIntoView = () => {}; // Disable scrollIntoView on mobile
-        }
+        // Prevent default scrolling behavior without breaking Radix functionality
+        e.preventDefault();
+        e.currentTarget.focus({ preventScroll: true });
+        
+        // Notify other components about dropdown state
+        document.dispatchEvent(new CustomEvent('dropdown-state-change', { 
+          detail: { isOpen: true } 
+        }));
       }}
-      onTouchStart={(e) => {
-        // Prevent page jumping on touch without interfering with Radix behavior
+      onPointerDown={(e) => {
+        // Prevent viewport jumping on mobile
         if (isMobile) {
-          e.stopPropagation();
-          // Temporarily disable scroll behavior during dropdown interaction
-          document.documentElement.style.scrollBehavior = 'auto';
-          setTimeout(() => {
-            document.documentElement.style.scrollBehavior = '';
-          }, 500);
+          document.body.style.position = 'fixed';
+          document.body.style.top = `-${window.scrollY}px`;
+          document.body.style.width = '100%';
         }
       }}
       {...props}
@@ -116,14 +117,31 @@ const SelectContent = React.forwardRef<
         sideOffset={4}
         align="start"
         onCloseAutoFocus={(e) => {
-          // Prevent auto-focus from scrolling the page
+          // Restore body position and notify state change
           e.preventDefault();
-          // Restore scroll behavior
-          document.documentElement.style.scrollBehavior = '';
+          
+          if (isMobile) {
+            const scrollY = document.body.style.top;
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            window.scrollTo(0, parseInt(scrollY || '0') * -1);
+          }
+          
+          // Notify dropdown is closed
+          document.dispatchEvent(new CustomEvent('dropdown-state-change', { 
+            detail: { isOpen: false } 
+          }));
         }}
         onPointerDownOutside={(e) => {
-          // Prevent unwanted interactions
-          e.preventDefault();
+          // Handle outside clicks gracefully
+          if (isMobile) {
+            const scrollY = document.body.style.top;
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            window.scrollTo(0, parseInt(scrollY || '0') * -1);
+          }
         }}
         {...props}
       >
