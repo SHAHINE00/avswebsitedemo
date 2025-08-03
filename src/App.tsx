@@ -71,12 +71,22 @@ const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 };
 
 const App = () => {
-  // Early React validation check
+  // Enhanced React validation check
   if (typeof React === 'undefined' || React === null) {
     return (
       <div style={{ padding: '20px', textAlign: 'center' }}>
         <h1>Chargement en cours...</h1>
         <p>Application en cours de démarrage</p>
+      </div>
+    );
+  }
+  
+  // Validate React hooks are available
+  if (!React.useState || !React.useEffect || !React.useContext) {
+    return (
+      <div style={{ padding: '20px', textAlign: 'center' }}>
+        <h1>Initialisation React...</h1>
+        <p>Chargement des composants</p>
       </div>
     );
   }
@@ -128,7 +138,9 @@ const App = () => {
             <Route path="/admin/courses" element={<AdminRouteGuard><LazyWrapper><AdminCourses /></LazyWrapper></AdminRouteGuard>} />
             <Route path="/admin/test" element={<AdminRouteGuard><LazyWrapper><AdminTest /></LazyWrapper></AdminRouteGuard>} />
           </Routes>
-            <Toaster />
+          
+          {/* Move Toaster after routes to ensure React is fully loaded */}
+          {React && React.useState && <Toaster />}
           </AuthProvider>
           </AnalyticsProvider>
         </Router>

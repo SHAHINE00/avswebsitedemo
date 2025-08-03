@@ -1,11 +1,20 @@
-import * as React from "react"
+import React from "react"
 import * as ToastPrimitives from "@radix-ui/react-toast"
 import { cva, type VariantProps } from "class-variance-authority"
 import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-const ToastProvider = ToastPrimitives.Provider
+// Safe ToastProvider wrapper that validates React
+const ToastProvider: React.FC<React.ComponentPropsWithoutRef<typeof ToastPrimitives.Provider>> = (props) => {
+  // Validate React is available before rendering
+  if (!React || !React.useState) {
+    console.warn('React not properly loaded for ToastProvider');
+    return null;
+  }
+  return <ToastPrimitives.Provider {...props} />;
+};
+ToastProvider.displayName = "ToastProvider";
 
 const ToastViewport = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Viewport>,
