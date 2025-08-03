@@ -15,16 +15,20 @@ export default {
 			center: true,
 			padding: {
 				DEFAULT: '1rem',
+				xs: '1rem',
 				sm: '1.5rem',
 				md: '2rem',
-				lg: '2rem',
+				lg: '2.5rem',
+				xl: '3rem',
+				'2xl': '4rem',
 			},
 			screens: {
+				'xs': '475px',
 				'sm': '640px',
 				'md': '768px',
 				'lg': '1024px',
 				'xl': '1280px',
-				'2xl': '1536px'
+				'2xl': '1400px'
 			}
 		},
 		screens: {
@@ -33,10 +37,13 @@ export default {
 			'md': '768px',
 			'lg': '1024px',
 			'xl': '1280px',
-			'2xl': '1536px',
+			'2xl': '1400px',
+			'3xl': '1600px',
 			'ios': { 'raw': '(-webkit-touch-callout: none)' },
 			'android': { 'raw': '(pointer: coarse) and (hover: none)' },
 			'mobile': { 'max': '767px' },
+			'tablet': { 'min': '768px', 'max': '1023px' },
+			'desktop': { 'min': '1024px' },
 		},
 		extend: {
 			colors: {

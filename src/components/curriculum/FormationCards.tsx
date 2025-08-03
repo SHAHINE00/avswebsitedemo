@@ -43,7 +43,7 @@ const FormationCards: React.FC = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto mb-10">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 xl:gap-12 max-w-7xl mx-auto mb-10 lg:mb-16 px-4 sm:px-6">
       {courses.map((course) => {
         const IconComponent = iconMap[course.icon] || Brain;
         

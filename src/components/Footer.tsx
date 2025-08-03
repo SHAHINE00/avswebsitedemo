@@ -25,15 +25,15 @@ const Footer: React.FC = () => {
 
   return (
     <footer className="bg-gray-900 text-gray-300">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-6 sm:pb-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-12 sm:mb-16">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-12 sm:pt-16 lg:pt-20 pb-6 sm:pb-8 lg:pb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 xl:gap-12 mb-12 sm:mb-16 lg:mb-20">
           {/* Column 1 - About */}
           <div>
             <Link to="/" className="mb-4 inline-block">
               <OptimizedImage
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png"
                 alt="AVS Innovation Institute" 
-                className="h-28 sm:h-32 lg:h-40 w-auto object-contain filter brightness-0 invert"
+                className="h-24 xs:h-28 sm:h-32 lg:h-36 xl:h-40 w-auto object-contain filter brightness-0 invert transition-all duration-200"
                 priority={true}
               />
               <span 

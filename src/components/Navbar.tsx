@@ -40,16 +40,16 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-40 top-0 will-change-transform">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-16 sm:h-18 lg:h-20 relative">
+    <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-50 top-0 will-change-transform">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="flex items-center h-16 xs:h-18 sm:h-20 lg:h-22 xl:h-24 relative">
           {/* Logo - Desktop Left */}
           <div className="hidden lg:flex items-center flex-shrink-0">
             <Link to="/" className="flex items-center py-2">
-              <OptimizedImage 
+               <OptimizedImage 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
-                className="h-14 xl:h-16 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
+                className="h-12 lg:h-14 xl:h-16 2xl:h-18 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
                 priority={true}
               />
             </Link>
@@ -57,12 +57,12 @@ const Navbar = () => {
 
           {/* Desktop Navigation - Center */}
           <div className="hidden lg:flex flex-1 justify-center">
-            <div className="flex items-center space-x-8">
+            <div className="flex items-center space-x-6 xl:space-x-8 2xl:space-x-10">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`text-sm font-medium transition-colors duration-200 ${
+                  className={`text-sm xl:text-base font-medium transition-colors duration-200 px-2 py-1 rounded-md min-h-[44px] flex items-center ${
                     isActive(item.href)
                       ? 'text-academy-blue'
                       : 'text-gray-700 hover:text-academy-blue'
@@ -117,10 +117,10 @@ const Navbar = () => {
           <div className="lg:hidden flex items-center justify-between w-full">
             <div className="w-10"></div> {/* Spacer for centering */}
             <Link to="/" className="flex items-center py-1">
-              <OptimizedImage 
+               <OptimizedImage 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
-                className="h-14 sm:h-16 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
+                className="h-12 xs:h-14 sm:h-16 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
                 priority={true}
               />
             </Link>

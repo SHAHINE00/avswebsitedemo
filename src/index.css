@@ -134,12 +134,51 @@
     -webkit-overflow-scrolling: touch;
   }
 
+  /* Enhanced mobile touch targets and responsive design */
+  .mobile-device .touch-target,
+  .mobile-device button,
+  .mobile-device [role="button"],
+  .mobile-device .select-trigger,
+  .mobile-device .dropdown-trigger {
+    min-height: 48px;
+    min-width: 48px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Tablet specific touch targets */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .touch-target,
+    button,
+    [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+
   /* iOS-specific dropdown fixes */
   .ios-dropdown-fix {
+    position: fixed !important;
+    z-index: 99999 !important;
+    max-height: 60vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Enhanced dropdown positioning for Android */
+  .android-dropdown-fix {
+    position: fixed !important;
+    z-index: 99999 !important;
+    transform: translateZ(0);
+    will-change: transform;
+    border-radius: 8px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
   }
 
   /* iOS Select component optimizations */
@@ -218,6 +257,64 @@
     main {
       flex: 1;
       width: 100%;
+    }
+    
+    /* Improved form elements */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    textarea,
+    select {
+      min-height: 48px;
+      font-size: 16px;
+      border-radius: 8px;
+      padding: 12px 16px;
+    }
+    
+    /* Radio buttons and checkboxes */
+    input[type="radio"],
+    input[type="checkbox"] {
+      min-width: 20px;
+      min-height: 20px;
+      transform: scale(1.2);
+    }
+  }
+
+  /* Cross-device responsive optimizations */
+  @media (max-width: 767px) {
+    .responsive-text-sm { font-size: 0.875rem; line-height: 1.25; }
+    .responsive-text-base { font-size: 1rem; line-height: 1.5; }
+    .responsive-text-lg { font-size: 1.125rem; line-height: 1.75; }
+    .responsive-text-xl { font-size: 1.25rem; line-height: 1.75; }
+    
+    /* Mobile-first spacing */
+    .responsive-spacing-sm { margin: 0.5rem; padding: 0.5rem; }
+    .responsive-spacing-md { margin: 1rem; padding: 1rem; }
+    .responsive-spacing-lg { margin: 1.5rem; padding: 1.5rem; }
+  }
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .responsive-text-sm { font-size: 0.9375rem; line-height: 1.375; }
+    .responsive-text-base { font-size: 1.0625rem; line-height: 1.625; }
+    .responsive-text-lg { font-size: 1.1875rem; line-height: 1.875; }
+    .responsive-text-xl { font-size: 1.375rem; line-height: 1.875; }
+    
+    /* Tablet spacing */
+    .responsive-spacing-sm { margin: 0.75rem; padding: 0.75rem; }
+    .responsive-spacing-md { margin: 1.25rem; padding: 1.25rem; }
+    .responsive-spacing-lg { margin: 2rem; padding: 2rem; }
+  }
+
+  @media (min-width: 1024px) {
+    .responsive-text-sm { font-size: 1rem; line-height: 1.5; }
+    .responsive-text-base { font-size: 1.125rem; line-height: 1.75; }
+    .responsive-text-lg { font-size: 1.25rem; line-height: 1.875; }
+    .responsive-text-xl { font-size: 1.5rem; line-height: 2; }
+    
+    /* Desktop spacing */
+    .responsive-spacing-sm { margin: 1rem; padding: 1rem; }
+    .responsive-spacing-md { margin: 1.5rem; padding: 1.5rem; }
+    .responsive-spacing-lg { margin: 2.5rem; padding: 2.5rem; }
     }
     
     /* Improved scroll containers for mobile */
