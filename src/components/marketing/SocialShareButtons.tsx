@@ -35,7 +35,9 @@ const SocialShareButtons: React.FC<SocialShareButtonsProps> = ({
           url: url,
         });
       } catch (err) {
-        console.log('Error sharing:', err);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Error sharing:', err);
+        }
       }
     } else if (platform && shareLinks[platform as keyof typeof shareLinks]) {
       window.open(shareLinks[platform as keyof typeof shareLinks], '_blank', 'width=600,height=400');

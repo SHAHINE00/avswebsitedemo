@@ -12,10 +12,12 @@ import { initializeResourcePreloading } from '@/utils/resourcePreloader'
 initializeProductionLogging();
 initializeResourcePreloading();
 
-// iOS Debug logging
-console.log('iOS Debug: Starting app initialization');
-console.log('iOS Debug: User Agent:', navigator.userAgent);
-console.log('iOS Debug: Is iOS?', /iPad|iPhone|iPod/.test(navigator.userAgent));
+// Production logging only shows errors
+if (process.env.NODE_ENV === 'development') {
+  console.log('iOS Debug: Starting app initialization');
+  console.log('iOS Debug: User Agent:', navigator.userAgent);
+  console.log('iOS Debug: Is iOS?', /iPad|iPhone|iPod/.test(navigator.userAgent));
+}
 
 // Initialize mobile optimizations
 optimizeForMobile();
@@ -23,7 +25,9 @@ optimizeForMobile();
 // Auto-fix mobile download issues
 autoFixMobileDownload();
 
-console.log('iOS Debug: Mobile optimizations complete');
+if (process.env.NODE_ENV === 'development') {
+  console.log('iOS Debug: Mobile optimizations complete');
+}
 
 // Debug mobile session in development
 if (process.env.NODE_ENV === 'development') {
