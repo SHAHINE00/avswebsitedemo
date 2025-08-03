@@ -199,7 +199,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
         return prev;
       });
     }
-  }, [formData.formation.domaine, setFormData]);
+  }, [formData.formation.domaine]);
 
   // Update program details when programme selection changes
   React.useEffect(() => {
@@ -219,7 +219,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
         }
       }
     }
-  }, [formData.formation.programme, availableCourses, formData.formation.programmeDetails, setFormData]);
+  }, [formData.formation.programme, availableCourses, formData.formation.programmeDetails]);
 
   // Memoize input change handler to prevent unnecessary re-renders
   const handleInputChange = React.useCallback((field: string, value: string) => {
