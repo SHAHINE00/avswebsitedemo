@@ -92,7 +92,18 @@ const CookieConsentBanner: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 w-full z-[9999] bg-gray-800 text-white border-t border-gray-700 shadow-lg animate-in slide-in-from-bottom duration-300">
+    <div className="fixed !bottom-0 !left-0 !right-0 !w-full !z-[99999] bg-gray-800 text-white border-t border-gray-700 shadow-2xl animate-in slide-in-from-bottom duration-300" 
+         style={{ 
+           position: 'fixed' as const,
+           bottom: 0,
+           left: 0, 
+           right: 0,
+           width: '100%',
+           zIndex: 99999,
+           paddingBottom: 'env(safe-area-inset-bottom)',
+           transform: 'translateZ(0)',
+           backfaceVisibility: 'hidden' as const
+         }}>
       <div className="container mx-auto px-4 py-4">
         {/* Main banner content */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
