@@ -12,7 +12,6 @@ import SEOAnalytics from "@/components/SEOAnalytics";
 import StructuredData from "@/components/StructuredData";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import RealtimeNotifications from "@/components/interactive/RealtimeNotifications";
-import { usePageTransition } from "@/hooks/usePageTransition";
 
 // Critical pages (loaded immediately for better performance)
 import Index from "./pages/Index";
@@ -62,20 +61,13 @@ const LazyWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 
 // Analytics wrapper component to handle hooks inside Router context
 const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { transitionClasses } = usePageTransition();
-  
   try {
     usePageTracking();
     useScrollTracking();
   } catch (error) {
     console.warn('Analytics tracking failed:', error);
   }
-  
-  return (
-    <div className={`min-h-screen ${transitionClasses}`}>
-      {children}
-    </div>
-  );
+  return <>{children}</>;
 };
 
 const App = () => {
@@ -134,7 +126,7 @@ const App = () => {
             <Route path="/admin" element={<AdminRouteGuard><LazyWrapper><Admin /></LazyWrapper></AdminRouteGuard>} />
             <Route path="/admin/courses" element={<AdminRouteGuard><LazyWrapper><AdminCourses /></LazyWrapper></AdminRouteGuard>} />
             <Route path="/admin/test" element={<AdminRouteGuard><LazyWrapper><AdminTest /></LazyWrapper></AdminRouteGuard>} />
-            </Routes>
+          </Routes>
             <RealtimeNotifications />
             <Toaster />
           </AuthProvider>
