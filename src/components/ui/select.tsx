@@ -9,13 +9,27 @@ const Select = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root>
 >(({ onOpenChange, ...props }, ref) => {
-  const handleOpenChange = (open: boolean) => {
-    // Dispatch custom event for ScrollToTop component
-    document.dispatchEvent(new CustomEvent('dropdown-state-change', { 
-      detail: { isOpen: open } 
-    }));
-    onOpenChange?.(open);
-  };
+  // Use ref to avoid recreating the handler on every render
+  const onOpenChangeRef = React.useRef(onOpenChange);
+  React.useEffect(() => {
+    onOpenChangeRef.current = onOpenChange;
+  }, [onOpenChange]);
+
+  // Stable event handler that doesn't change between renders
+  const handleOpenChange = React.useCallback((open: boolean) => {
+    // Use requestAnimationFrame to ensure DOM updates happen after render
+    requestAnimationFrame(() => {
+      // Dispatch custom event for ScrollToTop component
+      document.dispatchEvent(new CustomEvent('dropdown-state-change', { 
+        detail: { isOpen: open } 
+      }));
+    });
+    
+    // Call the original handler if provided
+    if (onOpenChangeRef.current) {
+      onOpenChangeRef.current(open);
+    }
+  }, []);
 
   return (
     <SelectPrimitive.Root 

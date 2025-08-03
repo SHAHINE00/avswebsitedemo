@@ -265,39 +265,42 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
 
   // Stable input change handler with minimal dependencies
   const handleInputChange = React.useCallback((field: string, value: string) => {
-    // Auto-format phone numbers
-    if (field === 'phone') {
-      value = value.replace(/[^\d+\-\s]/g, ''); // Only allow digits, +, -, and spaces
-      if (value.startsWith('0') && !value.startsWith('+')) {
-        value = '+33 ' + value.slice(1); // Auto-convert French numbers
-      }
-    }
-
-    // Auto-format email to lowercase
-    if (field === 'email') {
-      value = value.toLowerCase().trim();
-    }
-
-    // Auto-capitalize names
-    if (field === 'firstName' || field === 'lastName') {
-      value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-    }
-
-    if (field.startsWith('formation.')) {
-      const formationField = field.split('.')[1];
-      setFormData(prev => ({
-        ...prev,
-        formation: {
-          ...prev.formation,
-          [formationField]: value
+    // Batch all state updates in a single operation to prevent cascading re-renders
+    requestAnimationFrame(() => {
+      // Auto-format phone numbers
+      if (field === 'phone') {
+        value = value.replace(/[^\d+\-\s]/g, ''); // Only allow digits, +, -, and spaces
+        if (value.startsWith('0') && !value.startsWith('+')) {
+          value = '+33 ' + value.slice(1); // Auto-convert French numbers
         }
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [field]: value
-      }));
-    }
+      }
+
+      // Auto-format email to lowercase
+      if (field === 'email') {
+        value = value.toLowerCase().trim();
+      }
+
+      // Auto-capitalize names
+      if (field === 'firstName' || field === 'lastName') {
+        value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+      }
+
+      if (field.startsWith('formation.')) {
+        const formationField = field.split('.')[1];
+        setFormData(prev => ({
+          ...prev,
+          formation: {
+            ...prev.formation,
+            [formationField]: value
+          }
+        }));
+      } else {
+        setFormData(prev => ({
+          ...prev,
+          [field]: value
+        }));
+      }
+    });
   }, [setFormData]);
 
   // Stable field blur handler with validation
