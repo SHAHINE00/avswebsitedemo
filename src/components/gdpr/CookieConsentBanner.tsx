@@ -64,31 +64,54 @@ const CookieConsentBanner: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 sm:p-6">
-      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-background border-border shadow-2xl animate-scale-in">
-        <CardHeader className="pb-4">
+    <div className="fixed bottom-0 left-0 right-0 w-full z-[9999] bg-gray-800 text-white border-t border-gray-700 shadow-lg animate-in slide-in-from-bottom duration-300">
+      <div className="container mx-auto px-4 py-4">
+        {/* Main banner content */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          {/* Left: Icon and title */}
           <div className="flex items-center gap-3">
-            <Cookie className="h-6 w-6 text-primary" />
-            <CardTitle className="text-xl">Gestion des Cookies</CardTitle>
+            <Cookie className="h-5 w-5 text-white" />
+            <div className="text-sm lg:text-base">
+              <span className="font-medium">Gestion des Cookies</span>
+              <p className="text-gray-300 text-xs lg:text-sm mt-1">
+                Nous utilisons des cookies pour améliorer votre expérience.
+              </p>
+            </div>
           </div>
-          <p className="text-muted-foreground">
-            Nous utilisons des cookies pour améliorer votre expérience. Vous pouvez gérer vos préférences ci-dessous.
-          </p>
-        </CardHeader>
-        
-        <CardContent className="space-y-6">
-          {showDetails && (
-            <div className="space-y-4">
+
+          {/* Right: Action buttons */}
+          <div className="flex flex-col sm:flex-row gap-2 lg:gap-3 min-w-fit">
+            <Button onClick={acceptAll} size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
+              Accepter Tout
+            </Button>
+            <Button onClick={rejectOptional} variant="outline" size="sm" className="border-gray-600 text-white hover:bg-gray-700">
+              Rejeter Optionnels
+            </Button>
+            <Button 
+              onClick={() => setShowDetails(!showDetails)}
+              variant="ghost"
+              size="sm"
+              className="text-white hover:bg-gray-700"
+            >
+              {showDetails ? 'Masquer' : 'Personnaliser'}
+            </Button>
+          </div>
+        </div>
+
+        {/* Expandable detailed options */}
+        {showDetails && (
+          <div className="mt-4 pt-4 border-t border-gray-700 space-y-4">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {cookieCategories.map(({ key, icon: Icon, title, description, required }) => (
-                <div key={key} className="flex items-start justify-between p-4 rounded-lg border bg-card/50">
-                  <div className="flex items-start gap-3 flex-1">
-                    <Icon className="h-5 w-5 text-muted-foreground mt-0.5" />
-                    <div className="space-y-1">
+                <div key={key} className="flex items-start justify-between p-3 rounded-lg bg-gray-700 border border-gray-600">
+                  <div className="flex items-start gap-2 flex-1">
+                    <Icon className="h-4 w-4 text-gray-300 mt-0.5 flex-shrink-0" />
+                    <div className="space-y-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium">{title}</span>
-                        {required && <Badge variant="secondary" className="text-xs">Requis</Badge>}
+                        <span className="font-medium text-sm text-white">{title}</span>
+                        {required && <Badge variant="secondary" className="text-xs bg-gray-600 text-gray-200">Requis</Badge>}
                       </div>
-                      <p className="text-sm text-muted-foreground">{description}</p>
+                      <p className="text-xs text-gray-300 line-clamp-2">{description}</p>
                     </div>
                   </div>
                   <Switch
@@ -97,47 +120,34 @@ const CookieConsentBanner: React.FC = () => {
                       setTempConsent(prev => ({ ...prev, [key]: checked }))
                     }
                     disabled={required}
-                    className="ml-4"
+                    className="ml-2 flex-shrink-0"
                   />
                 </div>
               ))}
             </div>
-          )}
-
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button onClick={acceptAll} className="flex-1">
-              Accepter Tout
-            </Button>
-            <Button onClick={rejectOptional} variant="outline" className="flex-1">
-              Rejeter Optionnels
-            </Button>
-            <Button 
-              onClick={() => setShowDetails(!showDetails)}
-              variant="ghost"
-              className="flex-1"
-            >
-              {showDetails ? 'Masquer' : 'Personnaliser'}
-            </Button>
+            
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button onClick={handleSavePreferences} className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90">
+                Sauvegarder les Préférences
+              </Button>
+            </div>
           </div>
+        )}
 
-          {showDetails && (
-            <Button onClick={handleSavePreferences} className="w-full">
-              Sauvegarder les Préférences
-            </Button>
-          )}
-
-          <p className="text-xs text-muted-foreground text-center">
+        {/* Footer links */}
+        <div className="mt-3 pt-3 border-t border-gray-700">
+          <p className="text-xs text-gray-400 text-center">
             En continuant, vous acceptez notre{' '}
-            <a href="/privacy-policy" className="text-primary hover:underline">
+            <a href="/privacy-policy" className="text-white hover:underline">
               Politique de Confidentialité
             </a>{' '}
             et nos{' '}
-            <a href="/cookies-policy" className="text-primary hover:underline">
+            <a href="/cookies-policy" className="text-white hover:underline">
               Conditions d'Utilisation
             </a>
           </p>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };
