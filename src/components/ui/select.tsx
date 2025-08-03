@@ -107,55 +107,48 @@ const SelectContent = React.forwardRef<
       <SelectPrimitive.Content
         ref={ref}
         className={cn(
-          // Base positioning - absolute overlay
-          "absolute top-full left-0 z-[1000] w-full overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow-xl",
-          // Responsive max heights and improved spacing
-          "max-h-[60vh] sm:max-h-[50vh] md:max-h-[40vh] lg:max-h-96",
-          // Prevent layout shifts
+          // EXACT positioning as requested: absolute, top: 100%, proper z-index
+          "absolute top-full left-0 z-[1000] w-full max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-lg",
+          // Prevent layout shifts - overlay only
           "will-change-transform",
           // Smooth animations
           "data-[state=open]:animate-in data-[state=closed]:animate-out",
           "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
           "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-          "data-[side=bottom]:slide-in-from-top-2",
-          // Mobile optimizations
+          "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2",
+          "data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+          // Responsive design for all devices
           isMobile && [
             "touch-manipulation [-webkit-tap-highlight-color:transparent]",
-            "max-h-[50vh] text-base rounded-xl", // Mobile: larger text, more rounded
+            "max-h-[50vh] text-base", // Mobile: larger text, constrained height
           ],
           // Tablet optimizations
-          "sm:max-h-[45vh] sm:text-sm sm:rounded-lg",
+          "md:max-h-80 md:text-sm",
           // Desktop optimizations  
-          "md:max-h-[40vh] md:text-sm lg:max-h-96",
+          "lg:max-h-96 lg:text-sm",
           className
         )}
         position={position}
-        sideOffset={4}
-        avoidCollisions={true}
-        collisionPadding={8}
+        sideOffset={0}
+        avoidCollisions={false} // Disable to maintain exact positioning
         style={{
+          // Force exact positioning as requested
           position: 'absolute',
           top: '100%',
           left: '0',
           zIndex: 1000,
-          width: '100%',
-          marginTop: '4px', // Small gap from trigger
+          width: '100%', // Match parent width exactly
         }}
         {...props}
       >
         <SelectScrollUpButton />
         <SelectPrimitive.Viewport
           className={cn(
-            // Base viewport styling
-            "p-2 overflow-y-auto",
-            // Responsive padding
-            "sm:p-1 md:p-1",
-            // Mobile: more padding for easier touch
-            isMobile && "p-3",
+            "p-1",
+            // Responsive viewport sizing
+            "min-h-[var(--radix-select-trigger-height)] w-full",
+            isMobile && "p-2", // More padding on mobile
           )}
-          style={{
-            maxHeight: 'inherit',
-          }}
         >
           {children}
         </SelectPrimitive.Viewport>
