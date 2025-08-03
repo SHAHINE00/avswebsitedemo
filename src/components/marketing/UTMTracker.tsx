@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+
+import { useEffect } from 'react';
 import { analytics } from '@/utils/analytics';
 import { useLocation } from 'react-router-dom';
 
