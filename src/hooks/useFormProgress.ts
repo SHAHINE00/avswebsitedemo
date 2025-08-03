@@ -23,6 +23,13 @@ export const useFormProgress = (
 ) => {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
+  // Helper function to get nested property value
+  const getNestedValue = (obj: any, path: string): any => {
+    return path.split('.').reduce((current, key) => {
+      return current && typeof current === 'object' ? current[key] : undefined;
+    }, obj);
+  };
+
   const progress = useMemo((): FormProgress => {
     const stepKeys = Object.keys(config.steps);
     const totalSteps = stepKeys.length;
@@ -32,7 +39,7 @@ export const useFormProgress = (
     for (const stepKey of stepKeys) {
       const { fields } = config.steps[stepKey];
       const isStepComplete = fields.every(field => {
-        const value = formData[field];
+        const value = getNestedValue(formData, field);
         if (typeof value === 'string') return value.trim() !== '';
         if (typeof value === 'object' && value !== null) {
           return Object.keys(value).length > 0;
