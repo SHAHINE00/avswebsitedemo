@@ -1,7 +1,8 @@
 
 import React from 'react';
 import SafeComponentWrapper from '@/components/ui/SafeComponentWrapper';
-import { useLocation, useEffect } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const SEOAnalyticsCore = () => {
   const location = useLocation();
