@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, Circle, Users, Calendar } from 'lucide-react';
+import { CheckCircle2, Calendar, Users } from 'lucide-react';
 import { useCourses } from '@/hooks/useCourses';
 import type { Course } from '@/hooks/useCourses';
 import { logInfo } from '@/utils/logger';
+import { useFormValidation } from '@/hooks/useFormValidation';
+import { useFormPersistence } from '@/hooks/useFormPersistence';
+import { FormField } from '@/components/ui/FormField';
+import { LoadingButton, FieldLoading } from '@/components/ui/LoadingStates';
 
 interface FormationData {
   formationType: string;
@@ -32,7 +34,9 @@ interface MultiStepRegistrationFormProps {
 
 const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ onSubmit, loading }) => {
   const { courses, loading: coursesLoading } = useCourses();
-  const [formData, setFormData] = useState<FormData>({
+  
+  // Form persistence
+  const { data: formData, updateData: setFormData, clearData } = useFormPersistence<FormData>('registration-form', {
     firstName: '',
     lastName: '',
     email: '',
@@ -42,6 +46,33 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
       domaine: '',
       programme: '',
       programmeDetails: undefined
+    }
+  });
+
+  // Form validation
+  const { errors, touched, validate, validateAll, touch, hasError, getError } = useFormValidation({
+    firstName: { required: true, minLength: 2 },
+    lastName: { required: true, minLength: 2 },
+    email: { 
+      required: true, 
+      pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      custom: (value) => {
+        const commonDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'];
+        const domain = value.split('@')[1];
+        if (domain && !commonDomains.includes(domain) && !domain.includes('.')) {
+          return 'Vérifiez le domaine de votre email';
+        }
+        return null;
+      }
+    },
+    phone: { 
+      pattern: /^(\+\d{1,3}[- ]?)?\d{8,15}$/,
+      custom: (value) => {
+        if (value && value.length < 8) {
+          return 'Numéro de téléphone trop court';
+        }
+        return null;
+      }
     }
   });
 
@@ -182,7 +213,26 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
     }
   }, [formData.formation.programme, availableCourses]);
 
+  // Handle input changes with validation and formatting
   const handleInputChange = (field: string, value: string) => {
+    // Auto-format phone numbers
+    if (field === 'phone') {
+      value = value.replace(/[^\d+\-\s]/g, ''); // Only allow digits, +, -, and spaces
+      if (value.startsWith('0') && !value.startsWith('+')) {
+        value = '+33 ' + value.slice(1); // Auto-convert French numbers
+      }
+    }
+
+    // Auto-format email to lowercase
+    if (field === 'email') {
+      value = value.toLowerCase().trim();
+    }
+
+    // Auto-capitalize names
+    if (field === 'firstName' || field === 'lastName') {
+      value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+    }
+
     if (field.startsWith('formation.')) {
       const formationField = field.split('.')[1];
       setFormData(prev => ({
@@ -197,22 +247,47 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
         ...prev,
         [field]: value
       }));
+      // Validate on change for immediate feedback
+      if (touched[field]) {
+        validate(field, value);
+      }
     }
   };
 
+  // Handle field blur for validation
+  const handleFieldBlur = (field: string, value: string) => {
+    touch(field);
+    validate(field, value);
+  };
+
   const isFormValid = () => {
-    return formData.firstName &&
-           formData.lastName &&
-           formData.email &&
-           formData.formation.formationType &&
-           formData.formation.domaine &&
-           formData.formation.programme;
+    const basicFieldsValid = validateAll({
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phone: formData.phone
+    });
+    
+    const formationValid = formData.formation.formationType &&
+                          formData.formation.domaine &&
+                          formData.formation.programme;
+
+    return basicFieldsValid && formationValid;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Touch all fields to show validation errors
+    ['firstName', 'lastName', 'email', 'phone'].forEach(field => touch(field));
+    
     if (isFormValid()) {
-      await onSubmit(formData);
+      try {
+        await onSubmit(formData);
+        clearData(); // Clear saved form data on successful submission
+      } catch (error) {
+        console.error('Form submission error:', error);
+      }
     }
   };
 
@@ -247,64 +322,54 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
           </CardHeader>
           <CardContent className="p-8 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="firstName" className="text-sm font-semibold text-gray-700">
-                  Prénom <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  type="text"
-                  id="firstName"
-                  value={formData.firstName}
-                  onChange={(e) => handleInputChange('firstName', e.target.value)}
-                  required
-                  className="h-12 border-2 border-gray-200 focus:border-academy-blue rounded-lg"
-                  placeholder="Votre prénom"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="lastName" className="text-sm font-semibold text-gray-700">
-                  Nom <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  type="text"
-                  id="lastName"
-                  value={formData.lastName}
-                  onChange={(e) => handleInputChange('lastName', e.target.value)}
-                  required
-                  className="h-12 border-2 border-gray-200 focus:border-academy-blue rounded-lg"
-                  placeholder="Votre nom de famille"
-                />
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-semibold text-gray-700">
-                Email <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                type="email"
-                id="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
+              <FormField
+                id="firstName"
+                label="Prénom"
+                value={formData.firstName}
+                onChange={(value) => handleInputChange('firstName', value)}
+                onBlur={() => handleFieldBlur('firstName', formData.firstName)}
+                error={getError('firstName')}
                 required
-                className="h-12 border-2 border-gray-200 focus:border-academy-blue rounded-lg"
-                placeholder="votre.email@exemple.com"
+                placeholder="Votre prénom"
+                autoComplete="given-name"
+              />
+              <FormField
+                id="lastName"
+                label="Nom"
+                value={formData.lastName}
+                onChange={(value) => handleInputChange('lastName', value)}
+                onBlur={() => handleFieldBlur('lastName', formData.lastName)}
+                error={getError('lastName')}
+                required
+                placeholder="Votre nom de famille"
+                autoComplete="family-name"
               />
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="phone" className="text-sm font-semibold text-gray-700">
-                Téléphone
-              </Label>
-              <Input
-                type="tel"
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
-                className="h-12 border-2 border-gray-200 focus:border-academy-blue rounded-lg"
-                placeholder="+xx x xx xx xx xx"
-              />
-            </div>
+            <FormField
+              id="email"
+              label="Email"
+              type="email"
+              value={formData.email}
+              onChange={(value) => handleInputChange('email', value)}
+              onBlur={() => handleFieldBlur('email', formData.email)}
+              error={getError('email')}
+              required
+              placeholder="votre.email@exemple.com"
+              autoComplete="email"
+            />
+            
+            <FormField
+              id="phone"
+              label="Téléphone"
+              type="tel"
+              value={formData.phone}
+              onChange={(value) => handleInputChange('phone', value)}
+              onBlur={() => handleFieldBlur('phone', formData.phone)}
+              error={getError('phone')}
+              placeholder="+33 6 12 34 56 78"
+              autoComplete="tel"
+            />
           </CardContent>
         </Card>
 
@@ -353,35 +418,37 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
             </div>
 
             {/* Step 1: Formation Type */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-3 pb-4 border-b border-gray-100">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                  getStepStatus(1) === 'completed' ? 'bg-academy-blue text-white' : 
-                  getStepStatus(1) === 'current' ? 'bg-academy-blue text-white' : 'bg-gray-300 text-gray-600'
-                }`}>
-                  1
+              <div className="space-y-6">
+                <div className="flex items-center gap-3 pb-4 border-b border-gray-100">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                    getStepStatus(1) === 'completed' ? 'bg-academy-blue text-white' : 
+                    getStepStatus(1) === 'current' ? 'bg-academy-blue text-white' : 'bg-gray-300 text-gray-600'
+                  }`}>
+                    1
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800">Type de Formation</h3>
                 </div>
-                <h3 className="text-xl font-bold text-gray-800">Type de Formation</h3>
-              </div>
               
-                <Select 
-                  value={formData.formation.formationType} 
-                  onValueChange={(value) => handleInputChange('formation.formationType', value)}
-                >
-                  <SelectTrigger className="w-full h-12 md:h-14 lg:h-16 border-2 border-gray-200 hover:border-academy-blue transition-colors rounded-xl">
-                    <SelectValue placeholder="Sélectionnez votre type de formation" className="text-gray-500" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-xl border-2 shadow-xl max-h-[80vh] overflow-auto">
-                    {formationTypes.map((type) => (
-                      <SelectItem key={type.value} value={type.value} className="h-auto p-4 hover:bg-blue-50 cursor-pointer">
-                        <div className="space-y-2">
-                          <div className="font-semibold text-gray-800">{type.label}</div>
-                          <div className="text-sm text-gray-600 leading-relaxed">{type.description}</div>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FieldLoading loading={false}>
+                  <Select 
+                    value={formData.formation.formationType} 
+                    onValueChange={(value) => handleInputChange('formation.formationType', value)}
+                  >
+                    <SelectTrigger className="w-full h-12 md:h-14 lg:h-16 border-2 border-gray-200 hover:border-academy-blue transition-colors rounded-xl">
+                      <SelectValue placeholder="Sélectionnez votre type de formation" className="text-gray-500" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-2 shadow-xl max-h-[80vh] overflow-auto">
+                      {formationTypes.map((type) => (
+                        <SelectItem key={type.value} value={type.value} className="h-auto p-4 hover:bg-blue-50 cursor-pointer">
+                          <div className="space-y-2">
+                            <div className="font-semibold text-gray-800">{type.label}</div>
+                            <div className="text-sm text-gray-600 leading-relaxed">{type.description}</div>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FieldLoading>
               
               {selectedFormationType && (
                 <div className="p-6 bg-gradient-to-r from-academy-blue/5 to-academy-purple/5 rounded-xl border-2 border-academy-blue/20 shadow-sm">
@@ -454,12 +521,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                   <h3 className="text-xl font-bold text-gray-800">Programme Spécifique</h3>
                 </div>
                 
-                {coursesLoading ? (
-                  <div className="text-center py-8">
-                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-academy-blue border-t-transparent"></div>
-                    <p className="text-gray-600 mt-4 font-medium">Chargement des programmes disponibles...</p>
-                  </div>
-                ) : (
+                <FieldLoading loading={coursesLoading}>
                   <Select 
                     value={formData.formation.programme} 
                     onValueChange={(value) => handleInputChange('formation.programme', value)}
@@ -492,7 +554,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                       )}
                     </SelectContent>
                   </Select>
-                )}
+                </FieldLoading>
                 
                 {formData.formation.programmeDetails && (
                   <div className="p-6 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border-2 border-green-200 shadow-sm">
@@ -546,17 +608,15 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                 disabled={!isFormValid() || loading}
                 className="w-full h-14 bg-gradient-to-r from-academy-blue to-academy-purple hover:from-academy-blue/90 hover:to-academy-purple/90 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? (
-                  <div className="flex items-center gap-3">
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                    Inscription en cours...
-                  </div>
-                ) : (
+                <LoadingButton
+                  loading={loading}
+                  loadingText="Inscription en cours..."
+                >
                   <div className="flex items-center gap-3">
                     <CheckCircle2 className="w-6 h-6" />
                     Finaliser mon inscription
                   </div>
-                )}
+                </LoadingButton>
               </Button>
               
               {!isFormValid() && (
