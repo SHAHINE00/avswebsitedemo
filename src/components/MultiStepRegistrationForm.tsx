@@ -32,25 +32,25 @@ interface MultiStepRegistrationFormProps {
   loading: boolean;
 }
 
+// Move initial data outside component to prevent recreation
+const INITIAL_FORM_DATA: FormData = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  formation: {
+    formationType: '',
+    domaine: '',
+    programme: '',
+    programmeDetails: undefined
+  }
+};
+
 const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ onSubmit, loading }) => {
   const { courses, loading: coursesLoading } = useCourses();
   
-  // Memoize initial data to prevent recreation on every render
-  const initialData = React.useMemo(() => ({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    formation: {
-      formationType: '',
-      domaine: '',
-      programme: '',
-      programmeDetails: undefined
-    }
-  }), []);
-  
-  // Form persistence
-  const { data: formData, updateData: setFormData, clearData } = useFormPersistence<FormData>('registration-form', initialData);
+  // Form persistence with stable initial data
+  const { data: formData, updateData: setFormData, clearData } = useFormPersistence<FormData>('registration-form', INITIAL_FORM_DATA);
 
   // Form validation
   const { errors, touched, validate, validateAll, touch, hasError, getError } = useFormValidation({
@@ -205,7 +205,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
         });
       }
     }
-  }, [formData.formation.domaine]);
+  }, [formData.formation.domaine, setFormData]);
 
   // Update program details when programme selection changes
   const prevProgrammeRef = React.useRef(formData.formation.programme);
@@ -238,9 +238,9 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
         }
       }
     }
-  }, [formData.formation.programme, availableCourses]);
+  }, [formData.formation.programme, availableCourses, setFormData]);
 
-  // Memoize input change handler to prevent unnecessary re-renders
+  // Stable input change handler
   const handleInputChange = React.useCallback((field: string, value: string) => {
     // Auto-format phone numbers
     if (field === 'phone') {
@@ -279,7 +279,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
         validate(field, value);
       }
     }
-  }, [setFormData, touched, validate]);
+  }, [touched, validate]);
 
   // Memoize field blur handler
   const handleFieldBlur = React.useCallback((field: string, value: string) => {
