@@ -47,6 +47,21 @@ const INITIAL_FORM_DATA: FormData = {
 };
 
 const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ onSubmit, loading }) => {
+  // Render cycle protection
+  const renderCountRef = React.useRef(0);
+  renderCountRef.current += 1;
+  
+  if (renderCountRef.current > 50) {
+    console.error('Too many renders detected, breaking cycle');
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="text-center text-red-600">
+          Erreur technique détectée. Veuillez rafraîchir la page.
+        </div>
+      </div>
+    );
+  }
+
   const { courses, loading: coursesLoading } = useCourses();
   
   // Form persistence with stable initial data
@@ -282,7 +297,8 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
     validate(field, value);
   }, [touch, validate]);
 
-  const isFormValid = () => {
+  // Memoize form validation to prevent re-calculation during render
+  const isFormValid = React.useMemo(() => {
     const basicFieldsValid = validateAll({
       firstName: formData.firstName,
       lastName: formData.lastName,
@@ -295,15 +311,57 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                           formData.formation.programme;
 
     return basicFieldsValid && formationValid;
-  };
+  }, [
+    formData.firstName,
+    formData.lastName,
+    formData.email,
+    formData.phone,
+    formData.formation.formationType,
+    formData.formation.domaine,
+    formData.formation.programme,
+    validateAll
+  ]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Memoize step status calculation to prevent re-calculation during render
+  const getStepStatus = React.useMemo(() => {
+    return (step: number): 'completed' | 'current' | 'pending' => {
+      switch (step) {
+        case 1:
+          return formData.formation.formationType ? 'completed' : 'current';
+        case 2:
+          if (!formData.formation.formationType) return 'pending';
+          return formData.formation.domaine ? 'completed' : 'current';
+        case 3:
+          if (!formData.formation.domaine) return 'pending';
+          return formData.formation.programme ? 'completed' : 'current';
+        default:
+          return 'pending';
+      }
+    };
+  }, [
+    formData.formation.formationType,
+    formData.formation.domaine,
+    formData.formation.programme
+  ]);
+
+  // Memoize selected values to prevent re-calculation during render
+  const selectedFormationType = React.useMemo(() => 
+    formationTypes.find(type => type.value === formData.formation.formationType),
+    [formData.formation.formationType]
+  );
+  
+  const selectedDomaine = React.useMemo(() => 
+    domaines.find(domain => domain.value === formData.formation.domaine),
+    [formData.formation.domaine]
+  );
+
+  const handleSubmit = React.useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Touch all fields to show validation errors
     ['firstName', 'lastName', 'email', 'phone'].forEach(field => touch(field));
     
-    if (isFormValid()) {
+    if (isFormValid) {
       try {
         await onSubmit(formData);
         clearData(); // Clear saved form data on successful submission
@@ -311,25 +369,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
         console.error('Form submission error:', error);
       }
     }
-  };
-
-  const getStepStatus = (step: number): 'completed' | 'current' | 'pending' => {
-    switch (step) {
-      case 1:
-        return formData.formation.formationType ? 'completed' : 'current';
-      case 2:
-        if (!formData.formation.formationType) return 'pending';
-        return formData.formation.domaine ? 'completed' : 'current';
-      case 3:
-        if (!formData.formation.domaine) return 'pending';
-        return formData.formation.programme ? 'completed' : 'current';
-      default:
-        return 'pending';
-    }
-  };
-
-  const selectedFormationType = formationTypes.find(type => type.value === formData.formation.formationType);
-  const selectedDomaine = domaines.find(domain => domain.value === formData.formation.domaine);
+  }, [formData, touch, isFormValid, onSubmit, clearData]);
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -627,7 +667,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
               
               <Button 
                 type="submit" 
-                disabled={!isFormValid() || loading}
+                disabled={!isFormValid || loading}
                 className="w-full h-14 bg-gradient-to-r from-academy-blue to-academy-purple hover:from-academy-blue/90 hover:to-academy-purple/90 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <LoadingButton
@@ -641,7 +681,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                 </LoadingButton>
               </Button>
               
-              {!isFormValid() && (
+              {!isFormValid && (
                 <div className="text-center">
                   <p className="text-red-600 text-sm font-medium">
                     Veuillez remplir tous les champs obligatoires pour continuer
