@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import MultiStepRegistrationForm from '@/components/MultiStepRegistrationForm';
+import SimpleErrorBoundary from '@/components/ui/SimpleErrorBoundary';
 import { useToast } from '@/hooks/use-toast';
 import SEOHead from '@/components/SEOHead';
 import { supabase } from '@/integrations/supabase/client';
@@ -96,10 +97,12 @@ const Register = () => {
       <main className="flex-grow py-16">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto">
-            <MultiStepRegistrationForm 
-              onSubmit={handleFormSubmit}
-              loading={loading}
-            />
+            <SimpleErrorBoundary>
+              <MultiStepRegistrationForm 
+                onSubmit={handleFormSubmit}
+                loading={loading}
+              />
+            </SimpleErrorBoundary>
           </div>
         </div>
       </main>
