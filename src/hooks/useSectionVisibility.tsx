@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import * as React from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { logError } from '@/utils/logger';
 
@@ -16,9 +16,9 @@ interface SectionVisibility {
 }
 
 export const useSectionVisibility = () => {
-  const [sections, setSections] = useState<SectionVisibility[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [sections, setSections] = React.useState<SectionVisibility[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
 
   const fetchSections = async () => {
     try {
@@ -129,7 +129,7 @@ export const useSectionVisibility = () => {
       .sort((a, b) => a.display_order - b.display_order);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchSections();
   }, []);
 
