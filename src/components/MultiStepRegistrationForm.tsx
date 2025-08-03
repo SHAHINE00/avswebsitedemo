@@ -130,7 +130,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
   // Memoize available courses to prevent recalculation on every render
   const availableCourses = React.useMemo(() => {
     if (!courses.length || !formData.formation.domaine) return [];
-
+    
     const allCourses = courses.filter(course => course.status === 'published');
     
     const getCoursesForDomain = (domainValue: string): Course[] => {
@@ -195,6 +195,15 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
 
     return getCoursesForDomain(formData.formation.domaine);
   }, [courses, formData.formation.domaine]);
+
+  // Memoize course count to prevent re-renders during Badge rendering
+  const courseCount = React.useMemo(() => availableCourses.length, [availableCourses.length]);
+
+  // Memoize course count text to prevent string recalculation during render
+  const courseCountText = React.useMemo(() => 
+    `${courseCount} programme${courseCount > 1 ? 's' : ''} disponible${courseCount > 1 ? 's' : ''}`,
+    [courseCount]
+  );
 
   // Prevent re-render loops by using stable references for effects
   const formationDomaineRef = React.useRef(formData.formation.domaine);
@@ -560,9 +569,9 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                     <div className="flex items-center gap-3 mb-3">
                       <Users className="w-5 h-5 text-academy-purple" />
                       <span className="font-bold text-academy-purple text-lg">{selectedDomaine.label}</span>
-                      <Badge variant="secondary" className="ml-auto bg-academy-purple/10 text-academy-purple font-semibold">
-                        {availableCourses.length} programme{availableCourses.length > 1 ? 's' : ''} disponible{availableCourses.length > 1 ? 's' : ''}
-                      </Badge>
+                       <Badge variant="secondary" className="ml-auto bg-academy-purple/10 text-academy-purple font-semibold">
+                         {courseCountText}
+                       </Badge>
                     </div>
                     <p className="text-gray-700 leading-relaxed">{selectedDomaine.description}</p>
                   </div>
