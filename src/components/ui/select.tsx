@@ -24,29 +24,11 @@ const SelectTrigger = React.forwardRef<
         "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
         // Mobile-specific optimizations
         isMobile && "min-h-[48px] touch-manipulation [-webkit-tap-highlight-color:transparent]",
-        // Responsive heights
-        "h-12 md:h-10 lg:h-10",
+        // Fixed height instead of responsive that could cause layout shifts
+        "h-12",
         className
       )}
       data-radix-select-trigger
-      onFocus={(e) => {
-        // Prevent default scrolling behavior without breaking Radix functionality
-        e.preventDefault();
-        e.currentTarget.focus({ preventScroll: true });
-        
-        // Notify other components about dropdown state
-        document.dispatchEvent(new CustomEvent('dropdown-state-change', { 
-          detail: { isOpen: true } 
-        }));
-      }}
-      onPointerDown={(e) => {
-        // Prevent viewport jumping on mobile
-        if (isMobile) {
-          document.body.style.position = 'fixed';
-          document.body.style.top = `-${window.scrollY}px`;
-          document.body.style.width = '100%';
-        }
-      }}
       {...props}
     >
       {children}
@@ -99,6 +81,28 @@ const SelectContent = React.forwardRef<
 >(({ className, children, position = "popper", ...props }, ref) => {
   const isMobile = useIsMobile();
 
+  React.useEffect(() => {
+    // Prevent scroll when dropdown opens
+    const originalScrollBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
+    
+    if (isMobile) {
+      const scrollY = window.scrollY;
+      document.body.classList.add('dropdown-open');
+      document.body.style.top = `-${scrollY}px`;
+    }
+
+    return () => {
+      document.documentElement.style.scrollBehavior = originalScrollBehavior;
+      if (isMobile) {
+        document.body.classList.remove('dropdown-open');
+        const scrollY = parseInt(document.body.style.top || '0') * -1;
+        document.body.style.top = '';
+        window.scrollTo(0, scrollY);
+      }
+    };
+  }, [isMobile]);
+
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
@@ -107,8 +111,8 @@ const SelectContent = React.forwardRef<
           "relative z-[60] max-h-96 min-w-[8rem] overflow-hidden rounded-md border shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
           position === "popper" &&
             "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
-          // Mobile-specific improvements
-          isMobile && "max-h-[60vh] touch-manipulation",
+          // Mobile-specific improvements with fixed positioning
+          isMobile && "max-h-[60vh] touch-manipulation fixed",
           // Ensure proper background for visibility
           "bg-popover text-popover-foreground border-border",
           className
@@ -116,33 +120,6 @@ const SelectContent = React.forwardRef<
         position={position}
         sideOffset={4}
         align="start"
-        onCloseAutoFocus={(e) => {
-          // Restore body position and notify state change
-          e.preventDefault();
-          
-          if (isMobile) {
-            const scrollY = document.body.style.top;
-            document.body.style.position = '';
-            document.body.style.top = '';
-            document.body.style.width = '';
-            window.scrollTo(0, parseInt(scrollY || '0') * -1);
-          }
-          
-          // Notify dropdown is closed
-          document.dispatchEvent(new CustomEvent('dropdown-state-change', { 
-            detail: { isOpen: false } 
-          }));
-        }}
-        onPointerDownOutside={(e) => {
-          // Handle outside clicks gracefully
-          if (isMobile) {
-            const scrollY = document.body.style.top;
-            document.body.style.position = '';
-            document.body.style.top = '';
-            document.body.style.width = '';
-            window.scrollTo(0, parseInt(scrollY || '0') * -1);
-          }
-        }}
         {...props}
       >
         <SelectScrollUpButton />
