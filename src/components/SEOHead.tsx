@@ -27,9 +27,8 @@ const SEOHead: React.FC<SEOHeadProps> = ({
   ogUrl,
   jsonLd = []
 }) => {
-  // Enhanced React validation with comprehensive checks
+  // Early return if React is not available - don't use any hooks
   if (typeof React === 'undefined' || React === null || !React.useEffect) {
-    console.warn('SEOHead: React.useEffect not available, returning basic component');
     try {
       const allJsonLd = [generateOrganizationJsonLd(), ...jsonLd];
       return (

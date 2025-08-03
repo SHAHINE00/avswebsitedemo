@@ -1,10 +1,4 @@
-
 import React from 'react';
-import { useEffect, useState } from 'react';
-import { AlertTriangle, RefreshCw, Wifi, WifiOff, Smartphone } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { logError, logInfo } from '@/utils/logger';
 
 interface MobileErrorHandlerProps {
   error?: Error;
@@ -12,178 +6,132 @@ interface MobileErrorHandlerProps {
 }
 
 export const MobileErrorHandler: React.FC<MobileErrorHandlerProps> = ({ error, onRetry }) => {
-  // Early return if React is not available - don't use any hooks
-  if (typeof React === 'undefined' || React === null || !useState || !useEffect) {
+  // Early return with simple fallback if React is not available
+  if (typeof React === 'undefined' || React === null) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        Une erreur s'est produite. Veuillez rafraîchir la page.
+      <div style={{ 
+        padding: '20px', 
+        textAlign: 'center',
+        fontFamily: 'system-ui, sans-serif',
+        background: '#f5f5f5',
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div>
+          <h3>Une erreur s'est produite</h3>
+          <p>Veuillez rafraîchir la page.</p>
+          <button 
+            onClick={() => window.location.reload()}
+            style={{
+              padding: '10px 20px',
+              background: '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Rafraîchir
+          </button>
+        </div>
       </div>
     );
   }
 
-  let isOnline, setIsOnline;
+  // Simple component without hooks if React is available but hooks might not be
+  if (!React.useState || !React.useEffect) {
+    return (
+      <div style={{ 
+        padding: '20px', 
+        textAlign: 'center',
+        fontFamily: 'system-ui, sans-serif'
+      }}>
+        <h3>Erreur de chargement</h3>
+        <p>Les composants React ne sont pas entièrement chargés.</p>
+        <button onClick={() => window.location.reload()}>
+          Rafraîchir la page
+        </button>
+      </div>
+    );
+  }
+
+  // Use hooks safely
   let retryCount, setRetryCount;
-
   try {
-    [isOnline, setIsOnline] = useState(typeof navigator !== 'undefined' ? navigator.onLine : true);
-    [retryCount, setRetryCount] = useState(0);
-  } catch (error) {
+    [retryCount, setRetryCount] = React.useState(0);
+  } catch (e) {
     return (
       <div style={{ padding: '20px', textAlign: 'center' }}>
-        Erreur de chargement. Rafraîchissez la page.
+        Erreur de rendu. Rafraîchissez la page.
       </div>
     );
   }
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    
-    const handleOnline = () => {
-      setIsOnline(true);
-      logInfo('Network connection restored');
-    };
-    
-    const handleOffline = () => {
-      setIsOnline(false);
-      logInfo('Network connection lost');
-    };
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
-
-  const handleRetry = async () => {
-    setRetryCount(prev => prev + 1);
-    logInfo(`Mobile error retry attempt: ${retryCount + 1}`);
-    
-    if (onRetry) {
-      onRetry();
-    } else {
-      try {
-        // Progressive retry strategy for mobile
-        if (retryCount === 0) {
-          // First retry: just reload
-          (window as any).location.reload();
-        } else if (retryCount === 1) {
-          // Second retry: clear caches and reload
-          if ('caches' in window) {
-            const cacheNames = await caches.keys();
-            await Promise.all(cacheNames.map(name => caches.delete(name)));
-          }
-          (window as any).location.reload();
-        } else {
-          // Third+ retry: hard refresh
-          (window as any).location.href = (window as any).location.href;
-        }
-      } catch (e) {
-        logError('Mobile retry failed:', e);
-        (window as any).location.reload();
+  const handleRetry = () => {
+    try {
+      setRetryCount(retryCount + 1);
+      if (onRetry) {
+        onRetry();
+      } else {
+        window.location.reload();
       }
+    } catch (e) {
+      window.location.reload();
     }
-  };
-
-  const isNetworkError = error?.message?.includes('Failed to fetch') || 
-                        error?.message?.includes('Loading chunk') ||
-                        error?.message?.includes('dynamically imported module');
-
-  const getErrorTitle = () => {
-    if (!isOnline) return 'Connexion perdue';
-    if (isNetworkError) return 'Problème de chargement';
-    return 'Erreur inattendue';
-  };
-
-  const getErrorMessage = () => {
-    if (!isOnline) {
-      return 'Votre connexion internet semble interrompue. Vérifiez votre connexion et réessayez.';
-    }
-    if (isNetworkError) {
-      return 'Erreur de chargement du contenu. Cela peut être dû à une connexion lente ou à un problème temporaire.';
-    }
-    return 'Une erreur s\'est produite. Essayez de rafraîchir la page.';
-  };
-
-  const getRetryText = () => {
-    if (retryCount === 0) return 'Réessayer';
-    if (retryCount < 3) return `Réessayer (${retryCount + 1})`;
-    return 'Rafraîchir la page';
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="max-w-md w-full space-y-4">
-        <Alert className="border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive">
-          <div className="flex items-center gap-2">
-            {!isOnline ? (
-              <WifiOff className="h-4 w-4" />
-            ) : (
-              <Smartphone className="h-4 w-4" />
-            )}
-            <AlertDescription>
-              <div className="space-y-3">
-                <p className="font-medium text-foreground">
-                  {getErrorTitle()}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {getErrorMessage()}
-                </p>
-                
-                {!isOnline && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <WifiOff className="h-3 w-3 text-orange-500" />
-                    <span className="text-orange-600">Hors ligne</span>
-                  </div>
-                )}
-
-                {process.env.NODE_ENV === 'development' && error && (
-                  <details className="text-xs bg-muted p-2 rounded mt-2">
-                    <summary>Détails de l'erreur (dev only)</summary>
-                    <pre className="mt-2 overflow-auto text-[10px]">
-                      {error.stack}
-                    </pre>
-                  </details>
-                )}
-                
-                <div className="flex gap-2 pt-2">
-                  <Button 
-                    onClick={handleRetry} 
-                    size="sm" 
-                    className="flex items-center gap-2"
-                    disabled={!isOnline && isNetworkError}
-                  >
-                    <RefreshCw className="h-3 w-3" />
-                    {getRetryText()}
-                  </Button>
-                  
-                  {retryCount >= 2 && (
-                   <Button 
-                     onClick={() => {
-                       // Force hard refresh
-                       if (typeof window !== 'undefined') {
-                         window.location.href = window.location.href;
-                       }
-                     }} 
-                     variant="outline" 
-                     size="sm"
-                   >
-                     Actualiser
-                   </Button>
-                  )}
-                </div>
-
-                {!isOnline && (
-                  <div className="text-xs text-muted-foreground bg-orange-50 p-2 rounded">
-                    <strong>Conseil:</strong> Vérifiez votre Wi-Fi ou vos données mobiles, puis réessayez.
-                  </div>
-                )}
-              </div>
-            </AlertDescription>
-          </div>
-        </Alert>
+    <div style={{ 
+      padding: '20px', 
+      textAlign: 'center',
+      fontFamily: 'system-ui, sans-serif',
+      background: '#f5f5f5',
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      <div>
+        <h3>Erreur inattendue</h3>
+        <p>Une erreur s'est produite lors du chargement.</p>
+        {error && process.env.NODE_ENV === 'development' && (
+          <details style={{ margin: '10px 0', textAlign: 'left' }}>
+            <summary>Détails (dev only)</summary>
+            <pre style={{ fontSize: '10px', overflow: 'auto' }}>
+              {error.stack}
+            </pre>
+          </details>
+        )}
+        <button 
+          onClick={handleRetry}
+          style={{
+            padding: '10px 20px',
+            background: '#007bff',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            margin: '5px'
+          }}
+        >
+          Réessayer ({retryCount + 1})
+        </button>
+        <button 
+          onClick={() => window.location.reload()}
+          style={{
+            padding: '10px 20px',
+            background: '#6c757d',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            margin: '5px'
+          }}
+        >
+          Rafraîchir
+        </button>
       </div>
     </div>
   );

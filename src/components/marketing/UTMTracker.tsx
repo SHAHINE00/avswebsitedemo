@@ -3,9 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { analytics } from '@/utils/analytics';
 
 const UTMTracker: React.FC = () => {
-  // Check React availability first
-  if (!React?.useEffect) {
-    console.warn('UTMTracker: React hooks not available');
+  // Early return if React is not available - don't use any hooks
+  if (typeof React === 'undefined' || React === null || !React.useEffect) {
     return null;
   }
 
@@ -13,7 +12,7 @@ const UTMTracker: React.FC = () => {
   try {
     location = useLocation();
   } catch (error) {
-    console.warn('UTMTracker: useLocation failed:', error);
+    console.warn('UTMTracker: useLocation failed - React may be null:', error);
     return null;
   }
 
