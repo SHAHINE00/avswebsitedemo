@@ -109,114 +109,117 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
     }
   ];
 
-  // Filter courses based on selected domain
-  const getCoursesForDomain = (domainValue: string): Course[] => {
-    if (!courses.length) return [];
+  // Memoize available courses to prevent recalculation on every render
+  const availableCourses = React.useMemo(() => {
+    if (!courses.length || !formData.formation.domaine) return [];
 
     const allCourses = courses.filter(course => course.status === 'published');
-    logInfo('Available courses:', allCourses.map(c => c.title));
+    
+    const getCoursesForDomain = (domainValue: string): Course[] => {
+      switch (domainValue) {
+        case 'ai-data':
+          return allCourses.filter(course => {
+            const title = course.title.toLowerCase();
+            const subtitle = course.subtitle?.toLowerCase() || '';
+            
+            const aiKeywords = [
+              'ia', 'ai', 'intelligence artificielle', 'artificial intelligence',
+              'machine learning', 'deep learning', 'data science', 'data analysis',
+              'business intelligence', 'computer vision', 'opencv', 'python',
+              'scikit-learn', 'tensorflow', 'neural network', 'algorithm',
+              'statistics', 'analytics', 'prediction', 'modeling'
+            ];
+            
+            return aiKeywords.some(keyword => 
+              title.includes(keyword) || subtitle.includes(keyword)
+            );
+          });
 
-    switch (domainValue) {
-      case 'ai-data':
-        const aiCourses = allCourses.filter(course => {
-          const title = course.title.toLowerCase();
-          const subtitle = course.subtitle?.toLowerCase() || '';
-          
-          // AI & Data Science keywords
-          const aiKeywords = [
-            'ia', 'ai', 'intelligence artificielle', 'artificial intelligence',
-            'machine learning', 'deep learning', 'data science', 'data analysis',
-            'business intelligence', 'computer vision', 'opencv', 'python',
-            'scikit-learn', 'tensorflow', 'neural network', 'algorithm',
-            'statistics', 'analytics', 'prediction', 'modeling'
-          ];
-          
-          return aiKeywords.some(keyword => 
-            title.includes(keyword) || subtitle.includes(keyword)
-          );
-        });
-        logInfo('AI courses filtered:', aiCourses.map(c => c.title));
-        return aiCourses;
+        case 'programming':
+          return allCourses.filter(course => {
+            const title = course.title.toLowerCase();
+            const subtitle = course.subtitle?.toLowerCase() || '';
+            
+            const progKeywords = [
+              'programmation', 'programming', 'développement', 'development',
+              'web', 'mobile', 'app', 'database', 'cloud', 'devops',
+              'cybersécurité', 'cybersecurity', 'blockchain', 'iot',
+              'html', 'css', 'javascript', 'python', 'java', 'react',
+              'node', 'sql', 'aws', 'azure', 'docker', 'kubernetes'
+            ];
+            
+            return progKeywords.some(keyword => 
+              title.includes(keyword) || subtitle.includes(keyword)
+            );
+          });
 
-      case 'programming':
-        const programmingCourses = allCourses.filter(course => {
-          const title = course.title.toLowerCase();
-          const subtitle = course.subtitle?.toLowerCase() || '';
-          
-          // Programming & Infrastructure keywords
-          const progKeywords = [
-            'programmation', 'programming', 'développement', 'development',
-            'web', 'mobile', 'app', 'database', 'cloud', 'devops',
-            'cybersécurité', 'cybersecurity', 'blockchain', 'iot',
-            'html', 'css', 'javascript', 'python', 'java', 'react',
-            'node', 'sql', 'aws', 'azure', 'docker', 'kubernetes'
-          ];
-          
-          return progKeywords.some(keyword => 
-            title.includes(keyword) || subtitle.includes(keyword)
-          );
-        });
-        logInfo('Programming courses filtered:', programmingCourses.map(c => c.title));
-        return programmingCourses;
+        case 'marketing':
+          return allCourses.filter(course => {
+            const title = course.title.toLowerCase();
+            const subtitle = course.subtitle?.toLowerCase() || '';
+            
+            const marketingKeywords = [
+              'marketing', 'digital', 'e-commerce', 'social media',
+              'content', 'design', 'créatif', 'creative', 'video',
+              'photoshop', 'illustrator', 'excel', 'analytics',
+              'seo', 'sem', 'advertising', 'brand', 'communication'
+            ];
+            
+            return marketingKeywords.some(keyword => 
+              title.includes(keyword) || subtitle.includes(keyword)
+            );
+          });
 
-      case 'marketing':
-        const marketingCourses = allCourses.filter(course => {
-          const title = course.title.toLowerCase();
-          const subtitle = course.subtitle?.toLowerCase() || '';
-          
-          // Marketing & Creative keywords
-          const marketingKeywords = [
-            'marketing', 'digital', 'e-commerce', 'social media',
-            'content', 'design', 'créatif', 'creative', 'video',
-            'photoshop', 'illustrator', 'excel', 'analytics',
-            'seo', 'sem', 'advertising', 'brand', 'communication'
-          ];
-          
-          return marketingKeywords.some(keyword => 
-            title.includes(keyword) || subtitle.includes(keyword)
-          );
-        });
-        logInfo('Marketing courses filtered:', marketingCourses.map(c => c.title));
-        return marketingCourses;
+        default:
+          return [];
+      }
+    };
 
-      default:
-        return [];
-    }
-  };
+    return getCoursesForDomain(formData.formation.domaine);
+  }, [courses, formData.formation.domaine]);
 
-  const availableCourses = getCoursesForDomain(formData.formation.domaine);
-
-  // Reset downstream selections when upstream changes
+  // Reset downstream selections when domain changes
   React.useEffect(() => {
     if (formData.formation.domaine) {
-      setFormData(prev => ({
-        ...prev,
-        formation: {
-          ...prev.formation,
-          programme: '',
-          programmeDetails: undefined
+      setFormData(prev => {
+        // Only update if programme is currently set (to avoid unnecessary updates)
+        if (prev.formation.programme || prev.formation.programmeDetails) {
+          return {
+            ...prev,
+            formation: {
+              ...prev.formation,
+              programme: '',
+              programmeDetails: undefined
+            }
+          };
         }
-      }));
+        return prev;
+      });
     }
-  }, [formData.formation.domaine]);
+  }, [formData.formation.domaine, setFormData]);
 
+  // Update program details when programme selection changes
   React.useEffect(() => {
     if (formData.formation.programme && availableCourses.length > 0) {
       const selectedCourse = availableCourses.find(course => course.id === formData.formation.programme);
-      if (selectedCourse && selectedCourse !== formData.formation.programmeDetails) {
-        setFormData(prev => ({
-          ...prev,
-          formation: {
-            ...prev.formation,
-            programmeDetails: selectedCourse
-          }
-        }));
+      if (selectedCourse) {
+        // Use JSON comparison to prevent unnecessary updates
+        const currentDetails = formData.formation.programmeDetails;
+        if (!currentDetails || currentDetails.id !== selectedCourse.id) {
+          setFormData(prev => ({
+            ...prev,
+            formation: {
+              ...prev.formation,
+              programmeDetails: selectedCourse
+            }
+          }));
+        }
       }
     }
-  }, [formData.formation.programme, availableCourses.length]);
+  }, [formData.formation.programme, availableCourses, formData.formation.programmeDetails, setFormData]);
 
-  // Handle input changes with validation and formatting
-  const handleInputChange = (field: string, value: string) => {
+  // Memoize input change handler to prevent unnecessary re-renders
+  const handleInputChange = React.useCallback((field: string, value: string) => {
     // Auto-format phone numbers
     if (field === 'phone') {
       value = value.replace(/[^\d+\-\s]/g, ''); // Only allow digits, +, -, and spaces
@@ -254,13 +257,13 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
         validate(field, value);
       }
     }
-  };
+  }, [setFormData, touched, validate]);
 
-  // Handle field blur for validation
-  const handleFieldBlur = (field: string, value: string) => {
+  // Memoize field blur handler
+  const handleFieldBlur = React.useCallback((field: string, value: string) => {
     touch(field);
     validate(field, value);
-  };
+  }, [touch, validate]);
 
   const isFormValid = () => {
     const basicFieldsValid = validateAll({
