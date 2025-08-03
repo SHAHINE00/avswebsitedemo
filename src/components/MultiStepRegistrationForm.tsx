@@ -35,8 +35,8 @@ interface MultiStepRegistrationFormProps {
 const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ onSubmit, loading }) => {
   const { courses, loading: coursesLoading } = useCourses();
   
-  // Form persistence
-  const { data: formData, updateData: setFormData, clearData } = useFormPersistence<FormData>('registration-form', {
+  // Memoize initial data to prevent recreation on every render
+  const initialData = React.useMemo(() => ({
     firstName: '',
     lastName: '',
     email: '',
@@ -47,7 +47,10 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
       programme: '',
       programmeDetails: undefined
     }
-  });
+  }), []);
+  
+  // Form persistence
+  const { data: formData, updateData: setFormData, clearData } = useFormPersistence<FormData>('registration-form', initialData);
 
   // Form validation
   const { errors, touched, validate, validateAll, touch, hasError, getError } = useFormValidation({

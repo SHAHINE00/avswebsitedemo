@@ -1,20 +1,21 @@
 import * as React from 'react';
 
 export const useFormPersistence = <T>(key: string, initialData: T) => {
+  const initialDataRef = React.useRef<T>(initialData);
   const [data, setData] = React.useState<T>(initialData);
 
-  // Load from localStorage on mount
+  // Load from localStorage on mount (only once)
   React.useEffect(() => {
     try {
       const saved = localStorage.getItem(key);
       if (saved) {
         const parsedData = JSON.parse(saved);
-        setData({ ...initialData, ...parsedData });
+        setData({ ...initialDataRef.current, ...parsedData });
       }
     } catch (error) {
       console.warn('Failed to load form data from localStorage:', error);
     }
-  }, [key, initialData]);
+  }, [key]);
 
   // Save to localStorage whenever data changes
   React.useEffect(() => {
@@ -37,11 +38,11 @@ export const useFormPersistence = <T>(key: string, initialData: T) => {
   const clearData = React.useCallback(() => {
     try {
       localStorage.removeItem(key);
-      setData(initialData);
+      setData(initialDataRef.current);
     } catch (error) {
       console.warn('Failed to clear form data from localStorage:', error);
     }
-  }, [key, initialData]);
+  }, [key]);
 
   return {
     data,
