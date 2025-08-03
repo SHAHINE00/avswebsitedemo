@@ -28,15 +28,30 @@ export class GlobalErrorBoundary extends React.Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     try {
+      // Validate React is available before proceeding
+      if (typeof React === 'undefined' || React === null) {
+        console.error('React is null in error boundary - critical issue');
+        this.setState({ errorInfo: { componentStack: 'React unavailable in error boundary' } });
+        return;
+      }
+
       logError('Global Error Boundary caught an error:', { error, errorInfo });
       this.setState({ errorInfo });
+      
+      // Track React-specific errors
+      if (error.message && (
+          error.message.includes('Cannot read properties of null') ||
+          error.message.includes('useState') ||
+          error.message.includes('useEffect') ||
+          error.message.includes('useContext'))) {
+        logError('React hooks null error detected:', error.message);
+      }
       
       // Track mobile-specific errors
       if (typeof window !== 'undefined' && error.message) {
         if (error.message.includes('Failed to fetch dynamically imported module') ||
             error.message.includes('Loading chunk') ||
             error.message.includes('Loading CSS chunk')) {
-          // This is likely a mobile network/caching issue
           logError('Mobile loading error detected:', error.message);
         }
       }

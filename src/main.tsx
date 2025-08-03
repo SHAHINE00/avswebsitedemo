@@ -2,11 +2,14 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
-// Early React validation check
-if (!React || !React.useState) {
-  throw new Error('React is not properly loaded');
+// Enhanced React validation check
+if (!React || React === null) {
+  throw new Error('React is null or undefined - critical loading issue');
 }
-console.log('React loaded successfully in main.tsx');
+if (!React.useState || !React.useEffect || !React.useContext) {
+  throw new Error('React hooks are not available - import issue detected');
+}
+console.log('React and hooks validated successfully in main.tsx');
 
 import App from './App.tsx';
 import './index.css';
