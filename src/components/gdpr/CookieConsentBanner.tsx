@@ -64,8 +64,8 @@ const CookieConsentBanner: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end justify-center p-4">
-      <Card className="w-full max-w-2xl bg-background border-border shadow-2xl">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 sm:p-6">
+      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-background border-border shadow-2xl animate-scale-in">
         <CardHeader className="pb-4">
           <div className="flex items-center gap-3">
             <Cookie className="h-6 w-6 text-primary" />
