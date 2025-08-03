@@ -36,60 +36,84 @@ export const useCourses = () => {
   const [error, setError] = React.useState<string | null>(null);
   const [retryCount, setRetryCount] = React.useState(0);
 
-  const fetchCourses = React.useCallback(async (attempt = 1) => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      logInfo(`[useCourses] Fetching courses (attempt ${attempt})`);
-      
-      const { data, error } = await supabase
-        .from('courses')
-        .select('*')
-        .eq('status', 'published')
-        .order('display_order');
-
-      if (error) {
-        logError(`[useCourses] Supabase error:`, error);
-        throw error;
-      }
-
-      logInfo(`[useCourses] Successfully fetched ${data?.length || 0} courses`);
-      setCourses(data || []);
-      setRetryCount(0);
-    } catch (err: any) {
-      logError(`[useCourses] Fetch failed (attempt ${attempt}):`, err);
-      
-      // Retry logic for temporary issues
-      if (attempt < 3 && (err.message?.includes('schema cache') || err.message?.includes('404'))) {
-        logInfo(`[useCourses] Retrying in ${attempt * 1000}ms...`);
-        setTimeout(() => {
-          setRetryCount(attempt);
-          fetchCourses(attempt + 1);
-        }, attempt * 1000);
-        return;
-      }
-      
-      setError(err.message || 'Failed to fetch courses');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const retry = React.useCallback(() => {
-    fetchCourses(1);
-  }, [fetchCourses]);
+  // Use useRef to create a stable fetch function
+  const fetchCoursesRef = React.useRef<(attempt?: number) => Promise<void>>();
+  const isMountedRef = React.useRef(true);
 
   React.useEffect(() => {
-    fetchCourses();
-  }, [fetchCourses]);
+    // Cleanup function to prevent state updates on unmounted component
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  if (!fetchCoursesRef.current) {
+    fetchCoursesRef.current = async (attempt = 1) => {
+      try {
+        if (!isMountedRef.current) return;
+        
+        setLoading(true);
+        setError(null);
+        
+        logInfo(`[useCourses] Fetching courses (attempt ${attempt})`);
+        
+        const { data, error } = await supabase
+          .from('courses')
+          .select('*')
+          .eq('status', 'published')
+          .order('display_order');
+
+        if (error) {
+          logError(`[useCourses] Supabase error:`, error);
+          throw error;
+        }
+
+        if (!isMountedRef.current) return;
+
+        logInfo(`[useCourses] Successfully fetched ${data?.length || 0} courses`);
+        setCourses(data || []);
+        setRetryCount(0);
+      } catch (err: any) {
+        if (!isMountedRef.current) return;
+        
+        logError(`[useCourses] Fetch failed (attempt ${attempt}):`, err);
+        
+        // Retry logic for temporary issues
+        if (attempt < 3 && (err.message?.includes('schema cache') || err.message?.includes('404'))) {
+          logInfo(`[useCourses] Retrying in ${attempt * 1000}ms...`);
+          setTimeout(() => {
+            if (isMountedRef.current) {
+              setRetryCount(attempt);
+              fetchCoursesRef.current!(attempt + 1);
+            }
+          }, attempt * 1000);
+          return;
+        }
+        
+        setError(err.message || 'Failed to fetch courses');
+      } finally {
+        if (isMountedRef.current) {
+          setLoading(false);
+        }
+      }
+    };
+  }
+
+  const retry = React.useCallback(() => {
+    fetchCoursesRef.current!(1);
+  }, []);
+
+  // Only fetch once on mount - no dependencies needed since state setters are stable
+  React.useEffect(() => {
+    fetchCoursesRef.current!();
+  }, []); // Empty dependency array - fetch only once on mount
 
   return { 
     courses, 
     loading, 
     error, 
     retryCount,
-    refetch: fetchCourses,
+    refetch: () => fetchCoursesRef.current!(1),
     retry 
   };
 };
