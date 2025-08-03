@@ -3,7 +3,19 @@ import { useLocation } from 'react-router-dom';
 import { analytics } from '@/utils/analytics';
 
 const UTMTracker: React.FC = () => {
-  const location = useLocation();
+  // Check React availability first
+  if (!React?.useEffect) {
+    console.warn('UTMTracker: React hooks not available');
+    return null;
+  }
+
+  let location;
+  try {
+    location = useLocation();
+  } catch (error) {
+    console.warn('UTMTracker: useLocation failed:', error);
+    return null;
+  }
 
   React.useEffect(() => {
     const urlParams = new URLSearchParams(location.search);

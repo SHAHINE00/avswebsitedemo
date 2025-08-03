@@ -28,6 +28,19 @@ const SEOHead: React.FC<SEOHeadProps> = ({
   ogUrl,
   jsonLd = []
 }) => {
+  // Check React availability first
+  if (!React?.useEffect) {
+    console.warn('SEOHead: React.useEffect not available, returning basic component');
+    const allJsonLd = [generateOrganizationJsonLd(), ...jsonLd];
+    return (
+      <>
+        {allJsonLd.map((data, index) => (
+          <JsonLd key={index} data={data} />
+        ))}
+      </>
+    );
+  }
+
   React.useEffect(() => {
     // Update document title
     document.title = title;
