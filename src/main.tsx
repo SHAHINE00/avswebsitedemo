@@ -1,4 +1,10 @@
+// Ensure React is loaded first
 import * as React from 'react'
+// Test React availability immediately
+if (!React || !React.useState) {
+  throw new Error('React is not properly loaded');
+}
+console.log('React loaded successfully in main.tsx');
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
