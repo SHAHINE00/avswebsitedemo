@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useState, useEffect, useCallback } from 'react';
 
 export const useFormPersistence = <T>(key: string, initialData: T) => {

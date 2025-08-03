@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { analytics, trackPageView } from '@/utils/analytics';
 import { logWarn } from '@/utils/logger';
@@ -8,8 +8,12 @@ export const usePageTracking = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Track page view on route change
-    trackPageView(location.pathname + location.search);
+    try {
+      // Track page view on route change
+      trackPageView(location.pathname + location.search);
+    } catch (error) {
+      logWarn('Page tracking failed:', error);
+    }
   }, [location]);
 };
 

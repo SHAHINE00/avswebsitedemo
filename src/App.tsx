@@ -1,5 +1,6 @@
 
-import React, { lazy, Suspense, useEffect } from "react";
+import * as React from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
@@ -60,8 +61,12 @@ const LazyWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 
 // Analytics wrapper component to handle hooks inside Router context
 const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  usePageTracking();
-  useScrollTracking();
+  try {
+    usePageTracking();
+    useScrollTracking();
+  } catch (error) {
+    console.warn('Analytics tracking failed:', error);
+  }
   return <>{children}</>;
 };
 
