@@ -4,12 +4,23 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { useGDPRConsent, ConsentPreferences } from '@/hooks/useGDPRConsent';
+import { useGDPRMonitoring } from '@/hooks/useGDPRMonitoring';
 import { Shield, Cookie, BarChart3, Target, Settings } from 'lucide-react';
 
 const CookieConsentBanner: React.FC = () => {
   const { consent, showBanner, updateConsent, acceptAll, rejectOptional } = useGDPRConsent();
+  const { logGDPRError } = useGDPRMonitoring();
   const [showDetails, setShowDetails] = useState(false);
   const [tempConsent, setTempConsent] = useState<ConsentPreferences>(consent);
+
+  // Enhanced error handling for component rendering
+  React.useEffect(() => {
+    try {
+      setTempConsent(consent);
+    } catch (error) {
+      logGDPRError('component_render', 'Failed to sync consent state', error);
+    }
+  }, [consent, logGDPRError]);
 
   if (!showBanner) return null;
 
@@ -45,7 +56,11 @@ const CookieConsentBanner: React.FC = () => {
   ];
 
   const handleSavePreferences = () => {
-    updateConsent(tempConsent);
+    try {
+      updateConsent(tempConsent);
+    } catch (error) {
+      logGDPRError('component_render', 'Failed to save consent preferences', error);
+    }
   };
 
   return (

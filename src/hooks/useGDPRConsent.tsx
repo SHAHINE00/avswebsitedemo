@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 
 export interface ConsentPreferences {
   necessary: boolean;
@@ -15,21 +15,56 @@ const DEFAULT_CONSENT: ConsentPreferences = {
 };
 
 export const useGDPRConsent = () => {
-  const [consent, setConsent] = useState<ConsentPreferences>(DEFAULT_CONSENT);
-  const [hasChosenConsent, setHasChosenConsent] = useState(false);
-  const [showBanner, setShowBanner] = useState(false);
+  // Enhanced error handling and validation
+  if (!React || !React.useState) {
+    console.warn('React not available in useGDPRConsent');
+    return {
+      consent: DEFAULT_CONSENT,
+      hasChosenConsent: false,
+      showBanner: false,
+      updateConsent: () => {},
+      acceptAll: () => {},
+      rejectOptional: () => {},
+      revokeConsent: () => {},
+    };
+  }
 
-  useEffect(() => {
-    const storedConsent = localStorage.getItem('gdpr-consent');
-    const consentTimestamp = localStorage.getItem('gdpr-consent-timestamp');
+  const [consent, setConsent] = React.useState<ConsentPreferences>(DEFAULT_CONSENT);
+  const [hasChosenConsent, setHasChosenConsent] = React.useState(false);
+  const [showBanner, setShowBanner] = React.useState(false);
+
+  React.useEffect(() => {
+    try {
+      // Validate localStorage is available
+      if (typeof window === 'undefined' || !window.localStorage) {
+        console.warn('localStorage not available for GDPR consent');
+        setShowBanner(true);
+        return;
+      }
+
+      const storedConsent = localStorage.getItem('gdpr-consent');
+      const consentTimestamp = localStorage.getItem('gdpr-consent-timestamp');
     
     if (storedConsent && consentTimestamp) {
       const timestamp = parseInt(consentTimestamp);
       const thirteenMonthsAgo = Date.now() - (13 * 30 * 24 * 60 * 60 * 1000);
       
       if (timestamp > thirteenMonthsAgo) {
-        setConsent(JSON.parse(storedConsent));
-        setHasChosenConsent(true);
+        try {
+          const parsedConsent = JSON.parse(storedConsent);
+          // Validate consent structure
+          if (parsedConsent && typeof parsedConsent === 'object') {
+            setConsent(parsedConsent);
+            setHasChosenConsent(true);
+          } else {
+            throw new Error('Invalid consent structure');
+          }
+        } catch (error) {
+          console.warn('GDPR consent parsing error:', error);
+          setShowBanner(true);
+          localStorage.removeItem('gdpr-consent');
+          localStorage.removeItem('gdpr-consent-timestamp');
+        }
       } else {
         // Consent expired, show banner again
         setShowBanner(true);
@@ -39,19 +74,31 @@ export const useGDPRConsent = () => {
     } else {
       setShowBanner(true);
     }
+    } catch (error) {
+      console.error('GDPR consent initialization error:', error);
+      setShowBanner(true);
+    }
   }, []);
 
   const updateConsent = (newConsent: ConsentPreferences) => {
-    setConsent(newConsent);
-    setHasChosenConsent(true);
-    setShowBanner(false);
-    
-    localStorage.setItem('gdpr-consent', JSON.stringify(newConsent));
-    localStorage.setItem('gdpr-consent-timestamp', Date.now().toString());
-    
-    // Reload page to apply consent changes to analytics
-    if (newConsent.analytics !== consent.analytics || newConsent.marketing !== consent.marketing) {
-      window.location.reload();
+    try {
+      setConsent(newConsent);
+      setHasChosenConsent(true);
+      setShowBanner(false);
+      
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem('gdpr-consent', JSON.stringify(newConsent));
+        localStorage.setItem('gdpr-consent-timestamp', Date.now().toString());
+      }
+      
+      // Reload page to apply consent changes to analytics
+      if (newConsent.analytics !== consent.analytics || newConsent.marketing !== consent.marketing) {
+        // Dispatch event for analytics service to react to consent changes
+        window.dispatchEvent(new CustomEvent('gdpr-consent-changed', { detail: newConsent }));
+        setTimeout(() => window.location.reload(), 100);
+      }
+    } catch (error) {
+      console.error('Error updating GDPR consent:', error);
     }
   };
 

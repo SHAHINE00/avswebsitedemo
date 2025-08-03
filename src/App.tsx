@@ -11,6 +11,7 @@ import UTMTracker from "@/components/marketing/UTMTracker";
 import SEOAnalytics from "@/components/SEOAnalytics";
 import StructuredData from "@/components/StructuredData";
 import CookieConsentBanner from "@/components/gdpr/CookieConsentBanner";
+import SafeGDPRWrapper from "@/components/gdpr/SafeGDPRWrapper";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 
 // Critical pages (loaded immediately for better performance)
@@ -121,7 +122,9 @@ const App = () => {
             <UTMTracker />
             <SEOAnalytics />
             <StructuredData type="website" />
-            <CookieConsentBanner />
+            <SafeGDPRWrapper>
+              <CookieConsentBanner />
+            </SafeGDPRWrapper>
             <AuthProvider>
           <Routes>
             {/* Critical routes - no lazy loading */}

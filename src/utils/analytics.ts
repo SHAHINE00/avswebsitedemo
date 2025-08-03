@@ -22,9 +22,11 @@ declare global {
 class AnalyticsService {
   private isInitialized = false;
   private isEnabled = ENV_CONFIG.features.enableAnalytics;
+  private consentListener: ((event: CustomEvent) => void) | null = null;
 
   constructor() {
     this.initialize();
+    this.setupConsentListener();
   }
 
   private initialize() {
@@ -64,15 +66,35 @@ class AnalyticsService {
     }
   }
 
+  private setupConsentListener() {
+    if (typeof window === 'undefined') return;
+    
+    this.consentListener = (event: CustomEvent) => {
+      const newConsent = event.detail;
+      if (newConsent.analytics && !this.isInitialized) {
+        // User just granted analytics consent, initialize now
+        this.initialize();
+      } else if (!newConsent.analytics && this.isInitialized) {
+        // User revoked analytics consent, disable tracking
+        this.isInitialized = false;
+        logInfo('Analytics disabled due to consent revocation');
+      }
+    };
+    
+    window.addEventListener('gdpr-consent-changed', this.consentListener as EventListener);
+  }
+
   private getGDPRConsent() {
     if (typeof window === 'undefined') return { analytics: false };
     
-    const consent = localStorage.getItem('gdpr-consent');
-    if (!consent) return { analytics: false };
-    
     try {
-      return JSON.parse(consent);
-    } catch {
+      const consent = localStorage.getItem('gdpr-consent');
+      if (!consent) return { analytics: false };
+      
+      const parsedConsent = JSON.parse(consent);
+      return parsedConsent || { analytics: false };
+    } catch (error) {
+      console.warn('Error parsing GDPR consent:', error);
       return { analytics: false };
     }
   }
