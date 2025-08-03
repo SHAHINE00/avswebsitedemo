@@ -6,6 +6,14 @@ export interface ValidationRule {
   minLength?: number;
   maxLength?: number;
   custom?: (value: string) => string | null;
+  asyncValidator?: (value: string) => Promise<string | null>;
+}
+
+export interface AsyncValidationState {
+  [key: string]: {
+    isValidating: boolean;
+    result?: string | null;
+  };
 }
 
 export interface ValidationErrors {
@@ -15,6 +23,7 @@ export interface ValidationErrors {
 export const useFormValidation = (rules: { [key: string]: ValidationRule }) => {
   const [errors, setErrors] = React.useState<ValidationErrors>({});
   const [touched, setTouched] = React.useState<{ [key: string]: boolean }>({});
+  const [asyncValidation, setAsyncValidation] = React.useState<AsyncValidationState>({});
   
   // Stabilize rules to prevent unnecessary re-renders
   const stableRules = React.useRef(rules);
@@ -51,10 +60,36 @@ export const useFormValidation = (rules: { [key: string]: ValidationRule }) => {
     return null;
   }, []);
 
-  const validate = React.useCallback((name: string, value: string) => {
-    const error = validateField(name, value);
-    setErrors(prev => ({ ...prev, [name]: error }));
-    return error === null;
+  const validate = React.useCallback(async (name: string, value: string) => {
+    const syncError = validateField(name, value);
+    setErrors(prev => ({ ...prev, [name]: syncError }));
+    
+    // Handle async validation
+    const rule = stableRules.current[name];
+    if (rule?.asyncValidator && !syncError) {
+      setAsyncValidation(prev => ({ 
+        ...prev, 
+        [name]: { isValidating: true } 
+      }));
+      
+      try {
+        const asyncError = await rule.asyncValidator(value);
+        setErrors(prev => ({ ...prev, [name]: asyncError }));
+        setAsyncValidation(prev => ({ 
+          ...prev, 
+          [name]: { isValidating: false, result: asyncError } 
+        }));
+        return asyncError === null;
+      } catch (error) {
+        setAsyncValidation(prev => ({ 
+          ...prev, 
+          [name]: { isValidating: false, result: null } 
+        }));
+        return true; // Assume valid if async validation fails
+      }
+    }
+    
+    return syncError === null;
   }, [validateField]);
 
   const validateAll = React.useCallback((values: { [key: string]: string }) => {
@@ -78,16 +113,19 @@ export const useFormValidation = (rules: { [key: string]: ValidationRule }) => {
   const clearErrors = React.useCallback(() => {
     setErrors({});
     setTouched({});
+    setAsyncValidation({});
   }, []);
 
   return {
     errors,
     touched,
+    asyncValidation,
     validate,
     validateAll,
     touch,
     clearErrors,
     hasError: (name: string) => touched[name] && !!errors[name],
-    getError: (name: string) => touched[name] ? errors[name] : null
+    getError: (name: string) => touched[name] ? errors[name] : null,
+    isValidating: (name: string) => asyncValidation[name]?.isValidating || false
   };
 };

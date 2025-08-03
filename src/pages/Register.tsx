@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import MultiStepRegistrationForm from '@/components/MultiStepRegistrationForm';
+import EnhancedMultiStepForm from '@/components/EnhancedMultiStepForm';
 import SimpleErrorBoundary from '@/components/ui/SimpleErrorBoundary';
 import { useToast } from '@/hooks/use-toast';
 import SEOHead from '@/components/SEOHead';
@@ -98,7 +98,7 @@ const Register = () => {
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto">
             <SimpleErrorBoundary>
-              <MultiStepRegistrationForm 
+              <EnhancedMultiStepForm 
                 onSubmit={handleFormSubmit}
                 loading={loading}
               />
