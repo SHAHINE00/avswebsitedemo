@@ -86,7 +86,7 @@ const server = http.createServer((req, res) => {
   
   const filePath = path.join(DIST_DIR, pathname);
   const ext = path.extname(filePath).toLowerCase();
-  const mimeType = mimeTypes[ext] || 'text/html; charset=utf-8'; // Default to HTML instead of octet-stream
+  const mimeType = mimeTypes[ext] || 'application/octet-stream';
   const isCompressible = shouldCompress(mimeType);
   const acceptsGzip = req.headers['accept-encoding'] && req.headers['accept-encoding'].includes('gzip');
   

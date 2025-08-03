@@ -391,25 +391,54 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Mobile-first responsive utilities */
+  /* Responsive container system - mobile first */
   .container {
     width: 100%;
     max-width: 100%;
     padding-left: 1rem;
     padding-right: 1rem;
+    margin-left: auto;
+    margin-right: auto;
   }
 
+  /* Tablet and small desktop */
   @media (min-width: 640px) {
     .container {
+      max-width: 640px;
       padding-left: 1.5rem;
       padding-right: 1.5rem;
     }
   }
 
-  @media (min-width: 1024px) {
+  /* Medium desktop */
+  @media (min-width: 768px) {
     .container {
+      max-width: 768px;
       padding-left: 2rem;
       padding-right: 2rem;
+    }
+  }
+
+  /* Large desktop */
+  @media (min-width: 1024px) {
+    .container {
+      max-width: 1024px;
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  /* Extra large desktop */
+  @media (min-width: 1280px) {
+    .container {
+      max-width: 1280px;
+    }
+  }
+
+  /* Ultra wide desktop */
+  @media (min-width: 1536px) {
+    .container {
+      max-width: 1536px;
     }
   }
 
