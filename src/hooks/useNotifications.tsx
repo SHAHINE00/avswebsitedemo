@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import { logError } from '@/utils/logger';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -19,7 +19,7 @@ export interface Notification {
 
 export const useNotifications = () => {
   // Add React null safety
-  if (!React || !React.useState || !React.useEffect) {
+  if (!React || !useState || !useEffect) {
     console.warn('useNotifications: React hooks not available');
     return {
       notifications: [],
@@ -49,9 +49,9 @@ export const useNotifications = () => {
     };
   }
 
-  const [notifications, setNotifications] = React.useState<Notification[]>([]);
-  const [unreadCount, setUnreadCount] = React.useState(0);
-  const [loading, setLoading] = React.useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const fetchNotifications = async () => {
     if (!user) return;
@@ -149,7 +149,7 @@ export const useNotifications = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       fetchNotifications();
 

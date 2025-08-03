@@ -1,5 +1,5 @@
 
-import * as React from 'react';
+import React, { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -7,7 +7,7 @@ import { logInfo, logError } from '@/utils/logger';
 import { trackCourseEnrollment } from '@/utils/analytics';
 
 export const useEnrollment = () => {
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
 

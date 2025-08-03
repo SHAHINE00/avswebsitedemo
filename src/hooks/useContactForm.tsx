@@ -1,5 +1,5 @@
 
-import * as React from 'react';
+import React, { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { trackFormSubmission } from '@/utils/analytics';
@@ -15,7 +15,7 @@ interface ContactFormData {
 
 export const useContactForm = () => {
   // Add React null safety
-  if (!React || !React.useState) {
+  if (!React || !useState) {
     console.warn('useContactForm: React hooks not available');
     return {
       submitContactForm: () => Promise.resolve(false),
@@ -23,7 +23,7 @@ export const useContactForm = () => {
     };
   }
 
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   
   let toast;
   try {

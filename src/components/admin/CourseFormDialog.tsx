@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -66,14 +66,14 @@ const CourseFormDialog: React.FC<CourseFormDialogProps> = ({
   const watchedLinkTo = watch('link_to');
 
   // Auto-generate link when title changes (only for new courses)
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isEditing && watchedTitle && !watchedLinkTo) {
       const slug = generateSlug(watchedTitle);
       setValue('link_to', `/course/${slug}`);
     }
   }, [watchedTitle, watchedLinkTo, isEditing, setValue]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (course) {
       Object.entries(course).forEach(([key, value]) => {
         setValue(key as keyof CourseFormData, value);
