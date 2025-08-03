@@ -631,13 +631,15 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
                 <div className="flex justify-center">
                   <Button
                     type="submit"
+                    onClick={handleSubmit}
                     disabled={!formData.acceptTerms || !networkStatus.isOnline || loading}
                     className="px-8 py-3 bg-gradient-to-r from-academy-blue to-academy-purple text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50"
                   >
                     {loading ? (
-                      <LoadingButton loading={true} loadingText="Inscription en cours...">
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin mr-2" />
                         Inscription en cours...
-                      </LoadingButton>
+                      </>
                     ) : (
                       "Finaliser l'inscription"
                     )}
