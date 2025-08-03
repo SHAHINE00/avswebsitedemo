@@ -434,7 +434,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                     value={formData.formation.formationType} 
                     onValueChange={(value) => handleInputChange('formation.formationType', value)}
                   >
-                    <SelectTrigger className="w-full h-12 md:h-14 lg:h-16 border-2 border-gray-200 hover:border-academy-blue transition-colors rounded-xl">
+                    <SelectTrigger className="w-full h-12 border-2 border-gray-200 hover:border-academy-blue transition-colors rounded-xl">
                       <SelectValue placeholder="Sélectionnez votre type de formation" className="text-gray-500" />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-2 shadow-xl max-h-[80vh] overflow-auto">
@@ -478,7 +478,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                   value={formData.formation.domaine} 
                   onValueChange={(value) => handleInputChange('formation.domaine', value)}
                 >
-                  <SelectTrigger className="w-full h-12 md:h-14 lg:h-16 border-2 border-gray-200 hover:border-academy-purple transition-colors rounded-xl">
+                  <SelectTrigger className="w-full h-12 border-2 border-gray-200 hover:border-academy-purple transition-colors rounded-xl">
                     <SelectValue placeholder="Choisissez votre domaine d'expertise" className="text-gray-500" />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl border-2 shadow-xl max-h-[80vh] overflow-auto">
@@ -526,7 +526,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                     value={formData.formation.programme} 
                     onValueChange={(value) => handleInputChange('formation.programme', value)}
                   >
-                    <SelectTrigger className="w-full h-12 md:h-14 lg:h-16 border-2 border-gray-200 hover:border-academy-blue transition-colors rounded-xl">
+                    <SelectTrigger className="w-full h-12 border-2 border-gray-200 hover:border-academy-blue transition-colors rounded-xl">
                       <SelectValue placeholder="Sélectionnez votre programme spécifique" className="text-gray-500" />
                     </SelectTrigger>
                     <SelectContent className="max-h-[80vh] rounded-xl border-2 shadow-xl overflow-auto">

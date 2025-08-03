@@ -352,48 +352,6 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Enhanced Android dropdown support */
-  @media screen and (max-width: 768px) {
-    /* Android Chrome specific */
-    @supports (-webkit-touch-callout: none) {
-      [data-radix-dropdown-content] {
-        position: fixed !important;
-        transform: translateZ(0);
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-        will-change: transform, opacity;
-      }
-    }
-    
-    /* Android Material Design touch targets */
-    [role="menuitem"], [role="option"] {
-      min-height: 48px;
-      min-width: 48px;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-    }
-    
-    /* Prevent Android keyboard from pushing content */
-    .course-selection-guide {
-      position: relative;
-      z-index: 1;
-    }
-    
-    /* Android-specific viewport fixes */
-    .dropdown-viewport-fix {
-      position: relative;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-      min-height: 100vh;
-    }
-    
-    /* Force dropdown positioning for Android */
-    [data-radix-popper-content-wrapper] {
-      z-index: 100000 !important;
-      position: fixed !important;
-      transform: translateZ(0) !important;
-    }
-  }
   
   .prevent-overscroll {
     -webkit-overflow-scrolling: touch;
