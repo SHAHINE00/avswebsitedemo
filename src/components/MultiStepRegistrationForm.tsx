@@ -201,17 +201,19 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
   }, [formData.formation.domaine]);
 
   React.useEffect(() => {
-    if (formData.formation.programme) {
+    if (formData.formation.programme && availableCourses.length > 0) {
       const selectedCourse = availableCourses.find(course => course.id === formData.formation.programme);
-      setFormData(prev => ({
-        ...prev,
-        formation: {
-          ...prev.formation,
-          programmeDetails: selectedCourse
-        }
-      }));
+      if (selectedCourse && selectedCourse !== formData.formation.programmeDetails) {
+        setFormData(prev => ({
+          ...prev,
+          formation: {
+            ...prev.formation,
+            programmeDetails: selectedCourse
+          }
+        }));
+      }
     }
-  }, [formData.formation.programme, availableCourses]);
+  }, [formData.formation.programme, availableCourses.length]);
 
   // Handle input changes with validation and formatting
   const handleInputChange = (field: string, value: string) => {
