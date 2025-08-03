@@ -326,7 +326,27 @@
     height: 100%;
   }
 
-  /* Simple dropdown fix - remove aggressive positioning */
+  /* Critical: Prevent dropdown from affecting page layout */
+  [data-radix-select-content] {
+    position: fixed !important;
+    z-index: 99999 !important;
+    contain: layout size style !important;
+    isolation: isolate !important;
+    will-change: transform !important;
+  }
+  
+  /* Ensure dropdown portal doesn't interfere with page flow */
+  [data-radix-popper-content-wrapper] {
+    position: fixed !important;
+    z-index: 99999 !important;
+    contain: layout !important;
+  }
+  
+  /* Prevent layout shifts when dropdown opens */
+  body[data-scroll-locked] {
+    overflow: hidden;
+    padding-right: var(--scrollbar-width, 0px);
+  }
 
   #root {
     width: 100%;
