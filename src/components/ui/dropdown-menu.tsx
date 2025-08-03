@@ -3,7 +3,7 @@ import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 import { Check, ChevronRight, Circle } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { useIsMobile } from "@/hooks/use-mobile"
+import { useIsIOS } from "@/hooks/useIsIOS"
 
 const DropdownMenu = DropdownMenuPrimitive.Root
 
@@ -59,7 +59,7 @@ const DropdownMenuContent = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
 >(({ className, sideOffset = 4, ...props }, ref) => {
-  const isMobile = useIsMobile()
+  const isIOS = useIsIOS()
   
   return (
     <DropdownMenuPrimitive.Portal>
@@ -68,17 +68,31 @@ const DropdownMenuContent = React.forwardRef<
         sideOffset={sideOffset}
         className={cn(
           "z-[9999] min-w-[8rem] overflow-hidden rounded-md border shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-          // Mobile-specific optimizations with explicit background
-          isMobile && "touch-manipulation bg-white dark:bg-gray-800 p-2",
-          !isMobile && "p-1",
+          // iOS-specific optimizations
+          isIOS && "touch-manipulation [-webkit-touch-callout:none] [-webkit-user-select:none] p-2",
+          !isIOS && "p-1",
           // Ensure proper background for visibility with semantic colors
           "bg-popover text-popover-foreground border-border",
           className
         )}
+        style={{
+          touchAction: isIOS ? 'manipulation' : 'auto',
+          WebkitTouchCallout: isIOS ? 'none' : 'default',
+          WebkitUserSelect: isIOS ? 'none' : 'auto'
+        }}
+        onPointerDown={(e) => {
+          // iOS-specific touch handling
+          if (isIOS) {
+            e.stopPropagation()
+          }
+        }}
         onPointerDownOutside={(e) => {
-          // Prevent immediate closing on mobile touch
-          if (isMobile) {
-            e.preventDefault();
+          // Prevent immediate closing on iOS by adding delay
+          if (isIOS) {
+            e.preventDefault()
+            setTimeout(() => {
+              // Allow natural close behavior after iOS touch sequence completes
+            }, 100)
           }
         }}
         {...props}
@@ -94,23 +108,32 @@ const DropdownMenuItem = React.forwardRef<
     inset?: boolean
   }
 >(({ className, inset, ...props }, ref) => {
-  const isMobile = useIsMobile()
+  const isIOS = useIsIOS()
   
   return (
     <DropdownMenuPrimitive.Item
       ref={ref}
       className={cn(
         "relative flex cursor-default select-none items-center rounded-sm text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-        // Mobile-specific touch targets and spacing
-        isMobile ? "px-3 py-3 min-h-[48px]" : "px-2 py-1.5",
-        isMobile && "touch-manipulation [-webkit-tap-highlight-color:transparent]",
+        // iOS-specific touch targets (minimum 44px for Apple guidelines)
+        isIOS ? "px-3 py-3 min-h-[44px]" : "px-2 py-1.5",
+        isIOS && "touch-manipulation [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none]",
         inset && "pl-8",
         className
       )}
+      style={{
+        touchAction: isIOS ? 'manipulation' : 'auto',
+        WebkitTapHighlightColor: isIOS ? 'transparent' : 'inherit'
+      }}
       onTouchStart={(e) => {
-        // Prevent event bubbling on mobile
-        if (isMobile) {
-          e.stopPropagation();
+        // iOS-specific touch handling with proper timing
+        if (isIOS) {
+          e.stopPropagation()
+          // Ensure touch registers properly on iOS
+          const target = e.currentTarget
+          setTimeout(() => {
+            target.focus()
+          }, 10)
         }
       }}
       {...props}
