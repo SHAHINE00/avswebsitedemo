@@ -97,7 +97,7 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
       careerOutcomes: ['Data Scientist', 'AI Engineer', 'ML Engineer', 'Business Intelligence Analyst'],
       courses: [
         { id: '1', title: 'Formation IA', subtitle: 'Intelligence Artificielle', duration: '18 mois', feature1: 'Machine Learning', feature2: 'Big Data', icon: 'brain', link: '/ai-course' },
-        { id: '2', title: 'AI & Machine Learning Engineering', subtitle: 'Ingénierie IA & ML', duration: '6 mois', feature1: 'Modèles ML en production', feature2: 'Architecture IA scalable', icon: 'brain', link: '/course/ai-machine-learning-engineering' },
+        { id: '2', title: 'AI & Machine Learning Engineering', subtitle: 'Ingénierie IA & ML', duration: '6 mois', feature1: 'Modèles ML en production', feature2: 'Architecture IA scalable', icon: 'brain', link: '/course/ai-ml-engineering' },
         { id: '3', title: 'Data Science for Business', subtitle: 'Science des données appliquée', duration: '6 mois', feature1: 'KPI business', feature2: 'Modèles prédictifs ROI', icon: 'database', link: '/course/data-science-business' }
       ]
     },
@@ -170,7 +170,7 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
       color: 'from-cyan-500 to-blue-600',
       careerOutcomes: ['Cloud Architect', 'DevOps Engineer', 'Site Reliability Engineer', 'Infrastructure Engineer'],
       courses: [
-        { id: '15', title: 'Cloud Computing (AWS, Azure)', subtitle: 'Architecture cloud', duration: '7 mois', feature1: 'AWS et Azure', feature2: 'Kubernetes', icon: 'cloud', link: '/course/cloud-computing-aws-azure' },
+        { id: '15', title: 'Cloud Computing (AWS, Azure)', subtitle: 'Architecture cloud', duration: '7 mois', feature1: 'AWS et Azure', feature2: 'Kubernetes', icon: 'cloud', link: '/course/cloud-computing' },
         { id: '16', title: 'Database Design & Management', subtitle: 'Gestion de bases de données', duration: '5 mois', feature1: 'Modélisation', feature2: 'Optimisation', icon: 'database', link: '/course/database-design-management' }
       ]
     }
@@ -238,7 +238,7 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
     
     // Smooth scroll to results after state update
     setTimeout(() => {
-      const resultsElement = document.getElementById('course-guide');
+      const resultsElement = document.getElementById('course-recommendations-results');
       if (resultsElement) {
         resultsElement.scrollIntoView({ 
           behavior: 'smooth', 
@@ -256,7 +256,7 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
 
   if (showResults) {
     return (
-      <section id="course-guide" className="py-16 bg-gradient-to-br from-gray-50 to-white">
+      <section id="course-recommendations-results" className="py-16 bg-gradient-to-br from-gray-50 to-white">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">

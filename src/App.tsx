@@ -88,7 +88,6 @@ const App = () => {
             <Route path="/ai-course" element={<LazyWrapper><AICourse /></LazyWrapper>} />
             <Route path="/programming-course" element={<LazyWrapper><ProgrammingCourse /></LazyWrapper>} />
             <Route path="/cybersecurity-course" element={<LazyWrapper><CybersecurityCourse /></LazyWrapper>} />
-            <Route path="/course/:courseSlug" element={<LazyWrapper><CourseDetailPage /></LazyWrapper>} />
             <Route path="/course/:slug" element={<LazyWrapper><GenericCourse /></LazyWrapper>} />
             <Route path="/learn/:slug" element={<LazyWrapper><CoursePlayer /></LazyWrapper>} />
             <Route path="/instructors" element={<LazyWrapper><Instructors /></LazyWrapper>} />
