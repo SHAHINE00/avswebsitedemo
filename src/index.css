@@ -112,17 +112,13 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    /* Enhanced mobile scrolling fixes */
     width: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
-    
-    /* Natural mobile scrolling */
     min-height: 100dvh;
     -webkit-overflow-scrolling: touch;
-    scroll-behavior: auto; /* Prevent smooth scrolling interference with dropdowns */
     touch-action: pan-y pinch-zoom;
     position: relative;
   }
@@ -321,14 +317,12 @@
   .scroll-container {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    scroll-behavior: auto; /* Prevent dropdown interference */
   }
 
   /* Enhanced mobile viewport fixes */
   html {
     overflow-x: hidden;
     width: 100%;
-    scroll-behavior: auto; /* Prevent dropdown focus scroll interference */
     height: 100%;
   }
 
