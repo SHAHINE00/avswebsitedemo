@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import SafeComponentWrapper from '@/components/ui/SafeComponentWrapper';
 
 interface MobileErrorHandlerProps {
