@@ -70,6 +70,24 @@ const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   return <>{children}</>;
 };
 
+// Safe Toaster wrapper that only renders after React is confirmed
+const SafeToaster: React.FC = () => {
+  const [isReactReady, setIsReactReady] = React.useState(false);
+  
+  React.useEffect(() => {
+    // Double-check React is available before allowing Toaster
+    if (React && React.useState && React.useEffect && React.useContext) {
+      setIsReactReady(true);
+    }
+  }, []);
+  
+  if (!isReactReady) {
+    return null;
+  }
+  
+  return <Toaster />;
+};
+
 const App = () => {
   // Enhanced React validation check
   if (typeof React === 'undefined' || React === null) {
@@ -139,8 +157,8 @@ const App = () => {
             <Route path="/admin/test" element={<AdminRouteGuard><LazyWrapper><AdminTest /></LazyWrapper></AdminRouteGuard>} />
           </Routes>
           
-          {/* Move Toaster after routes to ensure React is fully loaded */}
-          {React && React.useState && <Toaster />}
+          {/* Safe Toaster that only renders when React is confirmed ready */}
+          <SafeToaster />
           </AuthProvider>
           </AnalyticsProvider>
         </Router>

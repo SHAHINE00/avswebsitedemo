@@ -5,16 +5,7 @@ import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-// Safe ToastProvider wrapper that validates React
-const ToastProvider: React.FC<React.ComponentPropsWithoutRef<typeof ToastPrimitives.Provider>> = (props) => {
-  // Validate React is available before rendering
-  if (!React || !React.useState) {
-    console.warn('React not properly loaded for ToastProvider');
-    return null;
-  }
-  return <ToastPrimitives.Provider {...props} />;
-};
-ToastProvider.displayName = "ToastProvider";
+const ToastProvider = ToastPrimitives.Provider
 
 const ToastViewport = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Viewport>,
