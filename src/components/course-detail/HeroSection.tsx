@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Sparkles } from 'lucide-react';
 
 interface HeroSectionProps {
@@ -32,12 +33,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({ title, subtitle }) => {
           {subtitle}
         </p>
         
-        <a 
-          href="/register" 
+        <Link 
+          to="/register" 
           className="inline-flex items-center px-8 py-4 bg-white text-primary font-semibold rounded-full hover:bg-white/90 transition-all duration-300 transform hover:scale-105 shadow-xl"
         >
           Commencer maintenant
-        </a>
+        </Link>
       </div>
     </section>
   );

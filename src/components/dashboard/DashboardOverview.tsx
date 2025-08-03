@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -53,7 +54,7 @@ const DashboardOverview = ({ enrollments, appointments }: DashboardOverviewProps
                   Aucune formation en cours.
                 </p>
                 <Button asChild>
-                  <a href="/curriculum">Découvrir nos formations</a>
+                  <Link to="/curriculum">Découvrir nos formations</Link>
                 </Button>
               </div>
             ) : (
@@ -82,7 +83,7 @@ const DashboardOverview = ({ enrollments, appointments }: DashboardOverviewProps
                   Aucun rendez-vous programmé.
                 </p>
                 <Button size="sm" asChild>
-                  <a href="/appointment">Prendre rendez-vous</a>
+                  <Link to="/appointment">Prendre rendez-vous</Link>
                 </Button>
               </div>
             ) : (

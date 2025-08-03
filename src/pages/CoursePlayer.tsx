@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import { Link, useParams, Navigate } from 'react-router-dom';
 import { useCourses } from '@/hooks/useCourses';
 import { useCourseContent } from '@/hooks/useCourseContent';
 import { useAuth } from '@/contexts/AuthContext';
@@ -126,10 +126,10 @@ const CoursePlayer = () => {
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-4">
               <Button variant="outline" size="sm" asChild>
-                <a href="/dashboard">
+                <Link to="/dashboard">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Retour au tableau de bord
-                </a>
+                </Link>
               </Button>
             </div>
             <h1 className="text-3xl font-bold mb-2">{course.title}</h1>

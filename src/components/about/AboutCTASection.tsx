@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const AboutCTASection: React.FC = () => {
   return (
@@ -10,18 +11,18 @@ const AboutCTASection: React.FC = () => {
             Prêt à transformer votre carrière avec nos formations d'excellence ?
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a 
-              href="/curriculum" 
+            <Link 
+              to="/curriculum" 
               className="bg-white text-academy-blue px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
             >
               Découvrir nos formations
-            </a>
-            <a 
-              href="/contact" 
+            </Link>
+            <Link 
+              to="/contact" 
               className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-academy-blue transition-colors"
             >
               Nous contacter
-            </a>
+            </Link>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import { Link, useParams, Navigate } from 'react-router-dom';
 import { useCourses } from '@/hooks/useCourses';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -146,18 +146,18 @@ const GenericCourse = () => {
                 Rejoignez notre programme de formation et développez vos compétences avec nos experts.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a 
-                  href="/contact"
+                <Link 
+                  to="/contact"
                   className="bg-academy-blue text-white px-8 py-3 rounded-lg font-semibold hover:bg-academy-purple transition-colors inline-block"
                 >
                   S'inscrire maintenant
-                </a>
-                <a 
-                  href="/contact"
+                </Link>
+                <Link 
+                  to="/contact"
                   className="border border-academy-blue text-academy-blue px-8 py-3 rounded-lg font-semibold hover:bg-academy-blue hover:text-white transition-colors inline-block"
                 >
                   Plus d'informations
-                </a>
+                </Link>
               </div>
             </div>
           </div>

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const WordPressGuide: React.FC = () => {
   return (
@@ -126,12 +127,12 @@ const WordPressGuide: React.FC = () => {
         </div>
         
         <div className="mt-8 text-center">
-          <a 
-            href="/" 
+          <Link 
+            to="/" 
             className="inline-block bg-academy-blue text-white px-6 py-2 rounded hover:bg-academy-purple transition-colors"
           >
             Back to Landing Page
-          </a>
+          </Link>
         </div>
       </div>
     </div>

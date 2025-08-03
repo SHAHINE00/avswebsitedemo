@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { BookOpen } from 'lucide-react';
 import CourseProgressCard from '@/components/user/CourseProgressCard';
@@ -31,7 +32,7 @@ const DashboardCourses = ({ enrollments }: DashboardCoursesProps) => {
             Vous n'êtes inscrit à aucune formation pour le moment.
           </p>
           <Button asChild>
-            <a href="/curriculum">Découvrir nos formations</a>
+            <Link to="/curriculum">Découvrir nos formations</Link>
           </Button>
         </div>
       ) : (

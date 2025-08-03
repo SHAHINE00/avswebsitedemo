@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, Users, Clock, Award } from 'lucide-react';
 
@@ -45,20 +46,20 @@ const CTASection: React.FC = () => {
 
           <div className="text-center space-y-6">
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a 
-                href="/register" 
+              <Link 
+                to="/register" 
                 className="inline-flex items-center justify-center px-8 py-4 bg-white text-primary font-bold rounded-full hover:bg-white/90 transition-all duration-300 transform hover:scale-105 shadow-xl"
               >
                 S'inscrire maintenant
                 <ArrowRight className="ml-2 w-5 h-5" />
-              </a>
+              </Link>
               
-              <a 
-                href="/contact" 
+              <Link 
+                to="/contact" 
                 className="inline-flex items-center justify-center px-8 py-4 border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-primary transition-all duration-300"
               >
                 Demander des informations
-              </a>
+              </Link>
             </div>
 
             <p className="text-white/80 text-sm">
