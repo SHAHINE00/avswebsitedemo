@@ -97,8 +97,8 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
       careerOutcomes: ['Data Scientist', 'AI Engineer', 'ML Engineer', 'Business Intelligence Analyst'],
       courses: [
         { id: '1', title: 'Formation IA', subtitle: 'Intelligence Artificielle', duration: '18 mois', feature1: 'Machine Learning', feature2: 'Big Data', icon: 'brain', link: '/ai-course' },
-        { id: '2', title: 'AI & Machine Learning Engineering', subtitle: 'Ingénierie IA & ML', duration: '6 mois', feature1: 'Modèles ML en production', feature2: 'Architecture IA scalable', icon: 'brain' },
-        { id: '3', title: 'Data Science for Business', subtitle: 'Science des données appliquée', duration: '6 mois', feature1: 'KPI business', feature2: 'Modèles prédictifs ROI', icon: 'database' }
+        { id: '2', title: 'AI & Machine Learning Engineering', subtitle: 'Ingénierie IA & ML', duration: '6 mois', feature1: 'Modèles ML en production', feature2: 'Architecture IA scalable', icon: 'brain', link: '/course/ai-machine-learning-engineering' },
+        { id: '3', title: 'Data Science for Business', subtitle: 'Science des données appliquée', duration: '6 mois', feature1: 'KPI business', feature2: 'Modèles prédictifs ROI', icon: 'database', link: '/course/data-science-business' }
       ]
     },
     {
@@ -112,8 +112,8 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
       careerOutcomes: ['Full Stack Developer', 'Web Developer', 'Mobile Developer', 'DevOps Engineer'],
       courses: [
         { id: '4', title: 'Formation Programmation', subtitle: 'Développement Web & Mobile', duration: '24 semaines', feature1: 'Full Stack', feature2: 'DevOps', icon: 'code', link: '/programming-course' },
-        { id: '5', title: 'Web Development', subtitle: 'Développement web moderne', duration: '6 mois', feature1: 'React, Vue', feature2: 'Responsive design', icon: 'code' },
-        { id: '6', title: 'Mobile App Development', subtitle: 'Applications mobiles', duration: '6 mois', feature1: 'iOS et Android', feature2: 'React Native', icon: 'code' }
+        { id: '5', title: 'Web Development', subtitle: 'Développement web moderne', duration: '6 mois', feature1: 'React, Vue', feature2: 'Responsive design', icon: 'code', link: '/course/web-development' },
+        { id: '6', title: 'Mobile App Development', subtitle: 'Applications mobiles', duration: '6 mois', feature1: 'iOS et Android', feature2: 'React Native', icon: 'code', link: '/course/mobile-app-development' }
       ]
     },
     {
@@ -127,7 +127,7 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
       careerOutcomes: ['Cybersecurity Analyst', 'Penetration Tester', 'Security Consultant', 'CISO'],
       courses: [
         { id: '7', title: 'Formation Cybersécurité', subtitle: 'Sécurité Informatique', duration: '12 mois', feature1: 'Ethical Hacking', feature2: 'Network Security', icon: 'shield', link: '/cybersecurity-course' },
-        { id: '8', title: 'Ethical AI & Governance', subtitle: 'IA responsable et éthique', duration: '3 mois', feature1: 'Biais algorithmiques', feature2: 'Conformité IA', icon: 'shield' }
+        { id: '8', title: 'Ethical AI & Governance', subtitle: 'IA responsable et éthique', duration: '3 mois', feature1: 'Biais algorithmiques', feature2: 'Conformité IA', icon: 'shield', link: '/course/ethical-ai-governance' }
       ]
     },
     {
@@ -140,9 +140,9 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
       color: 'from-blue-500 to-indigo-600',
       careerOutcomes: ['Business Analyst', 'Data Analyst', 'BI Developer', 'Data Consultant'],
       courses: [
-        { id: '9', title: 'Business Intelligence', subtitle: 'Insights stratégiques', duration: '4 mois', feature1: 'Tableaux de bord', feature2: 'Analyse prédictive', icon: 'target' },
-        { id: '10', title: 'Data Analysis with Microsoft Excel', subtitle: 'Analyse avancée Excel', duration: '3 mois', feature1: 'Tableaux croisés', feature2: 'Macros VBA', icon: 'database' },
-        { id: '11', title: 'Financial Data Analysis', subtitle: 'Analyse financière', duration: '4 mois', feature1: 'Modèles financiers', feature2: 'Risk management', icon: 'target' }
+        { id: '9', title: 'Business Intelligence', subtitle: 'Insights stratégiques', duration: '4 mois', feature1: 'Tableaux de bord', feature2: 'Analyse prédictive', icon: 'target', link: '/course/business-intelligence' },
+        { id: '10', title: 'Data Analysis with Microsoft Excel', subtitle: 'Analyse avancée Excel', duration: '3 mois', feature1: 'Tableaux croisés', feature2: 'Macros VBA', icon: 'database', link: '/course/excel-data-analysis' },
+        { id: '11', title: 'Financial Data Analysis', subtitle: 'Analyse financière', duration: '4 mois', feature1: 'Modèles financiers', feature2: 'Risk management', icon: 'target', link: '/course/financial-data-analysis' }
       ]
     },
     {
@@ -155,9 +155,9 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
       color: 'from-purple-600 to-pink-500',
       careerOutcomes: ['AI Specialist', 'Computer Vision Engineer', 'AI Consultant', 'Research Scientist'],
       courses: [
-        { id: '12', title: 'Computer Vision with OpenCV', subtitle: 'Vision par ordinateur', duration: '5 mois', feature1: 'Détection d\'objets', feature2: 'Temps réel', icon: 'brain' },
-        { id: '13', title: 'AI Applications in Industries', subtitle: 'IA industrielle', duration: '5 mois', feature1: 'Santé, finance, retail', feature2: 'Cas d\'usage concrets', icon: 'brain' },
-        { id: '14', title: 'AI for Decision Making', subtitle: 'IA décisionnelle', duration: '4 mois', feature1: 'Algorithmes de recommandation', feature2: 'Systèmes d\'aide', icon: 'target' }
+        { id: '12', title: 'Computer Vision with OpenCV', subtitle: 'Vision par ordinateur', duration: '5 mois', feature1: 'Détection d\'objets', feature2: 'Temps réel', icon: 'brain', link: '/course/computer-vision-opencv' },
+        { id: '13', title: 'AI Applications in Industries', subtitle: 'IA industrielle', duration: '5 mois', feature1: 'Santé, finance, retail', feature2: 'Cas d\'usage concrets', icon: 'brain', link: '/course/ai-applications-industries' },
+        { id: '14', title: 'AI for Decision Making', subtitle: 'IA décisionnelle', duration: '4 mois', feature1: 'Algorithmes de recommandation', feature2: 'Systèmes d\'aide', icon: 'target', link: '/course/ai-decision-making' }
       ]
     },
     {
@@ -170,8 +170,8 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
       color: 'from-cyan-500 to-blue-600',
       careerOutcomes: ['Cloud Architect', 'DevOps Engineer', 'Site Reliability Engineer', 'Infrastructure Engineer'],
       courses: [
-        { id: '15', title: 'Cloud Computing (AWS, Azure)', subtitle: 'Architecture cloud', duration: '7 mois', feature1: 'AWS et Azure', feature2: 'Kubernetes', icon: 'cloud' },
-        { id: '16', title: 'Database Design & Management', subtitle: 'Gestion de bases de données', duration: '5 mois', feature1: 'Modélisation', feature2: 'Optimisation', icon: 'database' }
+        { id: '15', title: 'Cloud Computing (AWS, Azure)', subtitle: 'Architecture cloud', duration: '7 mois', feature1: 'AWS et Azure', feature2: 'Kubernetes', icon: 'cloud', link: '/course/cloud-computing-aws-azure' },
+        { id: '16', title: 'Database Design & Management', subtitle: 'Gestion de bases de données', duration: '5 mois', feature1: 'Modélisation', feature2: 'Optimisation', icon: 'database', link: '/course/database-design-management' }
       ]
     }
   ];
@@ -235,6 +235,17 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
 
     setRecommendations(recommendedPaths.slice(0, 3));
     setShowResults(true);
+    
+    // Smooth scroll to results after state update
+    setTimeout(() => {
+      const resultsElement = document.getElementById('course-guide');
+      if (resultsElement) {
+        resultsElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }
+    }, 100);
   };
 
   const resetGuide = () => {
@@ -314,9 +325,14 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button className={`w-full bg-gradient-to-r ${path.color} text-white hover:opacity-90`}>
-                    Découvrir ce parcours
-                    <ArrowRight className="w-4 h-4 ml-2" />
+                  <Button 
+                    asChild 
+                    className={`w-full bg-gradient-to-r ${path.color} text-white hover:opacity-90`}
+                  >
+                    <Link to={path.courses[0]?.link || '/curriculum'}>
+                      Découvrir ce parcours
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Link>
                   </Button>
                 </CardFooter>
               </Card>
