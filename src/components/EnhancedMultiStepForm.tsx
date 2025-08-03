@@ -14,6 +14,7 @@ import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import { useFormProgress } from '@/hooks/useFormProgress';
 import { usePhoneFormatter } from '@/hooks/usePhoneFormatter';
 import { useCourses } from '@/hooks/useCourses';
+import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { AlertTriangle, RefreshCw, CheckCircle2, Calendar, Users, Star } from 'lucide-react';
 
@@ -65,6 +66,7 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
   const { validateEmail, getValidationResult, isValidating: emailValidating } = useEmailValidation();
   const networkStatus = useNetworkStatus();
   const { formatPhone, validatePhone } = usePhoneFormatter();
+  const { toast } = useToast();
 
   const { 
     errors, 
@@ -238,12 +240,19 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
 
   const handleSubmit = React.useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submission started', { formData, networkStatus });
     
     if (!networkStatus.isOnline) {
+      toast({
+        title: "Connexion requise",
+        description: "Veuillez vérifier votre connexion internet.",
+        variant: "destructive"
+      });
       return;
     }
     
-    const isFormValid = validateAll({
+    // Prepare values for validation
+    const validationValues = {
       firstName: formData.firstName,
       lastName: formData.lastName,
       email: formData.email,
@@ -252,19 +261,34 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
       'formation.domaine': formData.formation.domaine,
       'formation.programme': formData.formation.programme,
       acceptTerms: formData.acceptTerms ? 'true' : ''
-    });
+    };
+    
+    console.log('Validating form with values:', validationValues);
+    const isFormValid = validateAll(validationValues);
+    console.log('Form validation result:', isFormValid);
     
     if (!isFormValid) {
+      toast({
+        title: "Formulaire incomplet",
+        description: "Veuillez remplir tous les champs obligatoires.",
+        variant: "destructive"
+      });
       return;
     }
     
     const emailResult = getValidationResult(formData.email);
     if (emailResult?.isDuplicate) {
+      toast({
+        title: "Email déjà utilisé",
+        description: "Cette adresse email est déjà enregistrée.",
+        variant: "destructive"
+      });
       return;
     }
     
+    console.log('Submitting form data:', formData);
     await onSubmit(formData);
-  }, [formData, validateAll, onSubmit, networkStatus.isOnline, getValidationResult]);
+  }, [formData, validateAll, onSubmit, networkStatus.isOnline, getValidationResult, toast]);
 
   const getStepStatus = React.useCallback((step: number): 'completed' | 'current' | 'pending' => {
     switch (step) {
@@ -610,12 +634,13 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
                     disabled={!formData.acceptTerms || !networkStatus.isOnline || loading}
                     className="px-8 py-3 bg-gradient-to-r from-academy-blue to-academy-purple text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50"
                   >
-                    <LoadingButton
-                      loading={loading}
-                      loadingText="Inscription en cours..."
-                    >
-                      Finaliser l'inscription
-                    </LoadingButton>
+                    {loading ? (
+                      <LoadingButton loading={true} loadingText="Inscription en cours...">
+                        Inscription en cours...
+                      </LoadingButton>
+                    ) : (
+                      "Finaliser l'inscription"
+                    )}
                   </Button>
                 </div>
               </div>
