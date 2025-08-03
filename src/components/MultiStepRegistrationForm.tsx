@@ -364,24 +364,24 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                 <h3 className="text-xl font-bold text-gray-800">Type de Formation</h3>
               </div>
               
-              <Select 
-                value={formData.formation.formationType} 
-                onValueChange={(value) => handleInputChange('formation.formationType', value)}
-              >
-                <SelectTrigger className="w-full h-12 md:h-14 lg:h-16 border-2 border-gray-200 hover:border-academy-blue transition-colors rounded-xl">
-                  <SelectValue placeholder="Sélectionnez votre type de formation" className="text-gray-500" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl border-2 shadow-xl">
-                  {formationTypes.map((type) => (
-                    <SelectItem key={type.value} value={type.value} className="h-auto p-4 hover:bg-blue-50 cursor-pointer">
-                      <div className="space-y-2">
-                        <div className="font-semibold text-gray-800">{type.label}</div>
-                        <div className="text-sm text-gray-600 leading-relaxed">{type.description}</div>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <Select 
+                  value={formData.formation.formationType} 
+                  onValueChange={(value) => handleInputChange('formation.formationType', value)}
+                >
+                  <SelectTrigger className="w-full h-12 md:h-14 lg:h-16 border-2 border-gray-200 hover:border-academy-blue transition-colors rounded-xl">
+                    <SelectValue placeholder="Sélectionnez votre type de formation" className="text-gray-500" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-2 shadow-xl max-h-[80vh] overflow-auto">
+                    {formationTypes.map((type) => (
+                      <SelectItem key={type.value} value={type.value} className="h-auto p-4 hover:bg-blue-50 cursor-pointer">
+                        <div className="space-y-2">
+                          <div className="font-semibold text-gray-800">{type.label}</div>
+                          <div className="text-sm text-gray-600 leading-relaxed">{type.description}</div>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               
               {selectedFormationType && (
                 <div className="p-6 bg-gradient-to-r from-academy-blue/5 to-academy-purple/5 rounded-xl border-2 border-academy-blue/20 shadow-sm">
@@ -414,7 +414,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                   <SelectTrigger className="w-full h-12 md:h-14 lg:h-16 border-2 border-gray-200 hover:border-academy-purple transition-colors rounded-xl">
                     <SelectValue placeholder="Choisissez votre domaine d'expertise" className="text-gray-500" />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl border-2 shadow-xl">
+                  <SelectContent className="rounded-xl border-2 shadow-xl max-h-[80vh] overflow-auto">
                     {domaines.map((domaine) => (
                       <SelectItem key={domaine.value} value={domaine.value} className="h-auto p-4 hover:bg-purple-50 cursor-pointer">
                         <div className="space-y-2">
@@ -467,7 +467,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
                     <SelectTrigger className="w-full h-12 md:h-14 lg:h-16 border-2 border-gray-200 hover:border-academy-blue transition-colors rounded-xl">
                       <SelectValue placeholder="Sélectionnez votre programme spécifique" className="text-gray-500" />
                     </SelectTrigger>
-                    <SelectContent className="max-h-[400px] rounded-xl border-2 shadow-xl">
+                    <SelectContent className="max-h-[80vh] rounded-xl border-2 shadow-xl overflow-auto">
                       {availableCourses.length === 0 ? (
                         <div className="py-8 px-6 text-center">
                           <div className="text-gray-500 text-lg font-medium">Aucun programme disponible</div>
