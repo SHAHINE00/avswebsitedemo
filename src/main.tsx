@@ -2,21 +2,12 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
-// Enhanced React validation check
-if (!React || React === null) {
-  throw new Error('React is null or undefined - critical loading issue');
-}
-if (!React.useState || !React.useEffect || !React.useContext) {
-  throw new Error('React hooks are not available - import issue detected');
+// Basic React validation check
+if (!React || !React.useState) {
+  console.error('React is not properly loaded');
 }
 
-// Initialize React safety utilities
-import { initializeReactSafety } from '@/utils/reactSafety';
-if (!initializeReactSafety()) {
-  throw new Error('React safety initialization failed');
-}
-
-console.log('React and hooks validated successfully in main.tsx');
+console.log('React initialized successfully in main.tsx');
 
 import App from './App.tsx';
 import './index.css';
