@@ -15,9 +15,15 @@ export interface ValidationErrors {
 export const useFormValidation = (rules: { [key: string]: ValidationRule }) => {
   const [errors, setErrors] = React.useState<ValidationErrors>({});
   const [touched, setTouched] = React.useState<{ [key: string]: boolean }>({});
+  
+  // Stabilize rules to prevent unnecessary re-renders
+  const stableRules = React.useRef(rules);
+  React.useEffect(() => {
+    stableRules.current = rules;
+  }, [rules]);
 
   const validateField = React.useCallback((name: string, value: string): string | null => {
-    const rule = rules[name];
+    const rule = stableRules.current[name];
     if (!rule) return null;
 
     if (rule.required && (!value || value.trim() === '')) {
@@ -43,7 +49,7 @@ export const useFormValidation = (rules: { [key: string]: ValidationRule }) => {
     }
 
     return null;
-  }, [rules]);
+  }, []);
 
   const validate = React.useCallback((name: string, value: string) => {
     const error = validateField(name, value);
@@ -55,7 +61,7 @@ export const useFormValidation = (rules: { [key: string]: ValidationRule }) => {
     const newErrors: ValidationErrors = {};
     let isValid = true;
 
-    Object.keys(rules).forEach(name => {
+    Object.keys(stableRules.current).forEach(name => {
       const error = validateField(name, values[name] || '');
       newErrors[name] = error;
       if (error) isValid = false;
@@ -63,7 +69,7 @@ export const useFormValidation = (rules: { [key: string]: ValidationRule }) => {
 
     setErrors(newErrors);
     return isValid;
-  }, [rules, validateField]);
+  }, [validateField]);
 
   const touch = React.useCallback((name: string) => {
     setTouched(prev => ({ ...prev, [name]: true }));
