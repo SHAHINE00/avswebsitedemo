@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 
 interface PhoneValidationResult {
   isValid: boolean;
@@ -44,6 +44,7 @@ const PHONE_PATTERNS = {
 
 export const usePhoneFormatter = (defaultCountry: string = 'MA') => {
   const [detectedCountry, setDetectedCountry] = useState(defaultCountry);
+  const lastDetectedCountryRef = useRef(defaultCountry);
 
   const detectCountry = useCallback((phoneNumber: string): string => {
     const cleaned = phoneNumber.replace(/\D/g, '');
@@ -69,8 +70,13 @@ export const usePhoneFormatter = (defaultCountry: string = 'MA') => {
     const country = detectCountry(phoneNumber);
     const pattern = PHONE_PATTERNS[country as keyof typeof PHONE_PATTERNS];
     
-    if (pattern) {
+    // Only update state if country actually changed
+    if (country !== lastDetectedCountryRef.current) {
+      lastDetectedCountryRef.current = country;
       setDetectedCountry(country);
+    }
+    
+    if (pattern) {
       return pattern.format(phoneNumber);
     }
     
