@@ -188,51 +188,38 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
       processedValue = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
     }
     
-    if (field.startsWith('formation.')) {
-      const formationField = field.split('.')[1];
-      updateData({
-        formation: {
-          ...formData.formation,
-          [formationField]: processedValue,
-          // Reset downstream selections
-          ...(formationField === 'domaine' && { programme: '', programmeDetails: undefined })
-        }
-      });
-    } else {
-      updateData({ [field]: processedValue });
-    }
-    
+    updateData({ [field]: processedValue });
     setTimeout(markSaved, 1000);
-  }, [updateData, validateEmail, formatPhone, markSaved, formData.formation]);
+  }, [updateData, validateEmail, formatPhone, markSaved]);
 
   const handleFormationChange = React.useCallback((field: string, value: string) => {
-    const formationField = field.split('.')[1];
-    
-    let updates: any = { [formationField]: value };
-    
-    // Reset downstream when changing upstream
-    if (formationField === 'domaine') {
-      updates.programme = '';
-      updates.programmeDetails = undefined;
-    }
-    
-    // Update course details when programme changes
-    if (formationField === 'programme' && value) {
-      const selectedCourse = availableCourses.find(course => course.id === value);
-      if (selectedCourse) {
-        updates.programmeDetails = selectedCourse;
+    updateData(prev => {
+      const formationField = field.split('.')[1];
+      let updates: any = { [formationField]: value };
+      
+      if (formationField === 'domaine') {
+        updates.programme = '';
+        updates.programmeDetails = undefined;
       }
-    }
-    
-    updateData({
-      formation: {
-        ...formData.formation,
-        ...updates
+      
+      if (formationField === 'programme' && value) {
+        const selectedCourse = availableCourses.find(course => course.id === value);
+        if (selectedCourse) {
+          updates.programmeDetails = selectedCourse;
+        }
       }
+      
+      return {
+        ...prev,
+        formation: {
+          ...prev.formation,
+          ...updates
+        }
+      };
     });
     
     setTimeout(markSaved, 1000);
-  }, [updateData, formData.formation, availableCourses, markSaved]);
+  }, [updateData, availableCourses, markSaved]);
 
   const handleFieldBlur = React.useCallback(async (field: string) => {
     touch(field);
