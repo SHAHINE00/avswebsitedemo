@@ -58,21 +58,23 @@ const LazyWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   </Suspense>
 );
 
-const App = () => {
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-  
-  // Initialize analytics tracking
+// Analytics wrapper component to handle hooks inside Router context
+const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   usePageTracking();
   useScrollTracking();
+  return <>{children}</>;
+};
 
+const App = () => {
   return (
     <GlobalErrorBoundary>
       <Router>
-        <ScrollToTop />
-        <UTMTracker />
-        <SEOAnalytics />
-        <StructuredData type="website" />
-        <AuthProvider>
+        <AnalyticsProvider>
+          <ScrollToTop />
+          <UTMTracker />
+          <SEOAnalytics />
+          <StructuredData type="website" />
+          <AuthProvider>
           <Routes>
             {/* Critical routes - no lazy loading */}
             <Route path="/" element={<Index />} />
@@ -109,6 +111,7 @@ const App = () => {
           </Routes>
           <Toaster />
         </AuthProvider>
+        </AnalyticsProvider>
       </Router>
     </GlobalErrorBoundary>
   );
