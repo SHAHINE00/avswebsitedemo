@@ -48,16 +48,16 @@ const Footer: React.FC = () => {
               AVS l'institut de l'Innovation et de l'Intelligence Artificielle - Offrir à la nouvelle génération des spécialistes AI une formation pratique et une évolution de carrière.
             </p>
             <div className="flex space-x-4">
-              <a href="https://facebook.com/avsacademy" target="_blank" rel="noopener noreferrer" className="hover:text-academy-blue transition-colors">
+              <a href="https://www.facebook.com/profile.php?id=61578157912314" target="_blank" rel="noopener noreferrer" className="hover:text-academy-blue transition-colors">
                 <Facebook size={20} />
               </a>
               <a href="https://twitter.com/avsacademy" target="_blank" rel="noopener noreferrer" className="hover:text-academy-blue transition-colors">
                 <Twitter size={20} />
               </a>
-              <a href="https://linkedin.com/company/avsacademy" target="_blank" rel="noopener noreferrer" className="hover:text-academy-blue transition-colors">
+              <a href="https://www.linkedin.com/company/avs-innovation-institute" target="_blank" rel="noopener noreferrer" className="hover:text-academy-blue transition-colors">
                 <Linkedin size={20} />
               </a>
-              <a href="https://instagram.com/avsacademy" target="_blank" rel="noopener noreferrer" className="hover:text-academy-blue transition-colors">
+              <a href="https://www.instagram.com/avs.innovation.institute/" target="_blank" rel="noopener noreferrer" className="hover:text-academy-blue transition-colors">
                 <Instagram size={20} />
               </a>
             </div>

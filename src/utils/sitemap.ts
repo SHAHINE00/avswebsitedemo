@@ -183,8 +183,9 @@ export const generateJsonLd = (type: 'Organization' | 'EducationalOrganization' 
           addressCountry: 'MA'
         },
         sameAs: [
-          'https://www.facebook.com/avsinstitut',
-          'https://www.linkedin.com/company/avsinstitut',
+          'https://www.facebook.com/profile.php?id=61578157912314',
+          'https://www.linkedin.com/company/avs-innovation-institute',
+          'https://www.instagram.com/avs.innovation.institute/',
           'https://twitter.com/avsinstitut'
         ],
         ...data

@@ -164,10 +164,10 @@ export const generateOrganizationJsonLd = () => ({
     "email": "contact@avs.ma"
   },
   "sameAs": [
-    "https://linkedin.com/company/avs-institut",
+    "https://www.linkedin.com/company/avs-innovation-institute",
     "https://twitter.com/AVSInstitut",
-    "https://facebook.com/avsacademy",
-    "https://instagram.com/avsacademy"
+    "https://www.facebook.com/profile.php?id=61578157912314",
+    "https://www.instagram.com/avs.innovation.institute/"
   ],
   "educationalOrganizationSubType": "Professional Training Institute"
 });
