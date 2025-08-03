@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import * as React from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { logInfo, logError } from '@/utils/logger';
 
@@ -31,12 +31,12 @@ export interface Course {
 }
 
 export const useCourses = () => {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
+  const [courses, setCourses] = React.useState<Course[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+  const [retryCount, setRetryCount] = React.useState(0);
 
-  const fetchCourses = useCallback(async (attempt = 1) => {
+  const fetchCourses = React.useCallback(async (attempt = 1) => {
     try {
       setLoading(true);
       setError(null);
@@ -76,11 +76,11 @@ export const useCourses = () => {
     }
   }, []);
 
-  const retry = useCallback(() => {
+  const retry = React.useCallback(() => {
     fetchCourses(1);
   }, [fetchCourses]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchCourses();
   }, [fetchCourses]);
 

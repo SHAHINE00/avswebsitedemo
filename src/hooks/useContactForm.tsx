@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import * as React from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { trackFormSubmission } from '@/utils/analytics';
@@ -14,7 +14,7 @@ interface ContactFormData {
 }
 
 export const useContactForm = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = React.useState(false);
   const { toast } = useToast();
 
   const submitContactForm = async (formData: ContactFormData) => {
