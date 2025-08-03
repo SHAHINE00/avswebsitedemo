@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Brain, Code, Shield, Target, Database, Cloud, Palette, Briefcase, Clock, Award, Users, ArrowRight, RefreshCw } from 'lucide-react';
+import { useIsAndroid } from '@/hooks/useIsIOS';
+import { cn } from '@/lib/utils';
 
 interface CourseInfo {
   id: string;
@@ -32,6 +34,7 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
   const [recommendations, setRecommendations] = useState<LearningPath[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const isAndroid = useIsAndroid();
 
   const questions = [
     {
@@ -256,7 +259,7 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
 
   if (showResults) {
     return (
-      <section id="course-recommendations-results" className="py-16 bg-gradient-to-br from-gray-50 to-white">
+      <section id="course-recommendations-results" className={cn("py-16 bg-gradient-to-br from-gray-50 to-white", isAndroid && "dropdown-viewport-fix")}>
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
