@@ -263,10 +263,10 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
     }
   }, [formData.formation.programme, availableCourses, setFormData]);
 
-  // Stable input change handler with minimal dependencies
+  // Completely stable input change handler - no state updates during render
   const handleInputChange = React.useCallback((field: string, value: string) => {
-    // Batch all state updates in a single operation to prevent cascading re-renders
-    requestAnimationFrame(() => {
+    // Use setTimeout to ensure state updates happen after render cycle
+    setTimeout(() => {
       // Auto-format phone numbers
       if (field === 'phone') {
         value = value.replace(/[^\d+\-\s]/g, ''); // Only allow digits, +, -, and spaces
@@ -300,7 +300,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
           [field]: value
         }));
       }
-    });
+    }, 0);
   }, [setFormData]);
 
   // Stable field blur handler with validation

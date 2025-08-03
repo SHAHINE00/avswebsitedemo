@@ -9,27 +9,18 @@ const Select = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root>
 >(({ onOpenChange, ...props }, ref) => {
-  // Use ref to avoid recreating the handler on every render
-  const onOpenChangeRef = React.useRef(onOpenChange);
-  React.useEffect(() => {
-    onOpenChangeRef.current = onOpenChange;
-  }, [onOpenChange]);
-
-  // Stable event handler that doesn't change between renders
+  // Stable event handler that only updates in event callbacks, never during render
   const handleOpenChange = React.useCallback((open: boolean) => {
-    // Use requestAnimationFrame to ensure DOM updates happen after render
-    requestAnimationFrame(() => {
-      // Dispatch custom event for ScrollToTop component
+    // Defer event dispatch to prevent render-time side effects
+    setTimeout(() => {
       document.dispatchEvent(new CustomEvent('dropdown-state-change', { 
         detail: { isOpen: open } 
       }));
-    });
+    }, 0);
     
-    // Call the original handler if provided
-    if (onOpenChangeRef.current) {
-      onOpenChangeRef.current(open);
-    }
-  }, []);
+    // Call original handler
+    onOpenChange?.(open);
+  }, [onOpenChange]);
 
   return (
     <SelectPrimitive.Root 
@@ -48,11 +39,16 @@ const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
 >(({ className, children, ...props }, ref) => (
-  <div className="relative">
+  // Parent container with position: relative as requested
+  <div className="relative w-full">
     <SelectPrimitive.Trigger
       ref={ref}
       className={cn(
-        "flex h-12 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 touch-manipulation [-webkit-tap-highlight-color:transparent]",
+        "flex h-12 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+        // Mobile optimizations
+        "touch-manipulation [-webkit-tap-highlight-color:transparent]",
+        // Responsive improvements
+        "sm:h-10 sm:text-sm md:h-12 md:text-base",
         className
       )}
       {...props}
@@ -98,8 +94,7 @@ const SelectScrollDownButton = React.forwardRef<
     <ChevronDown className="h-4 w-4" />
   </SelectPrimitive.ScrollDownButton>
 ))
-SelectScrollDownButton.displayName =
-  SelectPrimitive.ScrollDownButton.displayName
+SelectScrollDownButton.displayName = SelectPrimitive.ScrollDownButton.displayName
 
 const SelectContent = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
@@ -112,28 +107,37 @@ const SelectContent = React.forwardRef<
       <SelectPrimitive.Content
         ref={ref}
         className={cn(
-          // Use absolute positioning as overlay - exactly as requested
-          "absolute top-full left-0 z-[1000] max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-2xl",
-          // Animations and transitions
-          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-          "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-          // Prevent any layout interference
+          // EXACT positioning as requested: absolute, top: 100%, proper z-index
+          "absolute top-full left-0 z-[1000] w-full max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-lg",
+          // Prevent layout shifts - overlay only
           "will-change-transform",
-          // Mobile-specific optimizations
-          isMobile && "touch-manipulation [-webkit-tap-highlight-color:transparent]",
+          // Smooth animations
+          "data-[state=open]:animate-in data-[state=closed]:animate-out",
+          "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+          "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+          "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2",
+          "data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+          // Responsive design for all devices
+          isMobile && [
+            "touch-manipulation [-webkit-tap-highlight-color:transparent]",
+            "max-h-[50vh] text-base", // Mobile: larger text, constrained height
+          ],
+          // Tablet optimizations
+          "md:max-h-80 md:text-sm",
+          // Desktop optimizations  
+          "lg:max-h-96 lg:text-sm",
           className
         )}
         position={position}
         sideOffset={0}
-        avoidCollisions={true}
-        collisionPadding={16}
+        avoidCollisions={false} // Disable to maintain exact positioning
         style={{
-          // Exact styles as requested by user
+          // Force exact positioning as requested
           position: 'absolute',
           top: '100%',
           left: '0',
           zIndex: 1000,
-          width: '100%', // Match trigger width
+          width: '100%', // Match parent width exactly
         }}
         {...props}
       >
@@ -141,8 +145,9 @@ const SelectContent = React.forwardRef<
         <SelectPrimitive.Viewport
           className={cn(
             "p-1",
-            position === "popper" &&
-              "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
+            // Responsive viewport sizing
+            "min-h-[var(--radix-select-trigger-height)] w-full",
+            isMobile && "p-2", // More padding on mobile
           )}
         >
           {children}
@@ -160,7 +165,12 @@ const SelectLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.Label
     ref={ref}
-    className={cn("py-1.5 pl-8 pr-2 text-sm font-semibold", className)}
+    className={cn(
+      "py-1.5 pl-8 pr-2 text-sm font-semibold",
+      // Responsive label sizing
+      "sm:text-xs md:text-sm",
+      className
+    )}
     {...props}
   />
 ))
@@ -169,24 +179,34 @@ SelectLabel.displayName = SelectPrimitive.Label.displayName
 const SelectItem = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
->(({ className, children, ...props }, ref) => (
-  <SelectPrimitive.Item
-    ref={ref}
-    className={cn(
-      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-      className
-    )}
-    {...props}
-  >
-    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-      <SelectPrimitive.ItemIndicator>
-        <Check className="h-4 w-4" />
-      </SelectPrimitive.ItemIndicator>
-    </span>
-
-    <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-  </SelectPrimitive.Item>
-))
+>(({ className, children, ...props }, ref) => {
+  const isMobile = useIsMobile();
+  
+  return (
+    <SelectPrimitive.Item
+      ref={ref}
+      className={cn(
+        "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        // Responsive touch targets
+        isMobile && [
+          "min-h-[48px] py-3 text-base", // Mobile: larger touch targets
+          "touch-manipulation [-webkit-tap-highlight-color:transparent]",
+        ],
+        "md:py-2 md:text-sm", // Tablet
+        "lg:py-1.5 lg:text-sm", // Desktop
+        className
+      )}
+      {...props}
+    >
+      <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+        <SelectPrimitive.ItemIndicator>
+          <Check className="h-4 w-4" />
+        </SelectPrimitive.ItemIndicator>
+      </span>
+      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+    </SelectPrimitive.Item>
+  );
+})
 SelectItem.displayName = SelectPrimitive.Item.displayName
 
 const SelectSeparator = React.forwardRef<
