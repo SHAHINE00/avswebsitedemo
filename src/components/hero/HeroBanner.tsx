@@ -1,13 +1,15 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Download } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import AdvantageBadges from './AdvantageBadges';
+import DownloadGuidePopup from '@/components/DownloadGuidePopup';
 
 const HeroBanner: React.FC = () => {
   const isMobile = useIsMobile();
+  const [isDownloadPopupOpen, setIsDownloadPopupOpen] = useState(false);
   
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 relative min-h-[70vh] sm:min-h-[75vh] md:min-h-[80vh] lg:min-h-[85vh] flex flex-col items-center justify-center pt-4 sm:pt-6 lg:pt-8 pb-8 lg:pb-12">
@@ -48,6 +50,14 @@ const HeroBanner: React.FC = () => {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 lg:gap-8 mb-0 justify-center animate-fade-in px-4" style={{animationDelay: '0.8s'}}>
+          <Button 
+            onClick={() => setIsDownloadPopupOpen(true)}
+            variant="outline" 
+            className="border-2 border-academy-blue text-academy-blue hover:bg-academy-blue hover:text-white font-bold px-8 sm:px-10 lg:px-12 xl:px-14 py-4 lg:py-5 xl:py-6 text-base sm:text-lg lg:text-xl xl:text-2xl rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 min-h-[50px] sm:min-h-[60px] lg:min-h-[70px] touch-manipulation"
+          >
+            <Download className="mr-2 h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" />
+            Télécharger la brochure
+          </Button>
           <Button asChild className="bg-gradient-to-r from-academy-blue to-academy-purple hover:from-academy-purple hover:to-academy-blue text-white font-bold px-8 sm:px-10 lg:px-12 xl:px-14 py-4 lg:py-5 xl:py-6 text-base sm:text-lg lg:text-xl xl:text-2xl rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 min-h-[50px] sm:min-h-[60px] lg:min-h-[70px] touch-manipulation">
             <Link to="/register" className="flex items-center justify-center">
               Commencer Maintenant
@@ -61,6 +71,12 @@ const HeroBanner: React.FC = () => {
       <div className="relative z-10 w-full">
         <AdvantageBadges />
       </div>
+
+      {/* Download Guide Popup */}
+      <DownloadGuidePopup 
+        isOpen={isDownloadPopupOpen} 
+        onClose={() => setIsDownloadPopupOpen(false)} 
+      />
 
     </div>
   );
