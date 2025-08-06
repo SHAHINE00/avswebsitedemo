@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useCallback, useEffect, useId } from "react"
+import React, { createContext, useContext, useCallback, useId } from "react"
+import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react"
@@ -63,8 +64,8 @@ const Carousel = React.forwardRef<
       },
       plugins
     )
-    const [canScrollPrev, setCanScrollPrev] = useState(false)
-    const [canScrollNext, setCanScrollNext] = useState(false)
+    const [canScrollPrev, setCanScrollPrev] = useSafeState(false)
+    const [canScrollNext, setCanScrollNext] = useSafeState(false)
 
     const onSelect = useCallback((api: CarouselApi) => {
       if (!api) {
@@ -96,7 +97,7 @@ const Carousel = React.forwardRef<
       [scrollPrev, scrollNext]
     )
 
-    useEffect(() => {
+    useSafeEffect(() => {
       if (!api || !setApi) {
         return
       }
@@ -104,7 +105,7 @@ const Carousel = React.forwardRef<
       setApi(api)
     }, [api, setApi])
 
-    useEffect(() => {
+    useSafeEffect(() => {
       if (!api) {
         return
       }

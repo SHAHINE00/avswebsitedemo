@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useCallback, useEffect, useMemo } from "react"
+import React, { createContext, useContext, useCallback, useMemo } from "react"
+import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
 import { PanelLeft } from "lucide-react"
@@ -66,11 +67,11 @@ const SidebarProvider = React.forwardRef<
     ref
   ) => {
     const isMobile = useIsMobile()
-    const [openMobile, setOpenMobile] = useState(false)
+    const [openMobile, setOpenMobile] = useSafeState(false)
 
     // This is the internal state of the sidebar.
     // We use openProp and setOpenProp for control from outside the component.
-    const [_open, _setOpen] = useState(defaultOpen)
+    const [_open, _setOpen] = useSafeState(defaultOpen)
     const open = openProp ?? _open
     const setOpen = useCallback(
       (value: boolean | ((value: boolean) => boolean)) => {
@@ -95,7 +96,7 @@ const SidebarProvider = React.forwardRef<
     }, [isMobile, setOpen, setOpenMobile])
 
     // Adds a keyboard shortcut to toggle the sidebar.
-    useEffect(() => {
+    useSafeEffect(() => {
       const handleKeyDown = (event: KeyboardEvent) => {
         if (
           event.key === SIDEBAR_KEYBOARD_SHORTCUT &&

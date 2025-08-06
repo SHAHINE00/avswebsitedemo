@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React from 'react';
+import { useSafeState } from '@/utils/safeHooks';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Download } from 'lucide-react';
@@ -9,7 +10,7 @@ import DownloadGuidePopup from '@/components/DownloadGuidePopup';
 
 const HeroBanner: React.FC = () => {
   const isMobile = useIsMobile();
-  const [isDownloadPopupOpen, setIsDownloadPopupOpen] = useState(false);
+  const [isDownloadPopupOpen, setIsDownloadPopupOpen] = useSafeState(false);
   
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 relative min-h-[70vh] sm:min-h-[75vh] md:min-h-[80vh] lg:min-h-[85vh] flex flex-col items-center justify-center pt-4 sm:pt-6 lg:pt-8 pb-8 lg:pb-12">

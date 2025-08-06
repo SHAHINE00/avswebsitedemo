@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React from 'react';
+import { useSafeEffect, useSafeLocation } from '@/utils/safeHooks';
 import { analytics, trackPageView } from '@/utils/analytics';
 import { logWarn } from '@/utils/logger';
 
 // Hook for page view tracking
 export const usePageTracking = () => {
-  const location = useLocation();
+  const location = useSafeLocation();
 
-  useEffect(() => {
+  useSafeEffect(() => {
     try {
       // Track page view on route change
       trackPageView(location.pathname + location.search);
@@ -19,7 +19,7 @@ export const usePageTracking = () => {
 
 // Hook for scroll depth tracking
 export const useScrollTracking = () => {
-  useEffect(() => {
+  useSafeEffect(() => {
     let maxScroll = 0;
 
     const handleScroll = () => {
@@ -72,7 +72,7 @@ export const useContentTracking = (contentType: string, contentId: string) => {
   };
 
   // Track view on mount
-  useEffect(() => {
+  useSafeEffect(() => {
     trackEngagement('view');
   }, []);
 

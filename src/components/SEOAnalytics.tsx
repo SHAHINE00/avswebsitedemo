@@ -1,13 +1,12 @@
 
 import React from 'react';
 import SafeComponentWrapper from '@/components/ui/SafeComponentWrapper';
-import { useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useSafeLocation, useSafeEffect } from '@/utils/safeHooks';
 
 const SEOAnalyticsCore = () => {
-  const location = useLocation();
+  const location = useSafeLocation();
 
-  useEffect(() => {
+  useSafeEffect(() => {
       // Google Search Console verification
       const addSearchConsoleVerification = () => {
         if (!document.querySelector('meta[name="google-site-verification"]')) {
@@ -83,7 +82,7 @@ const SEOAnalyticsCore = () => {
     }, []);
 
     // Track page views for analytics
-    useEffect(() => {
+    useSafeEffect(() => {
       // Send page view to analytics
       if (typeof window !== 'undefined' && (window as any).gtag) {
         (window as any).gtag('config', 'GA_MEASUREMENT_ID', {

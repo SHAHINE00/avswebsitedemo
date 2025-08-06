@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 
 // Standardized breakpoints matching Tailwind CSS
 const BREAKPOINTS = {
@@ -10,9 +10,9 @@ const BREAKPOINTS = {
 } as const;
 
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useSafeState<boolean>(false);
 
-  useEffect(() => {
+  useSafeEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < BREAKPOINTS.md);
     };
@@ -26,9 +26,9 @@ export function useIsMobile() {
 }
 
 export function useIsTablet() {
-  const [isTablet, setIsTablet] = useState<boolean>(false);
+  const [isTablet, setIsTablet] = useSafeState<boolean>(false);
 
-  useEffect(() => {
+  useSafeEffect(() => {
     const checkTablet = () => {
       const width = window.innerWidth;
       setIsTablet(width >= BREAKPOINTS.md && width < BREAKPOINTS.lg);
@@ -43,9 +43,9 @@ export function useIsTablet() {
 }
 
 export function useIsDesktop() {
-  const [isDesktop, setIsDesktop] = useState<boolean>(false);
+  const [isDesktop, setIsDesktop] = useSafeState<boolean>(false);
 
-  useEffect(() => {
+  useSafeEffect(() => {
     const checkDesktop = () => {
       setIsDesktop(window.innerWidth >= BREAKPOINTS.lg);
     };
@@ -59,9 +59,9 @@ export function useIsDesktop() {
 }
 
 export function useBreakpoint() {
-  const [breakpoint, setBreakpoint] = useState<keyof typeof BREAKPOINTS | 'xs'>('xs');
+  const [breakpoint, setBreakpoint] = useSafeState<keyof typeof BREAKPOINTS | 'xs'>('xs');
 
-  useEffect(() => {
+  useSafeEffect(() => {
     const checkBreakpoint = () => {
       const width = window.innerWidth;
       if (width >= BREAKPOINTS['2xl']) setBreakpoint('2xl');

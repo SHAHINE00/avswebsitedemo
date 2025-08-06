@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -11,13 +11,13 @@ const CookieConsentBanner = () => {
   const { consent, showBanner, updateConsent, acceptAll, rejectOptional } = useGDPRConsent();
   const { logGDPRError } = useGDPRMonitoring();
   
-  const [showDetails, setShowDetails] = useState(false);
-  const [tempConsent, setTempConsent] = useState<ConsentPreferences>(consent);
+  const [showDetails, setShowDetails] = useSafeState(false);
+  const [tempConsent, setTempConsent] = useSafeState<ConsentPreferences>(consent);
 
   // Debug logging
   console.log('CookieConsentBanner: showBanner =', showBanner, 'consent =', consent);
 
-  useEffect(() => {
+  useSafeEffect(() => {
     setTempConsent(consent);
   }, [consent]);
 

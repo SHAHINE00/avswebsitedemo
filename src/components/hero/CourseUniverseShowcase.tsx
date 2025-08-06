@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useSafeState } from '@/utils/safeHooks';
 import { Link } from 'react-router-dom';
 import { useCourses } from '@/hooks/useCourses';
 import { Brain, Code, Palette, ChevronRight, Clock, BookOpen, Award } from 'lucide-react';
 
 const CourseUniverseShowcase: React.FC = () => {
   const { courses, loading } = useCourses();
-  const [activeTab, setActiveTab] = useState('ai');
+  const [activeTab, setActiveTab] = useSafeState('ai');
 
   // Improved course categorization based on exact recommendations
   const organizedCourses = {

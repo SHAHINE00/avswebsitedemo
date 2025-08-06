@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 
 const MOBILE_BREAKPOINT = 768;
 const TABLET_BREAKPOINT = 1024;
 
 // Enhanced Android device detection
 export function useIsAndroid() {
-  const [isAndroid, setIsAndroid] = useState<boolean>(false);
+  const [isAndroid, setIsAndroid] = useSafeState<boolean>(false);
 
-  useEffect(() => {
+  useSafeEffect(() => {
     const checkAndroid = () => {
       const userAgent = navigator.userAgent.toLowerCase();
       const isAndroidDevice = /android/.test(userAgent);
@@ -29,9 +29,9 @@ export function useIsAndroid() {
 
 // Enhanced iOS device detection
 export function useIsIOS() {
-  const [isIOS, setIsIOS] = useState<boolean>(false);
+  const [isIOS, setIsIOS] = useSafeState<boolean>(false);
 
-  useEffect(() => {
+  useSafeEffect(() => {
     const checkIOS = () => {
       const userAgent = navigator.userAgent.toLowerCase();
       const isIOSDevice = /iphone|ipad|ipod/.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -52,9 +52,9 @@ export function useIsIOS() {
 }
 
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useSafeState<boolean>(false);
 
-  useEffect(() => {
+  useSafeEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
     };
@@ -68,9 +68,9 @@ export function useIsMobile() {
 }
 
 export function useIsTablet() {
-  const [isTablet, setIsTablet] = useState<boolean>(false);
+  const [isTablet, setIsTablet] = useSafeState<boolean>(false);
 
-  useEffect(() => {
+  useSafeEffect(() => {
     const checkTablet = () => {
       const width = window.innerWidth;
       setIsTablet(width >= MOBILE_BREAKPOINT && width < TABLET_BREAKPOINT);
@@ -85,9 +85,9 @@ export function useIsTablet() {
 }
 
 export function useIsDesktop() {
-  const [isDesktop, setIsDesktop] = useState<boolean>(false);
+  const [isDesktop, setIsDesktop] = useSafeState<boolean>(false);
 
-  useEffect(() => {
+  useSafeEffect(() => {
     const checkDesktop = () => {
       setIsDesktop(window.innerWidth >= TABLET_BREAKPOINT);
     };

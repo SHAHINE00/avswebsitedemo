@@ -1,13 +1,13 @@
-import { useLocation, Link } from "react-router-dom";
-import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useSafeLocation, useSafeEffect } from '@/utils/safeHooks';
 import { logError } from '@/utils/logger';
 import SEOHead from '@/components/SEOHead';
 import { utilityPagesSEO } from '@/utils/seoData';
 
 const NotFound = () => {
-  const location = useLocation();
+  const location = useSafeLocation();
 
-  useEffect(() => {
+  useSafeEffect(() => {
     logError(
       "404 Error: User attempted to access non-existent route:",
       location.pathname

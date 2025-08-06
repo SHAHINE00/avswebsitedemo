@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useSafeState } from '@/utils/safeHooks';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
@@ -31,9 +32,9 @@ interface LearningPath {
 }
 
 const EnhancedCourseSelectionGuide: React.FC = () => {
-  const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
-  const [recommendations, setRecommendations] = useState<LearningPath[]>([]);
-  const [showResults, setShowResults] = useState(false);
+  const [selectedAnswers, setSelectedAnswers] = useSafeState<Record<string, string>>({});
+  const [recommendations, setRecommendations] = useSafeState<LearningPath[]>([]);
+  const [showResults, setShowResults] = useSafeState(false);
   const isAndroid = useIsAndroid();
 
   const questions = [

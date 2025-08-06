@@ -1,5 +1,6 @@
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useRef, useCallback } from 'react';
+import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 import { supabase } from '@/integrations/supabase/client';
 import { logInfo, logError } from '@/utils/logger';
 
@@ -31,16 +32,16 @@ export interface Course {
 }
 
 export const useCourses = () => {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
+  const [courses, setCourses] = useSafeState<Course[]>([]);
+  const [loading, setLoading] = useSafeState(true);
+  const [error, setError] = useSafeState<string | null>(null);
+  const [retryCount, setRetryCount] = useSafeState(0);
 
   // Use useRef to create a stable fetch function
   const fetchCoursesRef = useRef<(attempt?: number) => Promise<void>>();
   const isMountedRef = useRef(true);
 
-  useEffect(() => {
+  useSafeEffect(() => {
     // Cleanup function to prevent state updates on unmounted component
     return () => {
       isMountedRef.current = false;
@@ -104,7 +105,7 @@ export const useCourses = () => {
   }, []);
 
   // Only fetch once on mount - no dependencies needed since state setters are stable
-  useEffect(() => {
+  useSafeEffect(() => {
     fetchCoursesRef.current!();
   }, []); // Empty dependency array - fetch only once on mount
 

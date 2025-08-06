@@ -1,12 +1,13 @@
 
-import React, { useState } from 'react';
+import React from 'react';
+import { useSafeState } from '@/utils/safeHooks';
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Linkedin, Instagram, Mail, MapPin, Phone } from 'lucide-react';
 import OptimizedImage from '@/components/OptimizedImage';
 import { useHostingerEmail } from '@/hooks/useHostingerEmail';
 
 const Footer: React.FC = () => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useSafeState('');
   const { sendNewsletterWelcome, loading } = useHostingerEmail();
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
