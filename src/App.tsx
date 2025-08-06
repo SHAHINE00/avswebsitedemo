@@ -13,6 +13,8 @@ import StructuredData from "@/components/StructuredData";
 import CookieConsentBanner from "@/components/gdpr/CookieConsentBanner";
 import SafeGDPRWrapper from "@/components/gdpr/SafeGDPRWrapper";
 import LoadingSpinner from "@/components/ui/loading-spinner";
+import ReactSafetyWrapper from "@/components/ui/react-safety-wrapper";
+import { isReactAvailable } from "@/utils/reactSafety";
 
 // Critical pages (loaded immediately for better performance)
 import Index from "./pages/Index";
@@ -73,62 +75,80 @@ const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
 
 const App = () => {
+  // Check if React is available before rendering
+  if (!isReactAvailable()) {
+    return (
+      <div style={{ padding: '20px', textAlign: 'center' }}>
+        <div>Loading React... Please wait.</div>
+      </div>
+    );
+  }
 
   return (
-    <GlobalErrorBoundary>
-      <React.Suspense fallback={
-        <div style={{ padding: '20px', textAlign: 'center' }}>
-          <div>Chargement de l'application...</div>
-        </div>
-      }>
-        <Router>
-          <AnalyticsProvider>
-            <ScrollToTop />
-            <UTMTracker />
-            <SEOAnalytics />
-            <StructuredData type="website" />
-            <CookieConsentBanner />
-            <AuthProvider>
-              <Routes>
-                {/* Critical routes - no lazy loading */}
-                <Route path="/" element={<Index />} />
-                <Route path="/features" element={<Features />} />
-                <Route path="*" element={<NotFound />} />
-                
-                {/* Secondary routes - lazy loaded */}
-                <Route path="/auth" element={<LazyWrapper><Auth /></LazyWrapper>} />
-                <Route path="/dashboard" element={<LazyWrapper><Dashboard /></LazyWrapper>} />
-                <Route path="/curriculum" element={<LazyWrapper><Curriculum /></LazyWrapper>} />
-                <Route path="/ai-course" element={<LazyWrapper><AICourse /></LazyWrapper>} />
-                <Route path="/programming-course" element={<LazyWrapper><ProgrammingCourse /></LazyWrapper>} />
-                <Route path="/cybersecurity-course" element={<LazyWrapper><CybersecurityCourse /></LazyWrapper>} />
-                <Route path="/course/:slug" element={<LazyWrapper><GenericCourse /></LazyWrapper>} />
-                <Route path="/learn/:slug" element={<LazyWrapper><CoursePlayer /></LazyWrapper>} />
-                <Route path="/instructors" element={<LazyWrapper><Instructors /></LazyWrapper>} />
-                <Route path="/testimonials" element={<LazyWrapper><Testimonials /></LazyWrapper>} />
-                <Route path="/about" element={<LazyWrapper><About /></LazyWrapper>} />
-                <Route path="/register" element={<LazyWrapper><Register /></LazyWrapper>} />
-                <Route path="/careers" element={<LazyWrapper><Careers /></LazyWrapper>} />
-                <Route path="/contact" element={<LazyWrapper><Contact /></LazyWrapper>} />
-                <Route path="/appointment" element={<LazyWrapper><Appointment /></LazyWrapper>} />
-                <Route path="/blog" element={<LazyWrapper><Blog /></LazyWrapper>} />
-                <Route path="/blog/:slug" element={<LazyWrapper><BlogPost /></LazyWrapper>} />
-                <Route path="/privacy-policy" element={<LazyWrapper><PrivacyPolicy /></LazyWrapper>} />
-                <Route path="/terms-of-use" element={<LazyWrapper><TermsOfUse /></LazyWrapper>} />
-                <Route path="/cookies-policy" element={<LazyWrapper><CookiesPolicy /></LazyWrapper>} />
-                
-                {/* Admin routes - protected and lazy loaded */}
-                <Route path="/admin" element={<AdminRouteGuard><LazyWrapper><Admin /></LazyWrapper></AdminRouteGuard>} />
-                <Route path="/admin/courses" element={<AdminRouteGuard><LazyWrapper><AdminCourses /></LazyWrapper></AdminRouteGuard>} />
-                <Route path="/admin/test" element={<AdminRouteGuard><LazyWrapper><AdminTest /></LazyWrapper></AdminRouteGuard>} />
-              </Routes>
-              
-              <Toaster />
-            </AuthProvider>
-          </AnalyticsProvider>
-        </Router>
-      </React.Suspense>
-    </GlobalErrorBoundary>
+    <ReactSafetyWrapper>
+      <GlobalErrorBoundary>
+        <React.Suspense fallback={
+          <div style={{ padding: '20px', textAlign: 'center' }}>
+            <div>Chargement de l'application...</div>
+          </div>
+        }>
+          <Router>
+            <ReactSafetyWrapper>
+              <AnalyticsProvider>
+                <ReactSafetyWrapper>
+                  <ScrollToTop />
+                </ReactSafetyWrapper>
+                <UTMTracker />
+                <SEOAnalytics />
+                <StructuredData type="website" />
+                <ReactSafetyWrapper>
+                  <CookieConsentBanner />
+                </ReactSafetyWrapper>
+                <ReactSafetyWrapper>
+                  <AuthProvider>
+                    <Routes>
+                      {/* Critical routes - no lazy loading */}
+                      <Route path="/" element={<Index />} />
+                      <Route path="/features" element={<Features />} />
+                      <Route path="*" element={<NotFound />} />
+                      
+                      {/* Secondary routes - lazy loaded */}
+                      <Route path="/auth" element={<LazyWrapper><Auth /></LazyWrapper>} />
+                      <Route path="/dashboard" element={<LazyWrapper><Dashboard /></LazyWrapper>} />
+                      <Route path="/curriculum" element={<LazyWrapper><Curriculum /></LazyWrapper>} />
+                      <Route path="/ai-course" element={<LazyWrapper><AICourse /></LazyWrapper>} />
+                      <Route path="/programming-course" element={<LazyWrapper><ProgrammingCourse /></LazyWrapper>} />
+                      <Route path="/cybersecurity-course" element={<LazyWrapper><CybersecurityCourse /></LazyWrapper>} />
+                      <Route path="/course/:slug" element={<LazyWrapper><GenericCourse /></LazyWrapper>} />
+                      <Route path="/learn/:slug" element={<LazyWrapper><CoursePlayer /></LazyWrapper>} />
+                      <Route path="/instructors" element={<LazyWrapper><Instructors /></LazyWrapper>} />
+                      <Route path="/testimonials" element={<LazyWrapper><Testimonials /></LazyWrapper>} />
+                      <Route path="/about" element={<LazyWrapper><About /></LazyWrapper>} />
+                      <Route path="/register" element={<LazyWrapper><Register /></LazyWrapper>} />
+                      <Route path="/careers" element={<LazyWrapper><Careers /></LazyWrapper>} />
+                      <Route path="/contact" element={<LazyWrapper><Contact /></LazyWrapper>} />
+                      <Route path="/appointment" element={<LazyWrapper><Appointment /></LazyWrapper>} />
+                      <Route path="/blog" element={<LazyWrapper><Blog /></LazyWrapper>} />
+                      <Route path="/blog/:slug" element={<LazyWrapper><BlogPost /></LazyWrapper>} />
+                      <Route path="/privacy-policy" element={<LazyWrapper><PrivacyPolicy /></LazyWrapper>} />
+                      <Route path="/terms-of-use" element={<LazyWrapper><TermsOfUse /></LazyWrapper>} />
+                      <Route path="/cookies-policy" element={<LazyWrapper><CookiesPolicy /></LazyWrapper>} />
+                      
+                      {/* Admin routes - protected and lazy loaded */}
+                      <Route path="/admin" element={<AdminRouteGuard><LazyWrapper><Admin /></LazyWrapper></AdminRouteGuard>} />
+                      <Route path="/admin/courses" element={<AdminRouteGuard><LazyWrapper><AdminCourses /></LazyWrapper></AdminRouteGuard>} />
+                      <Route path="/admin/test" element={<AdminRouteGuard><LazyWrapper><AdminTest /></LazyWrapper></AdminRouteGuard>} />
+                    </Routes>
+                    
+                    <Toaster />
+                  </AuthProvider>
+                </ReactSafetyWrapper>
+              </AnalyticsProvider>
+            </ReactSafetyWrapper>
+          </Router>
+        </React.Suspense>
+      </GlobalErrorBoundary>
+    </ReactSafetyWrapper>
   );
 };
 

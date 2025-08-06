@@ -1,90 +1,85 @@
-import * as React from 'react';
+import React from 'react';
 
-/**
- * React Safety Utilities
- * 
- * These utilities help prevent "Cannot read properties of null" errors
- * by providing safe wrappers and checks for React functionality.
- */
-
-export const isReactAvailable = (): boolean => {
-  return (
-    typeof React !== 'undefined' &&
-    React !== null &&
-    typeof React.useState === 'function' &&
-    typeof React.useEffect === 'function' &&
-    typeof React.useContext === 'function' &&
-    typeof React.createElement === 'function'
-  );
+// React Safety Utils - Prevents "Cannot read properties of null" errors
+export const withReactSafety = <T extends Record<string, any>>(hooks: T): T => {
+  const safeHooks = {} as T;
+  
+  for (const [key, hook] of Object.entries(hooks)) {
+    if (typeof hook === 'function') {
+      safeHooks[key as keyof T] = ((...args: any[]) => {
+        // Check if React is available
+        if (!React || typeof React !== 'object') {
+          console.warn(`React is not available for hook: ${key}`);
+          return undefined;
+        }
+        
+        try {
+          return hook(...args);
+        } catch (error) {
+          console.error(`Error in hook ${key}:`, error);
+          return undefined;
+        }
+      }) as T[keyof T];
+    } else {
+      safeHooks[key as keyof T] = hook;
+    }
+  }
+  
+  return safeHooks;
 };
 
-export const isBrowserReady = (): boolean => {
-  return (
-    typeof window !== 'undefined' &&
-    typeof document !== 'undefined' &&
-    document.readyState !== 'loading'
-  );
-};
-
-export const isFullyReady = (): boolean => {
-  return isReactAvailable() && isBrowserReady();
-};
-
-/**
- * Safe useState wrapper that provides fallback behavior
- */
-export const useSafeState = <T>(initialValue: T): [T, (value: T | ((prev: T) => T)) => void] => {
-  if (!isReactAvailable()) {
-    console.warn('React not available for useSafeState');
-    return [initialValue, () => {}];
-  }
-
-  try {
-    return React.useState(initialValue);
-  } catch (error) {
-    console.warn('useSafeState failed:', error);
-    return [initialValue, () => {}];
-  }
-};
-
-/**
- * Safe useEffect wrapper that provides fallback behavior
- */
-export const useSafeEffect = (effect: () => void | (() => void), deps?: React.DependencyList): void => {
-  if (!isReactAvailable()) {
-    console.warn('React not available for useSafeEffect');
-    return;
-  }
-
-  try {
-    React.useEffect(effect, deps);
-  } catch (error) {
-    console.warn('useSafeEffect failed:', error);
-  }
-};
-
-/**
- * Global React null safety initialization
- * Call this before any React components are rendered
- */
-export const initializeReactSafety = (): boolean => {
-  if (!isReactAvailable()) {
-    console.error('React is not available - application cannot start');
-    return false;
-  }
-
-  // Add global error handler for React null issues
-  const originalConsoleError = console.error;
-  console.error = (...args) => {
-    const message = args.join(' ');
-    if (message.includes('Cannot read properties of null') && message.includes('useState')) {
-      console.warn('React null error detected - attempting recovery');
-      // Don't propagate React null errors to avoid crashes
+// Safe React hooks with null checks
+export const safeReact = {
+  useState: (...args: Parameters<typeof React.useState>) => {
+    if (!React?.useState) {
+      console.warn('React.useState not available, returning fallback');
+      return [undefined, () => {}] as const;
+    }
+    return React.useState(...args);
+  },
+  
+  useEffect: (...args: Parameters<typeof React.useEffect>) => {
+    if (!React?.useEffect) {
+      console.warn('React.useEffect not available');
       return;
     }
-    originalConsoleError.apply(console, args);
-  };
+    return React.useEffect(...args);
+  },
+  
+  useContext: (...args: Parameters<typeof React.useContext>) => {
+    if (!React?.useContext) {
+      console.warn('React.useContext not available, returning undefined');
+      return undefined;
+    }
+    return React.useContext(...args);
+  },
+  
+  useRef: (...args: Parameters<typeof React.useRef>) => {
+    if (!React?.useRef) {
+      console.warn('React.useRef not available, returning fallback');
+      return { current: undefined };
+    }
+    return React.useRef(...args);
+  },
+  
+  useCallback: (...args: Parameters<typeof React.useCallback>) => {
+    if (!React?.useCallback) {
+      console.warn('React.useCallback not available, returning function directly');
+      return args[0];
+    }
+    return React.useCallback(...args);
+  },
+  
+  useMemo: (...args: Parameters<typeof React.useMemo>) => {
+    if (!React?.useMemo) {
+      console.warn('React.useMemo not available, returning computed value');
+      return args[0]();
+    }
+    return React.useMemo(...args);
+  }
+};
 
-  console.log('React safety initialized successfully');
-  return true;
+// React availability checker
+export const isReactAvailable = (): boolean => {
+  return !!(React && typeof React === 'object' && React.useState);
 };

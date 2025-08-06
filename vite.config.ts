@@ -99,18 +99,27 @@ export default defineConfig(({ mode }) => {
       '@tanstack/react-query',
       '@supabase/supabase-js'
     ],
-    exclude: ['@vite/client', '@vite/env']
+    exclude: ['@vite/client', '@vite/env'],
+    // Force pre-bundling of React to prevent HMR issues
+    force: true
   },
   
-  // CRITICAL FIX: Ensure single React instance
+  // CRITICAL FIX: Ensure single React instance and HMR stability  
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      // Ensure single React instance
+      // Ensure single React instance - CRITICAL for preventing null errors
       "react": path.resolve(__dirname, "./node_modules/react"),
-      "react-dom": path.resolve(__dirname, "./node_modules/react-dom")
+      "react-dom": path.resolve(__dirname, "./node_modules/react-dom"),
+      "react-router-dom": path.resolve(__dirname, "./node_modules/react-router-dom")
     },
-    dedupe: ['react', 'react-dom']
+    dedupe: ['react', 'react-dom', 'react-router-dom']
+  },
+  
+  // Additional HMR stability
+  define: {
+    // Ensure consistent globals
+    'process.env.NODE_ENV': JSON.stringify(mode),
   },
   
   // Preview configuration for production builds
