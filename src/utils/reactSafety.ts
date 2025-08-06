@@ -81,5 +81,5 @@ export const safeReact = {
 
 // React availability checker
 export const isReactAvailable = (): boolean => {
-  return !!(React && typeof React === 'object' && React.useState);
+  return !!(React && typeof React === 'object' && React.createElement && React.Component);
 };

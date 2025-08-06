@@ -14,7 +14,7 @@ import CookieConsentBanner from "@/components/gdpr/CookieConsentBanner";
 import SafeGDPRWrapper from "@/components/gdpr/SafeGDPRWrapper";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import ReactSafetyWrapper from "@/components/ui/react-safety-wrapper";
-import { isReactAvailable } from "@/utils/reactSafety";
+
 
 // Critical pages (loaded immediately for better performance)
 import Index from "./pages/Index";
@@ -75,18 +75,8 @@ const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
 
 const App = () => {
-  // Check if React is available before rendering
-  if (!isReactAvailable()) {
-    return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <div>Loading React... Please wait.</div>
-      </div>
-    );
-  }
-
   return (
-    <ReactSafetyWrapper>
-      <GlobalErrorBoundary>
+    <GlobalErrorBoundary>
         <React.Suspense fallback={
           <div style={{ padding: '20px', textAlign: 'center' }}>
             <div>Chargement de l'application...</div>
@@ -148,7 +138,6 @@ const App = () => {
           </Router>
         </React.Suspense>
       </GlobalErrorBoundary>
-    </ReactSafetyWrapper>
   );
 };
 
