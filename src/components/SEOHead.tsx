@@ -2,7 +2,7 @@ import React from 'react';
 import JsonLd from './JsonLd';
 import { generateOrganizationJsonLd } from '@/utils/seoData';
 import SafeComponentWrapper from '@/components/ui/SafeComponentWrapper';
-import { useSafeEffect } from '@/hooks/useSafeHooks';
+import { useSafeEffect } from '@/utils/safeHooks';
 
 interface SEOHeadProps {
   title?: string;

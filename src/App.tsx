@@ -88,9 +88,15 @@ const App = () => {
                 <ReactSafetyWrapper>
                   <ScrollToTop />
                 </ReactSafetyWrapper>
-                <UTMTracker />
-                <SEOAnalytics />
-                <StructuredData type="website" />
+                <ReactSafetyWrapper>
+                  <UTMTracker />
+                </ReactSafetyWrapper>
+                <ReactSafetyWrapper>
+                  <SEOAnalytics />
+                </ReactSafetyWrapper>
+                <ReactSafetyWrapper>
+                  <StructuredData type="website" />
+                </ReactSafetyWrapper>
                 <ReactSafetyWrapper>
                   <CookieConsentBanner />
                 </ReactSafetyWrapper>

@@ -1,12 +1,11 @@
 
-import { useEffect } from 'react';
+import { useSafeEffect, useSafeLocation } from '@/utils/safeHooks';
 import { analytics } from '@/utils/analytics';
-import { useLocation } from 'react-router-dom';
 
 const UTMTracker: React.FC = () => {
-  const location = useLocation();
+  const location = useSafeLocation();
 
-  useEffect(() => {
+  useSafeEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const utmData = {
       utm_source: urlParams.get('utm_source'),

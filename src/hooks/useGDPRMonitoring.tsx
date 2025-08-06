@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
+import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 
 interface GDPRError {
   type: 'consent_parsing' | 'component_render' | 'analytics_init' | 'data_corruption';
@@ -8,7 +9,7 @@ interface GDPRError {
 }
 
 export const useGDPRMonitoring = () => {
-  const [errors, setErrors] = useState<GDPRError[]>([]);
+  const [errors, setErrors] = useSafeState<GDPRError[]>([]);
 
   const logGDPRError = useCallback((type: GDPRError['type'], message: string, details?: any) => {
     const error: GDPRError = {
@@ -82,7 +83,7 @@ export const useGDPRMonitoring = () => {
     }
   }, [logGDPRError]);
 
-  useEffect(() => {
+  useSafeEffect(() => {
     // Validate data on mount
     if (!validateConsentData()) {
       recoverCorruptedData();
