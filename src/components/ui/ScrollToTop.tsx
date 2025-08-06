@@ -1,14 +1,15 @@
 
-import { useRef, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useRef } from 'react';
+import { useSafeEffect } from '@/utils/safeHooks';
+import { useSafeLocation } from '@/utils/safeHooks';
 
 const ScrollToTop = () => {
-  const location = useLocation();
+  const location = useSafeLocation();
   const { pathname } = location;
   const isDropdownOpen = useRef(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
+  useSafeEffect(() => {
     // Listen for dropdown state changes
     const handleDropdownState = (event: CustomEvent) => {
       isDropdownOpen.current = event.detail.isOpen;
@@ -31,7 +32,7 @@ const ScrollToTop = () => {
     };
   }, []);
 
-  useEffect(() => {
+  useSafeEffect(() => {
     // Clear any existing timeout
     if (scrollTimeout.current) {
       clearTimeout(scrollTimeout.current);

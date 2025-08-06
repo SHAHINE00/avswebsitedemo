@@ -1,5 +1,6 @@
 
-import { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useContext } from 'react';
+import { useSafeState, useSafeEffect, useSafeContext } from '@/utils/safeHooks';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -15,19 +16,28 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+  const context = useSafeContext(AuthContext);
+  if (context === undefined || context === null) {
+    // Return a safe fallback instead of throwing during HMR
+    console.warn('useAuth called outside AuthProvider, returning fallback');
+    return {
+      user: null,
+      session: null,
+      loading: false,
+      signIn: async () => ({ error: new Error('Auth not available') }),
+      signUp: async () => ({ error: new Error('Auth not available') }),
+      signOut: async () => {}
+    };
   }
   return context;
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useSafeState<User | null>(null);
+  const [session, setSession] = useSafeState<Session | null>(null);
+  const [loading, setLoading] = useSafeState(true);
 
-  useEffect(() => {
+  useSafeEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {

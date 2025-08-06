@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 
 export interface ConsentPreferences {
   necessary: boolean;
@@ -15,11 +15,11 @@ const DEFAULT_CONSENT: ConsentPreferences = {
 };
 
 export const useGDPRConsent = () => {
-  const [consent, setConsent] = useState<ConsentPreferences>(DEFAULT_CONSENT);
-  const [hasChosenConsent, setHasChosenConsent] = useState(false);
-  const [showBanner, setShowBanner] = useState(false);
+  const [consent, setConsent] = useSafeState<ConsentPreferences>(DEFAULT_CONSENT);
+  const [hasChosenConsent, setHasChosenConsent] = useSafeState(false);
+  const [showBanner, setShowBanner] = useSafeState(false);
 
-  useEffect(() => {
+  useSafeEffect(() => {
     try {
       // Validate localStorage is available
       if (typeof window === 'undefined' || !window.localStorage) {
