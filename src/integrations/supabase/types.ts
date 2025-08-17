@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "13.0.4"
@@ -1301,11 +1301,11 @@ export type Database = {
       }
       create_notification: {
         Args: {
-          p_user_id: string
-          p_title: string
-          p_message: string
-          p_type?: string
           p_action_url?: string
+          p_message: string
+          p_title: string
+          p_type?: string
+          p_user_id: string
         }
         Returns: string
       }
@@ -1315,16 +1315,16 @@ export type Database = {
       }
       get_advanced_analytics: {
         Args: {
-          p_start_date?: string
           p_end_date?: string
           p_metric_types?: string[]
+          p_start_date?: string
         }
         Returns: {
           date: string
-          metric_type: string
-          metric_name: string
-          value: number
           metadata: Json
+          metric_name: string
+          metric_type: string
+          value: number
         }[]
       }
       get_dashboard_metrics: {
@@ -1342,9 +1342,9 @@ export type Database = {
       log_admin_activity: {
         Args: {
           p_action: string
-          p_entity_type: string
-          p_entity_id?: string
           p_details?: Json
+          p_entity_id?: string
+          p_entity_type: string
         }
         Returns: undefined
       }
@@ -1354,19 +1354,19 @@ export type Database = {
       }
       reorder_sections_on_page: {
         Args: {
+          p_new_order: number
           p_page_name: string
           p_section_key: string
-          p_new_order: number
         }
         Returns: undefined
       }
       track_analytics: {
         Args: {
-          p_metric_type: string
-          p_metric_name: string
-          p_value: number
-          p_metadata?: Json
           p_date?: string
+          p_metadata?: Json
+          p_metric_name: string
+          p_metric_type: string
+          p_value: number
         }
         Returns: undefined
       }
