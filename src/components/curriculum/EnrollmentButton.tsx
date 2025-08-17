@@ -1,5 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useEnrollment } from '@/hooks/useEnrollment';
@@ -23,12 +24,12 @@ const EnrollmentButton: React.FC<EnrollmentButtonProps> = ({
 }) => {
   const { user } = useAuth();
   const { enrollInCourse, checkEnrollmentStatus, loading } = useEnrollment();
-  const [isEnrolled, setIsEnrolled] = useState(false);
-  const [checkingStatus, setCheckingStatus] = useState(true);
-  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useSafeState(false);
+  const [checkingStatus, setCheckingStatus] = useSafeState(true);
+  const [showConfirmation, setShowConfirmation] = useSafeState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  useSafeEffect(() => {
     const checkStatus = async () => {
       logInfo('Starting enrollment check for course:', { courseId, userId: user?.id });
       setCheckingStatus(true);

@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React from 'react';
+import { useSafeState } from '@/utils/safeHooks';
 import { Card, CardContent } from '@/components/ui/card';
 import { Brain, Code, Megaphone } from 'lucide-react';
 import { useCourses } from '@/hooks/useCourses';
@@ -8,7 +9,7 @@ import type { Course } from '@/hooks/useCourses';
 
 const SpecialtyPillars: React.FC = () => {
   const { courses, loading, error, retry } = useCourses();
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [selectedCourse, setSelectedCourse] = useSafeState<Course | null>(null);
 
   // Improved course categorization based on exact recommendations
   const aiCourses = courses.filter(course => {

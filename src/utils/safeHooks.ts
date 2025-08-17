@@ -1,56 +1,117 @@
-import * as React from 'react';
+import React, { 
+  useState, 
+  useEffect, 
+  useCallback, 
+  useMemo, 
+  useRef, 
+  useContext
+} from 'react';
+import { useLocation } from 'react-router-dom';
 
-// Safe useState wrapper
-export function useSafeState<T>(initialState: T): [T, React.Dispatch<React.SetStateAction<T>>] {
-  if (!React || !React.useState) {
-    console.warn('React.useState not available, using fallback');
-    return [initialState, () => {}];
-  }
-  
+// Safe React hooks that provide fallbacks when React hooks are null during HMR
+export const useSafeState = <T>(initialState: T | (() => T)): [T, React.Dispatch<React.SetStateAction<T>>] => {
   try {
-    return React.useState(initialState);
+    if (!React || !useState || useState === null) {
+      console.warn('useState is null, using fallback');
+      const value = typeof initialState === 'function' ? (initialState as () => T)() : initialState;
+      return [value, () => {}];
+    }
+    return useState(initialState);
   } catch (error) {
-    console.warn('useState failed:', error);
-    return [initialState, () => {}];
+    console.warn('useState failed, using fallback:', error);
+    const value = typeof initialState === 'function' ? (initialState as () => T)() : initialState;
+    return [value, () => {}];
   }
-}
+};
 
-// Safe useEffect wrapper
-export function useSafeEffect(effect: React.EffectCallback, deps?: React.DependencyList): void {
-  if (!React || !React.useEffect) {
-    console.warn('React.useEffect not available');
-    return;
-  }
-  
+export const useSafeEffect = (effect: React.EffectCallback, deps?: React.DependencyList): void => {
   try {
-    React.useEffect(effect, deps);
+    if (!React || !useEffect || useEffect === null) {
+      console.warn('useEffect is null, skipping effect');
+      return;
+    }
+    return useEffect(effect, deps);
   } catch (error) {
-    console.warn('useEffect failed:', error);
+    console.warn('useEffect failed, skipping effect:', error);
   }
-}
+};
 
-// Safe useContext wrapper
-export function useSafeContext<T>(context: React.Context<T>): T | null {
-  if (!React || !React.useContext) {
-    console.warn('React.useContext not available');
-    return null;
-  }
-  
+export const useSafeCallback = <T extends (...args: any[]) => any>(
+  callback: T,
+  deps: React.DependencyList
+): T => {
   try {
-    return React.useContext(context);
+    if (!React || !useCallback || useCallback === null) {
+      console.warn('useCallback is null, returning callback directly');
+      return callback;
+    }
+    return useCallback(callback, deps);
   } catch (error) {
-    console.warn('useContext failed:', error);
-    return null;
+    console.warn('useCallback failed, returning callback directly:', error);
+    return callback;
   }
-}
+};
 
-// Safe useLocation wrapper with fallback
-export function useSafeLocation() {
+export const useSafeMemo = <T>(factory: () => T, deps: React.DependencyList): T => {
   try {
-    const { useLocation } = require('react-router-dom');
+    if (!React || !useMemo || useMemo === null) {
+      console.warn('useMemo is null, computing value directly');
+      return factory();
+    }
+    return useMemo(factory, deps);
+  } catch (error) {
+    console.warn('useMemo failed, computing value directly:', error);
+    return factory();
+  }
+};
+
+export const useSafeRef = <T>(initialValue: T): React.MutableRefObject<T> => {
+  try {
+    if (!React || !useRef || useRef === null) {
+      console.warn('useRef is null, using fallback ref');
+      return { current: initialValue };
+    }
+    return useRef(initialValue);
+  } catch (error) {
+    console.warn('useRef failed, using fallback ref:', error);
+    return { current: initialValue };
+  }
+};
+
+export const useSafeContext = <T>(context: React.Context<T>): T => {
+  try {
+    if (!React || !useContext || useContext === null) {
+      console.warn('useContext is null, using default value');
+      return {} as T;
+    }
+    return useContext(context);
+  } catch (error) {
+    console.warn('useContext failed, using default value:', error);
+    return {} as T;
+  }
+};
+
+export const useSafeLocation = () => {
+  try {
+    if (!useLocation || useLocation === null) {
+      console.warn('useLocation is null, using fallback location');
+      return {
+        pathname: '/',
+        search: '',
+        hash: '',
+        state: null,
+        key: 'default'
+      };
+    }
     return useLocation();
   } catch (error) {
-    console.warn('useLocation failed:', error);
-    return { pathname: '/', search: '', hash: '', state: null };
+    console.warn('useLocation failed, using fallback location:', error);
+    return {
+      pathname: '/',
+      search: '',
+      hash: '',
+      state: null,
+      key: 'default'
+    };
   }
-}
+};

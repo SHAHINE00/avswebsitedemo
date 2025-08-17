@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useSafeState } from '@/utils/safeHooks';
 import { Mail, CheckCircle, Gift } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -21,8 +22,8 @@ const EmailCaptureForm: React.FC<EmailCaptureFormProps> = ({
   source,
   className = ""
 }) => {
-  const [email, setEmail] = useState('');
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [email, setEmail] = useSafeState('');
+  const [isSubscribed, setIsSubscribed] = useSafeState(false);
   const { sendNewsletterWelcome, loading } = useHostingerEmail();
   const { trackNewsletterSignup } = useMarketingTracking();
 

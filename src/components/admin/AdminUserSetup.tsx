@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,12 +11,12 @@ import { Shield, User } from 'lucide-react';
 import { logError } from '@/utils/logger';
 
 const AdminUserSetup: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [existingAdmins, setExistingAdmins] = useState<any[]>([]);
+  const [email, setEmail] = useSafeState('');
+  const [loading, setLoading] = useSafeState(false);
+  const [existingAdmins, setExistingAdmins] = useSafeState<any[]>([]);
   const { toast } = useToast();
 
-  useEffect(() => {
+  useSafeEffect(() => {
     fetchAdmins();
   }, []);
 

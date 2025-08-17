@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -13,10 +14,10 @@ interface AdminRouteGuardProps {
 const AdminRouteGuard: React.FC<AdminRouteGuardProps> = ({ children }) => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useSafeState<boolean | null>(null);
+  const [loading, setLoading] = useSafeState(true);
 
-  useEffect(() => {
+  useSafeEffect(() => {
     const checkAdminStatus = async () => {
       if (!user) {
         setLoading(false);
@@ -48,7 +49,7 @@ const AdminRouteGuard: React.FC<AdminRouteGuardProps> = ({ children }) => {
   }, [user, authLoading]);
 
   // Redirect to auth if not logged in
-  useEffect(() => {
+  useSafeEffect(() => {
     if (!authLoading && !user) {
       navigate('/auth', { replace: true });
     }

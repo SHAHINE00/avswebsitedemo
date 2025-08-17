@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React from 'react';
+import { useSafeState, useSafeEffect, useSafeCallback, useSafeMemo, useSafeRef } from '@/utils/safeHooks';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -62,7 +63,7 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
   submissionStatus = 'idle',
   statusMessage
 }) => {
-  const [inlineStatus, setInlineStatus] = useState<{
+  const [inlineStatus, setInlineStatus] = useSafeState<{
     type: 'idle' | 'submitting' | 'success' | 'error';
     message: string;
   }>({ type: 'idle', message: '' });
@@ -160,7 +161,7 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
   ];
 
   // Filter domains based on formation type
-  const availableDomaines = useMemo(() => {
+  const availableDomaines = useSafeMemo(() => {
     if (formData.formation.formationType === 'complete') {
       // For Formation Professionnelle Complète, exclude marketing
       return allDomaines.filter(domaine => domaine.value !== 'marketing');
@@ -170,7 +171,7 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
   }, [formData.formation.formationType]);
 
   // Filter courses by domain
-  const availableCourses = useMemo(() => {
+  const availableCourses = useSafeMemo(() => {
     if (!courses.length || !formData.formation.domaine) return [];
     
     const publishedCourses = courses.filter(course => course.status === 'published');
@@ -199,7 +200,7 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
     }
   }, [courses, formData.formation.domaine]);
 
-  const handleInputChange = useCallback((field: string, value: string) => {
+  const handleInputChange = useSafeCallback((field: string, value: string) => {
     let processedValue = value;
     
     if (field === 'email') {
@@ -217,7 +218,7 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
     setTimeout(markSaved, 1000);
   }, [updateData, validateEmail, formatPhone, markSaved]);
 
-  const handleFormationChange = useCallback((field: string, value: string) => {
+  const handleFormationChange = useSafeCallback((field: string, value: string) => {
     updateData(prev => {
       const formationField = field.split('.')[1];
       let updates: any = { [formationField]: value };
@@ -246,7 +247,7 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
     setTimeout(markSaved, 1000);
   }, [updateData, availableCourses, markSaved]);
 
-  const handleFieldBlur = useCallback(async (field: string) => {
+  const handleFieldBlur = useSafeCallback(async (field: string) => {
     touch(field);
     
     if (field === 'email') {
@@ -262,14 +263,14 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
   }, [touch, validate, validatePhone, formData]);
 
   // Sync external status with inline status
-  useEffect(() => {
+  useSafeEffect(() => {
     if (submissionStatus && statusMessage) {
       setInlineStatus({ type: submissionStatus, message: statusMessage });
     }
   }, [submissionStatus, statusMessage]);
 
   // Clear inline status when user starts typing after an error
-  useEffect(() => {
+  useSafeEffect(() => {
     if (inlineStatus.type === 'error' && (formData.firstName || formData.lastName || formData.email || formData.phone)) {
       const timer = setTimeout(() => {
         setInlineStatus({ type: 'idle', message: '' });
@@ -278,7 +279,7 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
     }
   }, [formData.firstName, formData.lastName, formData.email, formData.phone, inlineStatus.type]);
 
-  const handleSubmit = useCallback(async (e?: React.FormEvent | React.MouseEvent) => {
+  const handleSubmit = useSafeCallback(async (e?: React.FormEvent | React.MouseEvent) => {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
@@ -362,7 +363,7 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
     }
   }, [formData, validateAll, onSubmit, networkStatus, getValidationResult, toast, errors, loading]);
 
-  const getStepStatus = useCallback((step: number): 'completed' | 'current' | 'pending' => {
+  const getStepStatus = useSafeCallback((step: number): 'completed' | 'current' | 'pending' => {
     switch (step) {
       case 1:
         return formData.formation.formationType ? 'completed' : 'current';

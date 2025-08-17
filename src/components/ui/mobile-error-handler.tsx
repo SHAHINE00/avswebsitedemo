@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React from 'react';
+import { useSafeState } from '@/utils/safeHooks';
 import SafeComponentWrapper from '@/components/ui/SafeComponentWrapper';
 
 interface MobileErrorHandlerProps {
@@ -8,7 +9,7 @@ interface MobileErrorHandlerProps {
 }
 
 const MobileErrorHandlerCore: React.FC<MobileErrorHandlerProps> = ({ error, onRetry }) => {
-  const [retryCount, setRetryCount] = useState(0);
+  const [retryCount, setRetryCount] = useSafeState(0);
 
   const handleRetry = () => {
     setRetryCount(prev => prev + 1);

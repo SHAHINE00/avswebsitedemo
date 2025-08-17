@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useSafeState } from '@/utils/safeHooks';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,13 +35,13 @@ export const EnhancedNewsletterSignup: React.FC<EnhancedNewsletterSignupProps> =
   source = "newsletter",
   className = ""
 }) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useSafeState({
     email: '',
     fullName: '',
     interests: [] as string[]
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isLoading, setIsLoading] = useSafeState(false);
+  const [isSubscribed, setIsSubscribed] = useSafeState(false);
   const { toast } = useToast();
 
   const handleInterestChange = (interestId: string, checked: boolean) => {

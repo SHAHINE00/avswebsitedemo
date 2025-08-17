@@ -1,6 +1,7 @@
 
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import SafeRouter from "@/components/ui/SafeRouter";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
 import AdminRouteGuard from "@/components/admin/AdminRouteGuard";
@@ -10,10 +11,10 @@ import { usePageTracking, useScrollTracking } from "@/hooks/useAnalytics";
 import UTMTracker from "@/components/marketing/UTMTracker";
 import SEOAnalytics from "@/components/SEOAnalytics";
 import StructuredData from "@/components/StructuredData";
+import ReactSafetyWrapper from "@/components/ui/react-safety-wrapper";
 import CookieConsentBanner from "@/components/gdpr/CookieConsentBanner";
 import SafeGDPRWrapper from "@/components/gdpr/SafeGDPRWrapper";
 import LoadingSpinner from "@/components/ui/loading-spinner";
-import ReactSafetyWrapper from "@/components/ui/react-safety-wrapper";
 
 
 // Critical pages (loaded immediately for better performance)
@@ -82,7 +83,7 @@ const App = () => {
             <div>Chargement de l'application...</div>
           </div>
         }>
-          <Router>
+          <SafeRouter>
             <ReactSafetyWrapper>
               <AnalyticsProvider>
                 <ReactSafetyWrapper>
@@ -141,7 +142,7 @@ const App = () => {
                 </ReactSafetyWrapper>
               </AnalyticsProvider>
             </ReactSafetyWrapper>
-          </Router>
+          </SafeRouter>
         </React.Suspense>
       </GlobalErrorBoundary>
   );
