@@ -1,4 +1,5 @@
 import React from "react"
+import { useSafeState, useSafeEffect } from "@/utils/safeHooks"
 
 import type {
   ToastActionElement,
@@ -169,47 +170,23 @@ function toast({ ...props }: Toast) {
 }
 
 function useToast() {
-  // Add React null safety
-  if (!React || !React.useState || !React.useEffect) {
-    console.warn('useToast: React hooks not available');
-    return {
-      toasts: [],
-      toast: () => ({ id: '', dismiss: () => {}, update: () => {} }),
-      dismiss: () => {}
-    };
-  }
+  const [state, setState] = useSafeState<State>(memoryState);
 
-  let state, setState;
-  try {
-    [state, setState] = React.useState<State>(memoryState);
-  } catch (error) {
-    console.warn('useToast: useState failed:', error);
-    return {
-      toasts: [],
-      toast: () => ({ id: '', dismiss: () => {}, update: () => {} }),
-      dismiss: () => {}
-    };
-  }
-
-  React.useEffect(() => {
-    try {
-      listeners.push(setState);
-      return () => {
-        const index = listeners.indexOf(setState);
-        if (index > -1) {
-          listeners.splice(index, 1);
-        }
-      };
-    } catch (error) {
-      console.warn('useToast: useEffect failed:', error);
+  useSafeEffect(() => {
+    listeners.push(setState)
+    return () => {
+      const index = listeners.indexOf(setState)
+      if (index > -1) {
+        listeners.splice(index, 1)
+      }
     }
-  }, [state]);
+  }, [setState])
 
   return {
     ...state,
     toast,
     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
-  };
+  }
 }
 
 export { useToast, toast }

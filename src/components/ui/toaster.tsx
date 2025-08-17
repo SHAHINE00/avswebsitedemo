@@ -1,6 +1,6 @@
 
 import React from "react";
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks/use-toast";
 import {
   Toast,
   ToastClose,
@@ -8,22 +8,19 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
-} from "@/components/ui/toast"
+} from "@/components/ui/toast";
+import ReactSafetyWrapper from "@/components/ui/react-safety-wrapper";
 
 export function Toaster() {
-  // Add React null safety
-  if (!React) {
-    console.warn('Toaster: React not available');
-    return null;
-  }
+  return (
+    <ReactSafetyWrapper>
+      <ToasterCore />
+    </ReactSafetyWrapper>
+  );
+}
 
-  let toasts;
-  try {
-    ({ toasts } = useToast());
-  } catch (error) {
-    console.warn('Toaster: useToast failed:', error);
-    return null;
-  }
+function ToasterCore() {
+  const { toasts } = useToast();
 
   return (
     <ToastProvider>
