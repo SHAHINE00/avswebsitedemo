@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useMemo, useCallback } from 'react';
+import React from 'react';
+import { useSafeRef, useSafeEffect, useSafeMemo, useSafeCallback } from '@/utils/safeHooks';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -48,7 +49,7 @@ const INITIAL_FORM_DATA: FormData = {
 
 const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ onSubmit, loading }) => {
   // Render cycle protection
-  const renderCountRef = useRef(0);
+  const renderCountRef = useSafeRef(0);
   renderCountRef.current += 1;
   
   if (renderCountRef.current > 50) {
@@ -128,7 +129,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
   ];
 
   // Memoize available courses to prevent recalculation on every render
-  const availableCourses = useMemo(() => {
+  const availableCourses = useSafeMemo(() => {
     if (!courses.length || !formData.formation.domaine) return [];
     
     const allCourses = courses.filter(course => course.status === 'published');
@@ -197,20 +198,20 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
   }, [courses, formData.formation.domaine]);
 
   // Memoize course count to prevent re-renders during Badge rendering
-  const courseCount = useMemo(() => availableCourses.length, [availableCourses.length]);
+  const courseCount = useSafeMemo(() => availableCourses.length, [availableCourses.length]);
 
   // Memoize course count text to prevent string recalculation during render
-  const courseCountText = useMemo(() => 
+  const courseCountText = useSafeMemo(() => 
     `${courseCount} programme${courseCount > 1 ? 's' : ''} disponible${courseCount > 1 ? 's' : ''}`,
     [courseCount]
   );
 
   // Prevent re-render loops by using stable references for effects
-  const formationDomaineRef = useRef(formData.formation.domaine);
-  const formationProgrammeRef = useRef(formData.formation.programme);
+  const formationDomaineRef = useSafeRef(formData.formation.domaine);
+  const formationProgrammeRef = useSafeRef(formData.formation.programme);
 
   // Reset downstream selections when domain changes
-  useEffect(() => {
+  useSafeEffect(() => {
     // Only run if domain actually changed
     if (formationDomaineRef.current !== formData.formation.domaine) {
       const oldDomaine = formationDomaineRef.current;
@@ -237,7 +238,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
   }, [formData.formation.domaine, setFormData]);
 
   // Update program details when programme selection changes
-  useEffect(() => {
+  useSafeEffect(() => {
     // Only run if programme actually changed
     if (formationProgrammeRef.current !== formData.formation.programme) {
       formationProgrammeRef.current = formData.formation.programme;
@@ -264,7 +265,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
   }, [formData.formation.programme, availableCourses, setFormData]);
 
   // Completely stable input change handler - no state updates during render
-  const handleInputChange = useCallback((field: string, value: string) => {
+  const handleInputChange = useSafeCallback((field: string, value: string) => {
     // Use setTimeout to ensure state updates happen after render cycle
     setTimeout(() => {
       // Auto-format phone numbers
@@ -304,13 +305,13 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
   }, [setFormData]);
 
   // Stable field blur handler with validation
-  const handleFieldBlur = useCallback((field: string, value: string) => {
+  const handleFieldBlur = useSafeCallback((field: string, value: string) => {
     touch(field);
     validate(field, value);
   }, [touch, validate]);
 
   // Memoize form validation to prevent re-calculation during render
-  const isFormValid = useMemo(() => {
+  const isFormValid = useSafeMemo(() => {
     const basicFieldsValid = validateAll({
       firstName: formData.firstName,
       lastName: formData.lastName,
@@ -335,7 +336,7 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
   ]);
 
   // Memoize step status calculation to prevent re-calculation during render
-  const getStepStatus = useMemo(() => {
+  const getStepStatus = useSafeMemo(() => {
     return (step: number): 'completed' | 'current' | 'pending' => {
       switch (step) {
         case 1:
@@ -357,17 +358,17 @@ const MultiStepRegistrationForm: React.FC<MultiStepRegistrationFormProps> = ({ o
   ]);
 
   // Memoize selected values to prevent re-calculation during render
-  const selectedFormationType = useMemo(() => 
+  const selectedFormationType = useSafeMemo(() => 
     formationTypes.find(type => type.value === formData.formation.formationType),
     [formData.formation.formationType]
   );
   
-  const selectedDomaine = useMemo(() => 
+  const selectedDomaine = useSafeMemo(() => 
     domaines.find(domain => domain.value === formData.formation.domaine),
     [formData.formation.domaine]
   );
 
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+  const handleSubmit = useSafeCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Touch all fields to show validation errors

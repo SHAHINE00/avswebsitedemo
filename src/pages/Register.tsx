@@ -1,6 +1,7 @@
 
 // Subscriber-only registration page
-import React, { useState } from 'react';
+import React from 'react';
+import { useSafeState } from '@/utils/safeHooks';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -12,9 +13,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { logError } from '@/utils/logger';
 
 const Register = () => {
-  const [loading, setLoading] = useState(false);
-  const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
-  const [statusMessage, setStatusMessage] = useState('');
+  const [loading, setLoading] = useSafeState(false);
+  const [submissionStatus, setSubmissionStatus] = useSafeState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [statusMessage, setStatusMessage] = useSafeState('');
   const { toast } = useToast();
   const navigate = useNavigate();
 

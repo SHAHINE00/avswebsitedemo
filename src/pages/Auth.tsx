@@ -1,5 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,15 +15,15 @@ import SEOHead from '@/components/SEOHead';
 import { utilityPagesSEO } from '@/utils/seoData';
 
 const Auth = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useSafeState('');
+  const [password, setPassword] = useSafeState('');
+  const [fullName, setFullName] = useSafeState('');
+  const [loading, setLoading] = useSafeState(false);
   const { signIn, signUp, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  useEffect(() => {
+  useSafeEffect(() => {
     if (user) {
       navigate('/');
     }

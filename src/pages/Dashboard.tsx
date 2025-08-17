@@ -1,5 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -49,13 +50,13 @@ const Dashboard = () => {
   const { achievements } = useUserProfile();
   const { bookmarks } = useCourseInteractions();
   
-  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [enrollments, setEnrollments] = useSafeState<Enrollment[]>([]);
+  const [appointments, setAppointments] = useSafeState<Appointment[]>([]);
+  const [loading, setLoading] = useSafeState(true);
+  const [error, setError] = useSafeState<string | null>(null);
+  const [activeTab, setActiveTab] = useSafeState('overview');
 
-  useEffect(() => {
+  useSafeEffect(() => {
     if (!user) {
       window.location.href = '/auth';
       return;
