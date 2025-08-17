@@ -141,7 +141,7 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
     }
   ];
 
-  const domaines = [
+  const allDomaines = [
     {
       value: 'ai-data',
       label: 'Intelligence Artificielle & Data Science',
@@ -158,6 +158,16 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
       description: 'Marketing Digital, E-commerce, Design, Réseaux Sociaux'
     }
   ];
+
+  // Filter domains based on formation type
+  const availableDomaines = useMemo(() => {
+    if (formData.formation.formationType === 'complete') {
+      // For Formation Professionnelle Complète, exclude marketing
+      return allDomaines.filter(domaine => domaine.value !== 'marketing');
+    }
+    // For certificate formations, show all domains
+    return allDomaines;
+  }, [formData.formation.formationType]);
 
   // Filter courses by domain
   const availableCourses = useMemo(() => {
@@ -563,7 +573,7 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
                 <div className="space-y-4">
                   <h4 className="font-semibold text-gray-700">2. Domaine d'études</h4>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {domaines.map((domaine) => (
+                    {availableDomaines.map((domaine) => (
                       <Card 
                         key={domaine.value}
                         className={cn(
