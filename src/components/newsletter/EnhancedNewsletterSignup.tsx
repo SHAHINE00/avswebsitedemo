@@ -68,24 +68,27 @@ export const EnhancedNewsletterSignup: React.FC<EnhancedNewsletterSignupProps> =
     setIsLoading(true);
 
     try {
-      // Save to subscribers table  
-      const { error: dbError } = await supabase
-        .from('subscribers')
-        .insert({
+      // Create subscriber via secure Edge Function
+      const { data: subscribeRes, error: subscribeError } = await supabase.functions.invoke('subscribe', {
+        body: {
           email: formData.email,
-          full_name: formData.fullName || null
-        });
-
-      if (dbError) {
-        if (dbError.code === '23505') { // Unique constraint violation
-          toast({
-            title: "Déjà inscrit(e)",
-            description: "Cette adresse email est déjà inscrite à notre newsletter.",
-            variant: "destructive",
-          });
-          return;
+          fullName: formData.fullName,
+          source,
+          interests: formData.interests
         }
-        throw dbError;
+      });
+
+      if (subscribeError) {
+        throw subscribeError;
+      }
+
+      if (subscribeRes?.status === 'already_subscribed') {
+        toast({
+          title: "Déjà inscrit(e)",
+          description: "Cette adresse email est déjà inscrite à notre newsletter.",
+          variant: "destructive",
+        });
+        return;
       }
 
       // Send welcome email
