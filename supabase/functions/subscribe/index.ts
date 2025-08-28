@@ -10,12 +10,39 @@ const corsHeaders = {
 interface SubscribeRequest {
   email: string;
   fullName?: string;
+  phone?: string;
   source?: string;
   interests?: string[];
+  formationType?: string;
+  formationDomaine?: string;
+  formationProgramme?: string;
+  formationProgrammeTitle?: string;
+  formationTag?: string;
 }
 
-const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
+function sanitizeString(input: unknown, max = 200): string | null {
+  if (typeof input !== "string") return null;
+  let s = input.trim().replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "");
+  s = s.replace(/on\w+\s*=\s*"[^"]*"/gi, "");
+  return s.slice(0, max);
+}
+
+function sanitizeEmail(input: unknown): string | null {
+  const s = sanitizeString(input, 254);
+  if (!s) return null;
+  const email = s.toLowerCase();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email) ? email : null;
+}
+
+function sanitizePhone(input: unknown): string | null {
+  if (typeof input !== "string") return null;
+  const digits = input.replace(/[^0-9+]/g, "").slice(0, 20);
+  return digits || null;
+}
+
+serve(async (req: Request): Promise<Response> => {
+  // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -28,16 +55,27 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { email, fullName }: SubscribeRequest = await req.json();
+    const body: SubscribeRequest = await req.json();
 
-    // Basic validation
-    const emailSanitized = String(email || "").trim().toLowerCase();
-    const nameSanitized = fullName ? String(fullName).trim().slice(0, 100) : null;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const email = sanitizeEmail(body.email);
+    const fullName = sanitizeString(body.fullName, 100) || (email ? email.split("@")[0] : null);
+    const phone = sanitizePhone(body.phone);
+    const formationType = sanitizeString(body.formationType, 50);
+    const formationDomaine = sanitizeString(body.formationDomaine, 50);
+    const formationProgramme = sanitizeString(body.formationProgramme, 100);
+    const formationProgrammeTitle = sanitizeString(body.formationProgrammeTitle, 150);
+    const formationTag = sanitizeString(body.formationTag, 200);
 
-    if (!emailSanitized || !emailRegex.test(emailSanitized)) {
+    if (!email) {
       return new Response(
         JSON.stringify({ success: false, error: "Invalid email" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    if (!fullName) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Name is required" }),
         { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
@@ -59,7 +97,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { data: existing, error: selectError } = await admin
       .from("subscribers")
       .select("id")
-      .eq("email", emailSanitized)
+      .eq("email", email)
       .limit(1);
 
     if (selectError) {
@@ -79,7 +117,16 @@ const handler = async (req: Request): Promise<Response> => {
 
     const { error: insertError } = await admin
       .from("subscribers")
-      .insert({ email: emailSanitized, full_name: nameSanitized });
+      .insert({
+        email,
+        full_name: fullName,
+        phone,
+        formation_type: formationType,
+        formation_domaine: formationDomaine,
+        formation_programme: formationProgramme,
+        formation_programme_title: formationProgrammeTitle,
+        formation_tag: formationTag,
+      });
 
     if (insertError) {
       console.error("Subscribe insert error:", insertError);
@@ -100,6 +147,4 @@ const handler = async (req: Request): Promise<Response> => {
       { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   }
-};
-
-serve(handler);
+});

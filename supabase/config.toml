@@ -2,3 +2,6 @@ project_id = "nkkalmyhxtuisjdjmdew"
 
 [functions.log-security-event]
 verify_jwt = false
+
+[functions.subscribe]
+verify_jwt = false

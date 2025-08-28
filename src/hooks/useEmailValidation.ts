@@ -39,24 +39,9 @@ export const useEmailValidation = () => {
     return suggestion ? `${localPart}@${suggestion}` : undefined;
   }, []);
 
-  const checkDuplicate = useCallback(async (email: string): Promise<boolean> => {
-    try {
-      const { data, error } = await supabase
-        .from('subscribers')
-        .select('email')
-        .eq('email', email.toLowerCase())
-        .limit(1);
-      
-      if (error) {
-        logError('Email duplicate check error:', error);
-        return false;
-      }
-      
-      return data && data.length > 0;
-    } catch (error) {
-      logError('Email duplicate check failed:', error);
-      return false;
-    }
+  const checkDuplicate = useCallback(async (_email: string): Promise<boolean> => {
+    // Avoid client-side DB access due to RLS; duplicate is validated server-side during subscribe
+    return false;
   }, []);
 
   const validateEmail = useCallback((email: string) => {

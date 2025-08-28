@@ -1299,6 +1299,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      cleanup_security_logs: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       create_notification: {
         Args: {
           p_action_url?: string

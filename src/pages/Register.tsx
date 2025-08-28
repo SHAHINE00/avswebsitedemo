@@ -35,47 +35,35 @@ const Register = () => {
         formData.formation.programmeDetails?.title || formData.formation.programme
       ].join(' | ');
 
-      // Insert subscriber data directly into the subscribers table
-      const { error } = await supabase
-        .from('subscribers')
-        .insert({
+      // Use secure Edge Function to create subscriber (bypasses RLS safely)
+      const { data: subscribeRes, error: subscribeError } = await supabase.functions.invoke('subscribe', {
+        body: {
           email: formData.email,
-          full_name: fullName,
+          fullName,
           phone: formData.phone,
-          formation_type: formData.formation.formationType,
-          formation_domaine: formData.formation.domaine,
-          formation_programme: formData.formation.programme,
-          formation_programme_title: formData.formation.programmeDetails?.title,
-          formation_tag: formationTag
-        });
+          formationType: formData.formation.formationType,
+          formationDomaine: formData.formation.domaine,
+          formationProgramme: formData.formation.programme,
+          formationProgrammeTitle: formData.formation.programmeDetails?.title,
+          formationTag
+        }
+      });
       
-      if (error) {
-        logError('Subscription error:', error);
-        setSubmissionStatus('error');
-        const errorMsg = error.message === 'duplicate key value violates unique constraint "subscribers_email_key"' 
-          ? "Cette adresse email est déjà enregistrée."
-          : "Une erreur s'est produite lors de l'inscription.";
-        setStatusMessage(errorMsg);
+      if (subscribeError || (subscribeRes && subscribeRes.success === false)) {
+        const errMsg = (subscribeError as any)?.message || subscribeRes?.error || 'Subscription failed';
+        throw new Error(errMsg);
+      }
+      if (subscribeRes?.status === 'already_subscribed') {
+        setSubmissionStatus('success');
+        setStatusMessage("Vous êtes déjà inscrit. Merci !");
       } else {
         setSubmissionStatus('success');
         setStatusMessage(`Inscription réussie !`);
-        
-        // Start countdown and redirect
-        let countdown = 3;
-        const countdownTimer = setInterval(() => {
-          countdown--;
-          if (countdown > 0) {
-            setStatusMessage(`Inscription réussie ! Redirection dans ${countdown}...`);
-          } else {
-            clearInterval(countdownTimer);
-            navigate('/');
-          }
-        }, 1000);
       }
     } catch (error: any) {
       logError('Registration error:', error);
       setSubmissionStatus('error');
-      setStatusMessage("Une erreur s'est produite lors de l'inscription.");
+      setStatusMessage(error?.message || "Une erreur s'est produite lors de l'inscription.");
     } finally {
       setLoading(false);
     }
