@@ -48,20 +48,16 @@ export const useSecurityAudit = () => {
         return;
       }
 
-      // Insert security audit event using user_activity_logs table
-      const { error } = await supabase
-        .from('user_activity_logs')
-        .insert({
+      // Send security audit event via Edge Function
+      const { data, error } = await supabase.functions.invoke('log-security-event', {
+        body: {
           action: eventType,
-          details: {
-            ...details,
-            severity,
-            event_type: eventType
-          },
+          severity,
+          details,
           user_id: userId,
-          ip_address: await getClientIP(),
-          user_agent: navigator.userAgent
-        });
+          user_agent: navigator.userAgent,
+        }
+      });
 
       if (error) {
         logError('Failed to log security event:', error);
