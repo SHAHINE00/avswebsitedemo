@@ -1313,6 +1313,10 @@ export type Database = {
         }
         Returns: string
       }
+      demote_user_to_user: {
+        Args: { p_target_user_id: string }
+        Returns: undefined
+      }
       enroll_in_course: {
         Args: { p_course_id: string }
         Returns: string
@@ -1354,6 +1358,10 @@ export type Database = {
       }
       mark_notification_read: {
         Args: { p_notification_id: string }
+        Returns: undefined
+      }
+      promote_user_to_admin: {
+        Args: { p_target_user_id: string }
         Returns: undefined
       }
       reorder_sections_on_page: {

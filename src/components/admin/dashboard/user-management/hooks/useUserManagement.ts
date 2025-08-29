@@ -43,19 +43,17 @@ export const useUserManagement = () => {
 
   const updateUserRole = async (userId: string, newRole: string, currentRole: string | null) => {
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ role: newRole, updated_at: new Date().toISOString() })
-        .eq('id', userId);
-
-      if (error) throw error;
-
-      await logActivity(
-        newRole === 'admin' ? 'user_promoted' : 'user_demoted',
-        'user',
-        userId,
-        { old_role: currentRole, new_role: newRole }
-      );
+      if (newRole === 'admin') {
+        const { error } = await supabase.rpc('promote_user_to_admin', {
+          p_target_user_id: userId
+        });
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.rpc('demote_user_to_user', {
+          p_target_user_id: userId
+        });
+        if (error) throw error;
+      }
 
       toast({
         title: "Succès",
