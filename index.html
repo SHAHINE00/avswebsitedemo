@@ -44,8 +44,35 @@
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    <!-- Mobile-optimized Font Loading with font-display: swap -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <!-- Critical CSS inline to eliminate render blocking -->
+    <style>
+      /* Font fallbacks to prevent layout shift */
+      @font-face {
+        font-family: 'Montserrat-fallback';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: local('Arial'), local('Helvetica'), local('sans-serif');
+        ascent-override: 92%;
+        descent-override: 22%;
+        line-gap-override: 0%;
+        size-adjust: 107%;
+      }
+      @font-face {
+        font-family: 'Source Sans Pro-fallback';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: local('Arial'), local('Helvetica'), local('sans-serif');
+        ascent-override: 89%;
+        descent-override: 21%;
+        line-gap-override: 0%;
+        size-adjust: 110%;
+      }
+    </style>
+    
+    <!-- Non-blocking Font Loading with optimized fallbacks -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" media="print">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap"></noscript>
     
     <!-- Enhanced cross-browser critical CSS -->
