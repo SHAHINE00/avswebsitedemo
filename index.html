@@ -75,6 +75,19 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" media="print">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap"></noscript>
     
+    <!-- Async CSS loading script for non-blocking render -->
+    <script>
+      // Load CSS asynchronously to prevent render blocking
+      (function() {
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap';
+        link.media = 'all';
+        var entry = document.getElementsByTagName('script')[0];
+        entry.parentNode.insertBefore(link, entry);
+      })();
+    </script>
+    
     <!-- Enhanced cross-browser critical CSS -->
     <style>
       /* Universal cross-browser base styles */
@@ -235,6 +248,66 @@
 
   <body>
     <div id="root"></div>
+    
+    <!-- Non-blocking CSS loading script -->
+    <script>
+      // Load main CSS bundle asynchronously after critical path
+      (function() {
+        var loadCSS = function(href, before, media) {
+          var doc = window.document;
+          var ss = doc.createElement('link');
+          var ref;
+          if (before) {
+            ref = before;
+          } else {
+            var refs = (doc.body || doc.getElementsByTagName('head')[0]).childNodes;
+            ref = refs[refs.length - 1];
+          }
+          var sheets = doc.styleSheets;
+          ss.rel = 'stylesheet';
+          ss.href = href;
+          ss.media = media || 'all';
+          function ready(cb) {
+            if (doc.body) return cb();
+            setTimeout(function() {
+              ready(cb);
+            });
+          }
+          ready(function() {
+            ref.parentNode.insertBefore(ss, (before ? ref : ref.nextSibling));
+          });
+          var onloadcssdefined = function(cb) {
+            var resolvedHref = ss.href;
+            var i = sheets.length;
+            while (i--) {
+              if (sheets[i].href === resolvedHref) {
+                return cb();
+              }
+            }
+            setTimeout(function() {
+              onloadcssdefined(cb);
+            });
+          };
+          function loadCB() {
+            if (ss.addEventListener) {
+              ss.removeEventListener('load', loadCB);
+            }
+            ss.media = media || 'all';
+          }
+          if (ss.addEventListener) {
+            ss.addEventListener('load', loadCB);
+          }
+          ss.onloadcssdefined = onloadcssdefined;
+          onloadcssdefined(loadCB);
+          return ss;
+        };
+        // Defer loading after critical rendering
+        setTimeout(function() {
+          loadCSS('/assets/index-Cgjp0U2c.css');
+        }, 100);
+      })();
+    </script>
+    
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
