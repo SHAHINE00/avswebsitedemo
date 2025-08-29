@@ -77,10 +77,12 @@ export const useUserManagement = () => {
     if (!confirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur ${userEmail} ? Cette action est irréversible.`)) return;
 
     try {
-      const { error } = await supabase.auth.admin.deleteUser(userId);
-      if (error) throw error;
+      const { data, error } = await supabase.functions.invoke('admin-delete-user', {
+        body: { userId, userEmail }
+      });
 
-      await logActivity('user_deleted', 'user', userId, { email: userEmail });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
 
       toast({
         title: "Succès",
@@ -136,14 +138,12 @@ export const useUserManagement = () => {
     }
 
     try {
-      const { error } = await supabase.auth.admin.inviteUserByEmail(email, {
-        redirectTo: `${window.location.origin}/auth`,
-        data: { message }
+      const { data, error } = await supabase.functions.invoke('admin-invite-user', {
+        body: { email: email.trim(), message }
       });
 
       if (error) throw error;
-
-      await logActivity('user_invited', 'user', null, { email, message });
+      if (data?.error) throw new Error(data.error);
 
       toast({
         title: "Succès",
