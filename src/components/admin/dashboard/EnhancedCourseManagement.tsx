@@ -209,9 +209,9 @@ const EnhancedCourseManagement: React.FC<EnhancedCourseManagementProps> = ({
             </div>
 
             {/* Filters Row */}
-            <div className="flex flex-wrap gap-4 items-center">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4 items-stretch sm:items-center">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-40">
+                <SelectTrigger className="w-full sm:w-40">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -223,7 +223,7 @@ const EnhancedCourseManagement: React.FC<EnhancedCourseManagementProps> = ({
               </Select>
 
               <Select value={dateFilter} onValueChange={setDateFilter}>
-                <SelectTrigger className="w-40">
+                <SelectTrigger className="w-full sm:w-40">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -233,7 +233,7 @@ const EnhancedCourseManagement: React.FC<EnhancedCourseManagementProps> = ({
                 </SelectContent>
               </Select>
 
-              <Button variant="outline" onClick={exportCourses}>
+              <Button variant="outline" onClick={exportCourses} className="w-full sm:w-auto">
                 <Download className="w-4 h-4 mr-2" />
                 Exporter CSV
               </Button>
@@ -241,16 +241,17 @@ const EnhancedCourseManagement: React.FC<EnhancedCourseManagementProps> = ({
 
             {/* Bulk Actions */}
             {selectedCourses.length > 0 && (
-              <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-lg">
-                <span className="text-sm font-medium">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 p-4 bg-blue-50 rounded-lg">
+                <span className="text-sm font-medium mb-2 sm:mb-0">
                   {selectedCourses.length} cours sélectionnés
                 </span>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                   <Button 
                     size="sm" 
                     variant="outline"
                     onClick={() => handleBulkStatusChange('published')}
                     disabled={isPerformingBulkAction}
+                    className="flex-1 sm:flex-none"
                   >
                     Publier
                   </Button>
@@ -259,6 +260,7 @@ const EnhancedCourseManagement: React.FC<EnhancedCourseManagementProps> = ({
                     variant="outline"
                     onClick={() => handleBulkStatusChange('draft')}
                     disabled={isPerformingBulkAction}
+                    className="flex-1 sm:flex-none"
                   >
                     Brouillon
                   </Button>
@@ -267,6 +269,7 @@ const EnhancedCourseManagement: React.FC<EnhancedCourseManagementProps> = ({
                     variant="destructive"
                     onClick={handleBulkDelete}
                     disabled={isPerformingBulkAction}
+                    className="flex-1 sm:flex-none"
                   >
                     <Trash2 className="w-4 h-4 mr-1" />
                     Supprimer
@@ -298,22 +301,24 @@ const EnhancedCourseManagement: React.FC<EnhancedCourseManagementProps> = ({
         <CardContent>
           <div className="space-y-4">
             {filteredCourses.map((course) => (
-              <div key={course.id} className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-gray-50">
-                <Checkbox
-                  checked={selectedCourses.includes(course.id)}
-                  onCheckedChange={(checked) => handleSelectCourse(course.id, checked as boolean)}
-                />
-                
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-medium truncate">{course.title}</h3>
-                    <Badge variant={course.status === 'published' ? 'default' : 'secondary'}>
-                      {course.status === 'published' ? 'Publié' : 
-                       course.status === 'draft' ? 'Brouillon' : 'Archivé'}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-2">{course.subtitle}</p>
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <div key={course.id} className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 p-3 sm:p-4 border rounded-lg hover:bg-gray-50">
+                <div className="flex items-start space-x-3 w-full sm:flex-1">
+                  <Checkbox
+                    checked={selectedCourses.includes(course.id)}
+                    onCheckedChange={(checked) => handleSelectCourse(course.id, checked as boolean)}
+                    className="mt-1"
+                  />
+                  
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
+                      <h3 className="font-medium truncate">{course.title}</h3>
+                      <Badge variant={course.status === 'published' ? 'default' : 'secondary'} className="self-start">
+                        {course.status === 'published' ? 'Publié' : 
+                         course.status === 'draft' ? 'Brouillon' : 'Archivé'}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-2">{course.subtitle}</p>
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
                       {new Date(course.created_at).toLocaleDateString()}
@@ -326,10 +331,11 @@ const EnhancedCourseManagement: React.FC<EnhancedCourseManagementProps> = ({
                         {course.view_count} vues
                       </span>
                     )}
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
                   {course.link_to && (
                     <Button variant="outline" size="sm" asChild>
                       <a href={course.link_to} target="_blank" rel="noopener noreferrer">

@@ -65,7 +65,7 @@ const Admin = () => {
           />
           <Navbar />
           
-          <div className="container mx-auto px-4 pt-24 pb-12">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-8 sm:pb-12">
             <AdminHeader 
               title="Tableau de Bord Administrateur" 
               description="Gérez votre académie depuis cette interface d'administration"

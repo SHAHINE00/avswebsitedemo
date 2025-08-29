@@ -21,14 +21,16 @@ const UserManagementSection: React.FC = () => {
       </Card>
 
       <Tabs defaultValue="users" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 max-w-md">
-          <TabsTrigger value="users" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-2 max-w-full sm:max-w-md">
+          <TabsTrigger value="users" className="flex items-center gap-1 sm:gap-2 text-sm">
             <Users className="w-4 h-4" />
-            Utilisateurs
+            <span className="hidden sm:inline">Utilisateurs</span>
+            <span className="sm:hidden">Users</span>
           </TabsTrigger>
-          <TabsTrigger value="appointments" className="flex items-center gap-2">
+          <TabsTrigger value="appointments" className="flex items-center gap-1 sm:gap-2 text-sm">
             <Calendar className="w-4 h-4" />
-            Rendez-vous
+            <span className="hidden sm:inline">Rendez-vous</span>
+            <span className="sm:hidden">RDV</span>
           </TabsTrigger>
         </TabsList>
 

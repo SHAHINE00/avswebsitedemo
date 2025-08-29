@@ -34,14 +34,16 @@ const CourseManagementSection: React.FC<CourseManagementSectionProps> = ({
       </Card>
 
       <Tabs defaultValue="management" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 max-w-md">
-          <TabsTrigger value="management" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-2 max-w-full sm:max-w-md">
+          <TabsTrigger value="management" className="flex items-center gap-1 sm:gap-2 text-sm">
             <Settings className="w-4 h-4" />
-            Gestion
+            <span className="hidden sm:inline">Gestion</span>
+            <span className="sm:hidden">Gérer</span>
           </TabsTrigger>
-          <TabsTrigger value="content" className="flex items-center gap-2">
+          <TabsTrigger value="content" className="flex items-center gap-1 sm:gap-2 text-sm">
             <FileText className="w-4 h-4" />
-            Contenu
+            <span className="hidden sm:inline">Contenu</span>
+            <span className="sm:hidden">Contenu</span>
           </TabsTrigger>
         </TabsList>
 

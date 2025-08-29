@@ -25,14 +25,14 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
 }) => {
   return (
     <Tabs defaultValue="dashboard" className="w-full">
-      <TabsList className="flex w-full justify-start overflow-x-auto gap-2 mb-6 p-1 bg-muted rounded-lg">
-        <TabsTrigger value="dashboard" className="flex-shrink-0 px-4 py-2">Vue d'ensemble</TabsTrigger>
-        <TabsTrigger value="courses" className="flex-shrink-0 px-4 py-2">Gestion des Cours</TabsTrigger>
-        <TabsTrigger value="users" className="flex-shrink-0 px-4 py-2">Utilisateurs</TabsTrigger>
-        <TabsTrigger value="subscribers" className="flex-shrink-0 px-4 py-2">Abonnements</TabsTrigger>
-        <TabsTrigger value="sections" className="flex-shrink-0 px-4 py-2">Visibilité</TabsTrigger>
-        <TabsTrigger value="analytics" className="flex-shrink-0 px-4 py-2">Analytics & Rapports</TabsTrigger>
-        <TabsTrigger value="system" className="flex-shrink-0 px-4 py-2">Système</TabsTrigger>
+      <TabsList className="flex w-full justify-start overflow-x-auto gap-1 sm:gap-2 mb-4 sm:mb-6 p-1 bg-muted rounded-lg scrollbar-hide">
+        <TabsTrigger value="dashboard" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Vue d'ensemble</TabsTrigger>
+        <TabsTrigger value="courses" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Cours</TabsTrigger>
+        <TabsTrigger value="users" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Utilisateurs</TabsTrigger>
+        <TabsTrigger value="subscribers" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Abonnements</TabsTrigger>
+        <TabsTrigger value="sections" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Visibilité</TabsTrigger>
+        <TabsTrigger value="analytics" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Analytics</TabsTrigger>
+        <TabsTrigger value="system" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Système</TabsTrigger>
       </TabsList>
 
       <TabsContent value="dashboard" className="space-y-6">
