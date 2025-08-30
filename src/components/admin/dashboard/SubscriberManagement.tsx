@@ -68,42 +68,46 @@ const SubscriberManagement: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Gestion des Abonnements</h1>
-          <p className="text-muted-foreground">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-2xl sm:text-3xl font-bold truncate">Gestion des Abonnements</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Gérez et analysez vos abonnements aux formations
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <Button
             variant="outline"
             onClick={() => handleExport('csv')}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 justify-center w-full sm:w-auto"
+            size="sm"
           >
             <Download className="h-4 w-4" />
-            Export CSV
+            <span className="hidden sm:inline">Export CSV</span>
+            <span className="sm:hidden">CSV</span>
           </Button>
           <Button
             variant="outline"
             onClick={() => handleExport('json')}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 justify-center w-full sm:w-auto"
+            size="sm"
           >
             <Download className="h-4 w-4" />
-            Export JSON
+            <span className="hidden sm:inline">Export JSON</span>
+            <span className="sm:hidden">JSON</span>
           </Button>
         </div>
       </div>
 
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <Card className="min-w-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Abonnés</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium truncate">Total Abonnés</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground shrink-0" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-xl sm:text-2xl font-bold">
               {loading ? '...' : analytics?.total_subscribers || 0}
             </div>
             <p className="text-xs text-muted-foreground">
@@ -112,13 +116,13 @@ const SubscriberManagement: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="min-w-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Nouveaux (30j)</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium truncate">Nouveaux (30j)</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground shrink-0" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-xl sm:text-2xl font-bold">
               {loading ? '...' : analytics?.recent_subscribers || 0}
             </div>
             <p className="text-xs text-muted-foreground">
@@ -127,13 +131,13 @@ const SubscriberManagement: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="min-w-0 sm:col-span-2 lg:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Programme Populaire</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium truncate">Programme Populaire</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground shrink-0" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-lg sm:text-xl lg:text-2xl font-bold truncate">
               {loading ? '...' : analytics?.popular_programs[0]?.program.slice(0, 10) + '...' || 'N/A'}
             </div>
             <p className="text-xs text-muted-foreground">
@@ -145,24 +149,31 @@ const SubscriberManagement: React.FC = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="subscribers" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="subscribers">Liste des Abonnés</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 max-w-full sm:max-w-md">
+          <TabsTrigger value="subscribers" className="text-sm">
+            <span className="hidden sm:inline">Liste des Abonnés</span>
+            <span className="sm:hidden">Abonnés</span>
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="text-sm">
+            Analytics
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="subscribers" className="space-y-6">
+        <TabsContent value="subscribers" className="space-y-4 sm:space-y-6 mt-6">
           <SubscriberFilters
             filters={filters}
             onFiltersChange={setFilters}
           />
-          <SubscriberTable
-            subscribers={subscribers}
-            loading={loading}
-            onDelete={handleDelete}
-          />
+          <div className="overflow-x-auto">
+            <SubscriberTable
+              subscribers={subscribers}
+              loading={loading}
+              onDelete={handleDelete}
+            />
+          </div>
         </TabsContent>
 
-        <TabsContent value="analytics">
+        <TabsContent value="analytics" className="mt-6">
           <SubscriberAnalytics
             analytics={analytics}
             loading={loading}

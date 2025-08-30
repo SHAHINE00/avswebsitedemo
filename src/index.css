@@ -980,3 +980,72 @@ body {
 [data-radix-select-content] {
   z-index: 50;
 }
+
+/* Touch-friendly utilities */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Responsive text utilities */
+.text-responsive {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+.text-responsive-lg {
+  font-size: clamp(1rem, 3vw, 1.25rem);
+}
+
+.text-responsive-xl {
+  font-size: clamp(1.25rem, 4vw, 1.5rem);
+}
+
+/* Mobile-first spacing */
+.space-mobile {
+  gap: clamp(0.5rem, 2vw, 1rem);
+}
+
+/* Responsive grid utilities */
+.grid-responsive {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .grid-responsive {
+    gap: 1.5rem;
+  }
+}
+
+/* Admin panel specific responsive utilities */
+.admin-container {
+  padding: 1rem;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+@media (min-width: 640px) {
+  .admin-container {
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .admin-container {
+    padding: 2rem;
+  }
+}
+
+/* Mobile data table utilities */
+.mobile-table-card {
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background: hsl(var(--card));
+  transition: background-color 0.2s ease;
+}
+
+.mobile-table-card:hover {
+  background: hsl(var(--muted) / 0.5);
+}

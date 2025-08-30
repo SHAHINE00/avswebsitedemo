@@ -157,25 +157,29 @@ const CourseFormDialog: React.FC<CourseFormDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl">
             {isEditing ? 'Modifier le cours' : 'Créer un nouveau cours'}
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <BasicInfoFields register={register} errors={errors} />
-          <CourseDetailsFields register={register} />
-          <FeaturesFields register={register} />
-          <LinkField register={register} watch={watch} />
-          <StyleFields watch={watch} setValue={setValue} />
-          <DisplayOrderField register={register} />
-          <CourseFormActions 
-            onCancel={() => onOpenChange(false)}
-            isSubmitting={isSubmitting}
-            isEditing={isEditing}
-          />
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
+          <div className="space-y-4 sm:space-y-6">
+            <BasicInfoFields register={register} errors={errors} />
+            <CourseDetailsFields register={register} />
+            <FeaturesFields register={register} />
+            <LinkField register={register} watch={watch} />
+            <StyleFields watch={watch} setValue={setValue} />
+            <DisplayOrderField register={register} />
+          </div>
+          <div className="sticky bottom-0 bg-background pt-4 border-t sm:border-t-0 sm:pt-6 sm:bg-transparent sm:static">
+            <CourseFormActions 
+              onCancel={() => onOpenChange(false)}
+              isSubmitting={isSubmitting}
+              isEditing={isEditing}
+            />
+          </div>
         </form>
       </DialogContent>
     </Dialog>

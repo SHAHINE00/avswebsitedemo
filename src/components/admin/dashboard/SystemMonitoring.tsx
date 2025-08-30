@@ -128,14 +128,14 @@ const SystemMonitoring = () => {
       )}
 
       {/* System Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <Card className="min-w-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Taille Base de Données</CardTitle>
-            <Database className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium truncate">Taille Base de Données</CardTitle>
+            <Database className="h-4 w-4 text-muted-foreground shrink-0" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-xl sm:text-2xl font-bold truncate">
               {health?.database_size ? formatBytes(health.database_size) : 'N/A'}
             </div>
             <p className="text-xs text-muted-foreground">
@@ -144,29 +144,29 @@ const SystemMonitoring = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="min-w-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Connexions Actives</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium truncate">Connexions Actives</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground shrink-0" />
           </CardHeader>
           <CardContent>
-            <div className={`text-2xl font-bold ${connectionStatus.color}`}>
+            <div className={`text-xl sm:text-2xl font-bold ${connectionStatus.color}`}>
               {health?.active_connections ?? 'N/A'}
             </div>
             <div className="flex items-center space-x-2 text-xs text-muted-foreground">
               <StatusIcon className="w-3 h-3" />
-              <span>État: {connectionStatus.status}</span>
+              <span className="truncate">État: {connectionStatus.status}</span>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="min-w-0 sm:col-span-2 lg:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Performance</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium truncate">Performance</CardTitle>
+            <Activity className="h-4 w-4 text-muted-foreground shrink-0" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-xl sm:text-2xl font-bold text-green-600">
               {hasError ? 'Dégradée' : 'Optimal'}
             </div>
             <Progress value={hasError ? 60 : 85} className="mt-2" />
@@ -180,39 +180,44 @@ const SystemMonitoring = () => {
       {/* Database Tables Stats */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-lg">
             <HardDrive className="w-5 h-5" />
-            Statistiques des Tables
+            <span className="hidden sm:inline">Statistiques des Tables</span>
+            <span className="sm:hidden">Tables DB</span>
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="hidden sm:block">
             Utilisation et performance des tables principales
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {health?.table_stats && Object.keys(health.table_stats).length > 0 ? (
-              Object.entries(health.table_stats).map(([tableName, stats]) => (
-                <div key={tableName} className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex-1">
-                    <h4 className="font-medium">{tableName}</h4>
-                    <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                      <span>{stats.rows} opérations</span>
-                      <span>{formatBytes(stats.size)}</span>
+              <div className="overflow-x-auto">
+                <div className="space-y-3 min-w-[300px]">
+                  {Object.entries(health.table_stats).map(([tableName, stats]) => (
+                    <div key={tableName} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 border rounded-lg gap-2">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium truncate">{tableName}</h4>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-sm text-muted-foreground">
+                          <span>{stats.rows} opérations</span>
+                          <span>{formatBytes(stats.size)}</span>
+                        </div>
+                      </div>
+                      <div className="text-left sm:text-right shrink-0">
+                        <div className="text-sm font-medium">
+                          {health.database_size ? 
+                            ((stats.size / health.database_size) * 100).toFixed(1) : '0'}%
+                        </div>
+                        <div className="text-xs text-muted-foreground">de la DB</div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-sm font-medium">
-                      {health.database_size ? 
-                        ((stats.size / health.database_size) * 100).toFixed(1) : '0'}%
-                    </div>
-                    <div className="text-xs text-muted-foreground">de la DB</div>
-                  </div>
+                  ))}
                 </div>
-              ))
+              </div>
             ) : (
               <div className="text-center py-8 text-muted-foreground">
                 <HardDrive className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p>Aucune statistique de table disponible</p>
+                <p className="text-sm sm:text-base">Aucune statistique de table disponible</p>
               </div>
             )}
           </div>
