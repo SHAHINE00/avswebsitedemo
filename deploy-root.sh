@@ -61,10 +61,17 @@ main() {
     git fetch origin
     git reset --hard origin/main
     
+    # Fix ownership first
+    log "Fixing ownership to appuser"
+    chown -R appuser:appuser $APP_DIR
+    
     # Install dependencies and build as appuser to avoid root ownership issues
     log "Building application as appuser"
     sudo -u appuser bash << 'APPUSER_BUILD'
         cd /var/www/avswebsite
+        
+        # Update browserslist if needed
+        npx update-browserslist-db@latest 2>/dev/null || true
         
         # Clean and install
         npm cache clean --force
