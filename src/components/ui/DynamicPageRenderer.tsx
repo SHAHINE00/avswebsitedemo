@@ -15,7 +15,7 @@ import PartnersSection from '@/components/PartnersSection';
 import FeaturesSection from '@/components/FeaturesSection';
 import InstructorsSection from '@/components/InstructorsSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
-import EnhancedCourseSelectionGuide from '@/components/EnhancedCourseSelectionGuide';
+import CourseSelectionDropdown from '@/components/CourseSelectionDropdown';
 import FAQSection from '@/components/FAQSection';
 import CTASection from '@/components/CTASection';
 
@@ -78,7 +78,7 @@ const SECTION_COMPONENTS: Record<string, React.ComponentType> = {
   'home_course_universe': CourseUniverseSection,
   'home_partners_original': PartnersSection,
   'home_features_original': FeaturesSection,
-  'home_course_guide': EnhancedCourseSelectionGuide,
+  'home_course_guide': CourseSelectionDropdown,
   'home_instructors_original': InstructorsSection,
   'home_testimonials_original': TestimonialsSection,
   'home_faq_original': FAQSection,
@@ -117,7 +117,7 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
             <CourseUniverseSection />
             <PartnersSection />
             <FeaturesSection />
-            <EnhancedCourseSelectionGuide />
+            <CourseSelectionDropdown />
             <InstructorsSection />
             <TestimonialsSection />
             <FAQSection />
