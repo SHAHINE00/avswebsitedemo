@@ -128,24 +128,40 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="text-white font-semibold text-lg mb-4">Newsletter</h3>
             <p className="mb-3 sm:mb-4 text-xs sm:text-sm">Abonnez-vous à notre newsletter pour recevoir des actualités AI et offres de formation.</p>
-            <form className="space-y-2" onSubmit={handleNewsletterSubmit}>
-              <input
-                type="email"
-                placeholder="Votre adresse e-mail"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm rounded bg-gray-800 border border-gray-700 focus:outline-none focus:border-academy-blue"
-                required
-                disabled={loading}
-              />
-              <button
-                type="submit"
-                disabled={loading || !email.trim()}
-                className="w-full bg-academy-blue hover:bg-academy-purple disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-1.5 sm:py-2 text-xs sm:text-sm rounded transition-colors"
-              >
-                {loading ? 'Envoi...' : 'S\'abonner'}
-              </button>
-            </form>
+            
+            {showSuccess ? (
+              <div className="text-center py-4">
+                <div className="flex items-center justify-center text-green-400 mb-2">
+                  <Mail className="h-4 w-4 mr-2" />
+                  <span className="text-xs sm:text-sm">Merci ! Vérifiez votre email</span>
+                </div>
+                <button 
+                  onClick={() => setShowSuccess(false)}
+                  className="text-xs text-gray-400 hover:text-white underline"
+                >
+                  S'abonner avec un autre email
+                </button>
+              </div>
+            ) : (
+              <form className="space-y-2" onSubmit={handleNewsletterSubmit}>
+                <input
+                  type="email"
+                  placeholder="Votre adresse e-mail"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm rounded bg-gray-800 border border-gray-700 focus:outline-none focus:border-academy-blue"
+                  required
+                  disabled={loading}
+                />
+                <button
+                  type="submit"
+                  disabled={loading || !email.trim()}
+                  className="w-full bg-academy-blue hover:bg-academy-purple disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-1.5 sm:py-2 text-xs sm:text-sm rounded transition-colors"
+                >
+                  {loading ? 'Envoi...' : 'S\'abonner'}
+                </button>
+              </form>
+            )}
           </div>
         </div>
         
