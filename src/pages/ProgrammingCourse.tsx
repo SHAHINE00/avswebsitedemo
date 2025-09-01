@@ -41,7 +41,7 @@ const ProgrammingCourse = () => {
   ];
 
   const courseJsonLd = generateCourseJsonLd({
-    name: "Formation Programmation & Développement",
+    name: "Technicien Spécialisé Programmation & Développement",
     description: "Formation complète en programmation : développement web, mobile, frameworks modernes, DevOps et architecture. 24 semaines de formation pratique.",
     duration: "24 semaines",
     level: "Débutant à Avancé",
@@ -51,7 +51,7 @@ const ProgrammingCourse = () => {
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: "Accueil", url: "/" },
     { name: "Formations", url: "/curriculum" },
-    { name: "Formation Programmation", url: "/programming-course" }
+    { name: "Technicien Spécialisé Programmation", url: "/programming-course" }
   ]);
 
   return (

@@ -16,7 +16,7 @@ const CourseComparison: React.FC = () => {
           <div className="bg-white p-8 rounded-2xl shadow-md border border-gray-200 hover:border-academy-blue transition-all">
             <div className="flex items-center mb-4">
               <BookOpen className="w-8 h-8 text-academy-blue mr-3" />
-              <h3 className="text-2xl font-bold text-academy-blue">Formation IA</h3>
+              <h3 className="text-2xl font-bold text-academy-blue">Technicien Spécialisé IA</h3>
             </div>
             <p className="text-gray-700 mb-6">
               Plongez dans le monde fascinant de l'intelligence artificielle et apprenez à créer des solutions innovantes.
@@ -57,7 +57,7 @@ const CourseComparison: React.FC = () => {
           <div className="bg-white p-8 rounded-2xl shadow-md border border-gray-200 hover:border-academy-purple transition-all">
             <div className="flex items-center mb-4">
               <Code className="w-8 h-8 text-academy-purple mr-3" />
-              <h3 className="text-2xl font-bold text-academy-purple">Formation Programmation</h3>
+              <h3 className="text-2xl font-bold text-academy-purple">Technicien Spécialisé Programmation</h3>
             </div>
             <p className="text-gray-700 mb-6">
               Maîtrisez les langages et technologies les plus demandés pour développer des applications web et mobile modernes.

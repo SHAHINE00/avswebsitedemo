@@ -23,6 +23,7 @@ const NavbarCore = () => {
   const navigation = [
     { name: 'Accueil', href: '/' },
     { name: 'Formations', href: '/curriculum' },
+    { name: 'AVS Institut', href: '/avs-institut' },
     { name: 'Fonctionnalités', href: '/features' },
     { name: 'Formateurs', href: '/instructors' },
     { name: 'À propos', href: '/about' },

@@ -59,7 +59,7 @@ const AICourse = () => {
   const breadcrumbJsonLd = generateBreadcrumbJsonLd([
     { name: "Accueil", url: "/" },
     { name: "Formations", url: "/curriculum" },
-    { name: "Formation IA", url: "/ai-course" }
+    { name: "Technicien Spécialisé IA", url: "/ai-course" }
   ]);
 
   return (

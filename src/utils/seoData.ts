@@ -106,14 +106,14 @@ export const pageSEO = {
 
 export const courseSEO = {
   "formation-ia": {
-    title: "Formation Intelligence Artificielle - Certification IA | AVS",
-    description: "Formation complète en Intelligence Artificielle : Machine Learning, Deep Learning, Big Data. 18 mois, diplôme certifié, projets pratiques.",
-    keywords: "formation ia, machine learning, deep learning, big data, certification intelligence artificielle"
+    title: "Technicien Spécialisé en IA - Certification Intelligence Artificielle | AVS",
+    description: "Formation Technicien Spécialisé IA : Machine Learning, Deep Learning, Big Data. 2 ans, diplôme TSIA certifié, projets pratiques.",
+    keywords: "technicien spécialisé ia, formation ia, machine learning, deep learning, certification intelligence artificielle"
   },
   "formation-programmation": {
-    title: "Formation Programmation - Développement Web & Mobile | AVS",
-    description: "Formation Programmation complète : Full Stack, DevOps, développement web et mobile. 24 semaines, diplôme certifié, projets concrets.",
-    keywords: "formation programmation, développement web, full stack, devops, formation développeur"
+    title: "Technicien Spécialisé en Programmation - Développement Web & Mobile | AVS",
+    description: "Formation Technicien Spécialisé Programmation : Full Stack, DevOps, développement web et mobile. 2 ans, diplôme TSDI certifié, projets concrets.",
+    keywords: "technicien spécialisé programmation, formation programmation, développement web, full stack, devops"
   },
   "formation-cybersecurite": {
     title: "Formation Cybersécurité - Ethical Hacking & Sécurité | AVS",

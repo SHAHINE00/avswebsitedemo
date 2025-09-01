@@ -100,7 +100,7 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
       color: 'from-blue-500 to-purple-600',
       careerOutcomes: ['Data Scientist', 'AI Engineer', 'ML Engineer', 'Business Intelligence Analyst'],
       courses: [
-        { id: '1', title: 'Formation IA', subtitle: 'Intelligence Artificielle', duration: '18 mois', feature1: 'Machine Learning', feature2: 'Big Data', icon: 'brain', link: '/ai-course' },
+        { id: '1', title: 'Technicien Spécialisé IA', subtitle: 'Intelligence Artificielle', duration: '2 ans', feature1: 'Machine Learning', feature2: 'Big Data', icon: 'brain', link: '/ai-course' },
         { id: '2', title: 'AI & Machine Learning Engineering', subtitle: 'Ingénierie IA & ML', duration: '6 mois', feature1: 'Modèles ML en production', feature2: 'Architecture IA scalable', icon: 'brain', link: '/course/ai-ml-engineering' },
         { id: '3', title: 'Data Science for Business', subtitle: 'Science des données appliquée', duration: '6 mois', feature1: 'KPI business', feature2: 'Modèles prédictifs ROI', icon: 'database', link: '/course/data-science-business' }
       ]
@@ -115,7 +115,7 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
       color: 'from-purple-500 to-blue-500',
       careerOutcomes: ['Full Stack Developer', 'Web Developer', 'Mobile Developer', 'DevOps Engineer'],
       courses: [
-        { id: '4', title: 'Formation Programmation', subtitle: 'Développement Web & Mobile', duration: '24 semaines', feature1: 'Full Stack', feature2: 'DevOps', icon: 'code', link: '/programming-course' },
+        { id: '4', title: 'Technicien Spécialisé Programmation', subtitle: 'Développement Web & Mobile', duration: '2 ans', feature1: 'Full Stack', feature2: 'DevOps', icon: 'code', link: '/programming-course' },
         { id: '5', title: 'Web Development', subtitle: 'Développement web moderne', duration: '6 mois', feature1: 'React, Vue', feature2: 'Responsive design', icon: 'code', link: '/course/web-development' },
         { id: '6', title: 'Mobile App Development', subtitle: 'Applications mobiles', duration: '6 mois', feature1: 'iOS et Android', feature2: 'React Native', icon: 'code', link: '/course/mobile-app-development' }
       ]
