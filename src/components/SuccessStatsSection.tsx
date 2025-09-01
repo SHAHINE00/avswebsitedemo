@@ -23,8 +23,8 @@ const SuccessStatsSection: React.FC = () => {
             <div className="text-sm text-gray-600">Insertion en 6 mois</div>
           </div>
           <div className="text-center p-6 bg-gradient-to-br from-academy-blue/10 to-academy-purple/10 rounded-lg">
-            <div className="text-3xl font-bold text-academy-blue">3000+</div>
-            <div className="text-sm text-gray-600">Alumni actifs</div>
+            <div className="text-3xl font-bold text-academy-blue">+26</div>
+            <div className="text-sm text-gray-600">Spécialisations</div>
           </div>
           <div className="text-center p-6 bg-gradient-to-br from-academy-blue/10 to-academy-purple/10 rounded-lg">
             <div className="text-3xl font-bold text-academy-blue">200+</div>
