@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { logError } from '@/utils/logger';
@@ -86,7 +85,6 @@ export const useSectionVisibility = () => {
     try {
       console.log('🔧 Updating visibility:', { sectionKey, isVisible });
       
-      // Direct update without admin check for now - will be handled by RLS
       const { error } = await supabase
         .from('section_visibility')
         .update({ is_visible: isVisible })
@@ -126,7 +124,7 @@ export const useSectionVisibility = () => {
 
       console.log('📍 Section found:', sectionToUpdate);
 
-      // Use the new atomic reordering function for better reliability
+      // Use the new atomic reordering function
       console.log('🚀 Using atomic reordering function');
       
       const { error } = await supabase.rpc('reorder_sections_atomic', {
@@ -137,11 +135,46 @@ export const useSectionVisibility = () => {
 
       if (error) {
         console.error('❌ Atomic reorder failed:', error);
-        throw error;
+        
+        // Fallback to batch approach for better reliability
+        console.log('🔄 Falling back to batch reorder approach');
+        
+        const pageSections = sections
+          .filter(s => s.page_name === sectionToUpdate.page_name)
+          .sort((a, b) => a.display_order - b.display_order);
+
+        // Create new order mapping
+        const reorders = [];
+        const currentIndex = pageSections.findIndex(s => s.section_key === sectionKey);
+        const targetIndex = Math.max(0, Math.min(newOrder, pageSections.length - 1));
+        
+        // Create reordered array
+        const reorderedSections = [...pageSections];
+        const [movedSection] = reorderedSections.splice(currentIndex, 1);
+        reorderedSections.splice(targetIndex, 0, movedSection);
+        
+        // Generate reorder commands
+        reorderedSections.forEach((section, index) => {
+          if (section.display_order !== index) {
+            reorders.push({
+              section_key: section.section_key,
+              new_order: index
+            });
+          }
+        });
+
+        const { error: batchError } = await supabase.rpc('batch_reorder_sections', {
+          p_page_name: sectionToUpdate.page_name,
+          p_reorders: JSON.stringify(reorders)
+        });
+
+        if (batchError) {
+          console.error('❌ Batch reorder also failed:', batchError);
+          throw batchError;
+        }
       }
 
-      console.log('✅ Atomic reorder successful, refetching sections');
-      // Refetch sections to get the updated order
+      console.log('✅ Reorder successful, refetching sections');
       await fetchSections();
     } catch (err) {
       console.error('❌ Full error in updateSectionOrder:', err);
@@ -155,34 +188,43 @@ export const useSectionVisibility = () => {
       const section = sections.find(s => s.section_key === sectionKey);
       if (!section) throw new Error('Section not found');
 
+      // Get correctly ordered sections for this page
       const samePage = sections
         .filter(s => s.page_name === section.page_name)
         .sort((a, b) => a.display_order - b.display_order);
       
       const currentIndex = samePage.findIndex(s => s.section_key === sectionKey);
-      if (currentIndex === -1) throw new Error('Section not found in page sections');
-      
       let newOrder: number;
       
       switch (direction) {
         case 'up':
-          newOrder = Math.max(0, currentIndex - 1);
+          if (currentIndex > 0) {
+            newOrder = currentIndex - 1;
+          } else {
+            return; // Already at top
+          }
           break;
         case 'down':
-          newOrder = Math.min(samePage.length - 1, currentIndex + 1);
+          if (currentIndex < samePage.length - 1) {
+            newOrder = currentIndex + 1;
+          } else {
+            return; // Already at bottom
+          }
           break;
         case 'top':
+          if (currentIndex === 0) return; // Already at top
           newOrder = 0;
           break;
         case 'bottom':
+          if (currentIndex === samePage.length - 1) return; // Already at bottom
           newOrder = samePage.length - 1;
           break;
+        default:
+          throw new Error('Invalid direction');
       }
       
-      // Only move if there's an actual change
-      if (newOrder !== currentIndex) {
-        await updateSectionOrder(sectionKey, newOrder);
-      }
+      console.log(`🔄 Moving section ${direction}: ${currentIndex} → ${newOrder}`);
+      await updateSectionOrder(sectionKey, newOrder);
     } catch (err) {
       logError('Error moving section:', err);
       throw new Error('Failed to move section');

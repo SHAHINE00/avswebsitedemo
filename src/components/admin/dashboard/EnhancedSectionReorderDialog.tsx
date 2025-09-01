@@ -215,12 +215,13 @@ const EnhancedSectionReorderDialog: React.FC<EnhancedSectionReorderDialogProps> 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (active.id !== over?.id && over?.id) {
-      const activeSection = orderedSections.find(s => s.id === active.id);
-      const overIndex = orderedSections.findIndex(s => s.id === over.id);
+    if (active.id !== over?.id) {
+      const activeIndex = orderedSections.findIndex(s => s.id === active.id);
+      const overIndex = orderedSections.findIndex(s => s.id === over?.id);
       
-      if (activeSection && overIndex !== -1) {
-        // Use the index position instead of display_order for better accuracy
+      if (activeIndex !== -1 && overIndex !== -1) {
+        const activeSection = orderedSections[activeIndex];
+        console.log(`🎯 Drag and drop: ${activeIndex} → ${overIndex}`);
         await updateSectionOrder(activeSection.section_key, overIndex);
       }
     }
@@ -273,29 +274,35 @@ const EnhancedSectionReorderDialog: React.FC<EnhancedSectionReorderDialogProps> 
 
   const moveSection = async (section: SectionVisibility, direction: 'up' | 'down' | 'top' | 'bottom') => {
     const currentIndex = orderedSections.findIndex(s => s.id === section.id);
-    if (currentIndex === -1) return;
-    
     let newOrder: number;
     
     switch (direction) {
       case 'up':
-        newOrder = Math.max(0, currentIndex - 1);
+        if (currentIndex > 0) {
+          newOrder = currentIndex - 1;
+        } else {
+          return; // Already at top
+        }
         break;
       case 'down':
-        newOrder = Math.min(orderedSections.length - 1, currentIndex + 1);
+        if (currentIndex < orderedSections.length - 1) {
+          newOrder = currentIndex + 1;
+        } else {
+          return; // Already at bottom
+        }
         break;
       case 'top':
+        if (currentIndex === 0) return; // Already at top
         newOrder = 0;
         break;
       case 'bottom':
+        if (currentIndex === orderedSections.length - 1) return; // Already at bottom
         newOrder = orderedSections.length - 1;
         break;
     }
     
-    // Only proceed if there's an actual change
-    if (newOrder !== currentIndex) {
-      await updateSectionOrder(section.section_key, newOrder);
-    }
+    console.log(`🎯 Moving section ${direction}: ${currentIndex} → ${newOrder}`);
+    await updateSectionOrder(section.section_key, newOrder);
   };
 
   const visibleCount = orderedSections.filter(s => s.is_visible).length;
@@ -323,7 +330,6 @@ const EnhancedSectionReorderDialog: React.FC<EnhancedSectionReorderDialogProps> 
               <li>• Utilisez les boutons de position pour un contrôle précis</li>
               <li>• Basculez la visibilité avec les interrupteurs</li>
               <li>• Tous les changements sont sauvegardés automatiquement</li>
-              <li>• ✨ Système de reordonnancement amélioré - résistant aux conflits</li>
             </ul>
           </div>
 
