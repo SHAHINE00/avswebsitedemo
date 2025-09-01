@@ -99,13 +99,13 @@ const AVSCareers = () => {
           <TabsList className="grid w-full grid-cols-2 mb-8 sm:mb-12 h-12 sm:h-16 mx-4 sm:mx-0">
             <TabsTrigger value="ai" className="text-sm sm:text-lg py-2 sm:py-4 data-[state=active]:bg-academy-blue data-[state=active]:text-white">
               <Brain className="w-4 h-4 sm:w-6 sm:h-6 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Carrières IA</span>
-              <span className="sm:hidden">IA</span>
+              <span className="hidden sm:inline">Métiers Technicien IA</span>
+              <span className="sm:hidden">TS IA</span>
             </TabsTrigger>
             <TabsTrigger value="programming" className="text-sm sm:text-lg py-2 sm:py-4 data-[state=active]:bg-academy-purple data-[state=active]:text-white">
               <Code2 className="w-4 h-4 sm:w-6 sm:h-6 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Carrières Programmation</span>
-              <span className="sm:hidden">Prog</span>
+              <span className="hidden sm:inline">Métiers Technicien Programmation</span>
+              <span className="sm:hidden">TS Prog</span>
             </TabsTrigger>
           </TabsList>
 

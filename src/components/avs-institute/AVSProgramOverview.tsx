@@ -10,23 +10,23 @@ const AVSProgramOverview = () => {
   const highlights = [
     {
       icon: CheckCircle,
-      title: "Aucune expérience préalable requise",
-      description: "Nous commençons avec vous à partir de zéro !"
+      title: "Diplôme reconnu par l'État",
+      description: "Certification officielle de Technicien Spécialisé niveau Bac+2"
     },
     {
       icon: TrendingUp,
-      title: "Taux d'emploi exceptionnel",
-      description: "95% de nos diplômés trouvent un emploi dans les 6 mois"
+      title: "Deux spécialisations techniques",
+      description: "Intelligence Artificielle et Programmation - technologies d'avenir"
     },
     {
       icon: Users,
-      title: "Réseau professionnel solide",
-      description: "Plus de 500 professionnels dans notre réseau d'anciens"
+      title: "Formation pratique intensive",
+      description: "70% pratique, 30% théorie avec projets réels d'entreprise"
     },
     {
       icon: Shield,
-      title: "Garantie de suivi",
-      description: "Suivi complet d'un an après l'obtention du diplôme"
+      title: "Insertion professionnelle garantie",
+      description: "95% d'emploi avec suivi personnalisé d'un an"
     }
   ];
 
@@ -35,15 +35,36 @@ const AVSProgramOverview = () => {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12 sm:mb-16 px-4 sm:px-0">
           <Badge variant="outline" className="mb-4 text-sm sm:text-lg px-3 sm:px-4 py-1 sm:py-2 bg-academy-blue/10 text-academy-blue border-academy-blue/30">
-            Programme d'Excellence
+            🎓 Formation Technique Diplômante
           </Badge>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-academy-blue via-academy-purple to-academy-lightblue bg-clip-text text-transparent">
-            Qu'est-ce que ce programme ?
+            Diplôme de Technicien Spécialisé
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
-            Un programme de formation complet de deux ans qui combine des connaissances théoriques 
-            et des compétences pratiques dans les domaines technologiques les plus demandés sur le marché
+            Formation technique de niveau Bac+2 reconnue par l'État marocain avec deux spécialisations de pointe : 
+            <span className="font-semibold text-academy-blue"> Intelligence Artificielle</span> et 
+            <span className="font-semibold text-academy-purple"> Programmation</span>
           </p>
+        </div>
+
+        {/* Key Features of Technical Degree */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-12 sm:mb-16 px-4 sm:px-0">
+          <div className="text-center p-4 bg-gradient-to-br from-academy-blue/10 to-academy-blue/20 rounded-xl border border-academy-blue/30">
+            <div className="text-xl sm:text-2xl font-bold text-academy-blue mb-2">Bac+2</div>
+            <div className="text-sm text-gray-700">Niveau technique reconnu</div>
+          </div>
+          <div className="text-center p-4 bg-gradient-to-br from-academy-purple/10 to-academy-purple/20 rounded-xl border border-academy-purple/30">
+            <div className="text-xl sm:text-2xl font-bold text-academy-purple mb-2">OFPPT</div>
+            <div className="text-sm text-gray-700">Certification officielle</div>
+          </div>
+          <div className="text-center p-4 bg-gradient-to-br from-academy-lightblue/10 to-academy-lightblue/20 rounded-xl border border-academy-lightblue/30">
+            <div className="text-xl sm:text-2xl font-bold text-academy-lightblue mb-2">95%</div>
+            <div className="text-sm text-gray-700">Taux d'emploi</div>
+          </div>
+          <div className="text-center p-4 bg-gradient-to-br from-green-100 to-green-200 rounded-xl border border-green-300">
+            <div className="text-xl sm:text-2xl font-bold text-green-700 mb-2">2 ANS</div>
+            <div className="text-sm text-gray-700">Durée formation</div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-12 sm:mb-16 px-4 sm:px-0">
@@ -78,16 +99,19 @@ const AVSProgramOverview = () => {
                 <div className="bg-academy-blue/20 p-3 sm:p-4 rounded-2xl mr-0 sm:mr-4 mb-3 sm:mb-0 flex-shrink-0">
                   <Brain className="w-8 h-8 sm:w-10 sm:h-10 text-academy-blue" />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-academy-blue to-academy-purple bg-clip-text text-transparent">
-                  Intelligence Artificielle
-                </h3>
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-academy-blue to-academy-purple bg-clip-text text-transparent">
+                    Technicien Spécialisé en IA
+                  </h3>
+                  <Badge className="bg-academy-blue/10 text-academy-blue text-xs mt-1">Bac+2 Reconnu État</Badge>
+                </div>
               </div>
               <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6 leading-relaxed">
-                Une spécialisation avancée axée sur le développement et l'application de solutions 
-                d'intelligence artificielle dans divers domaines industriels et commerciaux
+                Formation technique spécialisée en développement de solutions d'intelligence artificielle, 
+                machine learning et analyse de données pour l'industrie 4.0
               </p>
               <Button asChild className="w-full h-12 sm:h-auto bg-academy-blue hover:bg-academy-blue/90">
-                <Link to="/register">Découvrir la spécialisation IA</Link>
+                <Link to="/register">Formation Technicien IA</Link>
               </Button>
             </CardContent>
           </Card>
@@ -98,17 +122,66 @@ const AVSProgramOverview = () => {
                 <div className="bg-academy-purple/20 p-3 sm:p-4 rounded-2xl mr-0 sm:mr-4 mb-3 sm:mb-0 flex-shrink-0">
                   <Code2 className="w-8 h-8 sm:w-10 sm:h-10 text-academy-purple" />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-academy-purple to-academy-lightblue bg-clip-text text-transparent">
-                  Programmation
-                </h3>
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-academy-purple to-academy-lightblue bg-clip-text text-transparent">
+                    Technicien Spécialisé en Programmation
+                  </h3>
+                  <Badge className="bg-academy-purple/10 text-academy-purple text-xs mt-1">Bac+2 Reconnu État</Badge>
+                </div>
               </div>
               <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6 leading-relaxed">
-                Une spécialisation complète dans le développement de logiciels et d'applications web 
-                en utilisant les dernières technologies et outils logiciels
+                Formation technique complète en développement logiciel, applications web et mobiles 
+                avec les technologies modernes les plus demandées sur le marché
               </p>
               <Button asChild className="w-full h-12 sm:h-auto bg-academy-purple hover:bg-academy-purple/90">
-                <Link to="/register">Découvrir la programmation</Link>
+                <Link to="/register">Formation Technicien Programmation</Link>
               </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Relationship Between Specializations */}
+        <div className="mt-12 sm:mt-16 px-4 sm:px-0">
+          <Card className="bg-gradient-to-r from-academy-blue/5 via-white to-academy-purple/5 border-2 border-academy-blue/20">
+            <CardContent className="p-6 sm:p-8">
+              <div className="text-center mb-6">
+                <h3 className="text-xl sm:text-2xl font-bold mb-4 bg-gradient-to-r from-academy-blue via-academy-purple to-academy-lightblue bg-clip-text text-transparent">
+                  Pourquoi ces deux spécialisations sont-elles complémentaires ?
+                </h3>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                <div className="text-center">
+                  <div className="bg-academy-blue/20 p-4 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <Brain className="w-8 h-8 text-academy-blue" />
+                  </div>
+                  <h4 className="font-bold text-academy-blue mb-2">IA</h4>
+                  <p className="text-sm text-gray-600">Crée des systèmes intelligents</p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="bg-gradient-to-r from-academy-blue to-academy-purple p-4 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <TrendingUp className="w-8 h-8 text-white" />
+                  </div>
+                  <h4 className="font-bold text-gray-800 mb-2">Synergie</h4>
+                  <p className="text-sm text-gray-600">L'IA nécessite une programmation solide pour être déployée</p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="bg-academy-purple/20 p-4 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <Code2 className="w-8 h-8 text-academy-purple" />
+                  </div>
+                  <h4 className="font-bold text-academy-purple mb-2">Programmation</h4>
+                  <p className="text-sm text-gray-600">Développe les applications qui utilisent l'IA</p>
+                </div>
+              </div>
+              
+              <div className="mt-6 p-4 bg-white/60 rounded-xl border border-academy-blue/20">
+                <p className="text-center text-sm sm:text-base text-gray-700">
+                  <span className="font-semibold">Les deux formations vous préparent aux métiers de demain</span> où la programmation et l'IA convergent 
+                  pour créer des solutions innovantes dans tous les secteurs d'activité.
+                </p>
+              </div>
             </CardContent>
           </Card>
         </div>

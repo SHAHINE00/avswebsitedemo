@@ -16,27 +16,27 @@ const AVSInstitute = () => {
   return (
     <>
       <SEOHead 
-        title="AVS Innovation & Institut d'IA - Excellence en Intelligence Artificielle"
-        description="Programme de formation complet de deux ans en Intelligence Artificielle et Programmation. 95% de taux d'emploi, certifications internationales, suivi post-diplôme d'un an."
-        keywords="formation IA, intelligence artificielle Marrakech, programmation, AVS Innovation, institut technologie"
+        title="AVS Innovation - Technicien Spécialisé IA & Programmation | Formation Professionnelle"
+        description="Formation de Technicien Spécialisé en Intelligence Artificielle et Programmation à Marrakech. Diplôme reconnu, 95% d'emploi, suivi post-formation d'un an."
+        keywords="technicien spécialisé IA, technicien programmation, formation technique Marrakech, diplôme IA, formation programmation professionnelle"
       />
       
       <StandardPageLayout>
         <PageHero
-          title="AVS INNOVATION & INSTITUT D'IA"
-          subtitle="Excellence en éducation à l'intelligence artificielle"
-          description="🧠 Bienvenue à l'Institut AVS Innovation - Votre voyage vers un avenir technologique brillant commence ici !"
+          title="TECHNICIEN SPÉCIALISÉ EN IA & PROGRAMMATION"
+          subtitle="Formation professionnelle reconnue par l'État"
+          description="🎓 Devenez un Technicien Spécialisé certifié en Intelligence Artificielle ou Programmation - Votre expertise technique commence ici !"
           icon={Brain}
           backgroundGradient="from-academy-blue via-academy-purple to-academy-lightblue"
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6 sm:mt-8 text-center px-2 sm:px-0">
             <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/30">
-              <div className="text-2xl sm:text-3xl font-bold mb-2">95%</div>
-              <div className="text-xs sm:text-sm opacity-90">Taux d'emploi en 6 mois</div>
+              <div className="text-2xl sm:text-3xl font-bold mb-2">2 ANS</div>
+              <div className="text-xs sm:text-sm opacity-90">Formation technique diplômante</div>
             </div>
             <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/30">
-              <div className="text-2xl sm:text-3xl font-bold mb-2">500+</div>
-              <div className="text-xs sm:text-sm opacity-90">Réseau d'anciens élèves</div>
+              <div className="text-2xl sm:text-3xl font-bold mb-2">TS</div>
+              <div className="text-xs sm:text-sm opacity-90">Diplôme Technicien Spécialisé</div>
             </div>
             <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/30 sm:col-span-2 lg:col-span-1">
               <div className="text-2xl sm:text-3xl font-bold mb-2">1 AN</div>
