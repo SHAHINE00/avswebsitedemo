@@ -1303,6 +1303,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      check_admin_role_strict: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       cleanup_security_logs: {
         Args: Record<PropertyKey, never>
         Returns: undefined
