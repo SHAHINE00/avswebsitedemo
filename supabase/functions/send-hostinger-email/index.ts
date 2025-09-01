@@ -1,4 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { Resend } from "npm:resend@2.0.0";
+
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -39,15 +42,12 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { type, ...data } = await req.json();
 
-    // Get Hostinger SMTP credentials from environment
-    const SMTP_HOST = Deno.env.get("HOSTINGER_SMTP_HOST") || "smtp.hostinger.com";
-    const SMTP_PORT = parseInt(Deno.env.get("HOSTINGER_SMTP_PORT") || "587");
-    const SMTP_USER = Deno.env.get("HOSTINGER_SMTP_USER");
-    const SMTP_PASS = Deno.env.get("HOSTINGER_SMTP_PASS");
-    const FROM_EMAIL = Deno.env.get("HOSTINGER_FROM_EMAIL") || SMTP_USER;
+    // Get email configuration
+    const FROM_EMAIL = Deno.env.get("HOSTINGER_FROM_EMAIL") || "noreply@avs-institute.ma";
+    const ADMIN_EMAIL = Deno.env.get("NEWSLETTER_ADMIN_EMAIL");
 
-    if (!SMTP_USER || !SMTP_PASS) {
-      console.error("Missing Hostinger SMTP credentials");
+    if (!Deno.env.get("RESEND_API_KEY")) {
+      console.error("Missing Resend API key");
       return new Response(
         JSON.stringify({ 
           success: false,
@@ -64,13 +64,13 @@ const handler = async (req: Request): Promise<Response> => {
 
     switch (type) {
       case "contact":
-        return await handleContactEmail(data as ContactEmailRequest, { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, FROM_EMAIL });
+        return await handleContactEmail(data as ContactEmailRequest, { FROM_EMAIL, ADMIN_EMAIL });
       
       case "newsletter":
-        return await handleNewsletterSubscription(data as NewsletterSubscriptionRequest, { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, FROM_EMAIL });
+        return await handleNewsletterSubscription(data as NewsletterSubscriptionRequest, { FROM_EMAIL, ADMIN_EMAIL });
       
       case "custom":
-        return await handleCustomEmail(data as EmailRequest, { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, FROM_EMAIL });
+        return await handleCustomEmail(data as EmailRequest, { FROM_EMAIL });
       
       default:
         return new Response(
@@ -101,7 +101,7 @@ const handler = async (req: Request): Promise<Response> => {
 
 async function handleContactEmail(
   { firstName, lastName, email, phone, subject, message }: ContactEmailRequest,
-  smtpConfig: any
+  { FROM_EMAIL, ADMIN_EMAIL }: any
 ): Promise<Response> {
   
   const emailHtml = `
@@ -141,10 +141,32 @@ async function handleContactEmail(
   `;
 
   try {
-    // Send emails using SMTP (placeholder - you'll need actual SMTP implementation)
-    console.log("Would send contact email to admin and confirmation to user");
-    console.log("Contact email HTML:", emailHtml.substring(0, 100) + "...");
-    console.log("Confirmation email HTML:", confirmationHtml.substring(0, 100) + "...");
+    const promises = [];
+
+    // Send notification to admin if admin email is configured
+    if (ADMIN_EMAIL) {
+      promises.push(
+        resend.emails.send({
+          from: FROM_EMAIL,
+          to: [ADMIN_EMAIL],
+          subject: `Nouveau message de contact: ${subject}`,
+          html: emailHtml,
+        })
+      );
+    }
+
+    // Send confirmation to user
+    promises.push(
+      resend.emails.send({
+        from: FROM_EMAIL,
+        to: [email],
+        subject: "Confirmation de réception - AVS INSTITUTE",
+        html: confirmationHtml,
+      })
+    );
+
+    await Promise.all(promises);
+    console.log("Contact emails sent successfully");
 
     return new Response(JSON.stringify({ 
       success: true, 
@@ -157,13 +179,14 @@ async function handleContactEmail(
       },
     });
   } catch (error) {
+    console.error("Error sending contact emails:", error);
     throw error;
   }
 }
 
 async function handleNewsletterSubscription(
   { email, fullName, interests, source }: NewsletterSubscriptionRequest,
-  smtpConfig: any
+  { FROM_EMAIL, ADMIN_EMAIL }: any
 ): Promise<Response> {
   
   const welcomeHtml = `
@@ -200,9 +223,46 @@ async function handleNewsletterSubscription(
     </div>
   `;
 
+  const adminNotificationHtml = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #2563eb;">Nouvelle inscription newsletter</h2>
+      <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <p><strong>Email:</strong> ${email}</p>
+        ${fullName ? `<p><strong>Nom:</strong> ${fullName}</p>` : ''}
+        ${source ? `<p><strong>Source:</strong> ${source}</p>` : ''}
+        ${interests && interests.length > 0 ? `<p><strong>Centres d'intérêt:</strong> ${interests.join(', ')}</p>` : ''}
+        <p><strong>Date:</strong> ${new Date().toLocaleString('fr-FR')}</p>
+      </div>
+    </div>
+  `;
+
   try {
-    console.log("Would send welcome email to newsletter subscriber");
-    console.log("Welcome email HTML:", welcomeHtml.substring(0, 100) + "...");
+    const promises = [];
+
+    // Send welcome email to subscriber
+    promises.push(
+      resend.emails.send({
+        from: FROM_EMAIL,
+        to: [email],
+        subject: "Bienvenue à AVS INSTITUTE - Votre guide IA gratuit",
+        html: welcomeHtml,
+      })
+    );
+
+    // Send notification to admin if configured
+    if (ADMIN_EMAIL) {
+      promises.push(
+        resend.emails.send({
+          from: FROM_EMAIL,
+          to: [ADMIN_EMAIL],
+          subject: "Nouvelle inscription newsletter",
+          html: adminNotificationHtml,
+        })
+      );
+    }
+
+    await Promise.all(promises);
+    console.log("Newsletter emails sent successfully");
 
     return new Response(JSON.stringify({ 
       success: true, 
@@ -215,18 +275,27 @@ async function handleNewsletterSubscription(
       },
     });
   } catch (error) {
+    console.error("Error sending newsletter emails:", error);
     throw error;
   }
 }
 
 async function handleCustomEmail(
   { to, subject, html, text, replyTo }: EmailRequest,
-  smtpConfig: any
+  { FROM_EMAIL }: any
 ): Promise<Response> {
   
   try {
-    console.log(`Would send custom email to ${to.length} recipients`);
-    console.log("Subject:", subject);
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: to,
+      subject: subject,
+      html: html,
+      text: text,
+      replyTo: replyTo,
+    });
+
+    console.log(`Custom email sent to ${to.length} recipients`);
 
     return new Response(JSON.stringify({ 
       success: true, 
@@ -239,6 +308,7 @@ async function handleCustomEmail(
       },
     });
   } catch (error) {
+    console.error("Error sending custom email:", error);
     throw error;
   }
 }

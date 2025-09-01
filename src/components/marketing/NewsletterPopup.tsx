@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { X, Mail, Gift } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { useHostingerEmail } from '@/hooks/useHostingerEmail';
+import { useNewsletterSubscription } from '@/hooks/useNewsletterSubscription';
 import { toast } from 'sonner';
 
 const NewsletterPopup: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState('');
-  const { sendNewsletterWelcome, loading } = useHostingerEmail();
+  const { subscribe, loading } = useNewsletterSubscription();
 
   useEffect(() => {
     const hasSeenPopup = localStorage.getItem('newsletter-popup-seen');
@@ -32,7 +32,7 @@ const NewsletterPopup: React.FC = () => {
     e.preventDefault();
     if (!email.trim()) return;
 
-    const success = await sendNewsletterWelcome({
+    const success = await subscribe({
       email: email.trim(),
       source: 'popup'
     });

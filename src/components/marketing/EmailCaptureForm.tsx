@@ -3,7 +3,7 @@ import { useSafeState } from '@/utils/safeHooks';
 import { Mail, CheckCircle, Gift } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { useHostingerEmail } from '@/hooks/useHostingerEmail';
+import { useNewsletterSubscription } from '@/hooks/useNewsletterSubscription';
 import { useMarketingTracking } from '@/hooks/useMarketingTracking';
 import { toast } from 'sonner';
 
@@ -24,14 +24,14 @@ const EmailCaptureForm: React.FC<EmailCaptureFormProps> = ({
 }) => {
   const [email, setEmail] = useSafeState('');
   const [isSubscribed, setIsSubscribed] = useSafeState(false);
-  const { sendNewsletterWelcome, loading } = useHostingerEmail();
+  const { subscribe, loading } = useNewsletterSubscription();
   const { trackNewsletterSignup } = useMarketingTracking();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
 
-    const success = await sendNewsletterWelcome({
+    const success = await subscribe({
       email: email.trim(),
       source
     });
