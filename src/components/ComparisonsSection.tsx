@@ -34,7 +34,7 @@ const ComparisonsSection: React.FC = () => {
       },
       {
         feature: "Tarif moyen",
-        values: ["30-45k MAD", "Gratuit*", "50-80k MAD"]
+        values: ["3-29k MAD", "Gratuit*", "50-80k MAD"]
       },
       {
         feature: "Taux d'insertion professionnelle",
