@@ -128,7 +128,7 @@ const App = () => {
                       <Route path="/appointment" element={<LazyWrapper><Appointment /></LazyWrapper>} />
                       <Route path="/blog" element={<LazyWrapper><Blog /></LazyWrapper>} />
                       <Route path="/blog/:slug" element={<LazyWrapper><BlogPost /></LazyWrapper>} />
-                      <Route path="/avs-institut" element={<LazyWrapper><AVSInstitute /></LazyWrapper>} />
+                      <Route path="/tsia-tsdi" element={<LazyWrapper><AVSInstitute /></LazyWrapper>} />
                       <Route path="/privacy-policy" element={<LazyWrapper><PrivacyPolicy /></LazyWrapper>} />
                       <Route path="/terms-of-use" element={<LazyWrapper><TermsOfUse /></LazyWrapper>} />
                       <Route path="/cookies-policy" element={<LazyWrapper><CookiesPolicy /></LazyWrapper>} />
