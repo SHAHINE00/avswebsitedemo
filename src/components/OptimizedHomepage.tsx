@@ -9,6 +9,7 @@ import InstructorsSection from '@/components/InstructorsSection';
 import FAQSection from '@/components/FAQSection';
 import CTASection from '@/components/CTASection';
 import PartnersSection from '@/components/PartnersSection';
+import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 import { 
   GraduationCap, 
   Clock, 
@@ -23,6 +24,7 @@ import {
 } from 'lucide-react';
 
 const OptimizedHomepage: React.FC = () => {
+  const { isSectionVisible } = useSectionVisibility();
   // TL;DR data for the homepage
   const tldrPoints = [
     {
@@ -124,93 +126,101 @@ const OptimizedHomepage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <HeroSection />
+      {isSectionVisible('home_hero') && <HeroSection />}
       
       {/* TL;DR Section */}
-      <section className="py-8 bg-white">
-        <div className="container mx-auto px-6">
-          <TLDRSection 
-            title="🎯 AVS INSTITUTE en Bref"
-            points={tldrPoints}
-          />
-        </div>
-      </section>
+      {isSectionVisible('home_tldr') && (
+        <section className="py-8 bg-white">
+          <div className="container mx-auto px-6">
+            <TLDRSection 
+              title="🎯 AVS INSTITUTE en Bref"
+              points={tldrPoints}
+            />
+          </div>
+        </section>
+      )}
 
       {/* Features Section */}
-      <FeaturesSection />
+      {isSectionVisible('home_features') && <FeaturesSection />}
 
       {/* Comparison Tables */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-academy-blue to-academy-purple bg-clip-text text-transparent">
-              Comparaisons et Données Clés
-            </h2>
-            <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-              Découvrez pourquoi AVS INSTITUTE est le meilleur choix pour votre formation tech au Maroc
-            </p>
+      {isSectionVisible('home_comparisons') && (
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-6">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-academy-blue to-academy-purple bg-clip-text text-transparent">
+                Comparaisons et Données Clés
+              </h2>
+              <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+                Découvrez pourquoi AVS INSTITUTE est le meilleur choix pour votre formation tech au Maroc
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-1 gap-8 mb-8">
+              <ComparisonTable {...comparisonData} />
+            </div>
+            
+            <div className="grid md:grid-cols-1 gap-8">
+              <ComparisonTable {...salaryData} />
+            </div>
           </div>
-          
-          <div className="grid md:grid-cols-1 gap-8 mb-8">
-            <ComparisonTable {...comparisonData} />
-          </div>
-          
-          <div className="grid md:grid-cols-1 gap-8">
-            <ComparisonTable {...salaryData} />
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Programs Section */}
-      <CurriculumSection />
+      {isSectionVisible('home_curriculum') && <CurriculumSection />}
 
       {/* Enhanced Testimonials with structured data */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              🌟 Témoignages de nos Alumni
-            </h2>
-            <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-              Plus de 3000 diplômés ont transformé leur carrière avec AVS INSTITUTE
-            </p>
+      {isSectionVisible('home_testimonials_enhanced') && (
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-6">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                🌟 Témoignages de nos Alumni
+              </h2>
+              <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+                Plus de 3000 diplômés ont transformé leur carrière avec AVS INSTITUTE
+              </p>
+            </div>
+            
+            {/* Success Stats */}
+            {isSectionVisible('home_success_stats') && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+                <div className="text-center p-6 bg-gradient-to-br from-academy-blue/10 to-academy-purple/10 rounded-lg">
+                  <div className="text-3xl font-bold text-academy-blue">95%</div>
+                  <div className="text-sm text-gray-600">Taux de réussite</div>
+                </div>
+                <div className="text-center p-6 bg-gradient-to-br from-academy-blue/10 to-academy-purple/10 rounded-lg">
+                  <div className="text-3xl font-bold text-academy-blue">85%</div>
+                  <div className="text-sm text-gray-600">Insertion en 6 mois</div>
+                </div>
+                <div className="text-center p-6 bg-gradient-to-br from-academy-blue/10 to-academy-purple/10 rounded-lg">
+                  <div className="text-3xl font-bold text-academy-blue">3000+</div>
+                  <div className="text-sm text-gray-600">Alumni actifs</div>
+                </div>
+                <div className="text-center p-6 bg-gradient-to-br from-academy-blue/10 to-academy-purple/10 rounded-lg">
+                  <div className="text-3xl font-bold text-academy-blue">200+</div>
+                  <div className="text-sm text-gray-600">Entreprises partenaires</div>
+                </div>
+              </div>
+            )}
+            
+            {isSectionVisible('home_testimonials') && <TestimonialsSection />}
           </div>
-          
-          {/* Success Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-            <div className="text-center p-6 bg-gradient-to-br from-academy-blue/10 to-academy-purple/10 rounded-lg">
-              <div className="text-3xl font-bold text-academy-blue">95%</div>
-              <div className="text-sm text-gray-600">Taux de réussite</div>
-            </div>
-            <div className="text-center p-6 bg-gradient-to-br from-academy-blue/10 to-academy-purple/10 rounded-lg">
-              <div className="text-3xl font-bold text-academy-blue">85%</div>
-              <div className="text-sm text-gray-600">Insertion en 6 mois</div>
-            </div>
-            <div className="text-center p-6 bg-gradient-to-br from-academy-blue/10 to-academy-purple/10 rounded-lg">
-              <div className="text-3xl font-bold text-academy-blue">3000+</div>
-              <div className="text-sm text-gray-600">Alumni actifs</div>
-            </div>
-            <div className="text-center p-6 bg-gradient-to-br from-academy-blue/10 to-academy-purple/10 rounded-lg">
-              <div className="text-3xl font-bold text-academy-blue">200+</div>
-              <div className="text-sm text-gray-600">Entreprises partenaires</div>
-            </div>
-          </div>
-          
-          <TestimonialsSection />
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Instructors */}
-      <InstructorsSection />
+      {isSectionVisible('home_instructors') && <InstructorsSection />}
 
       {/* Partners Section */}
-      <PartnersSection />
+      {isSectionVisible('home_partners') && <PartnersSection />}
 
       {/* FAQ Section */}
-      <FAQSection />
+      {isSectionVisible('home_faq') && <FAQSection />}
 
       {/* CTA Section */}
-      <CTASection />
+      {isSectionVisible('home_cta') && <CTASection />}
     </div>
   );
 };
