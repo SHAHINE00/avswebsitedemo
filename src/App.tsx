@@ -34,6 +34,7 @@ const Instructors = React.lazy(() => import("./pages/Instructors"));
 const Testimonials = React.lazy(() => import("./pages/Testimonials"));
 const Register = React.lazy(() => import("./pages/Register"));
 const About = React.lazy(() => import("./pages/About"));
+const FAQ = React.lazy(() => import("./pages/FAQ"));
 const Careers = React.lazy(() => import("./pages/Careers"));
 const Contact = React.lazy(() => import("./pages/Contact"));
 const Appointment = React.lazy(() => import("./pages/Appointment"));
@@ -44,6 +45,8 @@ const Auth = React.lazy(() => import("./pages/Auth"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Blog = React.lazy(() => import("./pages/Blog"));
 const BlogPost = React.lazy(() => import("./pages/BlogPost"));
+const BlogGuideIA2024 = React.lazy(() => import("./pages/BlogGuideIA2024"));
+const BlogDevenirDeveloppeur = React.lazy(() => import("./pages/BlogDevenirDeveloppeur"));
 const AVSInstitute = React.lazy(() => import("./pages/AVSInstitute"));
 
 // Admin pages (heavy components - lazy load)
@@ -128,6 +131,9 @@ const App = () => {
                       <Route path="/appointment" element={<LazyWrapper><Appointment /></LazyWrapper>} />
                       <Route path="/blog" element={<LazyWrapper><Blog /></LazyWrapper>} />
                       <Route path="/blog/:slug" element={<LazyWrapper><BlogPost /></LazyWrapper>} />
+                      <Route path="/blog/guide-ia-maroc-2024" element={<LazyWrapper><BlogGuideIA2024 /></LazyWrapper>} />
+                      <Route path="/blog/devenir-developpeur-maroc" element={<LazyWrapper><BlogDevenirDeveloppeur /></LazyWrapper>} />
+                      <Route path="/faq" element={<LazyWrapper><FAQ /></LazyWrapper>} />
                       <Route path="/tsia-tsdi" element={<LazyWrapper><AVSInstitute /></LazyWrapper>} />
                       <Route path="/privacy-policy" element={<LazyWrapper><PrivacyPolicy /></LazyWrapper>} />
                       <Route path="/terms-of-use" element={<LazyWrapper><TermsOfUse /></LazyWrapper>} />
