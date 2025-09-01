@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Brain, Code, Shield, Target, Database, Cloud, Palette, Briefcase, Clock, Award, Users, ArrowRight, RefreshCw } from 'lucide-react';
 import { useIsAndroid } from '@/hooks/useIsIOS';
 import { cn } from '@/lib/utils';
@@ -392,42 +393,26 @@ const EnhancedCourseSelectionGuide: React.FC = () => {
                       </div>
                       <h3 className="font-semibold text-base md:text-lg leading-tight">{q.question}</h3>
                     </div>
-                    <div className="ml-0 md:ml-11 space-y-2 md:space-y-3">
-                      {q.options.map((option) => (
-                        <label 
-                          key={option.value} 
-                          className={cn(
-                            "flex items-start p-3 md:p-4 rounded-lg md:rounded-xl border-2 transition-all cursor-pointer hover:bg-blue-50",
-                            // Android optimizations for better touch targets
-                            isAndroid && "min-h-[48px] touch-manipulation [-webkit-tap-highlight-color:transparent] active:scale-[0.98]",
-                            selectedAnswers[q.id] === option.value 
-                              ? 'border-blue-500 bg-blue-50' 
-                              : 'border-gray-200'
-                          )}
-                        >
-                          <input
-                            type="radio"
-                            name={q.id}
-                            value={option.value}
-                            checked={selectedAnswers[q.id] === option.value}
-                            onChange={() => handleAnswerSelect(q.id, option.value)}
-                            className="sr-only"
-                          />
-                          <div className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                            selectedAnswers[q.id] === option.value
-                              ? 'border-blue-500 bg-blue-500'
-                              : 'border-gray-300'
-                          }`}>
-                            {selectedAnswers[q.id] === option.value && (
-                              <div className="w-2 h-2 bg-white rounded-full" />
-                            )}
-                          </div>
-                          <span className={cn(
-                            "font-medium leading-tight",
-                            isAndroid ? "text-base" : "text-sm md:text-base"
-                          )}>{option.label}</span>
-                        </label>
-                      ))}
+                    <div className="ml-0 md:ml-11">
+                      <Select 
+                        value={selectedAnswers[q.id] || ""} 
+                        onValueChange={(value) => handleAnswerSelect(q.id, value)}
+                      >
+                        <SelectTrigger className="w-full bg-background border-2 border-gray-200 hover:border-academy-blue focus:border-academy-blue">
+                          <SelectValue placeholder="Sélectionnez une option..." />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background border shadow-lg z-50">
+                          {q.options.map((option) => (
+                            <SelectItem 
+                              key={option.value} 
+                              value={option.value}
+                              className="hover:bg-accent focus:bg-accent cursor-pointer"
+                            >
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 ))}
