@@ -158,12 +158,12 @@ const AVSSupport = () => {
                   Témoignage de Succès
                 </h4>
                 <p className="text-gray-700 italic">
-                  "Grâce au support post-diplôme d'AVS Innovation, j'ai décroché mon poste de développeur Front-end 
+                  "Grâce au support post-diplôme d'AVS Innovation, j'ai décroché mon poste de développeur Full-stack 
                   chez une agence digitale en seulement 3 mois. Le réseau d'anciens et l'accompagnement personnalisé 
                   ont fait toute la différence."
                 </p>
                 <div className="mt-3 text-sm text-academy-blue font-semibold">
-                  - Youssef M., Promotion 2024, Développeur Front end
+                  - Youssef M., Promotion 2024, Développeur Full-stack
                 </div>
               </div>
             </div>
