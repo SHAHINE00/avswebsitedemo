@@ -25,8 +25,8 @@ const AVSProgramOverview = () => {
     },
     {
       icon: Shield,
-      title: "Insertion professionnelle garantie",
-      description: "95% d'emploi avec suivi personnalisé d'un an"
+      title: "Certifications internationales reconnues",
+      description: "IBM, Microsoft Azure, Google Cloud, AWS, Meta et autres certifications mondiales"
     }
   ];
 
@@ -57,9 +57,9 @@ const AVSProgramOverview = () => {
             <div className="text-xl sm:text-2xl font-bold text-academy-purple mb-2">OFPPT</div>
             <div className="text-sm text-gray-700">Certification officielle</div>
           </div>
-          <div className="text-center p-4 bg-gradient-to-br from-academy-lightblue/10 to-academy-lightblue/20 rounded-xl border border-academy-lightblue/30">
-            <div className="text-xl sm:text-2xl font-bold text-academy-lightblue mb-2">95%</div>
-            <div className="text-sm text-gray-700">Taux d'emploi</div>
+          <div className="text-center p-4 bg-gradient-to-br from-orange-100 to-orange-200 rounded-xl border border-orange-300">
+            <div className="text-xl sm:text-2xl font-bold text-orange-700 mb-2">8+ CERTIF.</div>
+            <div className="text-sm text-gray-700">Certifications internationales</div>
           </div>
           <div className="text-center p-4 bg-gradient-to-br from-green-100 to-green-200 rounded-xl border border-green-300">
             <div className="text-xl sm:text-2xl font-bold text-green-700 mb-2">2 ANS</div>
