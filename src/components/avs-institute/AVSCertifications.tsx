@@ -16,9 +16,7 @@ const AVSCertifications = () => {
   const programmingCertifications = [
     "Certificat de développeur frontal Meta",
     "Certificat OFPPT en technologies avancées",
-    "Certificat ANPME en innovation technologique",
-    "Certificat OFPPT en développement d'applications",
-    "Certificat ANPME en programmation avancée"
+    "Certificat OFPPT en développement d'applications"
   ];
 
   return (
@@ -78,17 +76,17 @@ const AVSCertifications = () => {
             <CardContent className="space-y-3 sm:space-y-4">
               {programmingCertifications.map((cert, index) => (
                 <div key={index} className="flex items-start space-x-3 p-3 sm:p-4 bg-white/60 rounded-lg border border-academy-purple/10 hover:border-academy-purple/30 transition-colors">
-                  <div className="bg-academy-purple/20 p-1.5 sm:p-2 rounded-full mt-1 flex-shrink-0">
-                    {cert.includes('OFPPT') || cert.includes('ANPME') ? 
-                      <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-academy-purple" /> : 
-                      <Globe className="w-3 h-3 sm:w-4 sm:h-4 text-academy-purple" />
-                    }
+                   <div className="bg-academy-purple/20 p-1.5 sm:p-2 rounded-full mt-1 flex-shrink-0">
+                     {cert.includes('OFPPT') ? 
+                       <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-academy-purple" /> : 
+                       <Globe className="w-3 h-3 sm:w-4 sm:h-4 text-academy-purple" />
+                     }
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-sm sm:text-base text-gray-800">{cert}</p>
-                    <Badge variant="outline" className="mt-2 text-xs text-academy-purple border-academy-purple/30">
-                      {cert.includes('OFPPT') || cert.includes('ANPME') ? 'National' : 'International'}
-                    </Badge>
+                     <Badge variant="outline" className="mt-2 text-xs text-academy-purple border-academy-purple/30">
+                       {cert.includes('OFPPT') ? 'National' : 'International'}
+                     </Badge>
                   </div>
                 </div>
               ))}
