@@ -8,6 +8,7 @@ import { useNewsletterSubscription } from '@/hooks/useNewsletterSubscription';
 
 const Footer: React.FC = () => {
   const [email, setEmail] = useSafeState('');
+  const [showSuccess, setShowSuccess] = useSafeState(false);
   const { subscribe, loading } = useNewsletterSubscription();
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
@@ -21,6 +22,8 @@ const Footer: React.FC = () => {
     
     if (success) {
       setEmail('');
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
     }
   };
 

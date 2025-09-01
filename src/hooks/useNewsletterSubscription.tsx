@@ -50,6 +50,7 @@ export const useNewsletterSubscription = () => {
         return false;
       }
 
+      toast.success('Inscription réussie ! Vérifiez votre boîte mail pour votre guide IA gratuit.');
       return true;
     } catch (error) {
       console.error('Newsletter subscription error:', error);
