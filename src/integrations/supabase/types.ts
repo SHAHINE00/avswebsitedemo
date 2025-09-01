@@ -1384,6 +1384,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      simple_reorder_section: {
+        Args: { p_new_order: number; p_section_key: string }
+        Returns: undefined
+      }
       track_analytics: {
         Args: {
           p_date?: string

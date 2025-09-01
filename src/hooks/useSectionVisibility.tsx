@@ -124,53 +124,63 @@ export const useSectionVisibility = () => {
 
       console.log('📍 Section found:', sectionToUpdate);
 
-      // Use the new atomic reordering function
-      console.log('🚀 Using atomic reordering function');
-      
-      const { error } = await supabase.rpc('reorder_sections_atomic', {
-        p_page_name: sectionToUpdate.page_name,
-        p_section_key: sectionKey,
-        p_new_order: newOrder
+      // Use direct client-side approach for better reliability
+      const pageSections = sections
+        .filter(s => s.page_name === sectionToUpdate.page_name)
+        .sort((a, b) => a.display_order - b.display_order);
+
+      const currentIndex = pageSections.findIndex(s => s.section_key === sectionKey);
+      const targetIndex = Math.max(0, Math.min(newOrder, pageSections.length - 1));
+
+      if (currentIndex === targetIndex) {
+        console.log('🔄 No movement needed');
+        return;
+      }
+
+      console.log(`🚀 Client-side reorder: ${currentIndex} → ${targetIndex}`);
+
+      // Create reordered array to calculate new positions
+      const reorderedSections = [...pageSections];
+      const [movedSection] = reorderedSections.splice(currentIndex, 1);
+      reorderedSections.splice(targetIndex, 0, movedSection);
+
+      // Update all affected sections in batch
+      const updates = reorderedSections.map((section, index) => ({
+        section_key: section.section_key,
+        new_order: index
+      })).filter(update => {
+        const originalSection = pageSections.find(s => s.section_key === update.section_key);
+        return originalSection && originalSection.display_order !== update.new_order;
       });
 
-      if (error) {
-        console.error('❌ Atomic reorder failed:', error);
-        
-        // Fallback to batch approach for better reliability
-        console.log('🔄 Falling back to batch reorder approach');
-        
-        const pageSections = sections
-          .filter(s => s.page_name === sectionToUpdate.page_name)
-          .sort((a, b) => a.display_order - b.display_order);
+      console.log('📦 Batch updates:', updates);
 
-        // Create new order mapping
-        const reorders = [];
-        const currentIndex = pageSections.findIndex(s => s.section_key === sectionKey);
-        const targetIndex = Math.max(0, Math.min(newOrder, pageSections.length - 1));
+      // Apply updates sequentially to avoid constraint conflicts
+      for (let i = 0; i < updates.length; i++) {
+        const update = updates[i];
+        const tempOrder = 10000 + i; // Use temporary high values first
         
-        // Create reordered array
-        const reorderedSections = [...pageSections];
-        const [movedSection] = reorderedSections.splice(currentIndex, 1);
-        reorderedSections.splice(targetIndex, 0, movedSection);
-        
-        // Generate reorder commands
-        reorderedSections.forEach((section, index) => {
-          if (section.display_order !== index) {
-            reorders.push({
-              section_key: section.section_key,
-              new_order: index
-            });
-          }
-        });
+        const { error: tempError } = await supabase
+          .from('section_visibility')
+          .update({ display_order: tempOrder })
+          .eq('section_key', update.section_key);
+          
+        if (tempError) {
+          console.error('❌ Temp update failed:', tempError);
+          throw tempError;
+        }
+      }
 
-        const { error: batchError } = await supabase.rpc('batch_reorder_sections', {
-          p_page_name: sectionToUpdate.page_name,
-          p_reorders: JSON.stringify(reorders)
-        });
-
-        if (batchError) {
-          console.error('❌ Batch reorder also failed:', batchError);
-          throw batchError;
+      // Now apply final orders
+      for (const update of updates) {
+        const { error } = await supabase
+          .from('section_visibility')
+          .update({ display_order: update.new_order })
+          .eq('section_key', update.section_key);
+          
+        if (error) {
+          console.error('❌ Final update failed:', error);
+          throw error;
         }
       }
 
