@@ -1,8 +1,6 @@
 
 import React from 'react';
 import SEOHead from '@/components/SEOHead';
-import OptimizedHomepage from '@/components/OptimizedHomepage';
-import VisibleSection from '@/components/ui/VisibleSection';
 import DynamicPageRenderer from '@/components/ui/DynamicPageRenderer';
 import { pageSEO, generateFAQJsonLd, generateReviewJsonLd, generateBreadcrumbJsonLd, generateOrganizationJsonLd } from '@/utils/seoData';
 
@@ -116,12 +114,8 @@ const Index = () => {
         ogImage="https://avs.ma/images/avs-social-share.jpg"
       />
       
-      {/* Combined homepage content - both optimized and original sections */}
-      <DynamicPageRenderer pageName="home">
-        <VisibleSection sectionKey="home_hero">
-          <OptimizedHomepage />
-        </VisibleSection>
-      </DynamicPageRenderer>
+      {/* All homepage sections managed through DynamicPageRenderer */}
+      <DynamicPageRenderer pageName="home" />
     </div>
   );
 };

@@ -7,7 +7,7 @@ import { logWarn } from '@/utils/logger';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
-// Home page components
+// Home page components (original)
 import HeroSection from '@/components/HeroSection';
 import CareerPaths from '@/components/hero/CareerPaths';
 import CourseUniverseShowcase from '@/components/hero/CourseUniverseShowcase';
@@ -18,6 +18,13 @@ import TestimonialsSection from '@/components/TestimonialsSection';
 import EnhancedCourseSelectionGuide from '@/components/EnhancedCourseSelectionGuide';
 import FAQSection from '@/components/FAQSection';
 import CTASection from '@/components/CTASection';
+
+// Home page components (optimized)
+import TLDROptimizedSection from '@/components/TLDROptimizedSection';
+import ComparisonsSection from '@/components/ComparisonsSection';
+import CurriculumSection from '@/components/CurriculumSection';
+import EnhancedTestimonialsSection from '@/components/EnhancedTestimonialsSection';
+import SuccessStatsSection from '@/components/SuccessStatsSection';
 
 // About page components
 import AboutHeroSection from '@/components/about/AboutHeroSection';
@@ -50,6 +57,20 @@ const SECTION_COMPONENTS: Record<string, React.ComponentType> = {
   // Global components
   'global_navbar': Navbar,
   'global_footer': Footer,
+  
+  // Home page sections (optimized)
+  'home_hero': HeroSection,
+  'home_tldr': TLDROptimizedSection,
+  'home_features': FeaturesSection,
+  'home_comparisons': ComparisonsSection,
+  'home_curriculum': CurriculumSection,
+  'home_testimonials_enhanced': EnhancedTestimonialsSection,
+  'home_success_stats': SuccessStatsSection,
+  'home_testimonials': TestimonialsSection,
+  'home_instructors': InstructorsSection,
+  'home_partners': PartnersSection,
+  'home_faq': FAQSection,
+  'home_cta': CTASection,
   
   // Home page sections (original)
   'home_hero_original': HeroSection,
