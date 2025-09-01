@@ -49,20 +49,20 @@ const AVSProgramOverview = () => {
 
         {/* Key Features of Technical Degree */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-12 sm:mb-16 px-4 sm:px-0">
-          <div className="text-center p-4 bg-gradient-to-br from-academy-blue/10 to-academy-blue/20 rounded-xl border border-academy-blue/30">
-            <div className="text-xl sm:text-2xl font-bold text-academy-blue mb-2">Bac+2</div>
+          <div className="text-center p-4 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl border border-slate-300">
+            <div className="text-xl sm:text-2xl font-bold text-slate-700 mb-2">Bac+2</div>
             <div className="text-sm text-gray-700">Niveau technique reconnu</div>
           </div>
-          <div className="text-center p-4 bg-gradient-to-br from-academy-purple/10 to-academy-purple/20 rounded-xl border border-academy-purple/30">
-            <div className="text-xl sm:text-2xl font-bold text-academy-purple mb-2">OFPPT</div>
+          <div className="text-center p-4 bg-gradient-to-br from-cyan-100 to-cyan-200 rounded-xl border border-cyan-300">
+            <div className="text-xl sm:text-2xl font-bold text-cyan-700 mb-2">OFPPT</div>
             <div className="text-sm text-gray-700">Certification officielle</div>
           </div>
-          <div className="text-center p-4 bg-gradient-to-br from-orange-100 to-orange-200 rounded-xl border border-orange-300">
-            <div className="text-xl sm:text-2xl font-bold text-orange-700 mb-2">8+ CERTIF.</div>
+          <div className="text-center p-4 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl border border-emerald-300">
+            <div className="text-xl sm:text-2xl font-bold text-emerald-700 mb-2">8+ CERTIF.</div>
             <div className="text-sm text-gray-700">Certifications internationales</div>
           </div>
-          <div className="text-center p-4 bg-gradient-to-br from-green-100 to-green-200 rounded-xl border border-green-300">
-            <div className="text-xl sm:text-2xl font-bold text-green-700 mb-2">2 ANS</div>
+          <div className="text-center p-4 bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-xl border border-indigo-300">
+            <div className="text-xl sm:text-2xl font-bold text-indigo-700 mb-2">2 ANS</div>
             <div className="text-sm text-gray-700">Durée formation</div>
           </div>
         </div>
