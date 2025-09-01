@@ -24,7 +24,7 @@ const AVSInstitute = () => {
       <StandardPageLayout>
         <PageHero
           title="TECHNICIEN SPÉCIALISÉ EN IA & PROGRAMMATION"
-          subtitle="Formation professionnelle reconnue par l'État"
+          subtitle="Formation professionnelle reconnue par l'État et à l'international"
           description="🎓 Devenez un Technicien Spécialisé certifié en Intelligence Artificielle ou Programmation - Votre expertise technique commence ici !"
           icon={Brain}
           backgroundGradient="from-academy-blue via-academy-purple to-academy-lightblue"
