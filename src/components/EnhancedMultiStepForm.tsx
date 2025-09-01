@@ -104,12 +104,11 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
         return null;
       }
     },
-    phone: { required: true },
-    'formation.formationType': { required: true },
-    'formation.domaine': { required: true },
-    'formation.programme': { required: true },
-    acceptTerms: { required: true }
-  });
+     phone: { required: true },
+     'formation.formationType': { required: true },
+     'formation.domaine': { required: true },
+     acceptTerms: { required: true }
+   });
 
   const { progress, markSaved, getSavedStatus } = useFormProgress(formData, {
     steps: {
@@ -118,9 +117,6 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
       },
       'Type de formation': {
         fields: ['formation.formationType', 'formation.domaine']
-      },
-      'Programme spécifique': {
-        fields: ['formation.programme']
       },
       'Finalisation': {
         fields: ['acceptTerms']
@@ -305,12 +301,12 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
       return;
     }
     
-    // Check if formation is properly selected
-    if (!formData.formation.formationType || !formData.formation.domaine || !formData.formation.programme) {
-      console.log("❌ Formation incomplete:", formData.formation);
-      setInlineStatus({ type: 'error', message: 'Veuillez compléter votre sélection de formation' });
-      return;
-    }
+     // Check if formation is properly selected
+     if (!formData.formation.formationType || !formData.formation.domaine) {
+       console.log("❌ Formation incomplete:", formData.formation);
+       setInlineStatus({ type: 'error', message: 'Veuillez compléter votre sélection de formation' });
+       return;
+     }
 
     // Prepare values for validation
     const validationValues = {
@@ -319,8 +315,7 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
       email: formData.email,
       phone: formData.phone,
       'formation.formationType': formData.formation.formationType,
-      'formation.domaine': formData.formation.domaine,
-      'formation.programme': formData.formation.programme,
+       'formation.domaine': formData.formation.domaine,
       acceptTerms: formData.acceptTerms ? 'true' : ''
     };
     
@@ -363,20 +358,17 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
     }
   }, [formData, validateAll, onSubmit, networkStatus, getValidationResult, toast, errors, loading]);
 
-  const getStepStatus = useSafeCallback((step: number): 'completed' | 'current' | 'pending' => {
-    switch (step) {
-      case 1:
-        return formData.formation.formationType ? 'completed' : 'current';
-      case 2:
-        if (!formData.formation.formationType) return 'pending';
-        return formData.formation.domaine ? 'completed' : 'current';
-      case 3:
-        if (!formData.formation.domaine) return 'pending';
-        return formData.formation.programme ? 'completed' : 'current';
-      default:
-        return 'pending';
-    }
-  }, [formData.formation]);
+   const getStepStatus = useSafeCallback((step: number): 'completed' | 'current' | 'pending' => {
+     switch (step) {
+       case 1:
+         return formData.formation.formationType ? 'completed' : 'current';
+       case 2:
+         if (!formData.formation.formationType) return 'pending';
+         return formData.formation.domaine ? 'completed' : 'current';
+       default:
+         return 'pending';
+     }
+   }, [formData.formation]);
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -507,12 +499,12 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
               </h3>
 
               {/* Step indicators */}
-              <div className="flex items-center justify-center">
-                <div className="flex items-center space-x-8">
-                  {[1, 2, 3].map((step) => {
-                    const status = getStepStatus(step);
-                    const stepLabels = ['Type', 'Domaine', 'Programme'];
-                    return (
+               <div className="flex items-center justify-center">
+                 <div className="flex items-center space-x-8">
+                   {[1, 2].map((step) => {
+                     const status = getStepStatus(step);
+                     const stepLabels = ['Type', 'Domaine'];
+                     return (
                       <div key={step} className="flex flex-col items-center">
                         <div className={cn(
                           'flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-300',
@@ -605,92 +597,10 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
                 </div>
               )}
 
-              {/* Step 3: Programme Selection */}
-              {formData.formation.domaine && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-semibold text-gray-700">3. Programme spécifique</h4>
-                    <Badge variant="secondary">
-                      {availableCourses.length} programme{availableCourses.length > 1 ? 's' : ''} disponible{availableCourses.length > 1 ? 's' : ''}
-                    </Badge>
-                  </div>
-                  
-                  {coursesLoading ? (
-                    <div className="text-center py-8">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-academy-blue mx-auto"></div>
-                      <p className="text-gray-600 mt-2">Chargement des programmes...</p>
-                    </div>
-                  ) : availableCourses.length > 0 ? (
-                     <div className={cn(
-                       "grid gap-3 sm:gap-4",
-                       "grid-cols-1 sm:grid-cols-1 md:grid-cols-2",
-                       isAndroid && "android-responsive-grid"
-                     )}>
-                       {availableCourses.map((course) => (
-                         <Card 
-                           key={course.id}
-                           className={cn(
-                             'cursor-pointer border-2 transition-all duration-200 hover:shadow-md',
-                             'min-h-[120px] sm:min-h-[140px]', // Better touch targets
-                             'touch-manipulation', // Android touch optimization
-                             formData.formation.programme === course.id
-                               ? 'border-academy-blue bg-blue-50' 
-                               : 'border-gray-200 hover:border-gray-300'
-                           )}
-                           onClick={() => handleFormationChange('formation.programme', course.id)}
-                         >
-                           <CardContent className="p-3 sm:p-4">
-                             <div className="space-y-2 sm:space-y-3">
-                               <div className="flex items-start space-x-2 sm:space-x-3">
-                                 <div className={cn(
-                                   'w-5 h-5 sm:w-4 sm:h-4 rounded-full border-2 mt-0.5 sm:mt-1 flex-shrink-0',
-                                   'touch-manipulation', // Better touch interaction
-                                   formData.formation.programme === course.id
-                                     ? 'bg-academy-blue border-academy-blue'
-                                     : 'border-gray-300'
-                                 )} />
-                                 <div className="flex-1 min-w-0">
-                                   <h5 className="font-semibold text-gray-800 leading-tight text-sm sm:text-base">
-                                     {course.title}
-                                   </h5>
-                                   {course.subtitle && (
-                                     <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">
-                                       {course.subtitle}
-                                     </p>
-                                   )}
-                                 </div>
-                               </div>
-                               
-                               <div className="flex items-center space-x-3 sm:space-x-4 text-xs text-gray-500">
-                                 {course.duration && (
-                                   <div className="flex items-center space-x-1">
-                                     <Calendar className="w-3 h-3" />
-                                     <span className="text-xs">{course.duration}</span>
-                                   </div>
-                                 )}
-                                 {course.modules && (
-                                   <div className="flex items-center space-x-1">
-                                     <Users className="w-3 h-3" />
-                                     <span className="text-xs">{course.modules}</span>
-                                   </div>
-                                 )}
-                               </div>
-                             </div>
-                           </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 text-gray-600">
-                      <p>Aucun programme disponible pour ce domaine.</p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+             </div>
 
-            {/* Terms and Submit */}
-            {formData.formation.programme && (
+             {/* Terms and Submit */}
+             {formData.formation.domaine && (
               <div className="space-y-6 pt-6 border-t border-gray-200">
                 <div className="flex items-start space-x-3">
                   <Checkbox

@@ -27,12 +27,11 @@ const Register = () => {
     try {
       const fullName = `${formData.firstName} ${formData.lastName}`;
       
-      // Create tags for the submission with full formation details
+      // Create tags for the submission with formation details
       const formationTag = [
         formData.formation.formationType === 'complete' ? 'Formation Professionnelle Complète (2 ans)' : 'Certificat International (Courte durée)',
         formData.formation.domaine === 'ai-data' ? 'Intelligence Artificielle & Data Science' :
-        formData.formation.domaine === 'programming' ? 'Programmation & Infrastructure' : 'Marketing Digital & Créatif',
-        formData.formation.programmeDetails?.title || formData.formation.programme
+        formData.formation.domaine === 'programming' ? 'Programmation & Infrastructure' : 'Marketing Digital & Créatif'
       ].join(' | ');
 
       // Use secure Edge Function to create subscriber (bypasses RLS safely)
@@ -43,8 +42,6 @@ const Register = () => {
           phone: formData.phone,
           formationType: formData.formation.formationType,
           formationDomaine: formData.formation.domaine,
-          formationProgramme: formData.formation.programme,
-          formationProgrammeTitle: formData.formation.programmeDetails?.title,
           formationTag
         }
       });
