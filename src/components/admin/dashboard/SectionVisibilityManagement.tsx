@@ -11,15 +11,27 @@ import { useToast } from '@/hooks/use-toast';
 import EnhancedSectionReorderDialog from './EnhancedSectionReorderDialog';
 
 const SectionVisibilityManagement: React.FC = () => {
-  // Component mappings for validation
+  // Component mappings for validation - must match DynamicPageRenderer.tsx SECTION_COMPONENTS
   const MAPPED_SECTIONS = [
+    // Global components
     'global_navbar', 'global_footer',
+    
+    // Home page sections (optimized)
     'home_hero', 'home_tldr', 'home_features', 'home_comparisons', 'home_curriculum',
     'home_testimonials_enhanced', 'home_success_stats', 'home_testimonials',
     'home_instructors', 'home_partners', 'home_faq', 'home_cta',
-    'home_course_guide', 'home_career_paths', 'home_course_universe',
+    
+    // Home page sections (original)
+    'home_hero_original', 'home_career_paths', 'home_course_universe',
+    'home_partners_original', 'home_features_original', 'home_course_guide',
+    'home_instructors_original', 'home_testimonials_original', 'home_faq_original', 
+    'home_cta_original',
+    
+    // About page sections
     'about_hero', 'about_mission', 'about_values', 'about_stats',
     'about_history', 'about_cta',
+    
+    // Features page sections
     'features_hero', 'features_main'
   ];
 
