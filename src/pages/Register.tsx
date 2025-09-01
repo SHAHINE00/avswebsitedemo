@@ -53,9 +53,11 @@ const Register = () => {
       if (subscribeRes?.status === 'already_subscribed') {
         setSubmissionStatus('success');
         setStatusMessage("Vous êtes déjà inscrit. Merci !");
+        setTimeout(() => navigate('/'), 2000); // Redirect to home after 2 seconds
       } else {
         setSubmissionStatus('success');
         setStatusMessage(`Inscription réussie !`);
+        setTimeout(() => navigate('/'), 2000); // Redirect to home after 2 seconds
       }
     } catch (error: any) {
       logError('Registration error:', error);
