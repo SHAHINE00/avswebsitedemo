@@ -98,10 +98,7 @@ const SEOAnalyticsCore = () => {
 
 const SEOAnalytics = () => {
   return (
-    <SafeComponentWrapper 
-      componentName="SEOAnalytics" 
-      requiresRouter={true}
-    >
+    <SafeComponentWrapper componentName="SEOAnalytics">
       <SEOAnalyticsCore />
     </SafeComponentWrapper>
   );

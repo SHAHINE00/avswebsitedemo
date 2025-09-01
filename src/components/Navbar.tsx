@@ -201,11 +201,7 @@ const NavbarCore = () => {
 
 const Navbar = () => {
   return (
-    <SafeComponentWrapper 
-      componentName="Navbar" 
-      requiresRouter={true}
-      requiresAuth={true}
-    >
+    <SafeComponentWrapper componentName="Navbar">
       <NavbarCore />
     </SafeComponentWrapper>
   );
