@@ -22,7 +22,7 @@ const AVSCertifications = () => {
   ];
 
   return (
-    <SectionWrapper background="white" padding="md">
+    <SectionWrapper background="white" padding="sm">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12 sm:mb-16 px-4 sm:px-0">
           <Badge variant="outline" className="mb-4 text-sm sm:text-lg px-3 sm:px-4 py-1 sm:py-2 bg-academy-lightblue/10 text-academy-lightblue border-academy-lightblue/30">
