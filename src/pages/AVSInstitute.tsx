@@ -35,7 +35,7 @@ const AVSInstitute = () => {
               <div className="text-xs sm:text-sm opacity-90">Formation technique diplômante</div>
             </div>
             <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/30">
-              <div className="text-2xl sm:text-3xl font-bold mb-2">TS</div>
+              <div className="text-2xl sm:text-3xl font-bold mb-2">TSIA / TSDI</div>
               <div className="text-xs sm:text-sm opacity-90">Diplôme Technicien Spécialisé</div>
             </div>
             <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/30 sm:col-span-2 lg:col-span-1">
