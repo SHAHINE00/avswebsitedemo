@@ -1295,6 +1295,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      batch_reorder_sections: {
+        Args: { p_page_name: string; p_reorders: Json }
+        Returns: undefined
+      }
       check_admin_role: {
         Args: Record<PropertyKey, never>
         Returns: boolean
@@ -1362,6 +1366,14 @@ export type Database = {
       }
       promote_user_to_admin: {
         Args: { p_target_user_id: string }
+        Returns: undefined
+      }
+      reorder_sections_atomic: {
+        Args: {
+          p_new_order: number
+          p_page_name: string
+          p_section_key: string
+        }
         Returns: undefined
       }
       reorder_sections_on_page: {
