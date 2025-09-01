@@ -4,17 +4,17 @@ import { useSafeState } from '@/utils/safeHooks';
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Linkedin, Instagram, Mail, MapPin, Phone } from 'lucide-react';
 import OptimizedImage from '@/components/OptimizedImage';
-import { useHostingerEmail } from '@/hooks/useHostingerEmail';
+import { useNewsletterSubscription } from '@/hooks/useNewsletterSubscription';
 
 const Footer: React.FC = () => {
   const [email, setEmail] = useSafeState('');
-  const { sendNewsletterWelcome, loading } = useHostingerEmail();
+  const { subscribe, loading } = useNewsletterSubscription();
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
     
-    const success = await sendNewsletterWelcome({
+    const success = await subscribe({
       email: email.trim(),
       source: 'footer'
     });

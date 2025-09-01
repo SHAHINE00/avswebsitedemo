@@ -6,6 +6,9 @@ verify_jwt = false
 [functions.subscribe]
 verify_jwt = false
 
+[functions.send-hostinger-email]
+verify_jwt = false
+
 [functions.admin-invite-user]
 verify_jwt = false
 

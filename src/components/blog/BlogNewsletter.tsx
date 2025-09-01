@@ -3,47 +3,28 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Mail, Check, AlertCircle } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useNewsletterSubscription } from '@/hooks/useNewsletterSubscription';
 
 const BlogNewsletter: React.FC = () => {
   const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const { toast } = useToast();
+  const { subscribe, loading } = useNewsletterSubscription();
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!email || !email.includes('@')) {
-      toast({
-        title: "Email invalide",
-        description: "Veuillez entrer une adresse email valide.",
-        variant: "destructive",
-      });
       return;
     }
 
-    setIsLoading(true);
-
-    try {
-      // Simulate newsletter subscription
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+    const success = await subscribe({
+      email: email.trim(),
+      source: 'blog-newsletter'
+    });
+    
+    if (success) {
       setIsSubscribed(true);
       setEmail('');
-      
-      toast({
-        title: "Inscription réussie !",
-        description: "Vous recevrez nos derniers articles directement dans votre boîte email.",
-      });
-    } catch (error) {
-      toast({
-        title: "Erreur d'inscription",
-        description: "Une erreur s'est produite. Veuillez réessayer.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -108,10 +89,10 @@ const BlogNewsletter: React.FC = () => {
                 />
                 <Button 
                   type="submit" 
-                  disabled={isLoading}
+                  disabled={loading}
                   className="bg-academy-blue hover:bg-academy-purple text-white px-8"
                 >
-                  {isLoading ? "Inscription..." : "S'abonner"}
+                  {loading ? "Inscription..." : "S'abonner"}
                 </Button>
               </div>
             </form>
