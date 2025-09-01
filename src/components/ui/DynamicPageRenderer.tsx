@@ -51,17 +51,17 @@ const SECTION_COMPONENTS: Record<string, React.ComponentType> = {
   'global_navbar': Navbar,
   'global_footer': Footer,
   
-  // Home page sections
-  'home_hero': HeroSection,
+  // Home page sections (original)
+  'home_hero_original': HeroSection,
   'home_career_paths': CareerPaths,
   'home_course_universe': CourseUniverseSection,
-  'home_partners': PartnersSection,
-  'home_features': FeaturesSection,
+  'home_partners_original': PartnersSection,
+  'home_features_original': FeaturesSection,
   'home_course_guide': EnhancedCourseSelectionGuide,
-  'home_instructors': InstructorsSection,
-  'home_testimonials': TestimonialsSection,
-  'home_faq': FAQSection,
-  'home_cta': CTASection,
+  'home_instructors_original': InstructorsSection,
+  'home_testimonials_original': TestimonialsSection,
+  'home_faq_original': FAQSection,
+  'home_cta_original': CTASection,
   
   // About page sections
   'about_hero': AboutHeroSection,
