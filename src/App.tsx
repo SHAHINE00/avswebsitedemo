@@ -44,6 +44,7 @@ const Auth = React.lazy(() => import("./pages/Auth"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Blog = React.lazy(() => import("./pages/Blog"));
 const BlogPost = React.lazy(() => import("./pages/BlogPost"));
+const AVSInstitute = React.lazy(() => import("./pages/AVSInstitute"));
 
 // Admin pages (heavy components - lazy load)
 const AdminCourses = React.lazy(() => import("./pages/AdminCourses"));
@@ -127,6 +128,7 @@ const App = () => {
                       <Route path="/appointment" element={<LazyWrapper><Appointment /></LazyWrapper>} />
                       <Route path="/blog" element={<LazyWrapper><Blog /></LazyWrapper>} />
                       <Route path="/blog/:slug" element={<LazyWrapper><BlogPost /></LazyWrapper>} />
+                      <Route path="/avs-institut" element={<LazyWrapper><AVSInstitute /></LazyWrapper>} />
                       <Route path="/privacy-policy" element={<LazyWrapper><PrivacyPolicy /></LazyWrapper>} />
                       <Route path="/terms-of-use" element={<LazyWrapper><TermsOfUse /></LazyWrapper>} />
                       <Route path="/cookies-policy" element={<LazyWrapper><CookiesPolicy /></LazyWrapper>} />
