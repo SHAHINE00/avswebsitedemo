@@ -84,13 +84,35 @@ export const useSectionVisibility = () => {
 
   const updateSectionVisibility = async (sectionKey: string, isVisible: boolean) => {
     try {
+      console.log('🔧 Updating visibility:', { sectionKey, isVisible });
+      
+      // Check admin status first
+      const { data: adminCheck, error: adminError } = await supabase
+        .rpc('check_admin_role');
+      
+      console.log('🔐 Admin check for visibility:', { adminCheck, adminError });
+
+      if (adminError) {
+        console.error('❌ Admin check failed:', adminError);
+        throw new Error('Failed to verify admin status');
+      }
+
+      if (!adminCheck) {
+        console.error('❌ User is not admin');
+        throw new Error('Admin privileges required for managing section visibility');
+      }
+
       const { error } = await supabase
         .from('section_visibility')
         .update({ is_visible: isVisible })
         .eq('section_key', sectionKey);
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Visibility update failed:', error);
+        throw error;
+      }
 
+      console.log('✅ Visibility update successful');
       // Update local state
       setSections(prev => 
         prev.map(section => 
@@ -100,18 +122,48 @@ export const useSectionVisibility = () => {
         )
       );
     } catch (err) {
+      console.error('❌ Full error in updateSectionVisibility:', err);
       logError('Error updating section visibility:', err);
-      throw new Error('Failed to update section visibility');
+      throw new Error(`Failed to update section visibility: ${err.message || err}`);
     }
   };
 
   const updateSectionOrder = async (sectionKey: string, newOrder: number) => {
     try {
+      console.log('🔧 Attempting to reorder section:', { sectionKey, newOrder });
+      
       // Get the section being moved
       const sectionToUpdate = sections.find(s => s.section_key === sectionKey);
-      if (!sectionToUpdate) throw new Error('Section not found');
+      if (!sectionToUpdate) {
+        console.error('❌ Section not found:', sectionKey);
+        throw new Error('Section not found');
+      }
+
+      console.log('📍 Section found:', sectionToUpdate);
+
+      // Check admin status first
+      const { data: adminCheck, error: adminError } = await supabase
+        .rpc('check_admin_role');
+      
+      console.log('🔐 Admin check result:', { adminCheck, adminError });
+
+      if (adminError) {
+        console.error('❌ Admin check failed:', adminError);
+        throw new Error('Failed to verify admin status');
+      }
+
+      if (!adminCheck) {
+        console.error('❌ User is not admin');
+        throw new Error('Admin privileges required for reordering sections');
+      }
 
       // Use the database function for proper reordering
+      console.log('🚀 Calling reorder function with:', {
+        p_page_name: sectionToUpdate.page_name,
+        p_section_key: sectionKey,
+        p_new_order: newOrder
+      });
+
       const { error } = await supabase
         .rpc('reorder_sections_on_page', {
           p_page_name: sectionToUpdate.page_name,
@@ -119,13 +171,18 @@ export const useSectionVisibility = () => {
           p_new_order: newOrder
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Reorder function failed:', error);
+        throw error;
+      }
 
+      console.log('✅ Reorder successful, refetching sections');
       // Refetch sections to get the updated order
       await fetchSections();
     } catch (err) {
+      console.error('❌ Full error in updateSectionOrder:', err);
       logError('Error updating section order:', err);
-      throw new Error('Failed to update section order');
+      throw new Error(`Failed to update section order: ${err.message || err}`);
     }
   };
 
