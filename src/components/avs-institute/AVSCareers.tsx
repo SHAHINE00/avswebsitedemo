@@ -72,43 +72,45 @@ const AVSCareers = () => {
   return (
     <SectionWrapper background="gray" padding="xl">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <Badge variant="outline" className="mb-4 text-lg px-4 py-2 bg-academy-blue/10 text-academy-blue border-academy-blue/30">
-            <TrendingUp className="w-5 h-5 mr-2" />
+        <div className="text-center mb-12 sm:mb-16 px-4 sm:px-0">
+          <Badge variant="outline" className="mb-4 text-sm sm:text-lg px-3 sm:px-4 py-1 sm:py-2 bg-academy-blue/10 text-academy-blue border-academy-blue/30">
+            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
             Opportunités de Carrière
           </Badge>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-academy-blue via-academy-purple to-academy-lightblue bg-clip-text text-transparent">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-academy-blue via-academy-purple to-academy-lightblue bg-clip-text text-transparent">
             Votre Avenir Professionnel
           </h2>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
+          <p className="text-base sm:text-lg md:text-xl text-gray-700 max-w-3xl mx-auto mb-6 sm:mb-8">
             Explorez les nombreuses opportunités qui s'offriront à vous après votre formation
           </p>
           
           {/* Success Statistics */}
-          <div className="bg-gradient-to-r from-academy-blue/10 via-academy-purple/10 to-academy-lightblue/10 rounded-2xl p-8 mb-12 border-2 border-academy-blue/20">
-            <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-academy-blue via-academy-purple to-academy-lightblue bg-clip-text text-transparent">
+          <div className="bg-gradient-to-r from-academy-blue/10 via-academy-purple/10 to-academy-lightblue/10 rounded-2xl p-4 sm:p-6 md:p-8 mb-8 sm:mb-12 border-2 border-academy-blue/20">
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-academy-blue via-academy-purple to-academy-lightblue bg-clip-text text-transparent">
               Statistique Encourageante
             </h3>
-            <p className="text-lg text-gray-700">
+            <p className="text-sm sm:text-base md:text-lg text-gray-700">
               <span className="font-bold text-academy-blue">95%</span> de nos diplômés trouvent un emploi dans les <span className="font-bold text-academy-purple">6 mois</span> avec un salaire moyen de <span className="font-bold text-academy-lightblue">8,000-16,000 MAD</span>
             </p>
           </div>
         </div>
 
         <Tabs defaultValue="ai" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-12 h-16">
-            <TabsTrigger value="ai" className="text-lg py-4 data-[state=active]:bg-academy-blue data-[state=active]:text-white">
-              <Brain className="w-6 h-6 mr-2" />
-              Carrières IA
+          <TabsList className="grid w-full grid-cols-2 mb-8 sm:mb-12 h-12 sm:h-16 mx-4 sm:mx-0">
+            <TabsTrigger value="ai" className="text-sm sm:text-lg py-2 sm:py-4 data-[state=active]:bg-academy-blue data-[state=active]:text-white">
+              <Brain className="w-4 h-4 sm:w-6 sm:h-6 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Carrières IA</span>
+              <span className="sm:hidden">IA</span>
             </TabsTrigger>
-            <TabsTrigger value="programming" className="text-lg py-4 data-[state=active]:bg-academy-purple data-[state=active]:text-white">
-              <Code2 className="w-6 h-6 mr-2" />
-              Carrières Programmation
+            <TabsTrigger value="programming" className="text-sm sm:text-lg py-2 sm:py-4 data-[state=active]:bg-academy-purple data-[state=active]:text-white">
+              <Code2 className="w-4 h-4 sm:w-6 sm:h-6 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Carrières Programmation</span>
+              <span className="sm:hidden">Prog</span>
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="ai" className="space-y-8">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4 sm:px-0">
               <CareerSection 
                 title="Secteur Privé" 
                 icon={Building2} 

@@ -37,15 +37,15 @@ const AVSContact = () => {
   return (
     <SectionWrapper background="white" padding="xl">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <Badge variant="outline" className="mb-4 text-lg px-4 py-2 bg-academy-blue/10 text-academy-blue border-academy-blue/30">
-            <MessageCircle className="w-5 h-5 mr-2" />
+        <div className="text-center mb-12 sm:mb-16 px-4 sm:px-0">
+          <Badge variant="outline" className="mb-4 text-sm sm:text-lg px-3 sm:px-4 py-1 sm:py-2 bg-academy-blue/10 text-academy-blue border-academy-blue/30">
+            <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
             Contactez-nous
           </Badge>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-academy-blue via-academy-purple to-academy-lightblue bg-clip-text text-transparent">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-academy-blue via-academy-purple to-academy-lightblue bg-clip-text text-transparent">
             Prêt à Commencer Votre Transformation ?
           </h2>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">
             Notre équipe est là pour vous accompagner dans votre projet de formation. Contactez-nous dès aujourd'hui !
           </p>
         </div>

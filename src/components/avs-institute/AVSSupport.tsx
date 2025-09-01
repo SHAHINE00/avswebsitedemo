@@ -54,41 +54,41 @@ const AVSSupport = () => {
   return (
     <SectionWrapper background="gray" padding="xl">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <Badge variant="outline" className="mb-4 text-lg px-4 py-2 bg-academy-purple/10 text-academy-purple border-academy-purple/30">
-            <HandHeart className="w-5 h-5 mr-2" />
+        <div className="text-center mb-12 sm:mb-16 px-4 sm:px-0">
+          <Badge variant="outline" className="mb-4 text-sm sm:text-lg px-3 sm:px-4 py-1 sm:py-2 bg-academy-purple/10 text-academy-purple border-academy-purple/30">
+            <HandHeart className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
             Support Post-Diplôme
           </Badge>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-academy-blue via-academy-purple to-academy-lightblue bg-clip-text text-transparent">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-academy-blue via-academy-purple to-academy-lightblue bg-clip-text text-transparent">
             Support Après l'Obtention du Diplôme
           </h2>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">
             Notre engagement ne s'arrête pas à votre diplôme. Nous vous accompagnons dans votre insertion professionnelle
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-12 px-4 sm:px-0">
           {/* Professional Support */}
           <Card className="bg-gradient-to-br from-academy-blue/5 to-academy-blue/10 border-academy-blue/20">
             <CardHeader>
-              <CardTitle className="flex items-center text-2xl text-academy-blue">
-                <div className="bg-academy-blue/20 p-3 rounded-xl mr-4">
-                  <UserCheck className="w-8 h-8 text-academy-blue" />
+              <CardTitle className="flex flex-col sm:flex-row items-start sm:items-center text-xl sm:text-2xl text-academy-blue">
+                <div className="bg-academy-blue/20 p-2 sm:p-3 rounded-xl mr-0 sm:mr-4 mb-2 sm:mb-0 flex-shrink-0">
+                  <UserCheck className="w-6 h-6 sm:w-8 sm:h-8 text-academy-blue" />
                 </div>
                 Support Professionnel
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3 sm:space-y-4">
               {professionalSupport.map((support, index) => {
                 const Icon = support.icon;
                 return (
-                  <div key={index} className="flex items-start space-x-4 p-4 bg-white/60 rounded-lg border border-academy-blue/10">
-                    <div className="bg-academy-blue/20 p-2 rounded-lg mt-1">
-                      <Icon className="w-5 h-5 text-academy-blue" />
+                  <div key={index} className="flex items-start space-x-3 sm:space-x-4 p-3 sm:p-4 bg-white/60 rounded-lg border border-academy-blue/10">
+                    <div className="bg-academy-blue/20 p-1.5 sm:p-2 rounded-lg mt-1 flex-shrink-0">
+                      <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-academy-blue" />
                     </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-800 mb-1">{support.title}</h4>
-                      <p className="text-gray-600 text-sm">{support.description}</p>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-sm sm:text-base text-gray-800 mb-1">{support.title}</h4>
+                      <p className="text-xs sm:text-sm text-gray-600">{support.description}</p>
                     </div>
                   </div>
                 );
@@ -99,24 +99,24 @@ const AVSSupport = () => {
           {/* Employment Opportunities */}
           <Card className="bg-gradient-to-br from-academy-purple/5 to-academy-purple/10 border-academy-purple/20">
             <CardHeader>
-              <CardTitle className="flex items-center text-2xl text-academy-purple">
-                <div className="bg-academy-purple/20 p-3 rounded-xl mr-4">
-                  <Briefcase className="w-8 h-8 text-academy-purple" />
+              <CardTitle className="flex flex-col sm:flex-row items-start sm:items-center text-xl sm:text-2xl text-academy-purple">
+                <div className="bg-academy-purple/20 p-2 sm:p-3 rounded-xl mr-0 sm:mr-4 mb-2 sm:mb-0 flex-shrink-0">
+                  <Briefcase className="w-6 h-6 sm:w-8 sm:h-8 text-academy-purple" />
                 </div>
                 Opportunités d'Emploi
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3 sm:space-y-4">
               {employmentOpportunities.map((opportunity, index) => {
                 const Icon = opportunity.icon;
                 return (
-                  <div key={index} className="flex items-start space-x-4 p-4 bg-white/60 rounded-lg border border-academy-purple/10">
-                    <div className="bg-academy-purple/20 p-2 rounded-lg mt-1">
-                      <Icon className="w-5 h-5 text-academy-purple" />
+                  <div key={index} className="flex items-start space-x-3 sm:space-x-4 p-3 sm:p-4 bg-white/60 rounded-lg border border-academy-purple/10">
+                    <div className="bg-academy-purple/20 p-1.5 sm:p-2 rounded-lg mt-1 flex-shrink-0">
+                      <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-academy-purple" />
                     </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-800 mb-1">{opportunity.title}</h4>
-                      <p className="text-gray-600 text-sm">{opportunity.description}</p>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-sm sm:text-base text-gray-800 mb-1">{opportunity.title}</h4>
+                      <p className="text-xs sm:text-sm text-gray-600">{opportunity.description}</p>
                     </div>
                   </div>
                 );
@@ -133,23 +133,23 @@ const AVSSupport = () => {
                 Nos Résultats Parlent d'Eux-Mêmes
               </h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
                 <div className="text-center">
-                  <div className="text-5xl font-bold text-academy-blue mb-2">95%</div>
-                  <div className="text-lg font-semibold text-gray-800 mb-1">Taux d'Emploi</div>
-                  <div className="text-gray-600">En 6 mois maximum</div>
+                  <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-academy-blue mb-2">95%</div>
+                  <div className="text-base sm:text-lg font-semibold text-gray-800 mb-1">Taux d'Emploi</div>
+                  <div className="text-sm sm:text-base text-gray-600">En 6 mois maximum</div>
                 </div>
                 
                 <div className="text-center">
-                  <div className="text-5xl font-bold text-academy-purple mb-2">500+</div>
-                  <div className="text-lg font-semibold text-gray-800 mb-1">Anciens Élèves</div>
-                  <div className="text-gray-600">Dans notre réseau</div>
+                  <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-academy-purple mb-2">500+</div>
+                  <div className="text-base sm:text-lg font-semibold text-gray-800 mb-1">Anciens Élèves</div>
+                  <div className="text-sm sm:text-base text-gray-600">Dans notre réseau</div>
                 </div>
                 
                 <div className="text-center">
-                  <div className="text-5xl font-bold text-academy-lightblue mb-2">12k</div>
-                  <div className="text-lg font-semibold text-gray-800 mb-1">Salaire Moyen</div>
-                  <div className="text-gray-600">MAD par mois</div>
+                  <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-academy-lightblue mb-2">12k</div>
+                  <div className="text-base sm:text-lg font-semibold text-gray-800 mb-1">Salaire Moyen</div>
+                  <div className="text-sm sm:text-base text-gray-600">MAD par mois</div>
                 </div>
               </div>
               
