@@ -5,18 +5,15 @@ import { Badge } from '@/components/ui/badge';
 import { Award, Brain, Code2, Globe, MapPin } from 'lucide-react';
 
 const AVSCertifications = () => {
-  const aiCertifications = [
-    "Certificat professionnel d'ingénierie IA d'IBM",
-    "Principes de base de l'IA Microsoft Azure",
-    "Plateforme d'IA Google Cloud",
-    "Certification PCAP de l'Institut Python",
-    "Développeur certifié AWS"
-  ];
-
-  const programmingCertifications = [
-    "Certificat de développeur frontal Meta",
-    "Certificat OFPPT en technologies avancées",
-    "Certificat OFPPT en développement d'applications"
+  const allCertifications = [
+    { name: "Certificat professionnel d'ingénierie IA d'IBM", type: "international", category: "ia" },
+    { name: "Principes de base de l'IA Microsoft Azure", type: "international", category: "ia" },
+    { name: "Plateforme d'IA Google Cloud", type: "international", category: "ia" },
+    { name: "Certification PCAP de l'Institut Python", type: "international", category: "ia" },
+    { name: "Développeur certifié AWS", type: "international", category: "ia" },
+    { name: "Certificat de développeur frontal Meta", type: "international", category: "programmation" },
+    { name: "Certificat OFPPT en technologies avancées", type: "national", category: "programmation" },
+    { name: "Certificat OFPPT en développement d'applications", type: "national", category: "programmation" }
   ];
 
   return (
@@ -35,61 +32,58 @@ const AVSCertifications = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-12 px-4 sm:px-0">
-          {/* AI Certifications */}
-          <Card className="group hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-academy-blue/5 to-academy-blue/10 border-academy-blue/20">
+        <div className="mb-12 px-4 sm:px-0">
+          {/* Single Unified Certifications Card */}
+          <Card className="group hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-academy-blue/5 via-academy-purple/5 to-academy-lightblue/5 border-academy-blue/20">
             <CardHeader className="pb-4 sm:pb-6">
-              <CardTitle className="flex flex-col sm:flex-row items-start sm:items-center text-xl sm:text-2xl text-academy-blue">
-                <div className="bg-academy-blue/20 p-2 sm:p-3 rounded-xl mr-0 sm:mr-4 mb-2 sm:mb-0 flex-shrink-0">
-                  <Brain className="w-6 h-6 sm:w-8 sm:h-8 text-academy-blue" />
+              <CardTitle className="flex flex-col sm:flex-row items-start sm:items-center text-xl sm:text-2xl bg-gradient-to-r from-academy-blue via-academy-purple to-academy-lightblue bg-clip-text text-transparent">
+                <div className="bg-gradient-to-r from-academy-blue to-academy-purple p-2 sm:p-3 rounded-xl mr-0 sm:mr-4 mb-2 sm:mb-0 flex-shrink-0">
+                  <Award className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                 </div>
-                Certifications IA
+                Toutes nos Certifications
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 sm:space-y-4">
-              {aiCertifications.map((cert, index) => (
-                <div key={index} className="flex items-start space-x-3 p-3 sm:p-4 bg-white/60 rounded-lg border border-academy-blue/10 hover:border-academy-blue/30 transition-colors">
-                  <div className="bg-academy-blue/20 p-1.5 sm:p-2 rounded-full mt-1 flex-shrink-0">
-                    <Globe className="w-3 h-3 sm:w-4 sm:h-4 text-academy-blue" />
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                {allCertifications.map((cert, index) => (
+                  <div key={index} className="flex items-start space-x-3 p-3 sm:p-4 bg-white/60 rounded-lg border border-gray-200 hover:border-academy-blue/30 transition-colors">
+                    <div className={`p-1.5 sm:p-2 rounded-full mt-1 flex-shrink-0 ${
+                      cert.category === 'ia' 
+                        ? 'bg-academy-blue/20' 
+                        : 'bg-academy-purple/20'
+                    }`}>
+                      {cert.type === 'national' ? (
+                        <MapPin className={`w-3 h-3 sm:w-4 sm:h-4 ${
+                          cert.category === 'ia' ? 'text-academy-blue' : 'text-academy-purple'
+                        }`} />
+                      ) : (
+                        <Globe className={`w-3 h-3 sm:w-4 sm:h-4 ${
+                          cert.category === 'ia' ? 'text-academy-blue' : 'text-academy-purple'
+                        }`} />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-sm sm:text-base text-gray-800">{cert.name}</p>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        <Badge variant="outline" className={`text-xs ${
+                          cert.type === 'national'
+                            ? 'text-academy-purple border-academy-purple/30'
+                            : 'text-academy-blue border-academy-blue/30'
+                        }`}>
+                          {cert.type === 'national' ? 'National' : 'International'}
+                        </Badge>
+                        <Badge variant="outline" className={`text-xs ${
+                          cert.category === 'ia'
+                            ? 'text-academy-blue border-academy-blue/30'
+                            : 'text-academy-purple border-academy-purple/30'
+                        }`}>
+                          {cert.category === 'ia' ? 'IA' : 'Programmation'}
+                        </Badge>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm sm:text-base text-gray-800">{cert}</p>
-                    <Badge variant="outline" className="mt-2 text-xs text-academy-blue border-academy-blue/30">
-                      International
-                    </Badge>
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-
-          {/* Programming Certifications */}
-          <Card className="group hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-academy-purple/5 to-academy-purple/10 border-academy-purple/20">
-            <CardHeader className="pb-4 sm:pb-6">
-              <CardTitle className="flex flex-col sm:flex-row items-start sm:items-center text-xl sm:text-2xl text-academy-purple">
-                <div className="bg-academy-purple/20 p-2 sm:p-3 rounded-xl mr-0 sm:mr-4 mb-2 sm:mb-0 flex-shrink-0">
-                  <Code2 className="w-6 h-6 sm:w-8 sm:h-8 text-academy-purple" />
-                </div>
-                Certifications Programmation
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 sm:space-y-4">
-              {programmingCertifications.map((cert, index) => (
-                <div key={index} className="flex items-start space-x-3 p-3 sm:p-4 bg-white/60 rounded-lg border border-academy-purple/10 hover:border-academy-purple/30 transition-colors">
-                   <div className="bg-academy-purple/20 p-1.5 sm:p-2 rounded-full mt-1 flex-shrink-0">
-                     {cert.includes('OFPPT') ? 
-                       <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-academy-purple" /> : 
-                       <Globe className="w-3 h-3 sm:w-4 sm:h-4 text-academy-purple" />
-                     }
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm sm:text-base text-gray-800">{cert}</p>
-                     <Badge variant="outline" className="mt-2 text-xs text-academy-purple border-academy-purple/30">
-                       {cert.includes('OFPPT') ? 'National' : 'International'}
-                     </Badge>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </CardContent>
           </Card>
         </div>
