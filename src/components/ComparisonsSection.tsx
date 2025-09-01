@@ -10,7 +10,7 @@ const ComparisonsSection: React.FC = () => {
     rows: [
       {
         feature: "Durée de formation",
-        values: ["6-18 mois", "3-5 ans", "1-2 ans"]
+        values: ["1.5-20 mois", "3-5 ans", "1-2 ans"]
       },
       {
         feature: "Certifications internationales",
