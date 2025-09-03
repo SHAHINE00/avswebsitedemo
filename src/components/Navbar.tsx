@@ -40,7 +40,7 @@ const NavbarCore = () => {
   };
 
   return (
-    <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-50 top-0 will-change-transform">
+    <nav className="bg-white/95 backdrop-blur-sm shadow-sm fixed w-full z-40 top-0 will-change-transform">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
         <div className="flex items-center h-16 xs:h-18 sm:h-20 lg:h-22 xl:h-24 relative">
           {/* Logo - Desktop Left */}
