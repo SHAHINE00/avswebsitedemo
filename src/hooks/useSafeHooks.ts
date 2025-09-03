@@ -1,6 +1,8 @@
 
 import { useState, useEffect, useContext } from 'react';
 import * as React from 'react';
+import { useLocation } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
 /**
  * Safe React Hooks with Built-in Error Handling
@@ -35,7 +37,6 @@ export function useSafeContext<T>(context: React.Context<T>): T | null {
 
 export function useSafeLocation() {
   try {
-    const { useLocation } = require('react-router-dom');
     return useLocation();
   } catch (error) {
     console.warn('useSafeLocation failed:', error);
@@ -45,7 +46,6 @@ export function useSafeLocation() {
 
 export function useSafeAuth() {
   try {
-    const { useAuth } = require('@/contexts/AuthContext');
     return useAuth();
   } catch (error) {
     console.warn('useSafeAuth failed:', error);
