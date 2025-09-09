@@ -29,10 +29,18 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Processing contact form submission:", { firstName, lastName, email, subject });
 
+    const FROM_EMAIL = Deno.env.get("HOSTINGER_FROM_EMAIL") || "AVS Institute <info@avs.ma>";
+    const ADMIN_EMAIL = Deno.env.get("NEWSLETTER_ADMIN_EMAIL") || "contact@avs-academy.ma";
+
+    if (!Deno.env.get("RESEND_API_KEY")) {
+      console.error("Missing Resend API key");
+      return new Response(JSON.stringify({ success: false, error: "Configuration d'email manquante" }), { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } });
+    }
+
     // Send email to the company
     const companyEmailResponse = await resend.emails.send({
-      from: "Contact Form <contact@resend.dev>",
-      to: ["contact@avs-academy.ma"],
+      from: FROM_EMAIL,
+      to: [ADMIN_EMAIL],
       subject: `Nouveau message de contact: ${subject}`,
       html: `
         <h2>Nouveau message de contact</h2>
@@ -47,7 +55,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send confirmation email to the user
     const userEmailResponse = await resend.emails.send({
-      from: "AVS INSTITUTE <contact@resend.dev>",
+      from: FROM_EMAIL,
       to: [email],
       subject: "Confirmation de réception de votre message",
       html: `

@@ -26,6 +26,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
     const adminEmail = Deno.env.get('NEWSLETTER_ADMIN_EMAIL') || 'admin@avsinstitute.com';
+    const fromEmail = Deno.env.get('HOSTINGER_FROM_EMAIL') || 'AVS Institute <info@avs.ma>';
 
     // Get admin user from JWT
     const authHeader = req.headers.get('Authorization');
@@ -79,7 +80,7 @@ const handler = async (req: Request): Promise<Response> => {
 
       // Send welcome email to approved user
       const welcomeEmailResponse = await resend.emails.send({
-        from: `AVS Institute <${adminEmail}>`,
+        from: fromEmail,
         to: [userData.email],
         subject: "🎉 Votre compte a été approuvé !",
         html: `
@@ -145,7 +146,7 @@ const handler = async (req: Request): Promise<Response> => {
 
       // Send rejection email
       const rejectionEmailResponse = await resend.emails.send({
-        from: `AVS Institute <${adminEmail}>`,
+        from: fromEmail,
         to: [userData.email],
         subject: "Mise à jour de votre demande d'inscription",
         html: `

@@ -43,7 +43,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { type, ...data } = await req.json();
 
     // Get email configuration
-    const FROM_EMAIL = Deno.env.get("HOSTINGER_FROM_EMAIL") || "noreply@avs-institute.ma";
+    const FROM_EMAIL = Deno.env.get("HOSTINGER_FROM_EMAIL") || "AVS Institute <info@avs.ma>";
     const ADMIN_EMAIL = Deno.env.get("NEWSLETTER_ADMIN_EMAIL");
 
     if (!Deno.env.get("RESEND_API_KEY")) {
@@ -61,6 +61,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log(`Processing email request of type: ${type}`);
+    console.log(`Using FROM_EMAIL: ${FROM_EMAIL} | ADMIN_EMAIL: ${ADMIN_EMAIL ?? 'not set'}`);
 
     switch (type) {
       case "contact":

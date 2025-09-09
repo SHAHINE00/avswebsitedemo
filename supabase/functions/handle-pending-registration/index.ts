@@ -33,6 +33,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
     const adminEmail = Deno.env.get('NEWSLETTER_ADMIN_EMAIL') || 'admin@avsinstitute.com';
+    const fromEmail = Deno.env.get('HOSTINGER_FROM_EMAIL') || 'AVS Institute <info@avs.ma>';
 
     const registrationData: PendingRegistrationRequest = await req.json();
     
@@ -68,7 +69,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send confirmation email to user
     const userEmailResponse = await resend.emails.send({
-      from: `AVS Institute <${adminEmail}>`,
+      from: fromEmail,
       to: [registrationData.email],
       subject: "Inscription reçue - En attente d'approbation",
       html: `
@@ -115,7 +116,7 @@ const handler = async (req: Request): Promise<Response> => {
       
       if (adminEmails.length > 0) {
         const adminEmailResponse = await resend.emails.send({
-          from: `AVS Institute <${adminEmail}>`,
+          from: fromEmail,
           to: adminEmails,
           subject: "Nouvelle demande d'inscription - Action requise",
           html: `
