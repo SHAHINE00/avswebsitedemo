@@ -55,7 +55,23 @@ serve(async (req: Request): Promise<Response> => {
   }
 
   try {
-    const body: SubscribeRequest = await req.json();
+    const raw: any = await req.json();
+
+    // Normalize both camelCase and snake_case payloads
+    const body: SubscribeRequest = {
+      email: raw.email ?? raw.Email,
+      fullName: raw.fullName ?? raw.full_name ?? raw.name,
+      phone: raw.phone ?? raw.phone_number ?? raw.phoneNumber,
+      source: raw.source ?? raw.Source,
+      interests: Array.isArray(raw.interests)
+        ? raw.interests
+        : (typeof raw.interests === 'string' ? raw.interests.split(/[ ,;]+/) : undefined),
+      formationType: raw.formationType ?? raw.formation_type,
+      formationDomaine: raw.formationDomaine ?? raw.formation_domaine,
+      formationProgramme: raw.formationProgramme ?? raw.formation_programme,
+      formationProgrammeTitle: raw.formationProgrammeTitle ?? raw.formation_programme_title,
+      formationTag: raw.formationTag ?? raw.formation_tag,
+    };
 
     const email = sanitizeEmail(body.email);
     const fullName = sanitizeString(body.fullName, 100) || (email ? email.split("@")[0] : null);

@@ -144,12 +144,14 @@ async function handleContactEmail(
   try {
     const promises = [];
 
-    // Send notification to admin if admin email is configured
-    if (ADMIN_EMAIL) {
+    // Send notification to admin if admin email is configured (supports multiple addresses)
+    const adminRecipients = ADMIN_EMAIL ? ADMIN_EMAIL.split(/[ ,;]+/).filter(Boolean) : [];
+    if (adminRecipients.length > 0) {
+      console.log(`Sending admin contact notification to: ${adminRecipients.join(', ')}`);
       promises.push(
         resend.emails.send({
           from: FROM_EMAIL,
-          to: [ADMIN_EMAIL],
+          to: adminRecipients,
           subject: `Nouveau message de contact: ${subject}`,
           html: emailHtml,
         })
@@ -250,12 +252,14 @@ async function handleNewsletterSubscription(
       })
     );
 
-    // Send notification to admin if configured
-    if (ADMIN_EMAIL) {
+    // Send notification to admin if configured (supports multiple addresses)
+    const adminRecipients = ADMIN_EMAIL ? ADMIN_EMAIL.split(/[ ,;]+/).filter(Boolean) : [];
+    if (adminRecipients.length > 0) {
+      console.log(`Sending admin newsletter notification to: ${adminRecipients.join(', ')}`);
       promises.push(
         resend.emails.send({
           from: FROM_EMAIL,
-          to: [ADMIN_EMAIL],
+          to: adminRecipients,
           subject: "Nouvelle inscription newsletter",
           html: adminNotificationHtml,
         })
