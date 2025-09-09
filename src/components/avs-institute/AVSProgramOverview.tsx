@@ -103,7 +103,7 @@ const AVSProgramOverview = () => {
                   <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-academy-blue to-academy-purple bg-clip-text text-transparent">
                     Technicien Spécialisé en IA
                   </h3>
-                  <Badge className="bg-academy-blue/10 text-academy-blue text-xs mt-1">Bac+2 Reconnu État</Badge>
+                  <Badge className="bg-academy-blue/10 text-academy-blue text-xs mt-1">Bac+2 Certifications internationales</Badge>
                 </div>
               </div>
               <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6 leading-relaxed">
