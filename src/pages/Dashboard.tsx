@@ -43,7 +43,7 @@ interface Appointment {
 }
 
 const Dashboard = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin, adminLoading } = useAuth();
   const { toast } = useToast();
   const { getUserAppointments } = useAppointmentBooking();
   const { notifications, unreadCount, markAsRead } = useNotifications();
@@ -64,6 +64,15 @@ const Dashboard = () => {
     
     fetchDashboardData();
   }, [user]);
+
+  // Redirect admin users to admin dashboard
+  useSafeEffect(() => {
+    if (user && !loading && isAdmin && !adminLoading) {
+      logInfo('Redirecting admin user to admin dashboard');
+      window.location.href = '/admin';
+      return;
+    }
+  }, [user, loading, isAdmin, adminLoading]);
 
   const fetchDashboardData = async () => {
     if (!user) return;
@@ -140,7 +149,7 @@ const Dashboard = () => {
     );
   }
 
-  if (loading) {
+  if (loading || adminLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <SEOHead {...utilityPagesSEO.dashboard} />
@@ -148,6 +157,9 @@ const Dashboard = () => {
         <div className="container mx-auto px-6 py-8">
           <div className="flex items-center justify-center min-h-[400px]">
             <LoadingSpinner size="lg" />
+            {adminLoading && (
+              <p className="ml-4 text-gray-600">Vérification des privilèges administrateur...</p>
+            )}
           </div>
         </div>
         <Footer />
