@@ -90,9 +90,17 @@ const NavbarCore = () => {
                     <DropdownMenuItem asChild>
                       <Link to={isAdmin ? "/admin" : "/dashboard"} className="flex items-center gap-2">
                         <Settings className="w-4 h-4" />
-                        Tableau de bord
+                        {isAdmin ? "Admin Dashboard" : "Tableau de bord"}
                       </Link>
                     </DropdownMenuItem>
+                    {isAdmin && (
+                      <DropdownMenuItem asChild>
+                        <Link to="/dashboard" className="flex items-center gap-2 text-academy-blue">
+                          <User className="w-4 h-4" />
+                          Profil Utilisateur
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleSignOut} className="flex items-center gap-2 text-red-600">
                       <LogOut className="w-4 h-4" />
@@ -160,8 +168,17 @@ const NavbarCore = () => {
                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-academy-blue hover:bg-gray-50"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    Tableau de bord
+                    {isAdmin ? "Admin Dashboard" : "Tableau de bord"}
                   </Link>
+                  {isAdmin && (
+                    <Link
+                      to="/dashboard"
+                      className="block px-3 py-2 rounded-md text-base font-medium text-academy-blue hover:bg-gray-50"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Profil Utilisateur
+                    </Link>
+                  )}
                   <button
                     onClick={() => {
                       handleSignOut();

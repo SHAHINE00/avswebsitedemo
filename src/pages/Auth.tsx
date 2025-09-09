@@ -25,8 +25,17 @@ const Auth = () => {
 
   useSafeEffect(() => {
     if (user && !adminLoading) {
-      // Redirect admin users to admin dashboard, regular users to homepage
-      navigate(isAdmin ? '/admin' : '/');
+      console.log('Auth redirect - User:', user.email, 'IsAdmin:', isAdmin, 'AdminLoading:', adminLoading);
+      // Add a small delay to ensure admin status is fully set
+      setTimeout(() => {
+        if (isAdmin) {
+          console.log('Redirecting admin user to /admin');
+          navigate('/admin');
+        } else {
+          console.log('Redirecting regular user to /');
+          navigate('/');
+        }
+      }, 100);
     }
   }, [user, isAdmin, adminLoading, navigate]);
 
