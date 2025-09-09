@@ -9,6 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { rateLimiter } from '@/utils/security';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
@@ -19,9 +21,34 @@ const Auth = () => {
   const [password, setPassword] = useSafeState('');
   const [fullName, setFullName] = useSafeState('');
   const [loading, setLoading] = useSafeState(false);
+  const [rateLimited, setRateLimited] = useSafeState(false);
+  const [cooldownEnd, setCooldownEnd] = useSafeState<number | null>(null);
+  const [cooldownTime, setCooldownTime] = useSafeState(0);
   const { signIn, signUp, user, isAdmin, adminLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Cooldown timer effect
+  useSafeEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (cooldownEnd) {
+      interval = setInterval(() => {
+        const remaining = Math.max(0, cooldownEnd - Date.now());
+        setCooldownTime(Math.ceil(remaining / 1000));
+        
+        if (remaining <= 0) {
+          setRateLimited(false);
+          setCooldownEnd(null);
+          setCooldownTime(0);
+        }
+      }, 1000);
+    }
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [cooldownEnd]);
 
   useSafeEffect(() => {
     if (user && !adminLoading) {
@@ -64,19 +91,80 @@ const Auth = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
-    const { error } = await signUp(email, password, fullName);
-    
-    if (error) {
+
+    // Check client-side rate limiting first
+    if (!rateLimiter.isAllowed(`signup_${email}`)) {
       toast({
-        title: "Erreur d'inscription",
-        description: error.message,
+        title: "Trop de tentatives",
+        description: "Veuillez attendre quelques minutes avant de réessayer.",
         variant: "destructive",
       });
-    } else {
+      setLoading(false);
+      return;
+    }
+    
+    try {
+      const { error } = await signUp(email, password, fullName);
+      
+      if (error) {
+        // Check if it's a rate limit error (429 or rate limit keywords)
+        const isRateLimitError = error.message.includes('rate limit') || 
+                                error.message.includes('too many') ||
+                                error.message.includes('Email rate limit exceeded');
+        
+        if (isRateLimitError) {
+          console.log('Rate limit detected, switching to fallback registration');
+          setRateLimited(true);
+          setCooldownEnd(Date.now() + 15 * 60 * 1000); // 15 minutes cooldown
+          
+          // Fallback to subscribe edge function
+          try {
+            const { data: subscribeRes, error: subscribeError } = await supabase.functions.invoke('subscribe', {
+              body: {
+                email: email?.trim(),
+                full_name: fullName?.trim(),
+                source: 'auth-signup-rate-limited'
+              }
+            });
+
+            if (subscribeError) throw subscribeError;
+
+            if (subscribeRes?.status === 'already_subscribed') {
+              toast({
+                title: "Déjà inscrit",
+                description: "Votre email est déjà enregistré. Nous vous contacterons bientôt.",
+              });
+            } else {
+              toast({
+                title: "Inscription enregistrée",
+                description: "Votre demande d'inscription a été enregistrée. Nous vous contacterons très bientôt.",
+              });
+            }
+          } catch (fallbackError: any) {
+            toast({
+              title: "Erreur d'inscription",
+              description: "Service temporairement indisponible. Réessayez plus tard.",
+              variant: "destructive",
+            });
+          }
+        } else {
+          toast({
+            title: "Erreur d'inscription",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+      } else {
+        toast({
+          title: "Inscription réussie",
+          description: "Vérifiez votre email pour confirmer votre compte.",
+        });
+      }
+    } catch (error: any) {
       toast({
-        title: "Inscription réussie",
-        description: "Vérifiez votre email pour confirmer votre compte.",
+        title: "Erreur d'inscription",
+        description: "Une erreur inattendue s'est produite.",
+        variant: "destructive",
       });
     }
     
@@ -141,6 +229,7 @@ const Auth = () => {
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       required
+                      disabled={rateLimited}
                     />
                   </div>
                   <div className="space-y-2">
@@ -151,6 +240,7 @@ const Auth = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
+                      disabled={rateLimited}
                     />
                   </div>
                   <div className="space-y-2">
@@ -161,10 +251,17 @@ const Auth = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
+                      disabled={rateLimited}
                     />
                   </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? 'Inscription...' : "S'inscrire"}
+                  {rateLimited && (
+                    <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-lg border border-amber-200">
+                      <p className="font-medium">Service temporairement limité</p>
+                      <p>Réessayez dans {cooldownTime > 0 ? `${Math.floor(cooldownTime / 60)}m ${cooldownTime % 60}s` : 'quelques minutes'}</p>
+                    </div>
+                  )}
+                  <Button type="submit" className="w-full" disabled={loading || rateLimited}>
+                    {loading ? 'Inscription...' : rateLimited ? `Réessayer dans ${cooldownTime}s` : "S'inscrire"}
                   </Button>
                 </form>
               </TabsContent>
