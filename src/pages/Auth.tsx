@@ -19,15 +19,16 @@ const Auth = () => {
   const [password, setPassword] = useSafeState('');
   const [fullName, setFullName] = useSafeState('');
   const [loading, setLoading] = useSafeState(false);
-  const { signIn, signUp, user } = useAuth();
+  const { signIn, signUp, user, isAdmin, adminLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useSafeEffect(() => {
-    if (user) {
-      navigate('/');
+    if (user && !adminLoading) {
+      // Redirect admin users to admin dashboard, regular users to homepage
+      navigate(isAdmin ? '/admin' : '/');
     }
-  }, [user, navigate]);
+  }, [user, isAdmin, adminLoading, navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();

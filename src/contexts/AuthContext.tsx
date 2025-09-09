@@ -7,6 +7,8 @@ import { supabase } from '@/integrations/supabase/client';
 interface AuthContextType {
   user: User | null;
   session: Session | null;
+  isAdmin: boolean;
+  adminLoading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signUp: (email: string, password: string, fullName: string, metadata?: any) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
@@ -23,6 +25,8 @@ export const useAuth = () => {
     return {
       user: null,
       session: null,
+      isAdmin: false,
+      adminLoading: false,
       loading: false,
       signIn: async () => ({ error: new Error('Auth not available') }),
       signUp: async () => ({ error: new Error('Auth not available') }),
@@ -36,6 +40,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useSafeState<User | null>(null);
   const [session, setSession] = useSafeState<Session | null>(null);
   const [loading, setLoading] = useSafeState(true);
+  const [isAdmin, setIsAdmin] = useSafeState(false);
+  const [adminLoading, setAdminLoading] = useSafeState(false);
+
+  const checkAdminStatus = async (userId: string) => {
+    setAdminLoading(true);
+    try {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', userId)
+        .single();
+      
+      if (!error && profile) {
+        setIsAdmin(profile.role === 'admin');
+      } else {
+        setIsAdmin(false);
+      }
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+      setIsAdmin(false);
+    } finally {
+      setAdminLoading(false);
+    }
+  };
 
   useSafeEffect(() => {
     // Set up auth state listener
@@ -44,6 +72,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        
+        // Check admin status when user logs in
+        if (session?.user) {
+          setTimeout(() => {
+            checkAdminStatus(session.user.id);
+          }, 0);
+        } else {
+          setIsAdmin(false);
+          setAdminLoading(false);
+        }
       }
     );
 
@@ -52,6 +90,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+      
+      // Check admin status for existing session
+      if (session?.user) {
+        checkAdminStatus(session.user.id);
+      }
     });
 
     // Timeout fallback to prevent infinite loading
@@ -97,6 +140,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const value = {
     user,
     session,
+    isAdmin,
+    adminLoading,
     signIn,
     signUp,
     signOut,

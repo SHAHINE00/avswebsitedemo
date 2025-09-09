@@ -49,6 +49,15 @@ export function useSafeAuth() {
     return useAuth();
   } catch (error) {
     console.warn('useSafeAuth failed:', error);
-    return { user: null, session: null, loading: false, signIn: async () => ({}), signUp: async () => ({}), signOut: async () => {} };
+    return { 
+      user: null, 
+      session: null, 
+      isAdmin: false,
+      adminLoading: false,
+      loading: false, 
+      signIn: async () => ({}), 
+      signUp: async () => ({}), 
+      signOut: async () => {} 
+    };
   }
 }
