@@ -37,12 +37,13 @@ const Register = () => {
       // Use secure Edge Function to create subscriber (bypasses RLS safely)
       const { data: subscribeRes, error: subscribeError } = await supabase.functions.invoke('subscribe', {
         body: {
-          email: formData.email,
-          fullName,
-          phone: formData.phone,
-          formationType: formData.formation.formationType,
-          formationDomaine: formData.formation.domaine,
-          formationTag
+          email: formData.email?.trim(),
+          full_name: fullName?.trim(),
+          phone: formData.phone?.trim(),
+          formation_type: formData.formation?.formationType,
+          formation_domaine: formData.formation?.domaine,
+          formation_tag: formationTag,
+          source: 'register-page'
         }
       });
       
@@ -53,16 +54,30 @@ const Register = () => {
       if (subscribeRes?.status === 'already_subscribed') {
         setSubmissionStatus('success');
         setStatusMessage("Vous êtes déjà inscrit. Merci !");
+        toast({
+          title: "Déjà inscrit",
+          description: "Votre inscription est déjà enregistrée. Merci !",
+        });
         setTimeout(() => navigate('/'), 2000); // Redirect to home after 2 seconds
       } else {
         setSubmissionStatus('success');
-        setStatusMessage(`Inscription réussie !`);
+        setStatusMessage('Inscription réussie !');
+        toast({
+          title: "Inscription réussie",
+          description: "Bienvenue ! Nous vous contacterons très bientôt.",
+        });
         setTimeout(() => navigate('/'), 2000); // Redirect to home after 2 seconds
       }
     } catch (error: any) {
       logError('Registration error:', error);
       setSubmissionStatus('error');
-      setStatusMessage(error?.message || "Une erreur s'est produite lors de l'inscription.");
+      const message = error?.message || "Une erreur s'est produite lors de l'inscription.";
+      setStatusMessage(message);
+      toast({
+        title: "Erreur d'inscription",
+        description: message,
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
