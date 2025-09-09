@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardOverview from '@/components/admin/dashboard/DashboardOverview';
 import EnhancedCourseManagement from '@/components/admin/dashboard/EnhancedCourseManagement';
 import ComprehensiveUserManagement from '@/components/admin/dashboard/ComprehensiveUserManagement';
+import PendingUsersManagement from '@/components/admin/dashboard/PendingUsersManagement';
 import AdvancedAnalytics from '@/components/admin/dashboard/AdvancedAnalytics';
 import SystemMonitoring from '@/components/admin/dashboard/SystemMonitoring';
 import BlogManagement from '@/components/blog/BlogManagement';
@@ -24,10 +25,11 @@ const AdminTabs: React.FC<AdminTabsProps> = ({
 }) => {
   return (
     <Tabs defaultValue="dashboard" className="w-full">
-      <TabsList className="grid w-full grid-cols-6">
+      <TabsList className="grid w-full grid-cols-7">
         <TabsTrigger value="dashboard">Tableau de Bord</TabsTrigger>
         <TabsTrigger value="courses">Gestion des Cours</TabsTrigger>
         <TabsTrigger value="users">Gestion des Utilisateurs</TabsTrigger>
+        <TabsTrigger value="pending">Inscriptions</TabsTrigger>
         <TabsTrigger value="content">Gestion de Contenu</TabsTrigger>
         <TabsTrigger value="analytics">Analyses Avancées</TabsTrigger>
         <TabsTrigger value="monitoring">Surveillance Système</TabsTrigger>
@@ -48,6 +50,10 @@ const AdminTabs: React.FC<AdminTabsProps> = ({
 
       <TabsContent value="users">
         <ComprehensiveUserManagement />
+      </TabsContent>
+
+      <TabsContent value="pending">
+        <PendingUsersManagement />
       </TabsContent>
 
       <TabsContent value="content">

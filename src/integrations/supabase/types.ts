@@ -128,6 +128,51 @@ export type Database = {
         }
         Relationships: []
       }
+      approval_notifications: {
+        Row: {
+          admin_id: string | null
+          email_sent: boolean
+          id: string
+          metadata: Json | null
+          notification_type: string
+          pending_user_id: string
+          sent_at: string
+        }
+        Insert: {
+          admin_id?: string | null
+          email_sent?: boolean
+          id?: string
+          metadata?: Json | null
+          notification_type: string
+          pending_user_id: string
+          sent_at?: string
+        }
+        Update: {
+          admin_id?: string | null
+          email_sent?: boolean
+          id?: string
+          metadata?: Json | null
+          notification_type?: string
+          pending_user_id?: string
+          sent_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approval_notifications_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approval_notifications_pending_user_id_fkey"
+            columns: ["pending_user_id"]
+            isOneToOne: false
+            referencedRelation: "pending_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blog_categories: {
         Row: {
           created_at: string
@@ -841,6 +886,77 @@ export type Database = {
         }
         Relationships: []
       }
+      pending_users: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          email: string
+          encrypted_password: string
+          formation_domaine: string | null
+          formation_programme: string | null
+          formation_programme_title: string | null
+          formation_tag: string | null
+          formation_type: string | null
+          full_name: string
+          id: string
+          metadata: Json | null
+          phone: string | null
+          rejection_reason: string | null
+          status: Database["public"]["Enums"]["approval_status"]
+          submitted_at: string
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          email: string
+          encrypted_password: string
+          formation_domaine?: string | null
+          formation_programme?: string | null
+          formation_programme_title?: string | null
+          formation_tag?: string | null
+          formation_type?: string | null
+          full_name: string
+          id?: string
+          metadata?: Json | null
+          phone?: string | null
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          submitted_at?: string
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          email?: string
+          encrypted_password?: string
+          formation_domaine?: string | null
+          formation_programme?: string | null
+          formation_programme_title?: string | null
+          formation_tag?: string | null
+          formation_type?: string | null
+          full_name?: string
+          id?: string
+          metadata?: Json | null
+          phone?: string | null
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          submitted_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pending_users_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string | null
@@ -848,6 +964,7 @@ export type Database = {
           full_name: string | null
           id: string
           role: string | null
+          status: Database["public"]["Enums"]["approval_status"] | null
           updated_at: string | null
         }
         Insert: {
@@ -856,6 +973,7 @@ export type Database = {
           full_name?: string | null
           id: string
           role?: string | null
+          status?: Database["public"]["Enums"]["approval_status"] | null
           updated_at?: string | null
         }
         Update: {
@@ -864,6 +982,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           role?: string | null
+          status?: Database["public"]["Enums"]["approval_status"] | null
           updated_at?: string | null
         }
         Relationships: []
@@ -1295,6 +1414,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      approve_pending_user: {
+        Args: { p_admin_id: string; p_pending_user_id: string }
+        Returns: Json
+      }
       batch_reorder_sections: {
         Args: { p_page_name: string; p_reorders: Json }
         Returns: undefined
@@ -1372,6 +1495,14 @@ export type Database = {
         Args: { p_target_user_id: string }
         Returns: undefined
       }
+      reject_pending_user: {
+        Args: {
+          p_admin_id: string
+          p_pending_user_id: string
+          p_rejection_reason?: string
+        }
+        Returns: Json
+      }
       reorder_sections_atomic: {
         Args: {
           p_new_order: number
@@ -1408,6 +1539,7 @@ export type Database = {
       }
     }
     Enums: {
+      approval_status: "pending" | "approved" | "rejected"
       course_status: "draft" | "published" | "archived"
     }
     CompositeTypes: {
@@ -1536,6 +1668,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      approval_status: ["pending", "approved", "rejected"],
       course_status: ["draft", "published", "archived"],
     },
   },

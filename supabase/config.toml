@@ -17,3 +17,9 @@ verify_jwt = false
 
 [functions.admin-delete-user]
 verify_jwt = false
+
+[functions.handle-pending-registration]
+verify_jwt = false
+
+[functions.approve-pending-user]
+verify_jwt = true

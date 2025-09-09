@@ -121,81 +121,40 @@ const Auth = () => {
     }
     
     try {
-      const { error } = await signUp(email, password, fullName);
+      console.log('Using new admin approval registration system...');
       
-      if (error) {
-        // Check if it's a rate limit error (429 or rate limit keywords)
-        const isRateLimitError = error.message.includes('rate limit') || 
-                                error.message.includes('too many') ||
-                                error.message.includes('Email rate limit exceeded') ||
-                                error.status === 429;
-        
-        if (isRateLimitError) {
-          console.log('Supabase rate limit detected, activating fallback mode');
-          setRateLimited(true);
-          setCooldownEnd(Date.now() + 5 * 60 * 1000); // 5 minutes cooldown
-          
-          toast({
-            title: "Mode de sauvegarde activé",
-            description: "Traitement de votre inscription...",
-          });
-
-          // Immediate fallback to subscribe edge function
-          try {
-            const { data: subscribeRes, error: subscribeError } = await supabase.functions.invoke('subscribe', {
-              body: {
-                email: email?.trim(),
-                full_name: fullName?.trim(),
-                source: 'auth-signup-rate-limited',
-                phone: '',
-                formation_tag: 'Inscription depuis la page d\'authentification'
-              }
-            });
-
-            console.log('Subscribe function response:', subscribeRes);
-
-            if (subscribeError) {
-              console.error('Subscribe function error:', subscribeError);
-              throw subscribeError;
-            }
-
-            if (subscribeRes?.status === 'already_subscribed') {
-              toast({
-                title: "Déjà inscrit",
-                description: "Votre email est déjà dans notre système. Nous vous contacterons bientôt pour finaliser votre inscription.",
-              });
-            } else if (subscribeRes?.status === 'success') {
-              toast({
-                title: "Inscription enregistrée avec succès",
-                description: "Votre demande d'inscription a été enregistrée. Vous recevrez un email de confirmation sous peu.",
-              });
-            } else {
-              toast({
-                title: "Inscription enregistrée",
-                description: "Votre demande d'inscription a été traitée en mode de sauvegarde.",
-              });
-            }
-          } catch (fallbackError: any) {
-            console.error('Fallback error:', fallbackError);
-            toast({
-              title: "Erreur temporaire",
-              description: "Service temporairement surchargé. Réessayez dans quelques minutes.",
-              variant: "destructive",
-            });
+      // Use the new pending registration system instead of direct Supabase auth
+      const { data, error } = await supabase.functions.invoke('handle-pending-registration', {
+        body: {
+          email: email?.trim(),
+          password,
+          full_name: fullName?.trim(),
+          formation_tag: 'inscription-directe',
+          metadata: {
+            source: 'auth-signup',
+            registration_date: new Date().toISOString()
           }
-        } else {
-          toast({
-            title: "Erreur d'inscription",
-            description: error.message,
-            variant: "destructive",
-          });
         }
-      } else {
-        toast({
-          title: "Inscription réussie",
-          description: "Vérifiez votre email pour confirmer votre compte.",
-        });
+      });
+
+      if (error) {
+        console.error('Pending registration error:', error);
+        throw new Error(error.message || 'Erreur lors de l\'inscription');
       }
+
+      console.log('Pending registration successful:', data);
+
+      toast({
+        title: "🎉 Inscription reçue !",
+        description: data.message || "Votre demande d'inscription est en attente d'approbation. Vous recevrez un email de confirmation.",
+      });
+      
+      // Clear the form
+      setEmail('');
+      setPassword('');
+      setFullName('');
+      
+      // Don't navigate - user needs to wait for approval
     } catch (error: any) {
       console.error('Signup error:', error);
       toast({
@@ -298,14 +257,24 @@ const Auth = () => {
                       <p className="text-xs mt-1">Votre inscription a été enregistrée via notre système de sauvegarde.</p>
                     </div>
                   )}
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? 'Inscription...' : rateLimited ? 'Mode sauvegarde - Réessayer' : "S'inscrire"}
-                  </Button>
-                  {rateLimited && (
-                    <p className="text-xs text-gray-500 mt-2 text-center">
-                      Astuce: Ctrl+Shift+Clic pour réinitialiser (développement)
-                    </p>
-                  )}
+                   <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
+                     <h4 className="font-medium text-blue-900 mb-2">📋 Processus d'inscription</h4>
+                     <ul className="text-sm text-blue-800 space-y-1">
+                       <li>• Votre demande sera examinée par notre équipe</li>
+                       <li>• Délai d'approbation : 24-48 heures</li>
+                       <li>• Vous recevrez un email de confirmation</li>
+                       <li>• Accès immédiat après approbation</li>
+                     </ul>
+                   </div>
+                   
+                   <Button type="submit" className="w-full" disabled={loading}>
+                     {loading ? 'Soumission en cours...' : "Soumettre ma demande d'inscription"}
+                   </Button>
+                   {rateLimited && (
+                     <p className="text-xs text-gray-500 mt-2 text-center">
+                       Astuce: Ctrl+Shift+Clic pour réinitialiser (développement)
+                     </p>
+                   )}
                 </form>
               </TabsContent>
             </Tabs>
