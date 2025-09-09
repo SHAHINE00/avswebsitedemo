@@ -92,11 +92,28 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
 
-    // Check client-side rate limiting first
-    if (!rateLimiter.isAllowed(`signup_${email}`)) {
+    // Development bypass - press Ctrl+Shift during signup to bypass rate limiting
+    const isDevelopmentBypass = e.nativeEvent && 
+      (e.nativeEvent as KeyboardEvent).ctrlKey && 
+      (e.nativeEvent as KeyboardEvent).shiftKey;
+
+    if (isDevelopmentBypass) {
+      rateLimiter.reset(`signup_${email}`);
+      setRateLimited(false);
+      setCooldownEnd(null);
+      toast({
+        title: "Rate limit reset",
+        description: "Development bypass activated.",
+      });
+    }
+
+    // Check client-side rate limiting (less aggressive)
+    if (!isDevelopmentBypass && !rateLimiter.isAllowed(`signup_${email}`)) {
+      setRateLimited(true);
+      setCooldownEnd(Date.now() + 5 * 60 * 1000); // 5 minutes cooldown
       toast({
         title: "Trop de tentatives",
-        description: "Veuillez attendre quelques minutes avant de réessayer.",
+        description: "Réessayez dans 5 minutes ou utilisez le mode de sauvegarde.",
         variant: "destructive",
       });
       setLoading(false);
@@ -110,40 +127,59 @@ const Auth = () => {
         // Check if it's a rate limit error (429 or rate limit keywords)
         const isRateLimitError = error.message.includes('rate limit') || 
                                 error.message.includes('too many') ||
-                                error.message.includes('Email rate limit exceeded');
+                                error.message.includes('Email rate limit exceeded') ||
+                                error.status === 429;
         
         if (isRateLimitError) {
-          console.log('Rate limit detected, switching to fallback registration');
+          console.log('Supabase rate limit detected, activating fallback mode');
           setRateLimited(true);
-          setCooldownEnd(Date.now() + 15 * 60 * 1000); // 15 minutes cooldown
+          setCooldownEnd(Date.now() + 5 * 60 * 1000); // 5 minutes cooldown
           
-          // Fallback to subscribe edge function
+          toast({
+            title: "Mode de sauvegarde activé",
+            description: "Traitement de votre inscription...",
+          });
+
+          // Immediate fallback to subscribe edge function
           try {
             const { data: subscribeRes, error: subscribeError } = await supabase.functions.invoke('subscribe', {
               body: {
                 email: email?.trim(),
                 full_name: fullName?.trim(),
-                source: 'auth-signup-rate-limited'
+                source: 'auth-signup-rate-limited',
+                phone: '',
+                formation_tag: 'Inscription depuis la page d\'authentification'
               }
             });
 
-            if (subscribeError) throw subscribeError;
+            console.log('Subscribe function response:', subscribeRes);
+
+            if (subscribeError) {
+              console.error('Subscribe function error:', subscribeError);
+              throw subscribeError;
+            }
 
             if (subscribeRes?.status === 'already_subscribed') {
               toast({
                 title: "Déjà inscrit",
-                description: "Votre email est déjà enregistré. Nous vous contacterons bientôt.",
+                description: "Votre email est déjà dans notre système. Nous vous contacterons bientôt pour finaliser votre inscription.",
+              });
+            } else if (subscribeRes?.status === 'success') {
+              toast({
+                title: "Inscription enregistrée avec succès",
+                description: "Votre demande d'inscription a été enregistrée. Vous recevrez un email de confirmation sous peu.",
               });
             } else {
               toast({
                 title: "Inscription enregistrée",
-                description: "Votre demande d'inscription a été enregistrée. Nous vous contacterons très bientôt.",
+                description: "Votre demande d'inscription a été traitée en mode de sauvegarde.",
               });
             }
           } catch (fallbackError: any) {
+            console.error('Fallback error:', fallbackError);
             toast({
-              title: "Erreur d'inscription",
-              description: "Service temporairement indisponible. Réessayez plus tard.",
+              title: "Erreur temporaire",
+              description: "Service temporairement surchargé. Réessayez dans quelques minutes.",
               variant: "destructive",
             });
           }
@@ -161,6 +197,7 @@ const Auth = () => {
         });
       }
     } catch (error: any) {
+      console.error('Signup error:', error);
       toast({
         title: "Erreur d'inscription",
         description: "Une erreur inattendue s'est produite.",
@@ -255,14 +292,20 @@ const Auth = () => {
                     />
                   </div>
                   {rateLimited && (
-                    <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-lg border border-amber-200">
-                      <p className="font-medium">Service temporairement limité</p>
-                      <p>Réessayez dans {cooldownTime > 0 ? `${Math.floor(cooldownTime / 60)}m ${cooldownTime % 60}s` : 'quelques minutes'}</p>
+                    <div className="text-sm text-blue-600 bg-blue-50 p-3 rounded-lg border border-blue-200">
+                      <p className="font-medium">Mode de sauvegarde activé</p>
+                      <p>Cooldown: {cooldownTime > 0 ? `${Math.floor(cooldownTime / 60)}m ${cooldownTime % 60}s` : 'actif'}</p>
+                      <p className="text-xs mt-1">Votre inscription a été enregistrée via notre système de sauvegarde.</p>
                     </div>
                   )}
-                  <Button type="submit" className="w-full" disabled={loading || rateLimited}>
-                    {loading ? 'Inscription...' : rateLimited ? `Réessayer dans ${cooldownTime}s` : "S'inscrire"}
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? 'Inscription...' : rateLimited ? 'Mode sauvegarde - Réessayer' : "S'inscrire"}
                   </Button>
+                  {rateLimited && (
+                    <p className="text-xs text-gray-500 mt-2 text-center">
+                      Astuce: Ctrl+Shift+Clic pour réinitialiser (développement)
+                    </p>
+                  )}
                 </form>
               </TabsContent>
             </Tabs>

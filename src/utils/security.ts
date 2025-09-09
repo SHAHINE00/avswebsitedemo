@@ -16,8 +16,8 @@ export const ValidationPatterns = {
 // Rate limiting tracking
 class RateLimiter {
   private attempts: Map<string, number[]> = new Map();
-  private maxAttempts: number = 5;
-  private windowMs: number = 15 * 60 * 1000; // 15 minutes
+  private maxAttempts: number = 3;
+  private windowMs: number = 5 * 60 * 1000; // 5 minutes
 
   isAllowed(identifier: string): boolean {
     const now = Date.now();
