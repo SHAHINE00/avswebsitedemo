@@ -1,11 +1,13 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, TrendingUp, Download } from 'lucide-react';
+import { Users, TrendingUp, Download, FileText } from 'lucide-react';
 import { useSubscriberManagement } from '@/hooks/useSubscriberManagement';
+import { usePendingUsers } from '@/hooks/usePendingUsers';
 import SubscriberTable from './subscriber-management/SubscriberTable';
 import SubscriberAnalytics from './subscriber-management/SubscriberAnalytics';
 import SubscriberFilters from './subscriber-management/SubscriberFilters';
+import PendingUsersManagement from './PendingUsersManagement';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
@@ -20,6 +22,8 @@ const SubscriberManagement: React.FC = () => {
     deleteSubscriber,
     exportSubscribers
   } = useSubscriberManagement();
+
+  const { pendingUsers, loading: pendingLoading } = usePendingUsers();
 
   const { toast } = useToast();
 
@@ -100,7 +104,7 @@ const SubscriberManagement: React.FC = () => {
       </div>
 
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <Card className="min-w-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium truncate">Total Abonnés</CardTitle>
@@ -131,6 +135,21 @@ const SubscriberManagement: React.FC = () => {
           </CardContent>
         </Card>
 
+        <Card className="min-w-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium truncate">Inscriptions en Attente</CardTitle>
+            <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-xl sm:text-2xl font-bold">
+              {pendingLoading ? '...' : pendingUsers?.filter(u => u.status === 'pending').length || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              À approuver/rejeter
+            </p>
+          </CardContent>
+        </Card>
+
         <Card className="min-w-0 sm:col-span-2 lg:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium truncate">Programme Populaire</CardTitle>
@@ -149,13 +168,18 @@ const SubscriberManagement: React.FC = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="subscribers" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 max-w-full sm:max-w-md">
+        <TabsList className="grid w-full grid-cols-3 max-w-full sm:max-w-2xl">
           <TabsTrigger value="subscribers" className="text-sm">
-            <span className="hidden sm:inline">Liste des Abonnés</span>
-            <span className="sm:hidden">Abonnés</span>
+            <span className="hidden sm:inline">Abonnés</span>
+            <span className="sm:hidden">Abo.</span>
+          </TabsTrigger>
+          <TabsTrigger value="pending" className="text-sm">
+            <span className="hidden sm:inline">Inscriptions</span>
+            <span className="sm:hidden">Insc.</span>
           </TabsTrigger>
           <TabsTrigger value="analytics" className="text-sm">
-            Analytics
+            <span className="hidden sm:inline">Analytics</span>
+            <span className="sm:hidden">Stats</span>
           </TabsTrigger>
         </TabsList>
 
@@ -171,6 +195,10 @@ const SubscriberManagement: React.FC = () => {
               onDelete={handleDelete}
             />
           </div>
+        </TabsContent>
+
+        <TabsContent value="pending" className="mt-6">
+          <PendingUsersManagement />
         </TabsContent>
 
         <TabsContent value="analytics" className="mt-6">
