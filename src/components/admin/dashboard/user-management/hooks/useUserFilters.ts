@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react';
 
-interface UserProfile {
-  id: string;
-  email: string | null;
-  full_name: string | null;
-  role: string | null;
-  created_at: string | null;
-  updated_at: string | null;
-}
+import type { UserProfile } from './useUserManagement';
 
 export const useUserFilters = (users: UserProfile[]) => {
   const [filteredUsers, setFilteredUsers] = useState<UserProfile[]>([]);

@@ -12,14 +12,8 @@ import {
   DialogTitle 
 } from '@/components/ui/dialog';
 
-interface UserProfile {
-  id: string;
-  email: string | null;
-  full_name: string | null;
-  role: string | null;
-  created_at: string | null;
-  updated_at: string | null;
-}
+// Use the shared UserProfile interface
+import type { UserProfile } from './hooks/useUserManagement';
 
 interface UserEditDialogProps {
   user: UserProfile | null;
@@ -61,6 +55,15 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
               id="edit-full-name"
               value={user.full_name || ''}
               onChange={(e) => onUserChange({ ...user, full_name: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label htmlFor="edit-phone">Téléphone</Label>
+            <Input
+              id="edit-phone"
+              type="tel"
+              value={user.phone || ''}
+              onChange={(e) => onUserChange({ ...user, phone: e.target.value })}
             />
           </div>
           <div>

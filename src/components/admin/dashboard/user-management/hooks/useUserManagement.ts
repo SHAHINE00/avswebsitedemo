@@ -4,10 +4,11 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAdminActivityLogs } from '@/hooks/useAdminActivityLogs';
 
-interface UserProfile {
+export interface UserProfile {
   id: string;
   email: string | null;
   full_name: string | null;
+  phone: string | null;
   role: string | null;
   created_at: string | null;
   updated_at: string | null;
@@ -23,7 +24,7 @@ export const useUserManagement = () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, email, full_name, phone, role, created_at, updated_at')
         .order('created_at', { ascending: false });
 
       if (error) throw error;

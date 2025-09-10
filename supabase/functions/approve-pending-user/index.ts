@@ -95,6 +95,23 @@ const handler = async (req: Request): Promise<Response> => {
 
       console.log('Supabase auth user created:', newUser.user?.id);
 
+      // Create/update the user profile with phone number
+      const { error: profileError } = await supabaseAdmin
+        .from('profiles')
+        .upsert({
+          id: newUser.user!.id,
+          email: userData.email,
+          full_name: userData.full_name,
+          phone: userData.phone,
+          role: 'user',
+          updated_at: new Date().toISOString()
+        });
+
+      if (profileError) {
+        console.error('Error creating profile:', profileError);
+        // Don't throw here as auth user is already created
+      }
+
       // Send welcome email to approved user
         try {
           const welcomeEmailResponse = await resend.emails.send({

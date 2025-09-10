@@ -16,14 +16,8 @@ import {
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
-interface UserProfile {
-  id: string;
-  email: string | null;
-  full_name: string | null;
-  role: string | null;
-  created_at: string | null;
-  updated_at: string | null;
-}
+// Use the shared UserProfile interface
+import type { UserProfile } from './hooks/useUserManagement';
 
 interface UserCardProps {
   user: UserProfile;
