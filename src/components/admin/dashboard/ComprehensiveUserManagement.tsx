@@ -228,7 +228,11 @@ const ComprehensiveUserManagement = () => {
         onCancel={() => setEditingUser(null)}
       />
 
-      {/* TODO: Fix UserEnrollmentDialog props */}
+      <UserEnrollmentDialog
+        user={enrollmentUser}
+        open={!!enrollmentUser}
+        onOpenChange={(open) => !open && setEnrollmentUser(null)}
+      />
     </div>
   );
 };
