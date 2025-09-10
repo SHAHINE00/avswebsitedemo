@@ -19,23 +19,40 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+
+    // User-scoped client to preserve auth.uid() context for RLS/SECURITY DEFINER functions
+    const supabaseUser = createClient(
+      supabaseUrl,
+      supabaseAnonKey,
+      {
+        global: {
+          headers: {
+            Authorization: req.headers.get('Authorization') || '',
+          }
+        }
+      }
+    );
+
+    // Service client for privileged admin operations (e.g., creating users)
+    const supabaseAdmin = createClient(
+      supabaseUrl,
+      supabaseServiceKey
     );
 
     const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
     const adminEmail = Deno.env.get('NEWSLETTER_ADMIN_EMAIL') || 'admin@avsinstitute.com';
     const fromEmail = Deno.env.get('HOSTINGER_FROM_EMAIL') || 'AVS Institute <info@avs.ma>';
 
-    // Get admin user from JWT
+    // Get admin user from JWT via user-scoped client
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       throw new Error('Authorization header required');
     }
 
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    const { data: { user }, error: authError } = await supabaseUser.auth.getUser();
     
     if (authError || !user) {
       throw new Error('Invalid authentication token');
@@ -46,7 +63,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (requestData.action === 'approve') {
       // Call the approval function
-      const { data: approvalResult, error: approvalError } = await supabase
+      const { data: approvalResult, error: approvalError } = await supabaseUser
         .rpc('approve_pending_user', {
           p_pending_user_id: requestData.pending_user_id,
           p_admin_id: user.id
@@ -61,9 +78,9 @@ const handler = async (req: Request): Promise<Response> => {
       console.log('User approved, creating Supabase auth user...');
 
       // Create the actual Supabase auth user
-      const { data: newUser, error: createUserError } = await supabase.auth.admin.createUser({
+      const { data: newUser, error: createUserError } = await supabaseAdmin.auth.admin.createUser({
         email: userData.email,
-        password: atob(userData.encrypted_password), // Decode the password
+        password: (() => { try { return atob(userData.encrypted_password) } catch { return userData.encrypted_password } })(),
         email_confirm: true,
         user_metadata: {
           full_name: userData.full_name,
@@ -79,41 +96,44 @@ const handler = async (req: Request): Promise<Response> => {
       console.log('Supabase auth user created:', newUser.user?.id);
 
       // Send welcome email to approved user
-      const welcomeEmailResponse = await resend.emails.send({
-        from: fromEmail,
-        to: [userData.email],
-        subject: "🎉 Votre compte a été approuvé !",
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h1 style="color: #16a34a;">Félicitations ! Votre compte est activé</h1>
-            <p>Bonjour ${userData.full_name},</p>
-            
-            <div style="background-color: #dcfce7; padding: 16px; border-radius: 8px; margin: 20px 0;">
-              <h3 style="color: #16a34a; margin: 0 0 8px 0;">✅ Compte approuvé avec succès</h3>
-              <p style="color: #16a34a; margin: 0;">Votre inscription à l'AVS Institute a été approuvée. Vous pouvez maintenant vous connecter à votre compte.</p>
-            </div>
-
-            <h3>Informations de connexion :</h3>
-            <ul>
-              <li><strong>Email :</strong> ${userData.email}</li>
-              <li><strong>Mot de passe :</strong> Celui que vous avez choisi lors de l'inscription</li>
-            </ul>
-
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="${Deno.env.get('SUPABASE_URL')?.replace('.supabase.co', '.vercel.app') || 'https://your-app.vercel.app'}/auth" 
-                 style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
-                Se connecter maintenant
-              </a>
-            </div>
-
-            <p>Bienvenue dans la communauté AVS Institute ! Nous sommes ravis de vous accompagner dans votre parcours de formation.</p>
-            
-            <p>Cordialement,<br>L'équipe AVS Institute</p>
-          </div>
-        `,
-      });
-
-      console.log('Welcome email sent:', welcomeEmailResponse.id);
+        try {
+          const welcomeEmailResponse = await resend.emails.send({
+            from: fromEmail,
+            to: [userData.email],
+            subject: "🎉 Votre compte a été approuvé !",
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h1 style="color: #16a34a;">Félicitations ! Votre compte est activé</h1>
+                <p>Bonjour ${userData.full_name},</p>
+                
+                <div style="background-color: #dcfce7; padding: 16px; border-radius: 8px; margin: 20px 0;">
+                  <h3 style="color: #16a34a; margin: 0 0 8px 0;">✅ Compte approuvé avec succès</h3>
+                  <p style="color: #16a34a; margin: 0;">Votre inscription à l'AVS Institute a été approuvée. Vous pouvez maintenant vous connecter à votre compte.</p>
+                </div>
+  
+                <h3>Informations de connexion :</h3>
+                <ul>
+                  <li><strong>Email :</strong> ${userData.email}</li>
+                  <li><strong>Mot de passe :</strong> Celui que vous avez choisi lors de l'inscription</li>
+                </ul>
+  
+                <div style="text-align: center; margin: 30px 0;">
+                  <a href="${Deno.env.get('SUPABASE_URL')?.replace('.supabase.co', '.vercel.app') || 'https://your-app.vercel.app'}/auth" 
+                     style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
+                    Se connecter maintenant
+                  </a>
+                </div>
+  
+                <p>Bienvenue dans la communauté AVS Institute ! Nous sommes ravis de vous accompagner dans votre parcours de formation.</p>
+                
+                <p>Cordialement,<br>L'équipe AVS Institute</p>
+              </div>
+            `,
+          });
+          console.log('Welcome email sent:', welcomeEmailResponse.id);
+        } catch (emailErr) {
+          console.error('Failed to send welcome email:', emailErr);
+        }
 
       return new Response(
         JSON.stringify({ 
@@ -145,36 +165,39 @@ const handler = async (req: Request): Promise<Response> => {
       console.log('User rejected, sending notification email...');
 
       // Send rejection email
-      const rejectionEmailResponse = await resend.emails.send({
-        from: fromEmail,
-        to: [userData.email],
-        subject: "Mise à jour de votre demande d'inscription",
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h1 style="color: #dc2626;">Mise à jour de votre demande d'inscription</h1>
-            <p>Bonjour ${userData.full_name},</p>
-            
-            <p>Nous vous remercions pour l'intérêt que vous portez à l'AVS Institute.</p>
-            
-            <div style="background-color: #fef2f2; padding: 16px; border-radius: 8px; margin: 20px 0;">
-              <p style="color: #dc2626; margin: 0;">Après examen de votre dossier, nous ne pouvons pas donner suite à votre demande d'inscription pour le moment.</p>
+      try {
+        const rejectionEmailResponse = await resend.emails.send({
+          from: fromEmail,
+          to: [userData.email],
+          subject: "Mise à jour de votre demande d'inscription",
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h1 style="color: #dc2626;">Mise à jour de votre demande d'inscription</h1>
+              <p>Bonjour ${userData.full_name},</p>
+              
+              <p>Nous vous remercions pour l'intérêt que vous portez à l'AVS Institute.</p>
+              
+              <div style="background-color: #fef2f2; padding: 16px; border-radius: 8px; margin: 20px 0;">
+                <p style="color: #dc2626; margin: 0;">Après examen de votre dossier, nous ne pouvons pas donner suite à votre demande d'inscription pour le moment.</p>
+              </div>
+  
+              ${userData.rejection_reason ? `
+                <h3>Raison :</h3>
+                <p style="background-color: #f3f4f6; padding: 12px; border-radius: 6px;">${userData.rejection_reason}</p>
+              ` : ''}
+  
+              <p>Cette décision ne remet pas en question vos compétences. N'hésitez pas à nous recontacter si vous souhaitez plus d'informations ou si votre situation évolue.</p>
+              
+              <p>Nous vous souhaitons beaucoup de succès dans vos projets futurs.</p>
+              
+              <p>Cordialement,<br>L'équipe AVS Institute</p>
             </div>
-
-            ${userData.rejection_reason ? `
-              <h3>Raison :</h3>
-              <p style="background-color: #f3f4f6; padding: 12px; border-radius: 6px;">${userData.rejection_reason}</p>
-            ` : ''}
-
-            <p>Cette décision ne remet pas en question vos compétences. N'hésitez pas à nous recontacter si vous souhaitez plus d'informations ou si votre situation évolue.</p>
-            
-            <p>Nous vous souhaitons beaucoup de succès dans vos projets futurs.</p>
-            
-            <p>Cordialement,<br>L'équipe AVS Institute</p>
-          </div>
-        `,
-      });
-
-      console.log('Rejection email sent:', rejectionEmailResponse.id);
+          `,
+        });
+        console.log('Rejection email sent:', rejectionEmailResponse.id);
+      } catch (emailErr) {
+        console.error('Failed to send rejection email:', emailErr);
+      }
 
       return new Response(
         JSON.stringify({ 
