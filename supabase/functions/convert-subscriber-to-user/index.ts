@@ -22,8 +22,31 @@ const handler = async (req: Request): Promise<Response> => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { subscriberId }: ConvertRequest = await req.json();
+    // Validate request body
+    if (req.method !== 'POST') {
+      console.error('Invalid method:', req.method);
+      return new Response(
+        JSON.stringify({ error: { code: 'METHOD_NOT_ALLOWED', message: 'Méthode non autorisée' } }),
+        {
+          status: 405,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        }
+      );
+    }
 
+    const body = await req.json().catch(() => null);
+    if (!body || !body.subscriberId) {
+      console.error('Invalid request body:', body);
+      return new Response(
+        JSON.stringify({ error: { code: 'BAD_REQUEST', message: 'ID d\'abonné requis' } }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        }
+      );
+    }
+
+    const { subscriberId }: ConvertRequest = body;
     console.log('Converting subscriber to pending user:', subscriberId);
 
     // Get subscriber data
@@ -44,14 +67,32 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
+    console.log('Found subscriber:', subscriber.email);
+
+    // Check if an active user already exists with this email
+    const { data: existingUser } = await supabase.auth.admin.listUsers();
+    const userExists = existingUser?.users?.some(user => user.email === subscriber.email);
+    
+    if (userExists) {
+      console.log('Active user already exists for email:', subscriber.email);
+      return new Response(
+        JSON.stringify({ error: { code: 'USER_EXISTS', message: 'Un compte utilisateur actif existe déjà pour cet email' } }),
+        {
+          status: 409,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        }
+      );
+    }
+
     // Check if user already exists in pending_users with this email
     const { data: existingPending } = await supabase
       .from('pending_users')
-      .select('id')
+      .select('id, status')
       .eq('email', subscriber.email)
       .single();
 
     if (existingPending) {
+      console.log('Pending user already exists for email:', subscriber.email, 'Status:', existingPending.status);
       return new Response(
         JSON.stringify({ error: { code: 'PENDING_EXISTS', message: 'Un compte en attente existe déjà pour cet email' } }),
         {

@@ -203,13 +203,14 @@ const SubscriberTable: React.FC<SubscriberTableProps> = ({
                         )}
 
                         {pendingEmails?.has(subscriber.email) ? (
-                          <Button variant="ghost" size="sm" disabled title="Déjà en demande">
+                          <Button variant="ghost" size="sm" disabled title="Déjà en demande d'inscription">
                             <UserPlus className="h-4 w-4 opacity-50" />
+                            <span className="sr-only">Déjà en demande</span>
                           </Button>
                         ) : (
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button variant="ghost" size="sm" className="text-green-600">
+                              <Button variant="ghost" size="sm" className="text-green-600 hover:text-green-700" title="Créer un compte utilisateur">
                                 <UserPlus className="h-4 w-4" />
                               </Button>
                             </AlertDialogTrigger>
@@ -217,8 +218,12 @@ const SubscriberTable: React.FC<SubscriberTableProps> = ({
                               <AlertDialogHeader>
                                 <AlertDialogTitle>Créer un compte utilisateur</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  Voulez-vous convertir {subscriber.full_name} en compte utilisateur en attente d'approbation ?
-                                  L'abonné pourra ensuite être inscrit à des formations.
+                                  Voulez-vous convertir {subscriber.full_name} ({subscriber.email}) en compte utilisateur en attente d'approbation ?
+                                  <br /><br />
+                                  Cette action va :
+                                  <br />• Créer une demande d'inscription en attente
+                                  <br />• Permettre l'approbation manuelle du compte
+                                  <br />• Supprimer l'abonné de cette liste
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>

@@ -223,21 +223,50 @@ export const useSubscriberManagement = () => {
       });
 
       if (error) {
+        console.error('Edge function error:', error);
+        
+        // Parse the error response more carefully
         const anyErr: any = error;
-        const status = anyErr?.context?.response?.status ?? anyErr?.status;
-        let msg = anyErr?.message || 'Failed to convert subscriber to pending user';
-        let code: string | undefined;
-        try {
-          const parsed = JSON.parse(msg);
-          code = parsed?.error?.code || parsed?.code;
-          msg = parsed?.error?.message || parsed?.message || msg;
-        } catch {}
-        if (status === 409 || code === 'PENDING_EXISTS' || /existe déjà/i.test(msg)) {
-          const e: any = new Error(msg);
-          e.code = 'PENDING_EXISTS';
-          throw e;
+        let errorCode: string | undefined;
+        let errorMessage = 'Impossible de convertir l\'abonné';
+        
+        // Try to extract the actual error from the response
+        if (anyErr?.message) {
+          try {
+            // The error message might be a JSON string
+            const parsed = JSON.parse(anyErr.message);
+            errorCode = parsed?.error?.code;
+            errorMessage = parsed?.error?.message || errorMessage;
+          } catch {
+            // If parsing fails, try to extract from the string
+            if (anyErr.message.includes('PENDING_EXISTS') || /existe déjà/i.test(anyErr.message)) {
+              errorCode = 'PENDING_EXISTS';
+              errorMessage = 'Un compte en attente existe déjà pour cet email';
+            } else if (anyErr.message.includes('USER_EXISTS')) {
+              errorCode = 'USER_EXISTS';
+              errorMessage = 'Un compte utilisateur actif existe déjà pour cet email';
+            } else if (anyErr.message.includes('SUBSCRIBER_NOT_FOUND')) {
+              errorCode = 'SUBSCRIBER_NOT_FOUND';
+              errorMessage = 'Abonné introuvable';
+            } else {
+              errorMessage = anyErr.message;
+            }
+          }
         }
-        throw new Error(msg);
+
+        // Check status code as fallback
+        const status = anyErr?.context?.response?.status ?? anyErr?.status;
+        if (status === 409 && !errorCode) {
+          errorCode = 'PENDING_EXISTS';
+          errorMessage = 'Un compte en attente existe déjà pour cet email';
+        } else if (status === 404 && !errorCode) {
+          errorCode = 'SUBSCRIBER_NOT_FOUND';
+          errorMessage = 'Abonné introuvable';
+        }
+
+        const finalError: any = new Error(errorMessage);
+        finalError.code = errorCode;
+        throw finalError;
       }
 
       // Remove subscriber from local state since it's been converted

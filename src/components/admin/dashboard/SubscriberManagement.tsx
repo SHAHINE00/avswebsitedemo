@@ -71,16 +71,33 @@ const SubscriberManagement: React.FC = () => {
         description: "L'abonné a été converti en compte utilisateur en attente",
       });
     } catch (error: any) {
-      if (error?.code === 'PENDING_EXISTS' || /existe déjà/i.test(error?.message || '')) {
+      console.error('Conversion error:', error);
+      
+      if (error?.code === 'PENDING_EXISTS') {
         toast({
           title: "Déjà en demande",
-          description: "Un compte en attente existe déjà pour cet email. Ouverture de l'onglet Inscriptions.",
+          description: "Un compte en attente existe déjà pour cet email. Redirection vers l'onglet Inscriptions.",
         });
         setActiveTab('pending');
+      } else if (error?.code === 'USER_EXISTS') {
+        toast({
+          title: "Compte existant",
+          description: "Un compte utilisateur actif existe déjà pour cet email.",
+          variant: "destructive",
+        });
+        // Could redirect to users tab if it exists
+      } else if (error?.code === 'SUBSCRIBER_NOT_FOUND') {
+        toast({
+          title: "Abonné introuvable",
+          description: "L'abonné sélectionné n'existe plus.",
+          variant: "destructive",
+        });
+        // Refresh the subscribers list
+        window.location.reload();
       } else {
         toast({
-          title: "Erreur",
-          description: error?.message || "Impossible de convertir l'abonné",
+          title: "Erreur de conversion",
+          description: error?.message || "Impossible de convertir l'abonné. Veuillez réessayer.",
           variant: "destructive",
         });
       }
