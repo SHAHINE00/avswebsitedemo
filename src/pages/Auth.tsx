@@ -137,8 +137,30 @@ const Auth = () => {
         }
       });
 
+      console.log('Pending registration response:', { data, error });
+
       if (error) {
         console.error('Pending registration error:', error);
+        
+        // Handle specific error cases
+        if (error.message?.includes('duplicate_email') || data?.error === 'duplicate_email') {
+          toast({
+            title: "📝 Demande déjà en cours",
+            description: data?.message || "Une demande d'inscription est déjà en cours pour cette adresse email. Veuillez patienter pendant l'approbation.",
+            variant: "default",
+          });
+          return;
+        }
+        
+        if (error.message?.includes('already_approved') || data?.error === 'already_approved') {
+          toast({
+            title: "✅ Compte déjà approuvé",
+            description: data?.message || "Cette adresse email est déjà approuvée. Vous pouvez vous connecter directement.",
+            variant: "default",
+          });
+          return;
+        }
+        
         throw new Error(error.message || 'Erreur lors de l\'inscription');
       }
 
@@ -159,7 +181,7 @@ const Auth = () => {
       console.error('Signup error:', error);
       toast({
         title: "Erreur d'inscription",
-        description: "Une erreur inattendue s'est produite.",
+        description: error.message || "Une erreur inattendue s'est produite.",
         variant: "destructive",
       });
     }
