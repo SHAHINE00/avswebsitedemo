@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, TrendingUp, Download, FileText } from 'lucide-react';
@@ -27,6 +27,9 @@ const SubscriberManagement: React.FC = () => {
   const { pendingUsers, loading: pendingLoading } = usePendingUsers();
 
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState('subscribers');
+
+  const pendingEmails = new Set(pendingUsers?.filter(u => u.status === 'pending').map(u => u.email) || []);
 
   const handleExport = async (format: 'csv' | 'json') => {
     try {
@@ -67,12 +70,20 @@ const SubscriberManagement: React.FC = () => {
         title: "Succès",
         description: "L'abonné a été converti en compte utilisateur en attente",
       });
-    } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Impossible de convertir l'abonné",
-        variant: "destructive",
-      });
+    } catch (error: any) {
+      if (error?.code === 'PENDING_EXISTS' || /existe déjà/i.test(error?.message || '')) {
+        toast({
+          title: "Déjà en demande",
+          description: "Un compte en attente existe déjà pour cet email. Ouverture de l'onglet Inscriptions.",
+        });
+        setActiveTab('pending');
+      } else {
+        toast({
+          title: "Erreur",
+          description: error?.message || "Impossible de convertir l'abonné",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -184,7 +195,7 @@ const SubscriberManagement: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="subscribers" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3 max-w-full sm:max-w-2xl">
           <TabsTrigger value="subscribers" className="text-sm">
             <span className="hidden sm:inline">Abonnés</span>
@@ -211,6 +222,7 @@ const SubscriberManagement: React.FC = () => {
               loading={loading} 
               onDelete={handleDelete}
               onConvertToUser={handleConvertToUser}
+              pendingEmails={pendingEmails}
             />
           </div>
         </TabsContent>

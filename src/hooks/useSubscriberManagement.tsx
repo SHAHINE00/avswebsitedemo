@@ -222,16 +222,32 @@ export const useSubscriberManagement = () => {
         body: { subscriberId }
       });
 
-      if (error) throw error;
+      if (error) {
+        const anyErr: any = error;
+        const status = anyErr?.context?.response?.status ?? anyErr?.status;
+        let msg = anyErr?.message || 'Failed to convert subscriber to pending user';
+        let code: string | undefined;
+        try {
+          const parsed = JSON.parse(msg);
+          code = parsed?.error?.code || parsed?.code;
+          msg = parsed?.error?.message || parsed?.message || msg;
+        } catch {}
+        if (status === 409 || code === 'PENDING_EXISTS' || /existe déjà/i.test(msg)) {
+          const e: any = new Error(msg);
+          e.code = 'PENDING_EXISTS';
+          throw e;
+        }
+        throw new Error(msg);
+      }
 
       // Remove subscriber from local state since it's been converted
       setSubscribers(prev => prev.filter(sub => sub.id !== subscriberId));
       await fetchAnalytics(); // Refresh analytics
 
-      return { success: true, message: data.message };
+      return { success: true, message: (data as any)?.message || 'Converted successfully' };
     } catch (err) {
       logError('Error converting subscriber to pending user:', err);
-      throw new Error('Failed to convert subscriber to pending user');
+      throw err;
     }
   };
 

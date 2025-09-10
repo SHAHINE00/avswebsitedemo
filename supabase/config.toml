@@ -26,3 +26,6 @@ verify_jwt = false
 
 [functions.approve-pending-user]
 verify_jwt = true
+
+[functions.convert-subscriber-to-user]
+verify_jwt = true

@@ -48,13 +48,15 @@ interface SubscriberTableProps {
   loading: boolean;
   onDelete: (subscriberId: string) => void;
   onConvertToUser: (subscriberId: string) => void;
+  pendingEmails?: Set<string>;
 }
 
 const SubscriberTable: React.FC<SubscriberTableProps> = ({
   subscribers,
   loading,
   onDelete,
-  onConvertToUser
+  onConvertToUser,
+  pendingEmails
 }) => {
   const getFormationTypeBadge = (type?: string) => {
     switch (type) {
@@ -200,31 +202,37 @@ const SubscriberTable: React.FC<SubscriberTableProps> = ({
                           </Button>
                         )}
 
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="sm" className="text-green-600">
-                              <UserPlus className="h-4 w-4" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Créer un compte utilisateur</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Voulez-vous convertir {subscriber.full_name} en compte utilisateur en attente d'approbation ?
-                                L'abonné pourra ensuite être inscrit à des formations.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Annuler</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => onConvertToUser(subscriber.id)}
-                                className="bg-green-600 text-white hover:bg-green-700"
-                              >
-                                Créer Compte
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                        {pendingEmails?.has(subscriber.email) ? (
+                          <Button variant="ghost" size="sm" disabled title="Déjà en demande">
+                            <UserPlus className="h-4 w-4 opacity-50" />
+                          </Button>
+                        ) : (
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="sm" className="text-green-600">
+                                <UserPlus className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Créer un compte utilisateur</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Voulez-vous convertir {subscriber.full_name} en compte utilisateur en attente d'approbation ?
+                                  L'abonné pourra ensuite être inscrit à des formations.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => onConvertToUser(subscriber.id)}
+                                  className="bg-green-600 text-white hover:bg-green-700"
+                                >
+                                  Créer Compte
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        )}
 
                         <AlertDialog>
                           <AlertDialogTrigger asChild>

@@ -36,7 +36,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (subscriberError || !subscriber) {
       console.error('Subscriber not found:', subscriberError);
       return new Response(
-        JSON.stringify({ error: 'Subscriber not found' }),
+        JSON.stringify({ error: { code: 'SUBSCRIBER_NOT_FOUND', message: 'Abonné introuvable' } }),
         {
           status: 404,
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
@@ -53,9 +53,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (existingPending) {
       return new Response(
-        JSON.stringify({ error: 'Un compte en attente existe déjà pour cet email' }),
+        JSON.stringify({ error: { code: 'PENDING_EXISTS', message: 'Un compte en attente existe déjà pour cet email' } }),
         {
-          status: 400,
+          status: 409,
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
         }
       );
@@ -99,7 +99,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (pendingError) {
       console.error('Error creating pending user:', pendingError);
       return new Response(
-        JSON.stringify({ error: 'Erreur lors de la création du compte en attente' }),
+        JSON.stringify({ error: { code: 'INSERT_FAILED', message: 'Erreur lors de la création du compte en attente' } }),
         {
           status: 500,
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
