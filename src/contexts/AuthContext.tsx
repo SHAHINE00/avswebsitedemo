@@ -132,7 +132,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error && error.message !== 'Invalid session') {
+        console.error('Logout error:', error);
+      }
+      // Clear local state regardless of API response
+      setUser(null);
+      setSession(null);
+      setIsAdmin(false);
+    } catch (error) {
+      console.error('Unexpected logout error:', error);
+      // Force clear state on any error
+      setUser(null);
+      setSession(null);
+      setIsAdmin(false);
+    }
   };
 
   const value = {
