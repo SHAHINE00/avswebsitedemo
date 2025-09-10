@@ -218,50 +218,29 @@ export const useSubscriberManagement = () => {
 
   const convertToPendingUser = async (subscriberId: string) => {
     try {
-      const { data, error } = await supabase.functions.invoke('convert-subscriber-to-user', {
-        body: { subscriberId }
+      // Use direct fetch to get proper error responses
+      const session = await supabase.auth.getSession();
+      const response = await fetch(`https://nkkalmyhxtuisjdjmdew.supabase.co/functions/v1/convert-subscriber-to-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.data.session?.access_token}`,
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ra2FsbXloeHR1aXNqZGptZGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzODgwMTAsImV4cCI6MjA2Njk2NDAxMH0.JRISrJH9AqdbIh_G4wFNHbqK7v-LQJJPsBEnVWOKIWo'
+        },
+        body: JSON.stringify({ subscriberId })
       });
 
-      if (error) {
-        console.error('Edge function error:', error);
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        console.error('Edge function returned error:', responseData);
         
-        // Parse the error response more carefully
-        const anyErr: any = error;
-        let errorCode: string | undefined;
+        let errorCode = 'UNKNOWN_ERROR';
         let errorMessage = 'Impossible de convertir l\'abonné';
         
-        // Try to extract the actual error from the response
-        if (anyErr?.message) {
-          try {
-            // The error message might be a JSON string
-            const parsed = JSON.parse(anyErr.message);
-            errorCode = parsed?.error?.code;
-            errorMessage = parsed?.error?.message || errorMessage;
-          } catch {
-            // If parsing fails, try to extract from the string
-            if (anyErr.message.includes('PENDING_EXISTS') || /existe déjà/i.test(anyErr.message)) {
-              errorCode = 'PENDING_EXISTS';
-              errorMessage = 'Un compte en attente existe déjà pour cet email';
-            } else if (anyErr.message.includes('USER_EXISTS')) {
-              errorCode = 'USER_EXISTS';
-              errorMessage = 'Un compte utilisateur actif existe déjà pour cet email';
-            } else if (anyErr.message.includes('SUBSCRIBER_NOT_FOUND')) {
-              errorCode = 'SUBSCRIBER_NOT_FOUND';
-              errorMessage = 'Abonné introuvable';
-            } else {
-              errorMessage = anyErr.message;
-            }
-          }
-        }
-
-        // Check status code as fallback
-        const status = anyErr?.context?.response?.status ?? anyErr?.status;
-        if (status === 409 && !errorCode) {
-          errorCode = 'PENDING_EXISTS';
-          errorMessage = 'Un compte en attente existe déjà pour cet email';
-        } else if (status === 404 && !errorCode) {
-          errorCode = 'SUBSCRIBER_NOT_FOUND';
-          errorMessage = 'Abonné introuvable';
+        if (responseData.error) {
+          errorCode = responseData.error.code;
+          errorMessage = responseData.error.message;
         }
 
         const finalError: any = new Error(errorMessage);
@@ -273,7 +252,7 @@ export const useSubscriberManagement = () => {
       setSubscribers(prev => prev.filter(sub => sub.id !== subscriberId));
       await fetchAnalytics(); // Refresh analytics
 
-      return { success: true, message: (data as any)?.message || 'Converted successfully' };
+      return { success: true, message: responseData?.message || 'Converted successfully' };
     } catch (err) {
       logError('Error converting subscriber to pending user:', err);
       throw err;
