@@ -83,7 +83,7 @@ serve(async (req: Request): Promise<Response> => {
     const formationTag = sanitizeString(body.formationTag, 200);
 
     // Enhanced logging for troubleshooting
-    console.log("Subscribe sanitized payload:", {
+    console.log("Subscribe request received with sanitized payload:", {
       email,
       hasFullName: Boolean(fullName),
       hasPhone: Boolean(phone),
@@ -91,17 +91,21 @@ serve(async (req: Request): Promise<Response> => {
       formationDomaine,
       formationProgramme,
       formationProgrammeTitle,
-      hasTag: Boolean(formationTag)
+      hasTag: Boolean(formationTag),
+      timestamp: new Date().toISOString()
     });
 
     if (!email) {
+      console.error("Invalid email provided:", body.email);
       return new Response(
         JSON.stringify({ success: false, error: "Invalid email" }),
         { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
-    // Allow missing full name - will fall back to email local-part for storage
+    if (!fullName) {
+      console.warn("No full name provided, using email prefix");
+    }
 
 
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
@@ -133,13 +137,15 @@ serve(async (req: Request): Promise<Response> => {
     }
 
     if (existing && existing.length > 0) {
+      console.log("User already subscribed:", email);
       return new Response(
         JSON.stringify({ success: true, status: "already_subscribed" }),
         { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
-    const { error: insertError } = await admin
+    console.log("Inserting new subscriber:", email);
+    const { data: insertData, error: insertError } = await admin
       .from("subscribers")
       .insert({
         email,
@@ -150,18 +156,20 @@ serve(async (req: Request): Promise<Response> => {
         formation_programme: formationProgramme,
         formation_programme_title: formationProgrammeTitle,
         formation_tag: formationTag,
-      });
+      })
+      .select();
 
     if (insertError) {
       console.error("Subscribe insert error:", insertError);
       return new Response(
-        JSON.stringify({ success: false, error: "Database insert error" }),
+        JSON.stringify({ success: false, error: "Database insert error", details: insertError.message }),
         { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
+    console.log("Successfully subscribed user:", email, "Data:", insertData);
     return new Response(
-      JSON.stringify({ success: true, status: "subscribed" }),
+      JSON.stringify({ success: true, status: "subscribed", data: insertData }),
       { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   } catch (error) {

@@ -17,8 +17,10 @@ export const useNewsletterSubscription = () => {
     setLoading(true);
     
     try {
-      // Step 1: Save to database first
-      const { error: dbError } = await supabase.functions.invoke('subscribe', {
+      console.log('Starting newsletter subscription for:', data.email);
+      
+      // Step 1: Save to database first - this must succeed
+      const { data: dbResult, error: dbError } = await supabase.functions.invoke('subscribe', {
         body: {
           email: data.email.trim(),
           full_name: data.fullName?.trim() || '',
@@ -28,13 +30,23 @@ export const useNewsletterSubscription = () => {
         }
       });
 
+      console.log('Database subscription result:', { dbResult, dbError });
+
       if (dbError) {
-        console.error('Database subscription error:', dbError);
-        // Continue with email anyway - user might already exist
+        console.error('Database subscription failed:', dbError);
+        toast.error('Erreur lors de l\'inscription à la newsletter. Veuillez réessayer.');
+        return false;
       }
 
-      // Step 2: Send welcome email
-      const { error: emailError } = await supabase.functions.invoke('send-hostinger-email', {
+      // Check if already subscribed
+      if (dbResult?.status === 'already_subscribed') {
+        toast.success('Vous êtes déjà inscrit(e) à notre newsletter !');
+        return true;
+      }
+
+      // Step 2: Send welcome email only if database save succeeded
+      console.log('Sending welcome email...');
+      const { data: emailResult, error: emailError } = await supabase.functions.invoke('send-hostinger-email', {
         body: {
           type: 'newsletter',
           email: data.email.trim(),
@@ -44,9 +56,11 @@ export const useNewsletterSubscription = () => {
         }
       });
 
+      console.log('Email sending result:', { emailResult, emailError });
+
       if (emailError) {
-        console.error('Email sending error:', emailError);
-        toast.error('Inscription enregistrée mais erreur d\'envoi de l\'email de bienvenue');
+        console.error('Email sending failed:', emailError);
+        toast.error('Inscription enregistrée mais erreur d\'envoi de l\'email de bienvenue. Contactez le support.');
         return false;
       }
 
@@ -54,7 +68,7 @@ export const useNewsletterSubscription = () => {
       return true;
     } catch (error) {
       console.error('Newsletter subscription error:', error);
-      toast.error('Erreur lors de l\'inscription à la newsletter');
+      toast.error('Erreur lors de l\'inscription à la newsletter. Veuillez réessayer.');
       return false;
     } finally {
       setLoading(false);

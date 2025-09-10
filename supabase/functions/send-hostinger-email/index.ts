@@ -308,6 +308,8 @@ async function handleNewsletterSubscription(
   
   const normalizedEmail = String(email || '').trim().toLowerCase();
 
+  console.log("Processing newsletter subscription for:", normalizedEmail, "with name:", fullName, "interests:", interests);
+
   // Do not send to unsubscribed emails
   if (await isUnsubscribed(normalizedEmail)) {
     console.log('Skipping newsletter welcome, unsubscribed:', normalizedEmail);
@@ -388,11 +390,12 @@ async function handleNewsletterSubscription(
     }
 
     await Promise.all(promises);
-    console.log("Newsletter emails sent successfully");
+    console.log("Newsletter emails sent successfully to:", normalizedEmail, "Admin notified:", adminRecipients.length > 0);
 
     return new Response(JSON.stringify({ 
       success: true, 
-      message: "Inscription confirmée avec succès"
+      message: "Inscription confirmée avec succès",
+      email_sent: true
     }), {
       status: 200,
       headers: {
