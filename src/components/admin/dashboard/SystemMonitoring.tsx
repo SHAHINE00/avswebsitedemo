@@ -15,14 +15,21 @@ import {
   HardDrive,
   Users,
   RefreshCw,
-  Shield
+  Shield,
+  Mail
 } from 'lucide-react';
 import { useSystemHealth } from '@/hooks/useSystemHealth';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 const SystemMonitoring = () => {
   const { health, loading, error, refetch } = useSystemHealth();
+  const { toast } = useToast();
+  const { user } = useAuth();
+  const [sendingTest, setSendingTest] = React.useState(false);
 
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
@@ -42,6 +49,48 @@ const SystemMonitoring = () => {
     refetch();
   };
 
+  const handleSendTestEmail = async () => {
+    if (!user?.email) {
+      toast({
+        title: "Impossible d'envoyer",
+        description: "Aucun email administrateur détecté. Veuillez vous connecter.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSendingTest(true);
+    try {
+      const { error } = await supabase.functions.invoke('send-hostinger-email', {
+        body: {
+          type: 'custom',
+          to: [user.email],
+          subject: '[Test SMTP] AVS INSTITUTE',
+          html: `<div style="font-family: Arial, sans-serif;">
+                   <h2>Test SMTP réussi ✅</h2>
+                   <p>Ceci est un email de test envoyé via Hostinger SMTP.</p>
+                   <p>Date: ${new Date().toLocaleString('fr-FR')}</p>
+                 </div>`
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Email de test envoyé',
+        description: `Vérifiez votre boîte mail: ${user.email}`,
+      });
+    } catch (err) {
+      console.error('Test email error:', err);
+      toast({
+        title: "Erreur d'envoi",
+        description: "Consultez les logs de la fonction 'send-hostinger-email'.",
+        variant: 'destructive',
+      });
+    } finally {
+      setSendingTest(false);
+    }
+  };
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -109,6 +158,16 @@ const SystemMonitoring = () => {
           >
             <RefreshCw className="w-4 h-4 mr-1" />
             Actualiser
+          </Button>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={handleSendTestEmail}
+            disabled={sendingTest || !user?.email}
+            title={!user?.email ? "Connectez-vous pour envoyer un email de test" : undefined}
+          >
+            <Mail className="w-4 h-4 mr-1" />
+            {sendingTest ? 'Envoi...' : 'Email de test'}
           </Button>
           <Badge variant={hasError ? 'destructive' : connectionStatus.status === 'good' ? 'default' : connectionStatus.status === 'warning' ? 'secondary' : 'destructive'}>
             <StatusIcon className="w-4 h-4 mr-1" />

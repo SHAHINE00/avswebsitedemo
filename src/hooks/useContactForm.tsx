@@ -38,8 +38,8 @@ export const useContactForm = () => {
     
     try {
       // Submit contact form to edge function
-      const { data, error } = await supabase.functions.invoke('send-contact-email', {
-        body: formData
+      const { data, error } = await supabase.functions.invoke('send-hostinger-email', {
+        body: { type: 'contact', ...formData }
       });
 
       if (error) {
