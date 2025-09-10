@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -8,6 +9,67 @@ const corsHeaders = {
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
 };
+
+// SMTP Configuration
+const SMTP_CONFIG = {
+  hostname: Deno.env.get("SMTP_HOST") || "",
+  port: parseInt(Deno.env.get("SMTP_PORT") || "587"),
+  username: Deno.env.get("SMTP_USERNAME") || "",
+  password: Deno.env.get("SMTP_PASSWORD") || "",
+  tls: Deno.env.get("SMTP_SECURE") === "true",
+};
+
+// Check if SMTP is configured
+const SMTP_ENABLED = SMTP_CONFIG.hostname && SMTP_CONFIG.username && SMTP_CONFIG.password;
+
+// SMTP Helper Functions
+async function sendViaSMTP(to: string[], subject: string, html: string, from: string) {
+  const client = new SMTPClient(SMTP_CONFIG);
+  
+  console.log(`Sending via SMTP to: ${to.join(', ')}`);
+  
+  for (const recipient of to) {
+    await client.send({
+      from: from,
+      to: recipient,
+      subject: subject,
+      content: html,
+      html: html,
+    });
+  }
+  
+  await client.close();
+}
+
+async function sendViaResend(to: string[], subject: string, html: string, from: string) {
+  console.log(`Sending via Resend to: ${to.join(', ')}`);
+  return await resend.emails.send({
+    from: from,
+    to: to,
+    subject: subject,
+    html: html,
+  });
+}
+
+async function sendEmail(to: string[], subject: string, html: string, from: string, method: 'smtp' | 'resend') {
+  try {
+    if (method === 'smtp') {
+      await sendViaSMTP(to, subject, html, from);
+      return { success: true };
+    } else {
+      const result = await sendViaResend(to, subject, html, from);
+      return result;
+    }
+  } catch (error) {
+    console.error(`Error sending via ${method}:`, error);
+    // If SMTP fails, fallback to Resend if available
+    if (method === 'smtp' && Deno.env.get("RESEND_API_KEY")) {
+      console.log("SMTP failed, falling back to Resend...");
+      return await sendViaResend(to, subject, html, from);
+    }
+    throw error;
+  }
+}
 
 interface EmailRequest {
   to: string[];
@@ -46,8 +108,8 @@ const handler = async (req: Request): Promise<Response> => {
     const FROM_EMAIL = Deno.env.get("HOSTINGER_FROM_EMAIL") || "AVS Institute <info@avs.ma>";
     const ADMIN_EMAIL = Deno.env.get("NEWSLETTER_ADMIN_EMAIL");
 
-    if (!Deno.env.get("RESEND_API_KEY")) {
-      console.error("Missing Resend API key");
+    if (!SMTP_ENABLED && !Deno.env.get("RESEND_API_KEY")) {
+      console.error("Missing both SMTP and Resend configuration");
       return new Response(
         JSON.stringify({ 
           success: false,
@@ -60,18 +122,22 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
+    console.log(`Email mode: ${SMTP_ENABLED ? 'SMTP (Hostinger)' : 'Resend'} | FROM: ${FROM_EMAIL} | ADMIN: ${ADMIN_EMAIL ?? 'not set'}`);
+    
+    // Choose sending method
+    const sendMethod = SMTP_ENABLED ? 'smtp' : 'resend';
+
     console.log(`Processing email request of type: ${type}`);
-    console.log(`Using FROM_EMAIL: ${FROM_EMAIL} | ADMIN_EMAIL: ${ADMIN_EMAIL ?? 'not set'}`);
 
     switch (type) {
       case "contact":
-        return await handleContactEmail(data as ContactEmailRequest, { FROM_EMAIL, ADMIN_EMAIL });
+        return await handleContactEmail(data as ContactEmailRequest, { FROM_EMAIL, ADMIN_EMAIL, sendMethod });
       
       case "newsletter":
-        return await handleNewsletterSubscription(data as NewsletterSubscriptionRequest, { FROM_EMAIL, ADMIN_EMAIL });
+        return await handleNewsletterSubscription(data as NewsletterSubscriptionRequest, { FROM_EMAIL, ADMIN_EMAIL, sendMethod });
       
       case "custom":
-        return await handleCustomEmail(data as EmailRequest, { FROM_EMAIL });
+        return await handleCustomEmail(data as EmailRequest, { FROM_EMAIL, sendMethod });
       
       default:
         return new Response(
@@ -102,7 +168,7 @@ const handler = async (req: Request): Promise<Response> => {
 
 async function handleContactEmail(
   { firstName, lastName, email, phone, subject, message }: ContactEmailRequest,
-  { FROM_EMAIL, ADMIN_EMAIL }: any
+  { FROM_EMAIL, ADMIN_EMAIL, sendMethod }: any
 ): Promise<Response> {
   
   const emailHtml = `
@@ -147,25 +213,14 @@ async function handleContactEmail(
     // Send notification to admin if admin email is configured (supports multiple addresses)
     const adminRecipients = ADMIN_EMAIL ? ADMIN_EMAIL.split(/[ ,;]+/).filter(Boolean) : [];
     if (adminRecipients.length > 0) {
-      console.log(`Sending admin contact notification to: ${adminRecipients.join(', ')}`);
       promises.push(
-        resend.emails.send({
-          from: FROM_EMAIL,
-          to: adminRecipients,
-          subject: `Nouveau message de contact: ${subject}`,
-          html: emailHtml,
-        })
+        sendEmail(adminRecipients, `Nouveau message de contact: ${subject}`, emailHtml, FROM_EMAIL, sendMethod)
       );
     }
 
     // Send confirmation to user
     promises.push(
-      resend.emails.send({
-        from: FROM_EMAIL,
-        to: [email],
-        subject: "Confirmation de réception - AVS INSTITUTE",
-        html: confirmationHtml,
-      })
+      sendEmail([email], "Confirmation de réception - AVS INSTITUTE", confirmationHtml, FROM_EMAIL, sendMethod)
     );
 
     await Promise.all(promises);
@@ -189,7 +244,7 @@ async function handleContactEmail(
 
 async function handleNewsletterSubscription(
   { email, fullName, interests, source }: NewsletterSubscriptionRequest,
-  { FROM_EMAIL, ADMIN_EMAIL }: any
+  { FROM_EMAIL, ADMIN_EMAIL, sendMethod }: any
 ): Promise<Response> {
   
   const welcomeHtml = `
@@ -244,25 +299,14 @@ async function handleNewsletterSubscription(
 
     // Send welcome email to subscriber
     promises.push(
-      resend.emails.send({
-        from: FROM_EMAIL,
-        to: [email],
-        subject: "Bienvenue à AVS INSTITUTE - Votre guide IA gratuit",
-        html: welcomeHtml,
-      })
+      sendEmail([email], "Bienvenue à AVS INSTITUTE - Votre guide IA gratuit", welcomeHtml, FROM_EMAIL, sendMethod)
     );
 
     // Send notification to admin if configured (supports multiple addresses)
     const adminRecipients = ADMIN_EMAIL ? ADMIN_EMAIL.split(/[ ,;]+/).filter(Boolean) : [];
     if (adminRecipients.length > 0) {
-      console.log(`Sending admin newsletter notification to: ${adminRecipients.join(', ')}`);
       promises.push(
-        resend.emails.send({
-          from: FROM_EMAIL,
-          to: adminRecipients,
-          subject: "Nouvelle inscription newsletter",
-          html: adminNotificationHtml,
-        })
+        sendEmail(adminRecipients, "Nouvelle inscription newsletter", adminNotificationHtml, FROM_EMAIL, sendMethod)
       );
     }
 
@@ -287,18 +331,11 @@ async function handleNewsletterSubscription(
 
 async function handleCustomEmail(
   { to, subject, html, text, replyTo }: EmailRequest,
-  { FROM_EMAIL }: any
+  { FROM_EMAIL, sendMethod }: any
 ): Promise<Response> {
   
   try {
-    await resend.emails.send({
-      from: FROM_EMAIL,
-      to: to,
-      subject: subject,
-      html: html,
-      text: text,
-      replyTo: replyTo,
-    });
+    await sendEmail(to, subject, html, FROM_EMAIL, sendMethod);
 
     console.log(`Custom email sent to ${to.length} recipients`);
 
