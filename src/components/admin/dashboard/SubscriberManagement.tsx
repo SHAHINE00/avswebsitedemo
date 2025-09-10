@@ -20,7 +20,8 @@ const SubscriberManagement: React.FC = () => {
     filters,
     setFilters,
     deleteSubscriber,
-    exportSubscribers
+    exportSubscribers,
+    convertToPendingUser
   } = useSubscriberManagement();
 
   const { pendingUsers, loading: pendingLoading } = usePendingUsers();
@@ -54,6 +55,22 @@ const SubscriberManagement: React.FC = () => {
       toast({
         title: "Erreur de suppression",
         description: "Impossible de supprimer l'abonné",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleConvertToUser = async (subscriberId: string) => {
+    try {
+      await convertToPendingUser(subscriberId);
+      toast({
+        title: "Succès",
+        description: "L'abonné a été converti en compte utilisateur en attente",
+      });
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de convertir l'abonné",
         variant: "destructive",
       });
     }
@@ -189,10 +206,11 @@ const SubscriberManagement: React.FC = () => {
             onFiltersChange={setFilters}
           />
           <div className="overflow-x-auto">
-            <SubscriberTable
-              subscribers={subscribers}
-              loading={loading}
+            <SubscriberTable 
+              subscribers={subscribers} 
+              loading={loading} 
               onDelete={handleDelete}
+              onConvertToUser={handleConvertToUser}
             />
           </div>
         </TabsContent>

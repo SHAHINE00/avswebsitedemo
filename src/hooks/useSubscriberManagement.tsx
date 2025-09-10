@@ -216,6 +216,25 @@ export const useSubscriberManagement = () => {
     fetchAnalytics();
   }, []);
 
+  const convertToPendingUser = async (subscriberId: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('convert-subscriber-to-user', {
+        body: { subscriberId }
+      });
+
+      if (error) throw error;
+
+      // Remove subscriber from local state since it's been converted
+      setSubscribers(prev => prev.filter(sub => sub.id !== subscriberId));
+      await fetchAnalytics(); // Refresh analytics
+
+      return { success: true, message: data.message };
+    } catch (err) {
+      logError('Error converting subscriber to pending user:', err);
+      throw new Error('Failed to convert subscriber to pending user');
+    }
+  };
+
   return {
     subscribers,
     analytics,
@@ -225,6 +244,7 @@ export const useSubscriberManagement = () => {
     setFilters,
     deleteSubscriber,
     exportSubscribers,
+    convertToPendingUser,
     refetch: fetchSubscribers
   };
 };

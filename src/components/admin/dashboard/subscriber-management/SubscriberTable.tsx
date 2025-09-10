@@ -10,7 +10,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Trash2, Mail, Phone, Eye } from 'lucide-react';
+import { Trash2, Mail, Phone, Eye, UserPlus } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -47,12 +47,14 @@ interface SubscriberTableProps {
   subscribers: Subscriber[];
   loading: boolean;
   onDelete: (subscriberId: string) => void;
+  onConvertToUser: (subscriberId: string) => void;
 }
 
 const SubscriberTable: React.FC<SubscriberTableProps> = ({
   subscribers,
   loading,
-  onDelete
+  onDelete,
+  onConvertToUser
 }) => {
   const getFormationTypeBadge = (type?: string) => {
     switch (type) {
@@ -197,6 +199,32 @@ const SubscriberTable: React.FC<SubscriberTableProps> = ({
                             <Phone className="h-4 w-4" />
                           </Button>
                         )}
+
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="sm" className="text-green-600">
+                              <UserPlus className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Créer un compte utilisateur</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Voulez-vous convertir {subscriber.full_name} en compte utilisateur en attente d'approbation ?
+                                L'abonné pourra ensuite être inscrit à des formations.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Annuler</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => onConvertToUser(subscriber.id)}
+                                className="bg-green-600 text-white hover:bg-green-700"
+                              >
+                                Créer Compte
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
 
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
