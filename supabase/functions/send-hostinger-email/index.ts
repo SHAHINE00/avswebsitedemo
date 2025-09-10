@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.50.2";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -21,6 +22,64 @@ const SMTP_CONFIG = {
 
 // Check if SMTP is configured
 const SMTP_ENABLED = SMTP_CONFIG.hostname && SMTP_CONFIG.username && SMTP_CONFIG.password;
+
+// Supabase client for unsubscribe checks
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+const supabase = (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY)
+  ? createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+  : null;
+
+function getFunctionsBaseUrl(): string {
+  try {
+    const url = SUPABASE_URL;
+    const ref = url.replace(/^https?:\/\//, '').split('.')[0];
+    return ref ? `https://${ref}.functions.supabase.co` : '';
+  } catch {
+    return '';
+  }
+}
+
+function generateToken(bytes = 32): string {
+  const arr = new Uint8Array(bytes);
+  crypto.getRandomValues(arr);
+  let binary = '';
+  for (let i = 0; i < arr.length; i++) binary += String.fromCharCode(arr[i]);
+  const b64 = btoa(binary);
+  return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+}
+
+async function isUnsubscribed(email: string): Promise<boolean> {
+  if (!supabase) return false;
+  const { data, error } = await supabase
+    .from('unsubscribes')
+    .select('email')
+    .eq('email', email)
+    .maybeSingle();
+  if (error) {
+    console.error('isUnsubscribed error', error);
+    return false;
+  }
+  return Boolean(data);
+}
+
+async function createUnsubscribeToken(email: string): Promise<string | null> {
+  if (!supabase) return null;
+  const token = generateToken();
+  const { error } = await supabase
+    .from('unsubscribe_tokens')
+    .insert({ email, token });
+  if (error) {
+    console.error('createUnsubscribeToken error', error);
+    return null;
+  }
+  return token;
+}
+
+function buildUnsubscribeUrl(token: string | null): string {
+  const base = getFunctionsBaseUrl();
+  return token && base ? `${base}/unsubscribe?token=${token}` : '#';
+}
 
 // SMTP Helper Functions
 async function sendViaSMTP(to: string[], subject: string, html: string, from: string) {
@@ -247,6 +306,24 @@ async function handleNewsletterSubscription(
   { FROM_EMAIL, ADMIN_EMAIL, sendMethod }: any
 ): Promise<Response> {
   
+  const normalizedEmail = String(email || '').trim().toLowerCase();
+
+  // Do not send to unsubscribed emails
+  if (await isUnsubscribed(normalizedEmail)) {
+    console.log('Skipping newsletter welcome, unsubscribed:', normalizedEmail);
+    return new Response(JSON.stringify({
+      success: true,
+      message: "Adresse désabonnée - email non envoyé",
+      already_unsubscribed: true
+    }), {
+      status: 200,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
+  }
+
+  const token = await createUnsubscribeToken(normalizedEmail);
+  const unsubscribeUrl = buildUnsubscribeUrl(token);
+
   const welcomeHtml = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <div style="background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; padding: 40px; text-align: center; border-radius: 8px 8px 0 0;">
@@ -275,7 +352,7 @@ async function handleNewsletterSubscription(
         </div>
         <p style="color: #6b7280; font-size: 14px; text-align: center; margin-top: 30px;">
           Vous pouvez vous désabonner à tout moment en cliquant 
-          <a href="#" style="color: #2563eb;">ici</a>
+          <a href="${unsubscribeUrl}" style="color: #2563eb;">ici</a>
         </p>
       </div>
     </div>
@@ -299,7 +376,7 @@ async function handleNewsletterSubscription(
 
     // Send welcome email to subscriber
     promises.push(
-      sendEmail([email], "Bienvenue à AVS INSTITUTE - Votre guide IA gratuit", welcomeHtml, FROM_EMAIL, sendMethod)
+      sendEmail([normalizedEmail], "Bienvenue à AVS INSTITUTE - Votre guide IA gratuit", welcomeHtml, FROM_EMAIL, sendMethod)
     );
 
     // Send notification to admin if configured (supports multiple addresses)
