@@ -82,6 +82,18 @@ serve(async (req: Request): Promise<Response> => {
     const formationProgrammeTitle = sanitizeString(body.formationProgrammeTitle, 150);
     const formationTag = sanitizeString(body.formationTag, 200);
 
+    // Enhanced logging for troubleshooting
+    console.log("Subscribe sanitized payload:", {
+      email,
+      hasFullName: Boolean(fullName),
+      hasPhone: Boolean(phone),
+      formationType,
+      formationDomaine,
+      formationProgramme,
+      formationProgrammeTitle,
+      hasTag: Boolean(formationTag)
+    });
+
     if (!email) {
       return new Response(
         JSON.stringify({ success: false, error: "Invalid email" }),
@@ -89,12 +101,8 @@ serve(async (req: Request): Promise<Response> => {
       );
     }
 
-    if (!fullName) {
-      return new Response(
-        JSON.stringify({ success: false, error: "Name is required" }),
-        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
-    }
+    // Allow missing full name - will fall back to email local-part for storage
+
 
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
     const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
