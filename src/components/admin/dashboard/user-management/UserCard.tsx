@@ -10,7 +10,8 @@ import {
   Key, 
   UserCheck, 
   UserX, 
-  Trash2 
+  Trash2,
+  BookOpen
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -32,6 +33,7 @@ interface UserCardProps {
   onResetPassword: () => void;
   onUpdateRole: (newRole: string) => void;
   onDelete: () => void;
+  onManageEnrollments?: () => void;
 }
 
 export const UserCard: React.FC<UserCardProps> = ({
@@ -41,7 +43,8 @@ export const UserCard: React.FC<UserCardProps> = ({
   onEdit,
   onResetPassword,
   onUpdateRole,
-  onDelete
+  onDelete,
+  onManageEnrollments
 }) => {
   const getUserInitials = (user: UserProfile) => {
     if (user.full_name) {
@@ -116,6 +119,17 @@ export const UserCard: React.FC<UserCardProps> = ({
           <Key className="w-4 h-4" />
         </Button>
 
+        {onManageEnrollments && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onManageEnrollments}
+            className="h-8"
+          >
+            <BookOpen className="w-4 h-4" />
+          </Button>
+        )}
+
         {user.role === 'admin' ? (
           <Button
             variant="outline"
@@ -170,6 +184,19 @@ export const UserCard: React.FC<UserCardProps> = ({
           <span className="hidden sm:inline">Mot de passe</span>
           <span className="sm:hidden">MDP</span>
         </Button>
+
+        {onManageEnrollments && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onManageEnrollments}
+            className="flex-1 h-9"
+          >
+            <BookOpen className="w-4 h-4 mr-2" />
+            <span className="hidden sm:inline">Inscriptions</span>
+            <span className="sm:hidden">Cours</span>
+          </Button>
+        )}
 
         {user.role === 'admin' ? (
           <Button

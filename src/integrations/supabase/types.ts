@@ -1459,6 +1459,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_enroll_user_in_course: {
+        Args: { p_course_id: string; p_user_id: string }
+        Returns: string
+      }
+      admin_unenroll_user_from_course: {
+        Args: { p_course_id: string; p_user_id: string }
+        Returns: undefined
+      }
       approve_pending_user: {
         Args: { p_admin_id: string; p_pending_user_id: string }
         Returns: Json
@@ -1518,6 +1526,17 @@ export type Database = {
       get_system_health: {
         Args: Record<PropertyKey, never>
         Returns: Json
+      }
+      get_user_enrollments_for_admin: {
+        Args: { p_user_id: string }
+        Returns: {
+          course_id: string
+          course_title: string
+          enrolled_at: string
+          enrollment_id: string
+          progress_percentage: number
+          status: string
+        }[]
       }
       get_user_statistics: {
         Args: { p_user_id: string }

@@ -15,6 +15,7 @@ import { BulkActionsBar } from './user-management/BulkActionsBar';
 import { UserCard } from './user-management/UserCard';
 import { UserInviteDialog } from './user-management/UserInviteDialog';
 import { UserEditDialog } from './user-management/UserEditDialog';
+import { UserEnrollmentDialog } from './user-management/UserEnrollmentDialog';
 import { BulkActionsTab } from './user-management/BulkActionsTab';
 import { useUserManagement } from './user-management/hooks/useUserManagement';
 import { useUserFilters } from './user-management/hooks/useUserFilters';
@@ -32,6 +33,7 @@ const ComprehensiveUserManagement = () => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
+  const [enrollmentUser, setEnrollmentUser] = useState<UserProfile | null>(null);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteMessage, setInviteMessage] = useState('');
   const { toast } = useToast();
@@ -233,6 +235,7 @@ const ComprehensiveUserManagement = () => {
                     onResetPassword={() => resetUserPassword(user.email || '')}
                     onUpdateRole={(newRole) => updateUserRole(user.id, newRole, user.role)}
                     onDelete={() => deleteUser(user.id, user.email || '')}
+                    onManageEnrollments={() => setEnrollmentUser(user)}
                   />
                 ))}
               </div>
@@ -277,6 +280,12 @@ const ComprehensiveUserManagement = () => {
           role: editingUser!.role
         })}
         onCancel={() => setEditingUser(null)}
+      />
+
+      <UserEnrollmentDialog
+        user={enrollmentUser}
+        open={!!enrollmentUser}
+        onOpenChange={(open) => !open && setEnrollmentUser(null)}
       />
     </div>
   );
