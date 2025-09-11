@@ -21,7 +21,8 @@ const SubscriberManagement: React.FC = () => {
     setFilters,
     deleteSubscriber,
     exportSubscribers,
-    convertToPendingUser
+    convertToPendingUser,
+    refetch
   } = useSubscriberManagement();
 
   const { pendingUsers, loading: pendingLoading } = usePendingUsers();
@@ -92,8 +93,8 @@ const SubscriberManagement: React.FC = () => {
           description: "L'abonné sélectionné n'existe plus.",
           variant: "destructive",
         });
-        // Refresh the subscribers list
-        window.location.reload();
+        // Refresh the subscribers list using React state - call from hook
+        refetch();
       } else {
         toast({
           title: "Erreur de conversion",

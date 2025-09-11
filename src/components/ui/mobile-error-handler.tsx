@@ -16,7 +16,9 @@ const MobileErrorHandlerCore: React.FC<MobileErrorHandlerProps> = ({ error, onRe
     if (onRetry) {
       onRetry();
     } else {
-      window.location.reload();
+      // Force React remount without page reload
+      const event = new CustomEvent('forceRemount');
+      window.dispatchEvent(event);
     }
   };
 
@@ -113,7 +115,11 @@ const MobileErrorHandlerCore: React.FC<MobileErrorHandlerProps> = ({ error, onRe
           </button>
           
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => {
+              // Force React remount without page reload
+              const event = new CustomEvent('forceRemount');
+              window.dispatchEvent(event);
+            }}
             style={{
               padding: '12px 24px',
               backgroundColor: '#6c757d',
@@ -154,7 +160,11 @@ const MobileErrorHandler: React.FC<MobileErrorHandlerProps> = (props) => {
             L'application n'a pas pu se charger correctement.
           </p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => {
+              // Force React remount without page reload
+              const event = new CustomEvent('forceRemount');
+              window.dispatchEvent(event);
+            }}
             style={{
               padding: '12px 24px',
               backgroundColor: '#007bff',

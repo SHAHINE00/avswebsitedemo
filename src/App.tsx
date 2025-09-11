@@ -15,6 +15,7 @@ import ReactSafetyWrapper from "@/components/ui/react-safety-wrapper";
 import CookieConsentBanner from "@/components/gdpr/CookieConsentBanner";
 import SafeGDPRWrapper from "@/components/gdpr/SafeGDPRWrapper";
 import LoadingSpinner from "@/components/ui/loading-spinner";
+import { ReloadPreventionWrapper } from "@/components/ui/reload-prevention-wrapper";
 
 
 // Critical pages (loaded immediately for better performance)
@@ -83,6 +84,7 @@ const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 const App = () => {
   return (
     <GlobalErrorBoundary>
+      <ReloadPreventionWrapper>
         <React.Suspense fallback={
           <div style={{ padding: '20px', textAlign: 'center' }}>
             <div>Chargement de l'application...</div>
@@ -154,7 +156,8 @@ const App = () => {
             </ReactSafetyWrapper>
           </SafeRouter>
         </React.Suspense>
-      </GlobalErrorBoundary>
+      </ReloadPreventionWrapper>
+    </GlobalErrorBoundary>
   );
 };
 

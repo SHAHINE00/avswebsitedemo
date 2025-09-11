@@ -15,15 +15,23 @@ export const IOSFallbackLoader: React.FC<IOSFallbackLoaderProps> = ({
     if (onRetry) {
       onRetry();
     } else {
-      // Clear caches and reload
+      // Clear caches and force React remount
       if ('caches' in window) {
         caches.keys().then(names => {
           names.forEach(name => caches.delete(name));
         }).finally(() => {
-          (window as any).location.reload();
+          // Force React remount without page reload
+          if (typeof window !== 'undefined') {
+            const event = new CustomEvent('forceRemount');
+            window.dispatchEvent(event);
+          }
         });
       } else {
-        (window as any).location.reload();
+        // Force React remount without page reload
+        if (typeof window !== 'undefined') {
+          const event = new CustomEvent('forceRemount');
+          window.dispatchEvent(event);
+        }
       }
     }
   };
@@ -133,9 +141,11 @@ export const mountIOSFallbackLoader = (error?: string): void => {
           if ('caches' in window) {
             caches.keys().then(names => {
               names.forEach(name => caches.delete(name));
-            }).finally(() => window.location.reload());
+            }).finally(() => {
+              window.dispatchEvent(new CustomEvent('forceRemount'));
+            });
           } else {
-            window.location.reload();
+            window.dispatchEvent(new CustomEvent('forceRemount'));
           }
         " style="
           width: 100%;

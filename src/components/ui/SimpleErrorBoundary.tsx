@@ -48,7 +48,9 @@ class SimpleErrorBoundary extends React.Component<Props, State> {
                   size="sm"
                   onClick={() => {
                     this.setState({ hasError: false, error: undefined });
-                    window.location.reload();
+                    // Force React remount without page reload
+                    const event = new CustomEvent('forceRemount');
+                    window.dispatchEvent(event);
                   }}
                   className="mt-2"
                 >

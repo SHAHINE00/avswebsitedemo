@@ -163,4 +163,15 @@ self.addEventListener('message', (event) => {
       event.ports[0].postMessage({ success: false, error: error.message });
     });
   }
+  
+  // Handle page visibility changes without triggering reloads
+  if (event.data && event.data.type === 'PAGE_HIDDEN') {
+    // Page is hidden, pause non-critical operations
+    console.log('SW: Page hidden, reducing activity');
+  }
+  
+  if (event.data && event.data.type === 'PAGE_VISIBLE') {
+    // Page is visible again, resume normal operations
+    console.log('SW: Page visible, resuming normal activity');
+  }
 });

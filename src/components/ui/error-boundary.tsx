@@ -49,8 +49,12 @@ class ErrorBoundary extends Component<Props, State> {
             <Button onClick={this.handleReset} variant="outline">
               Réessayer
             </Button>
-            <Button onClick={() => window.location.reload()}>
-              Actualiser la page
+            <Button onClick={() => {
+              // Force React remount without page reload
+              const event = new CustomEvent('forceRemount');
+              window.dispatchEvent(event);
+            }}>
+              Actualiser l'interface
             </Button>
           </div>
           {process.env.NODE_ENV === 'development' && this.state.error && (

@@ -8,10 +8,12 @@ const SafeErrorFallback: React.FC<{ error?: Error; onRetry?: () => void }> = ({ 
     if (onRetry) {
       onRetry();
     } else {
-      // Fallback retry mechanism
+      // Fallback retry mechanism - force component remount
       try {
         if (typeof window !== 'undefined') {
-          window.location.reload();
+          // Force React to remount by changing the key
+          const event = new CustomEvent('forceRemount');
+          window.dispatchEvent(event);
         }
       } catch (e) {
         console.error('Retry failed:', e);

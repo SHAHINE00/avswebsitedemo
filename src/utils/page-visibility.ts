@@ -47,9 +47,7 @@ export const initPageVisibilityHandling = (): void => {
 
   document.addEventListener('visibilitychange', debouncedHandler);
   
-  // Also handle focus/blur for older browsers
-  window.addEventListener('focus', debouncedHandler);
-  window.addEventListener('blur', debouncedHandler);
+  // Remove focus/blur listeners to prevent conflicts with tab switching
 
   console.log('Page visibility handling initialized');
 };

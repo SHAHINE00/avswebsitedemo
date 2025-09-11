@@ -65,7 +65,11 @@ const SafeRouter: React.FC<SafeRouterProps> = ({ children }) => {
           </p>
 
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => {
+              // Force React to remount without full page reload
+              const event = new CustomEvent('forceRemount');
+              window.dispatchEvent(event);
+            }}
             style={{
               padding: '12px 24px',
               backgroundColor: '#007bff',
