@@ -1,158 +1,160 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Brain, Code, Megaphone, TrendingUp, ArrowRight } from 'lucide-react';
+import { GraduationCap, Globe, Briefcase } from 'lucide-react';
 
 const CareerPaths: React.FC = () => {
-  console.log('🎯 CareerPaths component is rendering!');
-  
   return (
-    <section className="py-16 bg-background">
+    <section className="py-20 bg-gray-50/50">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4 text-foreground">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-6 text-gray-900">
               Opportunités de Carrière
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Découvrez des carrières passionnantes dans nos 3 spécialités de formation
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Découvrez les avantages de nos formations professionnelles reconnues
             </p>
           </div>
           
-          {/* Quick Stats */}
-          <div className="flex justify-center gap-8 mb-12">
+          {/* Top Benefits Row */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">85%</div>
-              <div className="text-sm text-muted-foreground">Placement</div>
+              <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <GraduationCap className="w-8 h-8 text-blue-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Formation reconnue par l'État
+              </h3>
+              <p className="text-gray-600">
+                Certification officielle validée par les institutions
+              </p>
             </div>
+            
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">€52k</div>
-              <div className="text-sm text-muted-foreground">Salaire moyen</div>
+              <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <Globe className="w-8 h-8 text-green-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Certification internationale
+              </h3>
+              <p className="text-gray-600">
+                Reconnaissance mondiale de vos compétences
+              </p>
             </div>
+            
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">25%</div>
-              <div className="text-sm text-muted-foreground">Croissance</div>
+              <div className="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <Briefcase className="w-8 h-8 text-purple-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Métiers tech rémunérateurs
+              </h3>
+              <p className="text-gray-600">
+                Accès aux emplois les mieux payés du secteur
+              </p>
             </div>
           </div>
           
-          {/* Career Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {/* AI & Data Science Career */}
-            <div className="bg-card border border-border rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <div className="flex items-center mb-4">
-                <div className="bg-primary/10 p-3 rounded-lg mr-3">
-                  <Brain className="w-6 h-6 text-primary" />
+          {/* Career Specialties */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            {/* IA & Data Science */}
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+              <div className="mb-6">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                  <div className="w-6 h-6 bg-blue-600 rounded-full"></div>
                 </div>
-                <h3 className="text-lg font-bold text-foreground">IA & Data Science</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">IA & Data Science</h3>
+                <p className="text-gray-600 text-sm">Intelligence artificielle et analyse de données</p>
               </div>
               
-              <div className="space-y-2 text-sm text-muted-foreground mb-4">
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                  <span>Data Scientist</span>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center text-gray-700">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full mr-3"></div>
+                  <span className="text-sm">Data Scientist</span>
                 </div>
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                  <span>Ingénieur ML/IA</span>
+                <div className="flex items-center text-gray-700">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full mr-3"></div>
+                  <span className="text-sm">Ingénieur ML/IA</span>
                 </div>
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                  <span>Architecte IA</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                  <span>Analyste BI</span>
+                <div className="flex items-center text-gray-700">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full mr-3"></div>
+                  <span className="text-sm">Architecte IA</span>
                 </div>
               </div>
               
-              <div className="flex justify-between items-center">
-                <div className="bg-primary/10 text-primary rounded-full px-3 py-1 text-sm font-medium">
-                  €45k - €85k
-                </div>
-                <TrendingUp className="w-4 h-4 text-green-500" />
+              <div className="bg-blue-50 text-blue-700 rounded-lg px-4 py-2 text-center font-semibold">
+                €45k - €85k
               </div>
             </div>
             
-            {/* Programming & Infrastructure Career */}
-            <div className="bg-card border border-border rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <div className="flex items-center mb-4">
-                <div className="bg-secondary/10 p-3 rounded-lg mr-3">
-                  <Code className="w-6 h-6 text-secondary-foreground" />
+            {/* Programmation */}
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+              <div className="mb-6">
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                  <div className="w-6 h-6 bg-green-600 rounded-full"></div>
                 </div>
-                <h3 className="text-lg font-bold text-foreground">Programmation & Infrastructure</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Programmation</h3>
+                <p className="text-gray-600 text-sm">Développement web et mobile</p>
               </div>
               
-              <div className="space-y-2 text-sm text-muted-foreground mb-4">
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-secondary-foreground rounded-full mr-3"></div>
-                  <span>Développeur Full Stack</span>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center text-gray-700">
+                  <div className="w-2 h-2 bg-green-600 rounded-full mr-3"></div>
+                  <span className="text-sm">Développeur Full Stack</span>
                 </div>
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-secondary-foreground rounded-full mr-3"></div>
-                  <span>Développeur Mobile</span>
+                <div className="flex items-center text-gray-700">
+                  <div className="w-2 h-2 bg-green-600 rounded-full mr-3"></div>
+                  <span className="text-sm">Développeur Mobile</span>
                 </div>
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-secondary-foreground rounded-full mr-3"></div>
-                  <span>Ingénieur DevOps</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-secondary-foreground rounded-full mr-3"></div>
-                  <span>Architecte Cloud</span>
+                <div className="flex items-center text-gray-700">
+                  <div className="w-2 h-2 bg-green-600 rounded-full mr-3"></div>
+                  <span className="text-sm">Ingénieur DevOps</span>
                 </div>
               </div>
               
-              <div className="flex justify-between items-center">
-                <div className="bg-secondary/10 text-secondary-foreground rounded-full px-3 py-1 text-sm font-medium">
-                  €40k - €75k
-                </div>
-                <TrendingUp className="w-4 h-4 text-green-500" />
+              <div className="bg-green-50 text-green-700 rounded-lg px-4 py-2 text-center font-semibold">
+                €40k - €75k
               </div>
             </div>
 
-            {/* Marketing Digital & Créatif */}
-            <div className="bg-card border border-border rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 md:col-span-2 lg:col-span-1">
-              <div className="flex items-center mb-4">
-                <div className="bg-accent/10 p-3 rounded-lg mr-3">
-                  <Megaphone className="w-6 h-6 text-accent-foreground" />
+            {/* Marketing Digital */}
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+              <div className="mb-6">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                  <div className="w-6 h-6 bg-purple-600 rounded-full"></div>
                 </div>
-                <h3 className="text-lg font-bold text-foreground">Marketing Digital & Créatif</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Marketing Digital</h3>
+                <p className="text-gray-600 text-sm">Communication et créativité numérique</p>
               </div>
               
-              <div className="space-y-2 text-sm text-muted-foreground mb-4">
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-accent-foreground rounded-full mr-3"></div>
-                  <span>Marketing Manager</span>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center text-gray-700">
+                  <div className="w-2 h-2 bg-purple-600 rounded-full mr-3"></div>
+                  <span className="text-sm">Marketing Manager</span>
                 </div>
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-accent-foreground rounded-full mr-3"></div>
-                  <span>Community Manager</span>
+                <div className="flex items-center text-gray-700">
+                  <div className="w-2 h-2 bg-purple-600 rounded-full mr-3"></div>
+                  <span className="text-sm">Community Manager</span>
                 </div>
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-accent-foreground rounded-full mr-3"></div>
-                  <span>Content Creator</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-accent-foreground rounded-full mr-3"></div>
-                  <span>E-commerce Specialist</span>
+                <div className="flex items-center text-gray-700">
+                  <div className="w-2 h-2 bg-purple-600 rounded-full mr-3"></div>
+                  <span className="text-sm">Content Creator</span>
                 </div>
               </div>
               
-              <div className="flex justify-between items-center">
-                <div className="bg-accent/10 text-accent-foreground rounded-full px-3 py-1 text-sm font-medium">
-                  €35k - €65k
-                </div>
-                <TrendingUp className="w-4 h-4 text-green-500" />
+              <div className="bg-purple-50 text-purple-700 rounded-lg px-4 py-2 text-center font-semibold">
+                €35k - €65k
               </div>
             </div>
           </div>
           
           {/* Call to Action */}
           <div className="text-center">
-            <Button asChild size="lg" className="px-8 py-3 text-base">
-              <Link to="/careers" className="flex items-center">
-                Voir toutes les opportunités
-                <ArrowRight className="ml-2 w-4 h-4" />
+            <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3">
+              <Link to="/careers">
+                Découvrir toutes les opportunités
               </Link>
             </Button>
           </div>
