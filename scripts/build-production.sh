@@ -43,8 +43,8 @@ echo "🔒 Applying security optimizations..."
 find dist -name "*.js.map" -delete
 find dist -name "*.css.map" -delete
 
-# Add security headers to index.html
-sed -i '/<head>/a \  <meta http-equiv="X-Content-Type-Options" content="nosniff">\n  <meta http-equiv="X-Frame-Options" content="DENY">\n  <meta http-equiv="X-XSS-Protection" content="1; mode=block">' dist/index.html || true
+# Add comprehensive security headers to index.html
+sed -i '/<head>/a \  <meta http-equiv="X-Content-Type-Options" content="nosniff">\n  <meta http-equiv="X-Frame-Options" content="DENY">\n  <meta http-equiv="X-XSS-Protection" content="1; mode=block">\n  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">\n  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">' dist/index.html || true
 
 # Show build stats
 echo "✅ Production build completed successfully!"

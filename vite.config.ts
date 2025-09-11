@@ -75,18 +75,24 @@ export default defineConfig(({ mode }) => {
         compress: {
           drop_console: true,
           drop_debugger: true,
-          pure_funcs: ['console.log', 'console.warn', 'console.info'],
+          pure_funcs: ['console.log', 'console.warn', 'console.info', 'console.debug'],
           passes: 3,
           unsafe_arrows: true,
-          unsafe_comps: true
+          unsafe_comps: true,
+          dead_code: true,
+          unused: true
         },
         mangle: {
-          safari10: true
+          safari10: true,
+          toplevel: true
         },
         format: {
           comments: false
         }
-      }
+      },
+      // Additional production optimizations
+      reportCompressedSize: false,
+      chunkSizeWarningLimit: 300
     })
   },
   

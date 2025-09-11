@@ -5,7 +5,7 @@ import './index.css';
 import { navigationStateManager } from './utils/navigation-state';
 import { initializeProductionLogging } from '@/utils/cleanupConsole';
 import { ENV_CONFIG } from '@/utils/envConfig';
-import { initializeProductionOptimizations, monitorBundleSize } from '@/utils/productionOptimizations';
+import { initializeProductionOptimizations, monitorBundleSize, initializePerformanceMonitoring } from '@/utils/productionOptimizations';
 
 // Initialize production logging and monitoring
 initializeProductionLogging();
@@ -45,7 +45,8 @@ if (!rootElement) {
 // Initialize navigation state management
 navigationStateManager;
 
-// Monitor bundle performance
+// Monitor bundle performance and Core Web Vitals
 monitorBundleSize();
+initializePerformanceMonitoring();
 
 createRoot(rootElement).render(<App />);

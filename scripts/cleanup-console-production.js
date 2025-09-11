@@ -8,15 +8,45 @@
 const fs = require('fs');
 const path = require('path');
 
-// Files to process
+// Files to process - comprehensive list
 const filesToProcess = [
+  'src/App.tsx',
   'src/components/EnhancedMultiStepForm.tsx',
   'src/components/MultiStepRegistrationForm.tsx',
   'src/components/SEOHead.tsx',
+  'src/hooks/useAdminActivityLogs.tsx',
+  'src/hooks/useAdminCourses.tsx',
+  'src/hooks/useAdminEnrollments.tsx',
+  'src/hooks/useAdvancedAnalytics.tsx',
+  'src/hooks/useAnalytics.tsx',
+  'src/hooks/useAppointmentBooking.tsx',
+  'src/hooks/useBlogManagement.tsx',
+  'src/hooks/useContactForm.tsx',
+  'src/hooks/useCourseContent.tsx',
+  'src/hooks/useCourseInteractions.tsx',
+  'src/hooks/useCourses.tsx',
+  'src/hooks/useDashboardMetrics.tsx',
+  'src/hooks/useEnhancedLearning.tsx',
+  'src/hooks/useEnrollment.tsx',
+  'src/hooks/useGamification.tsx',
+  'src/hooks/useNotifications.tsx',
+  'src/hooks/usePendingUsers.tsx',
+  'src/hooks/useSystemHealth.tsx',
+  'src/hooks/useUserProfile.tsx',
+  'src/hooks/useIsIOS.ts',
+  'src/components/admin/dashboard/AppointmentManagement.tsx',
   'src/components/admin/dashboard/EnhancedSectionReorderDialog.tsx',
   'src/components/admin/dashboard/SubscriberManagement.tsx',
   'src/components/admin/dashboard/SystemMonitoring.tsx',
   'src/components/admin/dashboard/user-management/UserEnrollmentDialog.tsx',
+  'src/components/blog/BlogManagement.tsx',
+  'src/components/admin/dashboard/CourseManagementSection.tsx',
+  'src/components/admin/dashboard/UserManagementSection.tsx',
+  'src/components/admin/dashboard/SecurityMonitoring.tsx',
+  'src/components/admin/dashboard/EnrollmentAnalytics.tsx',
+  'src/components/admin/dashboard/RealTimeAnalytics.tsx',
+  'src/components/admin/dashboard/AdvancedAnalytics.tsx',
+  'src/components/forms/StandardForm.tsx',
   'src/components/gdpr/CookieConsentBanner.tsx',
   'src/components/gdpr/DataDeletionDialog.tsx',
   'src/components/gdpr/DataExportDialog.tsx',
@@ -31,29 +61,46 @@ const filesToProcess = [
   'src/components/ui/lazy-wrapper.tsx',
   'src/components/ui/react-safety-wrapper.tsx',
   'src/components/ui/reload-prevention-wrapper.tsx',
+  'src/components/ui/error-boundary.tsx',
+  'src/components/ui/global-error-boundary.tsx',
+  'src/components/ui/mobile-error-handler.tsx',
   'src/contexts/AuthContext.tsx'
 ];
 
-// Replacement mappings
+// Replacement mappings - comprehensive patterns
 const replacements = {
+  // Error patterns
   "console.error('Error": "logError('Error",
   "console.error(`Error": "logError(`Error",
   'console.error("Error': 'logError("Error',
   "console.error('": "logError('",
   "console.error(`": "logError(`",
   'console.error("': 'logError("',
+  "console.error(": "logError(",
+  
+  // Log patterns  
   "console.log('": "logInfo('",
   "console.log(`": "logInfo(`",
   'console.log("': 'logInfo("',
+  "console.log(": "logInfo(",
+  
+  // Info patterns
   "console.info('": "logInfo('",
   "console.info(`": "logInfo(`",
   'console.info("': 'logInfo("',
+  "console.info(": "logInfo(",
+  
+  // Warn patterns
   "console.warn('": "logWarn('",
   "console.warn(`": "logWarn(`",
   'console.warn("': 'logWarn("',
+  "console.warn(": "logWarn(",
+  
+  // Debug patterns
   "console.debug('": "logDebug('",
   "console.debug(`": "logDebug(`",
-  'console.debug("': 'logDebug("'
+  'console.debug("': 'logDebug("',
+  "console.debug(": "logDebug(",
 };
 
 // Logger import statement

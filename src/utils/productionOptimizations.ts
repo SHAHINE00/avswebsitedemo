@@ -18,6 +18,9 @@ export const SECURITY_CONFIG = {
   enableErrorFiltering: ENV_CONFIG.isProduction,
   enableDebugRemoval: ENV_CONFIG.isProduction,
   enableSourceMapRemoval: ENV_CONFIG.isProduction,
+  enableCSPHeaders: ENV_CONFIG.isProduction,
+  enableSecurityHeaders: ENV_CONFIG.isProduction,
+  enableHTTPSRedirect: ENV_CONFIG.isProduction,
 } as const;
 
 // Initialize production optimizations
@@ -41,6 +44,11 @@ export const initializeProductionOptimizations = () => {
 
   // 3. Optimize performance monitoring
   setupProductionPerformance();
+
+  // 4. Setup security headers
+  if (SECURITY_CONFIG.enableSecurityHeaders) {
+    setupSecurityHeaders();
+  }
 
   logInfo('Production optimizations initialized successfully');
 };
@@ -203,6 +211,33 @@ export const optimizeMemoryUsage = () => {
   }
 };
 
+// Setup security headers for production
+const setupSecurityHeaders = () => {
+  if (typeof document !== 'undefined' && document.head) {
+    // Add security meta tags
+    const securityMetas = [
+      { 'http-equiv': 'X-Content-Type-Options', content: 'nosniff' },
+      { 'http-equiv': 'X-Frame-Options', content: 'DENY' },
+      { 'http-equiv': 'X-XSS-Protection', content: '1; mode=block' },
+      { 'http-equiv': 'Referrer-Policy', content: 'strict-origin-when-cross-origin' },
+      { 'http-equiv': 'Permissions-Policy', content: 'geolocation=(), microphone=(), camera=()' }
+    ];
+
+    securityMetas.forEach(meta => {
+      const existing = document.querySelector(`meta[http-equiv="${meta['http-equiv']}"]`);
+      if (!existing) {
+        const metaTag = document.createElement('meta');
+        Object.entries(meta).forEach(([key, value]) => {
+          metaTag.setAttribute(key, value);
+        });
+        document.head.appendChild(metaTag);
+      }
+    });
+
+    logInfo('Security headers applied');
+  }
+};
+
 // Bundle size monitoring
 export const monitorBundleSize = () => {
   if (ENV_CONFIG.isProduction && 'performance' in window) {
@@ -221,6 +256,42 @@ export const monitorBundleSize = () => {
           size: `${(totalBytes / 1024).toFixed(2)}KB`
         });
       }
+    }
+  }
+};
+
+// Performance monitoring enhancement
+export const initializePerformanceMonitoring = () => {
+  if (!ENV_CONFIG.isProduction) return;
+
+  // Monitor Core Web Vitals
+  if ('PerformanceObserver' in window) {
+    try {
+      const observer = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          switch (entry.entryType) {
+            case 'largest-contentful-paint':
+              if (entry.startTime > 2500) {
+                logWarn('Poor LCP detected', { lcp: `${entry.startTime.toFixed(0)}ms` });
+              }
+              break;
+            case 'first-input':
+              if ((entry as any).processingStart - entry.startTime > 100) {
+                logWarn('Poor FID detected', { fid: `${((entry as any).processingStart - entry.startTime).toFixed(0)}ms` });
+              }
+              break;
+            case 'layout-shift':
+              if ((entry as any).value > 0.1) {
+                logWarn('Poor CLS detected', { cls: (entry as any).value.toFixed(3) });
+              }
+              break;
+          }
+        }
+      });
+      
+      observer.observe({ entryTypes: ['largest-contentful-paint', 'first-input', 'layout-shift'] });
+    } catch (error) {
+      logError('Performance monitoring setup failed', error);
     }
   }
 };
