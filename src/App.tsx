@@ -16,6 +16,7 @@ import CookieConsentBanner from "@/components/gdpr/CookieConsentBanner";
 import SafeGDPRWrapper from "@/components/gdpr/SafeGDPRWrapper";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { ReloadPreventionWrapper } from "@/components/ui/reload-prevention-wrapper";
+import { logWarn } from "@/utils/logger";
 
 
 // Critical pages (loaded immediately for better performance)
@@ -75,7 +76,7 @@ const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     usePageTracking();
     useScrollTracking();
   } catch (error) {
-    console.warn('Analytics tracking failed:', error);
+    logWarn('Analytics tracking failed:', error);
   }
   return <>{children}</>;
 };

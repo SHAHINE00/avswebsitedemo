@@ -20,9 +20,13 @@ fi
 echo "🗺️  Generating sitemap.xml..."
 node scripts/generate-sitemap.js
 
+# Run console cleanup before build
+echo "🧹 Cleaning up console statements for production..."
+node scripts/cleanup-console-production.js || echo "Console cleanup script not found - continuing build"
+
 # Run production build
 echo "⚙️ Building with production optimizations..."
-npx vite build --mode production
+VITE_DISABLE_CONSOLE=true npx vite build --mode production
 
 # Verify build output
 if [ ! -f "dist/index.html" ]; then
@@ -32,6 +36,15 @@ fi
 
 # Add build timestamp for verification
 echo "<!-- Build timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ) -->" >> dist/index.html
+
+# Security optimizations
+echo "🔒 Applying security optimizations..."
+# Remove source maps in production
+find dist -name "*.js.map" -delete
+find dist -name "*.css.map" -delete
+
+# Add security headers to index.html
+sed -i '/<head>/a \  <meta http-equiv="X-Content-Type-Options" content="nosniff">\n  <meta http-equiv="X-Frame-Options" content="DENY">\n  <meta http-equiv="X-XSS-Protection" content="1; mode=block">' dist/index.html || true
 
 # Show build stats
 echo "✅ Production build completed successfully!"

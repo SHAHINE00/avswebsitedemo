@@ -24,8 +24,10 @@ export const ENV_CONFIG = {
   features: {
     enableAnalytics: true,
     enableErrorReporting: true,
-    enableDebugMode: false, // Always false in production
-    enableConsoleLogging: false // Disable console in production
+    enableDebugMode: process.env.NODE_ENV !== 'production', // Only in development
+    enableConsoleLogging: process.env.NODE_ENV !== 'production', // Only in development
+    enableSourceMaps: process.env.NODE_ENV !== 'production', // Only in development
+    enableDevTools: process.env.NODE_ENV !== 'production' // Only in development
   },
   
   // Performance and caching
