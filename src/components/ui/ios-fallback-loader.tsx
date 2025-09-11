@@ -28,10 +28,8 @@ export const IOSFallbackLoader: React.FC<IOSFallbackLoaderProps> = ({
         });
       } else {
         // Force React remount without page reload
-        if (typeof window !== 'undefined') {
-          const event = new CustomEvent('forceRemount');
-          window.dispatchEvent(event);
-        }
+        const event = new CustomEvent('forceRemount');
+        (window as any).dispatchEvent(event);
       }
     }
   };
