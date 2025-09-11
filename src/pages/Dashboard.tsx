@@ -66,15 +66,7 @@ const Dashboard = () => {
     fetchDashboardData();
   }, [user]);
 
-  // Redirect admin users to admin dashboard
-  useSafeEffect(() => {
-    if (user && !loading && isAdmin && !adminLoading) {
-      logInfo('Redirecting admin user to admin dashboard');
-      window.history.pushState({}, '', '/admin');
-      window.dispatchEvent(new PopStateEvent('popstate'));
-      return;
-    }
-  }, [user, loading, isAdmin, adminLoading]);
+  // Note: Removed auto-redirect to admin dashboard to allow admins to access user dashboard
 
   const fetchDashboardData = async () => {
     if (!user) return;
