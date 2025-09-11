@@ -196,15 +196,38 @@ export const useUserManagement = () => {
         const msg = (error as any)?.message || '';
         const codeText = msg.toLowerCase();
 
-        // Start 60s cooldown on rate limit
+        // Start 60s cooldown on rate limit - try SMTP fallback
         if (codeText.includes('rate') || codeText.includes('429') || codeText.includes('over_email_send_rate_limit')) {
           localStorage.setItem(key, String(now + 60_000));
-          toast({
-            title: "Limite de débit atteinte",
-            description: "Attendez 60s avant de renvoyer l'email de réinitialisation.",
-            variant: "destructive",
-          });
-          return;
+
+          // Attempt fallback via Edge Function using Hostinger SMTP
+          try {
+            const { data: fnData, error: fnError } = await supabase.functions.invoke('send-password-reset-link', {
+              body: { email, redirectTo: `${window.location.origin}/reset-password` }
+            });
+
+            if (fnError || (fnData as any)?.error) {
+              toast({
+                title: "Limite de débit atteinte",
+                description: "Attendez 60s avant de renvoyer l'email de réinitialisation.",
+                variant: "destructive",
+              });
+              return;
+            }
+
+            toast({
+              title: "Email envoyé (mode secours)",
+              description: "Lien de réinitialisation envoyé via SMTP.",
+            });
+            return;
+          } catch (e) {
+            toast({
+              title: "Limite de débit atteinte",
+              description: "Attendez 60s avant de renvoyer l'email de réinitialisation.",
+              variant: "destructive",
+            });
+            return;
+          }
         }
 
         if (codeText.includes('invalid') || codeText.includes('not found')) {

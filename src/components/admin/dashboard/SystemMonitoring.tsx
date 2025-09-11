@@ -182,12 +182,34 @@ const SystemMonitoring = () => {
         const codeText = msg.toLowerCase();
         if (codeText.includes('rate') || codeText.includes('429') || codeText.includes('over_email_send_rate_limit')) {
           localStorage.setItem(key, String(now + 60_000));
-          toast({
-            title: "Limite de débit atteinte",
-            description: "Attendez 60 secondes avant de renvoyer un email de réinitialisation.",
-            variant: "destructive",
-          });
-          return;
+
+          try {
+            const { data: fnData, error: fnError } = await supabase.functions.invoke('send-password-reset-link', {
+              body: { email: emailToTest, redirectTo: `${window.location.origin}/reset-password` }
+            });
+
+            if (fnError || (fnData as any)?.error) {
+              toast({
+                title: "Limite de débit atteinte",
+                description: "Attendez 60 secondes avant de renvoyer un email de réinitialisation.",
+                variant: "destructive",
+              });
+              return;
+            }
+
+            toast({
+              title: 'Email (secours) envoyé ✅',
+              description: `Lien envoyé via SMTP: ${emailToTest}`,
+            });
+            return;
+          } catch (_) {
+            toast({
+              title: "Limite de débit atteinte",
+              description: "Attendez 60 secondes avant de renvoyer un email de réinitialisation.",
+              variant: "destructive",
+            });
+            return;
+          }
         }
         if (codeText.includes('invalid') || codeText.includes('not found')) {
           toast({

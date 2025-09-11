@@ -29,3 +29,6 @@ verify_jwt = true
 
 [functions.convert-subscriber-to-user]
 verify_jwt = true
+
+[functions.send-password-reset-link]
+verify_jwt = false
