@@ -148,11 +148,24 @@ const SystemMonitoring = () => {
   };
 
   const handleSendResetEmail = async () => {
-    const emailToTest = customTestEmail || user?.email;
+    const emailToTest = (customTestEmail || user?.email || '').trim();
     if (!emailToTest) {
       toast({
         title: "Email requis",
         description: "Veuillez entrer un email ou vous connecter.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const key = `pw_reset_cooldown:${emailToTest.toLowerCase()}`;
+    const now = Date.now();
+    const until = Number(localStorage.getItem(key) || 0);
+    const remaining = Math.max(0, Math.ceil((until - now) / 1000));
+    if (remaining > 0) {
+      toast({
+        title: "Veuillez patienter",
+        description: `Vous pourrez renvoyer un email dans ${remaining}s.`,
         variant: "destructive",
       });
       return;
@@ -165,21 +178,41 @@ const SystemMonitoring = () => {
       });
 
       if (error) {
-        if (error.message.includes('rate_limit')) {
+        const msg = (error as any)?.message || '';
+        const codeText = msg.toLowerCase();
+        if (codeText.includes('rate') || codeText.includes('429') || codeText.includes('over_email_send_rate_limit')) {
+          localStorage.setItem(key, String(now + 60_000));
           toast({
             title: "Limite de débit atteinte",
             description: "Attendez 60 secondes avant de renvoyer un email de réinitialisation.",
             variant: "destructive",
           });
-        } else {
-          throw error;
+          return;
         }
-      } else {
-        toast({
-          title: 'Email de réinitialisation envoyé ✅',
-          description: `Vérifiez votre boîte mail: ${emailToTest}`,
-        });
+        if (codeText.includes('invalid') || codeText.includes('not found')) {
+          toast({
+            title: "Email introuvable",
+            description: "Aucun utilisateur associé à cet email.",
+            variant: "destructive",
+          });
+          return;
+        }
+        if (codeText.includes('timeout') || (error as any)?.status === 504) {
+          toast({
+            title: "Temps dépassé",
+            description: "Le serveur a mis trop de temps à répondre. Réessayez dans un instant.",
+            variant: "destructive",
+          });
+          return;
+        }
+        throw error;
       }
+
+      localStorage.setItem(key, String(Date.now() + 60_000));
+      toast({
+        title: 'Email de réinitialisation envoyé ✅',
+        description: `Vérifiez votre boîte mail: ${emailToTest}`,
+      });
     } catch (err) {
       console.error('Reset email error:', err);
       toast({

@@ -162,13 +162,74 @@ export const useUserManagement = () => {
   };
 
   const resetUserPassword = async (userEmail: string) => {
-    if (!confirm(`Envoyer un email de réinitialisation de mot de passe à ${userEmail} ?`)) return;
+    const email = (userEmail || '').trim();
+    if (!email) {
+      toast({
+        title: "Email requis",
+        description: "Veuillez fournir une adresse email valide.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!confirm(`Envoyer un email de réinitialisation de mot de passe à ${email} ?`)) return;
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(userEmail, {
+      const key = `pw_reset_cooldown:${email.toLowerCase()}`;
+      const now = Date.now();
+      const until = Number(localStorage.getItem(key) || 0);
+      const remaining = Math.max(0, Math.ceil((until - now) / 1000));
+      if (remaining > 0) {
+        toast({
+          title: "Veuillez patienter",
+          description: `Vous pourrez renvoyer un email dans ${remaining}s.`,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`
       });
-      if (error) throw error;
+
+      if (error) {
+        const msg = (error as any)?.message || '';
+        const codeText = msg.toLowerCase();
+
+        // Start 60s cooldown on rate limit
+        if (codeText.includes('rate') || codeText.includes('429') || codeText.includes('over_email_send_rate_limit')) {
+          localStorage.setItem(key, String(now + 60_000));
+          toast({
+            title: "Limite de débit atteinte",
+            description: "Attendez 60s avant de renvoyer l'email de réinitialisation.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (codeText.includes('invalid') || codeText.includes('not found')) {
+          toast({
+            title: "Email introuvable",
+            description: "Aucun utilisateur associé à cet email.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (codeText.includes('timeout') || (error as any)?.status === 504) {
+          toast({
+            title: "Temps dépassé",
+            description: "Le serveur a mis trop de temps à répondre. Réessayez dans un instant.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        throw error;
+      }
+
+      // Success: set a short cooldown to avoid rapid repeats
+      localStorage.setItem(`pw_reset_cooldown:${email.toLowerCase()}`, String(Date.now() + 60_000));
 
       toast({
         title: "Succès",
