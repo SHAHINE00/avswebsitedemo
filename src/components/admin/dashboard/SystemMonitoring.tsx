@@ -36,6 +36,7 @@ const SystemMonitoring = () => {
   const [sendingTest, setSendingTest] = React.useState(false);
   const [sendingMagicLink, setSendingMagicLink] = React.useState(false);
   const [sendingResetEmail, setSendingResetEmail] = React.useState(false);
+  const [sendingSMTPReset, setSendingSMTPReset] = React.useState(false);
   const [customTestEmail, setCustomTestEmail] = React.useState('');
 
   const formatBytes = (bytes: number) => {
@@ -246,6 +247,48 @@ const SystemMonitoring = () => {
       setSendingResetEmail(false);
     }
   };
+
+  const handleSendSMTPResetEmail = async () => {
+    const emailToTest = (customTestEmail || user?.email || '').trim();
+    if (!emailToTest) {
+      toast({
+        title: "Email requis",
+        description: "Veuillez entrer un email ou vous connecter.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setSendingSMTPReset(true);
+    console.info('[SystemMonitoring] Invoking SMTP reset for', emailToTest);
+    try {
+      const { data: fnData, error: fnError } = await supabase.functions.invoke('send-password-reset-link', {
+        body: { email: emailToTest, redirectTo: `${window.location.origin}/reset-password` }
+      });
+      if (fnError || (fnData as any)?.error) {
+        console.error('[SystemMonitoring] SMTP reset failed', fnError || (fnData as any)?.error);
+        toast({
+          title: "Échec de l'envoi (secours)",
+          description: "Consultez les logs de la fonction 'send-password-reset-link'.",
+          variant: "destructive",
+        });
+        return;
+      }
+      toast({
+        title: 'Email (secours) envoyé ✅',
+        description: `Lien envoyé via SMTP: ${emailToTest}`,
+      });
+    } catch (e) {
+      console.error('[SystemMonitoring] SMTP reset threw', e);
+      toast({
+        title: "Erreur d'envoi (secours)",
+        description: "Veuillez réessayer dans quelques instants.",
+        variant: "destructive",
+      });
+    } finally {
+      setSendingSMTPReset(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -377,6 +420,16 @@ const SystemMonitoring = () => {
             >
               <Key className="w-4 h-4 mr-1" />
               {sendingResetEmail ? 'Envoi...' : 'Réinitialisation (Auth)'}
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSendSMTPResetEmail}
+              disabled={sendingSMTPReset}
+            >
+              <Mail className="w-4 h-4 mr-1" />
+              {sendingSMTPReset ? 'Envoi...' : 'Réinitialisation (SMTP secours)'}
             </Button>
             
             <Button

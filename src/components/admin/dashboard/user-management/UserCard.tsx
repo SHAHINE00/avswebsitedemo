@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 // Use the shared UserProfile interface
 import type { UserProfile } from './hooks/useUserManagement';
@@ -48,6 +50,46 @@ export const UserCard: React.FC<UserCardProps> = ({
       return user.email[0].toUpperCase();
     }
     return 'U';
+  };
+
+  const { toast } = useToast();
+
+  const handleSmtpReset = async () => {
+    const email = (user.email || '').trim();
+    if (!email) {
+      toast({
+        title: "Email manquant",
+        description: "Aucune adresse email associée à cet utilisateur.",
+        variant: "destructive",
+      });
+      return;
+    }
+    try {
+      console.info('[UserCard] SMTP reset invoked for', email);
+      const { data, error } = await supabase.functions.invoke('send-password-reset-link', {
+        body: { email, redirectTo: `${window.location.origin}/reset-password` }
+      });
+      if (error || (data as any)?.error) {
+        console.error('[UserCard] SMTP reset failed', error || (data as any)?.error);
+        toast({
+          title: "Échec de l'envoi (secours)",
+          description: "Consultez les logs 'send-password-reset-link'.",
+          variant: "destructive",
+        });
+        return;
+      }
+      toast({
+        title: "Email (secours) envoyé ✅",
+        description: `Lien envoyé via SMTP: ${email}`,
+      });
+    } catch (e) {
+      console.error('[UserCard] SMTP reset threw', e);
+      toast({
+        title: "Erreur d'envoi (secours)",
+        description: "Veuillez réessayer dans quelques instants.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -111,6 +153,15 @@ export const UserCard: React.FC<UserCardProps> = ({
           className="h-8"
         >
           <Key className="w-4 h-4" />
+        </Button>
+        
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleSmtpReset}
+          className="h-8"
+        >
+          <Mail className="w-4 h-4" />
         </Button>
 
         {onManageEnrollments && (
@@ -177,6 +228,16 @@ export const UserCard: React.FC<UserCardProps> = ({
           <Key className="w-4 h-4 mr-2" />
           <span className="hidden sm:inline">Mot de passe</span>
           <span className="sm:hidden">MDP</span>
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleSmtpReset}
+          className="flex-1 h-9"
+        >
+          <Mail className="w-4 h-4 mr-2" />
+          Secours
         </Button>
 
         {onManageEnrollments && (

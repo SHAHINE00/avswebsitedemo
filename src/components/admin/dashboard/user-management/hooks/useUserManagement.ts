@@ -196,9 +196,10 @@ export const useUserManagement = () => {
         const msg = (error as any)?.message || '';
         const codeText = msg.toLowerCase();
 
-        // Start 60s cooldown on rate limit - try SMTP fallback
-        if (codeText.includes('rate') || codeText.includes('429') || codeText.includes('over_email_send_rate_limit')) {
+        // Rate limit (429) → start 60s cooldown and trigger SMTP fallback
+        if ((error as any)?.status === 429 || codeText.includes('rate') || codeText.includes('429') || codeText.includes('over_email_send_rate_limit')) {
           localStorage.setItem(key, String(now + 60_000));
+          console.info('[Admin] Reset fallback via SMTP triggered for', email);
 
           // Attempt fallback via Edge Function using Hostinger SMTP
           try {
@@ -207,6 +208,7 @@ export const useUserManagement = () => {
             });
 
             if (fnError || (fnData as any)?.error) {
+              console.error('SMTP fallback failed', fnError || (fnData as any)?.error);
               toast({
                 title: "Limite de débit atteinte",
                 description: "Attendez 60s avant de renvoyer l'email de réinitialisation.",
@@ -221,6 +223,7 @@ export const useUserManagement = () => {
             });
             return;
           } catch (e) {
+            console.error('SMTP fallback threw', e);
             toast({
               title: "Limite de débit atteinte",
               description: "Attendez 60s avant de renvoyer l'email de réinitialisation.",

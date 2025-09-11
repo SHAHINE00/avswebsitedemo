@@ -19,6 +19,7 @@ serve(async (req) => {
 
   try {
     const { email, redirectTo }: RequestBody = await req.json();
+    console.log("send-password-reset-link invoked", { email_present: !!email, redirectTo });
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return new Response(JSON.stringify({ error: "invalid_email" }), {
@@ -50,6 +51,7 @@ serve(async (req) => {
         redirectTo: redirectTo || `${SUPABASE_URL.replace(/\/$/, "")}`,
       },
     });
+    console.log("Recovery link generated", { ok: !linkError, email_present: !!email });
 
     if (linkError) {
       console.error("generateLink error:", linkError);
@@ -69,6 +71,7 @@ serve(async (req) => {
     }
 
     // Send email via existing Hostinger SMTP edge function to bypass GoTrue rate limits
+    console.log("Invoking send-hostinger-email via admin client");
     const { data: emailData, error: emailError } = await adminClient.functions.invoke('send-hostinger-email', {
       body: {
         type: 'custom',
@@ -89,6 +92,7 @@ serve(async (req) => {
         `,
       },
     });
+    console.log("send-hostinger-email response", { hasError: !!emailError, data: emailData });
 
     if (emailError || (emailData as any)?.error) {
       console.error("SMTP send error:", emailError || (emailData as any)?.error);
@@ -98,6 +102,7 @@ serve(async (req) => {
       });
     }
 
+    console.log("Password reset email sent successfully via SMTP");
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
