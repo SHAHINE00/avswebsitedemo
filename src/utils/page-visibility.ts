@@ -1,56 +1,86 @@
-// Page Visibility API handling to prevent unnecessary reloads
-export const initPageVisibilityHandling = (): void => {
-  if (typeof window === 'undefined' || !document) return;
+// Enhanced page visibility management to prevent unnecessary reloads
+let isHidden = false;
+let hiddenTime = 0;
+let rapidChangeCount = 0;
 
-  let wasHidden = false;
-  let hiddenTime = 0;
-  const MAX_HIDDEN_TIME = 30 * 60 * 1000; // 30 minutes
+// Debounce rapid visibility changes to prevent reload loops
+let visibilityTimeout: number | null = null;
 
-  const handleVisibilityChange = () => {
-    if (document.hidden) {
-      // Page is now hidden
-      wasHidden = true;
-      hiddenTime = Date.now();
-      console.log('Page hidden, pausing non-critical operations');
-      
-      // Pause or reduce operations when page is hidden
-      // Cancel pending network requests if needed
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.ready.then(registration => {
-          registration.active?.postMessage({ type: 'PAGE_HIDDEN' });
-        });
-      }
-    } else {
-      // Page is now visible
-      if (wasHidden) {
-        const hiddenDuration = Date.now() - hiddenTime;
-        console.log(`Page visible again after ${hiddenDuration}ms`);
+export function initPageVisibilityHandling() {
+  if (typeof document === 'undefined') return;
+
+  document.addEventListener('visibilitychange', () => {
+    // Clear any pending timeout
+    if (visibilityTimeout) {
+      clearTimeout(visibilityTimeout);
+    }
+
+    // Track rapid changes (likely tab switching)
+    rapidChangeCount++;
+    setTimeout(() => {
+      rapidChangeCount = Math.max(0, rapidChangeCount - 1);
+    }, 2000);
+
+    // If rapid changes detected, skip processing
+    if (rapidChangeCount > 3) {
+      console.log('Rapid tab switching detected - skipping visibility processing');
+      return;
+    }
+
+    // Debounce the visibility change
+    visibilityTimeout = window.setTimeout(() => {
+      if (document.hidden && !isHidden) {
+        isHidden = true;
+        hiddenTime = Date.now();
+        console.log('Page hidden - pausing operations');
         
-        // Only check for updates if hidden for a long time
-        if (hiddenDuration > MAX_HIDDEN_TIME) {
-          console.log('Page was hidden for a long time, checking for updates');
-          // Could trigger cache refresh here if needed
+        // Save current state without triggering reloads
+        try {
+          sessionStorage.setItem('page_hidden_time', hiddenTime.toString());
+          sessionStorage.setItem('scroll_position', window.scrollY.toString());
+        } catch (e) {
+          // Storage might be full or disabled
         }
         
-        wasHidden = false;
+      } else if (!document.hidden && isHidden) {
+        isHidden = false;
+        const timeHidden = hiddenTime ? Date.now() - hiddenTime : 0;
+        console.log(`Page visible after ${timeHidden}ms - optimized resume`);
+        
+        // Restore scroll position without reload
+        try {
+          const scrollPosition = sessionStorage.getItem('scroll_position');
+          if (scrollPosition) {
+            window.scrollTo(0, parseInt(scrollPosition));
+            sessionStorage.removeItem('scroll_position');
+          }
+        } catch (e) {
+          // Scroll restoration failed
+        }
+        
+        // Only perform checks if hidden for more than 30 minutes AND not rapid switching
+        if (timeHidden > 30 * 60 * 1000 && rapidChangeCount === 0) {
+          console.log('Long absence detected, gentle update check');
+          // Check for updates without forcing reload
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(registration => {
+              registration.update().catch(err => 
+                console.log('Update check failed:', err)
+              );
+            });
+          }
+        }
+        
         hiddenTime = 0;
+        try {
+          sessionStorage.removeItem('page_hidden_time');
+        } catch (e) {
+          // Storage access failed
+        }
       }
-    }
-  };
-
-  // Add debouncing to prevent rapid state changes
-  let debounceTimer: number;
-  const debouncedHandler = () => {
-    clearTimeout(debounceTimer);
-    debounceTimer = window.setTimeout(handleVisibilityChange, 100);
-  };
-
-  document.addEventListener('visibilitychange', debouncedHandler);
-  
-  // Remove focus/blur listeners to prevent conflicts with tab switching
-
-  console.log('Page visibility handling initialized');
-};
+    }, 150); // Slightly longer debounce for stability
+  });
+}
 
 // Detect if page reload was caused by navigation vs actual refresh
 export const wasPageReloaded = (): boolean => {
