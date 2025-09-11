@@ -141,12 +141,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(null);
       setSession(null);
       setIsAdmin(false);
+      
+      // Redirect to home page after logout
+      window.location.href = '/';
     } catch (error) {
       console.error('Unexpected logout error:', error);
       // Force clear state on any error
       setUser(null);
       setSession(null);
       setIsAdmin(false);
+      
+      // Redirect to home page after logout
+      window.location.href = '/';
     }
   };
 
