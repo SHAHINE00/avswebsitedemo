@@ -7,6 +7,23 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
+// Allowed origins for stricter CORS enforcement
+const allowedOrigins = new Set<string>([
+  'https://avs.ma',
+  'https://www.avs.ma',
+  'http://localhost:3000',
+  'http://localhost:5173',
+]);
+
+function isOriginAllowed(origin: string | null): boolean {
+  if (!origin) return true; // allow server-to-server calls
+  try {
+    return allowedOrigins.has(origin);
+  } catch {
+    return false;
+  }
+}
+
 // Basic in-memory rate limiter (per Deno isolate)
 const rateMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT = 60; // max events per IP per minute
@@ -47,9 +64,20 @@ function sanitize(value: unknown, depth = 0): any {
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    // Reflect allowed origin for preflight if possible
+    const origin = req.headers.get('origin');
+    const headers = { ...corsHeaders, 'Access-Control-Allow-Origin': isOriginAllowed(origin) ? (origin ?? '*') : 'null' };
+    return new Response(null, { headers });
   }
 
+  // Enforce origin check for non-OPTIONS
+  const origin = req.headers.get('origin');
+  if (!isOriginAllowed(origin)) {
+    return new Response(JSON.stringify({ error: 'Origin not allowed' }), {
+      status: 403,
+      headers: { 'content-type': 'application/json', ...corsHeaders },
+    });
+  }
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405,
