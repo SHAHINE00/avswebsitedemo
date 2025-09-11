@@ -1,11 +1,9 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Brain, Code, Megaphone, TrendingUp, ArrowRight } from 'lucide-react';
 
 const CareerPaths: React.FC = () => {
-  
   return (
     <section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-b from-white to-academy-gray/30">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -111,39 +109,39 @@ const CareerPaths: React.FC = () => {
             </div>
 
             {/* Marketing Digital & Créatif */}
-            <div className="group relative bg-gradient-to-br from-academy-lightblue to-academy-blue rounded-xl sm:rounded-2xl p-4 sm:p-6 text-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300 sm:col-span-2 lg:col-span-1">
-              <div className="absolute top-3 sm:top-4 right-3 sm:right-4 w-2 h-2 bg-white rounded-full animate-pulse"></div>
+            <div className="group relative bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-academy-lightblue/10 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 sm:col-span-2 lg:col-span-1">
+              <div className="absolute top-3 sm:top-4 right-3 sm:right-4 w-2 h-2 bg-academy-lightblue rounded-full animate-pulse"></div>
               <div className="flex items-center mb-3 sm:mb-4">
-                <div className="bg-white/20 p-1.5 sm:p-2 rounded-lg mr-2 sm:mr-3">
-                  <Megaphone className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
+                <div className="bg-academy-lightblue/10 p-1.5 sm:p-2 rounded-lg mr-2 sm:mr-3">
+                  <Megaphone className="w-4 sm:w-5 h-4 sm:h-5 text-academy-lightblue" />
                 </div>
-                <h3 className="text-base sm:text-lg font-bold">Marketing Digital & Créatif</h3>
+                <h3 className="text-base sm:text-lg font-bold text-academy-lightblue">Marketing Digital & Créatif</h3>
               </div>
               
-              <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm mb-3 sm:mb-4 opacity-90">
+              <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
                 <div className="flex items-center">
-                  <div className="w-1 h-1 bg-white rounded-full mr-2"></div>
+                  <div className="w-1 h-1 bg-academy-lightblue rounded-full mr-2"></div>
                   <span>Marketing Manager</span>
                 </div>
                 <div className="flex items-center">
-                  <div className="w-1 h-1 bg-white rounded-full mr-2"></div>
+                  <div className="w-1 h-1 bg-academy-lightblue rounded-full mr-2"></div>
                   <span>Community Manager</span>
                 </div>
                 <div className="flex items-center">
-                  <div className="w-1 h-1 bg-white rounded-full mr-2"></div>
+                  <div className="w-1 h-1 bg-academy-lightblue rounded-full mr-2"></div>
                   <span>Content Creator</span>
                 </div>
                 <div className="flex items-center">
-                  <div className="w-1 h-1 bg-white rounded-full mr-2"></div>
+                  <div className="w-1 h-1 bg-academy-lightblue rounded-full mr-2"></div>
                   <span>E-commerce Specialist</span>
                 </div>
               </div>
               
               <div className="flex justify-between items-center">
-                <div className="bg-white/20 text-white rounded-full px-2 sm:px-3 py-1 text-xs font-medium">
+                <div className="bg-academy-lightblue/10 text-academy-lightblue rounded-full px-2 sm:px-3 py-1 text-xs font-medium">
                   €35k - €65k
                 </div>
-                <TrendingUp className="w-3 sm:w-4 h-3 sm:h-4 text-white" />
+                <TrendingUp className="w-3 sm:w-4 h-3 sm:h-4 text-green-500" />
               </div>
             </div>
           </div>
