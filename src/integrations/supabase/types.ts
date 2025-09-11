@@ -959,31 +959,61 @@ export type Database = {
       }
       profiles: {
         Row: {
+          academic_level: string | null
+          address: string | null
+          bio: string | null
+          career_goals: string | null
+          city: string | null
+          country: string | null
           created_at: string | null
+          date_of_birth: string | null
           email: string | null
+          expected_completion: string | null
           full_name: string | null
           id: string
           phone: string | null
+          postal_code: string | null
+          previous_education: string | null
           role: string | null
           status: Database["public"]["Enums"]["approval_status"] | null
           updated_at: string | null
         }
         Insert: {
+          academic_level?: string | null
+          address?: string | null
+          bio?: string | null
+          career_goals?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string | null
+          date_of_birth?: string | null
           email?: string | null
+          expected_completion?: string | null
           full_name?: string | null
           id: string
           phone?: string | null
+          postal_code?: string | null
+          previous_education?: string | null
           role?: string | null
           status?: Database["public"]["Enums"]["approval_status"] | null
           updated_at?: string | null
         }
         Update: {
+          academic_level?: string | null
+          address?: string | null
+          bio?: string | null
+          career_goals?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string | null
+          date_of_birth?: string | null
           email?: string | null
+          expected_completion?: string | null
           full_name?: string | null
           id?: string
           phone?: string | null
+          postal_code?: string | null
+          previous_education?: string | null
           role?: string | null
           status?: Database["public"]["Enums"]["approval_status"] | null
           updated_at?: string | null
