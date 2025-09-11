@@ -5,44 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Brain, Code, Megaphone, TrendingUp, ArrowRight } from 'lucide-react';
 
 const CareerPaths: React.FC = () => {
-  // Enhanced debugging
-  React.useEffect(() => {
-    console.log('🎯 CareerPaths useEffect: Component mounted and useEffect triggered');
-    
-    // Check if the component is actually in the DOM
-    const checkInDOM = () => {
-      const elements = document.querySelectorAll('.career-opportunities');
-      console.log('🔍 CareerPaths DOM check:', {
-        foundElements: elements.length,
-        elements: Array.from(elements).map(el => ({
-          className: el.className,
-          display: window.getComputedStyle(el).display,
-          visibility: window.getComputedStyle(el).visibility,
-          opacity: window.getComputedStyle(el).opacity,
-          position: window.getComputedStyle(el).position,
-          zIndex: window.getComputedStyle(el).zIndex
-        }))
-      });
-    };
-    
-    // Check immediately and after a short delay
-    checkInDOM();
-    const timeout = setTimeout(checkInDOM, 100);
-    
-    return () => clearTimeout(timeout);
-  }, []);
-  
-  console.log('🎯 CareerPaths: Rendering component');
   
   return (
-    <section 
-      className="career-opportunities py-8 sm:py-12 lg:py-16 bg-gradient-to-b from-white to-academy-gray/30"
-      style={{ 
-        minHeight: '200px', 
-        border: process.env.NODE_ENV === 'development' ? '2px solid red' : 'none',
-        position: 'relative'
-      }}
-    >
+    <section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-b from-white to-academy-gray/30">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
