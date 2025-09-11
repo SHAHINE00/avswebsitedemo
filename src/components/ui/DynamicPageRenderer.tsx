@@ -163,9 +163,22 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
     const pageSpecificSections = getSectionsByPage(pageName);
     const globalSections = getSectionsByPage('global');
     
+    // Debug logging for CareerPaths
+    console.log('🔍 Debug - DynamicPageRenderer:', {
+      pageName,
+      allPageSections: pageSpecificSections,
+      careerPathsSection: pageSpecificSections.find(s => s.section_key === 'home_career_paths'),
+      loading
+    });
+    
     // Filter visible sections
     const visiblePageSections = pageSpecificSections.filter(section => section.is_visible);
     const visibleGlobalSections = globalSections.filter(section => section.is_visible);
+    
+    console.log('🔍 Debug - After filtering:', {
+      visiblePageSections,
+      careerPathsVisible: visiblePageSections.find(s => s.section_key === 'home_career_paths')
+    });
     
     // Sort page sections by display order
     const sortedPageSections = visiblePageSections.sort((a, b) => a.display_order - b.display_order);
@@ -180,11 +193,23 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
     result.push(...sortedPageSections);
     if (footer) result.push(footer);
     
+    console.log('🔍 Debug - Final ordered sections:', result);
+    
     return result;
   }, [getSectionsByPage, pageName, loading]);
 
   const renderSection = (sectionKey: string) => {
     const Component = SECTION_COMPONENTS[sectionKey];
+    
+    // Debug logging for CareerPaths specifically
+    if (sectionKey === 'home_career_paths') {
+      console.log('🎯 Debug - Rendering CareerPaths:', {
+        sectionKey,
+        componentFound: !!Component,
+        componentName: Component?.name
+      });
+    }
+    
     if (!Component) {
       logWarn(`No component found for section: ${sectionKey}. Available sections:`, Object.keys(SECTION_COMPONENTS));
       // In development, show a placeholder for missing components

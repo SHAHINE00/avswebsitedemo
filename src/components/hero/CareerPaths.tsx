@@ -5,8 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Brain, Code, Megaphone, TrendingUp, ArrowRight } from 'lucide-react';
 
 const CareerPaths: React.FC = () => {
+  console.log('🎯 CareerPaths component is rendering!');
+  
   return (
-    <section className="career-opportunities py-8 sm:py-12 lg:py-16 bg-gradient-to-b from-white to-academy-gray/30">
+    <section className="career-opportunities py-8 sm:py-12 lg:py-16 bg-gradient-to-b from-white to-academy-gray/30 relative">
+      {/* Debug indicator */}
+      <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 text-xs z-50">
+        DEBUG: CareerPaths Section Rendered
+      </div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
