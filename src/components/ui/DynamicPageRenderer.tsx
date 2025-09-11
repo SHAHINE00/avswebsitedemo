@@ -2,6 +2,8 @@ import React, { useMemo, useEffect } from 'react';
 import { useSectionVisibility } from '@/hooks/useSectionVisibility';
 import { supabase } from '@/integrations/supabase/client';
 import { logWarn } from '@/utils/logger';
+import SectionDebugger from '@/components/debugging/SectionDebugger';
+import CareerPathsTestComponent from '@/components/debugging/CareerPathsTestComponent';
 
 // Global components
 import Navbar from '@/components/Navbar';
@@ -185,6 +187,22 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
 
   const renderSection = (sectionKey: string) => {
     const Component = SECTION_COMPONENTS[sectionKey];
+    
+    // Special debug case for CareerPaths
+    if (sectionKey === 'home_career_paths') {
+      console.log('🎯 Rendering CareerPaths via DynamicPageRenderer', {
+        componentFound: !!Component,
+        componentName: Component?.name
+      });
+      
+      // Render with debug wrapper
+      return (
+        <SectionDebugger key={sectionKey} sectionKey={sectionKey} fallbackComponent={CareerPathsTestComponent}>
+          {Component ? <Component /> : <CareerPathsTestComponent />}
+        </SectionDebugger>
+      );
+    }
+    
     if (!Component) {
       logWarn(`No component found for section: ${sectionKey}. Available sections:`, Object.keys(SECTION_COMPONENTS));
       // In development, show a placeholder for missing components
@@ -198,6 +216,16 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
       }
       return null;
     }
+    
+    // Render regular sections with debug wrapper in development
+    if (process.env.NODE_ENV === 'development') {
+      return (
+        <SectionDebugger key={sectionKey} sectionKey={sectionKey}>
+          <Component />
+        </SectionDebugger>
+      );
+    }
+    
     return <Component key={sectionKey} />;
   };
 
