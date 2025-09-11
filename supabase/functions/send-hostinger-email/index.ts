@@ -23,6 +23,15 @@ const SMTP_CONFIG = {
 // Check if SMTP is configured
 const SMTP_ENABLED = SMTP_CONFIG.hostname && SMTP_CONFIG.username && SMTP_CONFIG.password;
 
+// Validate SMTP secrets upfront
+function validateSMTPConfig(): { valid: boolean; missing: string[] } {
+  const missing = [];
+  if (!SMTP_CONFIG.hostname) missing.push('SMTP_HOST');
+  if (!SMTP_CONFIG.username) missing.push('SMTP_USERNAME');
+  if (!SMTP_CONFIG.password) missing.push('SMTP_PASSWORD');
+  return { valid: missing.length === 0, missing };
+}
+
 // Supabase client for unsubscribe checks
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
@@ -83,6 +92,12 @@ function buildUnsubscribeUrl(token: string | null): string {
 
 // SMTP Helper Functions
 async function sendViaSMTP(to: string[], subject: string, html: string, from: string) {
+  // Validate SMTP configuration before attempting to send
+  const validation = validateSMTPConfig();
+  if (!validation.valid) {
+    throw new Error(`SMTP configuration incomplete. Missing: ${validation.missing.join(', ')}`);
+  }
+
   const client = new SMTPClient(SMTP_CONFIG);
   
   console.log(`Sending via SMTP to: ${to.join(', ')}`);
@@ -113,10 +128,14 @@ async function sendViaResend(to: string[], subject: string, html: string, from: 
 async function sendEmail(to: string[], subject: string, html: string, from: string, method: 'smtp' | 'resend') {
   try {
     if (method === 'smtp') {
+      console.log("Attempting SMTP send...");
       await sendViaSMTP(to, subject, html, from);
+      console.log("SMTP send successful");
       return { success: true };
     } else {
+      console.log("Sending via Resend...");
       const result = await sendViaResend(to, subject, html, from);
+      console.log("Resend send successful");
       return result;
     }
   } catch (error) {
@@ -124,7 +143,14 @@ async function sendEmail(to: string[], subject: string, html: string, from: stri
     // If SMTP fails, fallback to Resend if available
     if (method === 'smtp' && Deno.env.get("RESEND_API_KEY")) {
       console.log("SMTP failed, falling back to Resend...");
-      return await sendViaResend(to, subject, html, from);
+      try {
+        const fallbackResult = await sendViaResend(to, subject, html, from);
+        console.log("Resend fallback successful");
+        return fallbackResult;
+      } catch (fallbackError) {
+        console.error("Resend fallback also failed:", fallbackError);
+        throw fallbackError;
+      }
     }
     throw error;
   }
@@ -181,10 +207,30 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    console.log(`Email mode: ${SMTP_ENABLED ? 'SMTP (Hostinger)' : 'Resend'} | FROM: ${FROM_EMAIL} | ADMIN: ${ADMIN_EMAIL ?? 'not set'}`);
+    // Validate configuration and choose method
+    const smtpValidation = validateSMTPConfig();
+    const hasResend = !!Deno.env.get("RESEND_API_KEY");
     
-    // Choose sending method
-    const sendMethod = SMTP_ENABLED ? 'smtp' : 'resend';
+    let sendMethod: 'smtp' | 'resend';
+    if (smtpValidation.valid) {
+      sendMethod = 'smtp';
+      console.log(`Email mode: SMTP (Hostinger) | FROM: ${FROM_EMAIL} | ADMIN: ${ADMIN_EMAIL ?? 'not set'}`);
+    } else if (hasResend) {
+      sendMethod = 'resend';
+      console.log(`Email mode: Resend (SMTP unavailable: ${smtpValidation.missing.join(', ')}) | FROM: ${FROM_EMAIL} | ADMIN: ${ADMIN_EMAIL ?? 'not set'}`);
+    } else {
+      console.error("No valid email configuration available");
+      return new Response(
+        JSON.stringify({ 
+          success: false,
+          error: "Aucune configuration d'email valide disponible" 
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
 
     console.log(`Processing email request of type: ${type}`);
 

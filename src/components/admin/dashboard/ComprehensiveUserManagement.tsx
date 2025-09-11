@@ -28,15 +28,16 @@ const ComprehensiveUserManagement = () => {
   const [inviteMessage, setInviteMessage] = useState('');
   const { toast } = useToast();
 
-  const {
-    users,
-    loading,
-    fetchUsers,
-    updateUserRole,
-    deleteUser,
-    updateUserProfile,
-    inviteUser,
-    resetUserPassword
+  const { 
+    users, 
+    loading, 
+    fetchUsers, 
+    updateUserRole, 
+    deleteUser, 
+    updateUserProfile, 
+    inviteUser, 
+    resetUserPassword,
+    copyResetLink 
   } = useUserManagement();
 
   const {
@@ -196,6 +197,7 @@ const ComprehensiveUserManagement = () => {
                 onToggleSelection={() => toggleUserSelection(user.id)}
                 onEdit={() => setEditingUser(user)}
                 onResetPassword={() => resetUserPassword(user.email || '')}
+                onCopyResetLink={() => copyResetLink(user.email || '')}
                 onUpdateRole={(newRole) => updateUserRole(user.id, newRole, user.role)}
                 onDelete={() => deleteUser(user.id, user.email || '')}
                 onManageEnrollments={() => setEnrollmentUser(user)}

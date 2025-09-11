@@ -27,6 +27,7 @@ interface UserCardProps {
   onToggleSelection: () => void;
   onEdit: () => void;
   onResetPassword: () => void;
+  onCopyResetLink: () => void;
   onUpdateRole: (newRole: string) => void;
   onDelete: () => void;
   onManageEnrollments?: () => void;
@@ -38,6 +39,7 @@ export const UserCard: React.FC<UserCardProps> = ({
   onToggleSelection,
   onEdit,
   onResetPassword,
+  onCopyResetLink,
   onUpdateRole,
   onDelete,
   onManageEnrollments
@@ -54,43 +56,6 @@ export const UserCard: React.FC<UserCardProps> = ({
 
   const { toast } = useToast();
 
-  const handleSmtpReset = async () => {
-    const email = (user.email || '').trim();
-    if (!email) {
-      toast({
-        title: "Email manquant",
-        description: "Aucune adresse email associée à cet utilisateur.",
-        variant: "destructive",
-      });
-      return;
-    }
-    try {
-      console.info('[UserCard] SMTP reset invoked for', email);
-      const { data, error } = await supabase.functions.invoke('send-password-reset-link', {
-        body: { email, redirectTo: `${window.location.origin}/reset-password` }
-      });
-      if (error || (data as any)?.error) {
-        console.error('[UserCard] SMTP reset failed', error || (data as any)?.error);
-        toast({
-          title: "Échec de l'envoi (secours)",
-          description: "Consultez les logs 'send-password-reset-link'.",
-          variant: "destructive",
-        });
-        return;
-      }
-      toast({
-        title: "Email (secours) envoyé ✅",
-        description: `Lien envoyé via SMTP: ${email}`,
-      });
-    } catch (e) {
-      console.error('[UserCard] SMTP reset threw', e);
-      toast({
-        title: "Erreur d'envoi (secours)",
-        description: "Veuillez réessayer dans quelques instants.",
-        variant: "destructive",
-      });
-    }
-  };
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
@@ -158,7 +123,7 @@ export const UserCard: React.FC<UserCardProps> = ({
         <Button
           variant="outline"
           size="sm"
-          onClick={handleSmtpReset}
+          onClick={onCopyResetLink}
           className="h-8"
         >
           <Mail className="w-4 h-4" />
@@ -233,11 +198,11 @@ export const UserCard: React.FC<UserCardProps> = ({
         <Button
           variant="outline"
           size="sm"
-          onClick={handleSmtpReset}
+          onClick={onCopyResetLink}
           className="flex-1 h-9"
         >
           <Mail className="w-4 h-4 mr-2" />
-          Secours
+          Copier
         </Button>
 
         {onManageEnrollments && (

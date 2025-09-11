@@ -43,12 +43,51 @@ serve(async (req) => {
       auth: { persistSession: false },
     });
 
+    // Check if caller is admin (only for authenticated calls)
+    const authHeader = req.headers.get('authorization');
+    if (authHeader) {
+      const token = authHeader.replace('Bearer ', '');
+      const { data: { user }, error: userError } = await adminClient.auth.getUser(token);
+      
+      if (userError || !user) {
+        console.error("Invalid auth token:", userError);
+        return new Response(JSON.stringify({ error: "unauthorized" }), {
+          status: 401,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      }
+
+      // Check if user is admin
+      const { data: profile, error: profileError } = await adminClient
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError || profile?.role !== 'admin') {
+        console.error("Non-admin user attempted to use reset function:", user.id);
+        return new Response(JSON.stringify({ error: "admin_required" }), {
+          status: 403,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      }
+
+      // Log admin activity
+      await adminClient.rpc('log_admin_activity', {
+        p_action: 'password_reset_requested',
+        p_entity_type: 'user',
+        p_entity_id: null,
+        p_details: { target_email: email, method: 'smtp_fallback' }
+      });
+    }
+
     // Generate a password recovery link without sending an email via Supabase
+    const defaultRedirectTo = `https://preview--avswebsitedemo.lovable.app/reset-password`;
     const { data: linkData, error: linkError } = await adminClient.auth.admin.generateLink({
       type: "recovery",
       email,
       options: {
-        redirectTo: redirectTo || `${SUPABASE_URL.replace(/\/$/, "")}`,
+        redirectTo: redirectTo || defaultRedirectTo,
       },
     });
     console.log("Recovery link generated", { ok: !linkError, email_present: !!email });
@@ -103,7 +142,7 @@ serve(async (req) => {
     }
 
     console.log("Password reset email sent successfully via SMTP");
-    return new Response(JSON.stringify({ ok: true }), {
+    return new Response(JSON.stringify({ ok: true, actionLink }), {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
     });

@@ -275,6 +275,39 @@ export const useUserManagement = () => {
     fetchUsers();
   }, []);
 
+  const copyResetLink = async (userEmail: string) => {
+    try {
+      const { data: result, error } = await supabase.functions.invoke('send-password-reset-link', {
+        body: {
+          email: userEmail,
+          redirectTo: `${window.location.origin}/reset-password`
+        }
+      });
+
+      if (error || result?.error) {
+        throw new Error(error?.message || result?.error || 'Erreur lors de la génération du lien');
+      }
+
+      if (result?.actionLink) {
+        await navigator.clipboard.writeText(result.actionLink);
+        toast({
+          title: "Succès",
+          description: "Lien de réinitialisation copié dans le presse-papiers",
+        });
+        await logActivity('password_reset_link_copied', 'user', undefined, { target_email: userEmail });
+      } else {
+        throw new Error('Aucun lien généré');
+      }
+    } catch (error: any) {
+      logError('Copy reset link error:', error);
+      toast({
+        title: "Erreur", 
+        description: `Impossible de copier le lien: ${error.message}`,
+        variant: "destructive",
+      });
+    }
+  };
+
   return {
     users,
     loading,
@@ -283,6 +316,7 @@ export const useUserManagement = () => {
     deleteUser,
     updateUserProfile,
     inviteUser,
-    resetUserPassword
+    resetUserPassword,
+    copyResetLink
   };
 };
