@@ -1,6 +1,7 @@
 
 import { createContext, useContext } from 'react';
 import { useSafeState, useSafeEffect, useSafeContext } from '@/utils/safeHooks';
+import { logError, logWarn, logInfo, logDebug } from '@/utils/logger';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -21,7 +22,7 @@ export const useAuth = () => {
   const context = useSafeContext(AuthContext);
   if (context === undefined || context === null) {
     // Return a safe fallback instead of throwing during HMR
-    console.warn('useAuth called outside AuthProvider, returning fallback');
+    logWarn('useAuth called outside AuthProvider, returning fallback');
     return {
       user: null,
       session: null,
@@ -58,7 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsAdmin(false);
       }
     } catch (error) {
-      console.error('Error checking admin status:', error);
+      logError('Error checking admin status:', error);
       setIsAdmin(false);
     } finally {
       setAdminLoading(false);
@@ -135,14 +136,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const { error } = await supabase.auth.signOut();
       if (error && error.message !== 'Invalid session') {
-        console.error('Logout error:', error);
+        logError('Logout error:', error);
       }
       // Clear local state regardless of API response
       setUser(null);
       setSession(null);
       setIsAdmin(false);
     } catch (error) {
-      console.error('Unexpected logout error:', error);
+      logError('Unexpected logout error:', error);
       // Force clear state on any error
       setUser(null);
       setSession(null);

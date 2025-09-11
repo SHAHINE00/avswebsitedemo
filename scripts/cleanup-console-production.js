@@ -109,7 +109,7 @@ const loggerImport = "import { logError, logWarn, logInfo, logDebug } from '@/ut
 function processFile(filePath) {
   if (!fs.existsSync(filePath)) {
     console.log(`⚠️  File not found: ${filePath}`);
-    return;
+    return false;
   }
 
   let content = fs.readFileSync(filePath, 'utf-8');
@@ -118,8 +118,8 @@ function processFile(filePath) {
   // Check if file has console statements
   const hasConsole = /console\.(log|error|warn|info|debug)/.test(content);
   if (!hasConsole) {
-    console.log(`✅ ${filePath} - No console statements found`);
-    return;
+    console.log(`✅ No console statements found`);
+    return false;
   }
 
   // Add logger import if not present
@@ -144,18 +144,36 @@ function processFile(filePath) {
 
   if (modified) {
     fs.writeFileSync(filePath, content, 'utf-8');
-    console.log(`🔄 ${filePath} - Console statements replaced with logger`);
+    console.log(`🔄 Console statements replaced with logger`);
+    return true;
   } else {
-    console.log(`✅ ${filePath} - No changes needed`);
+    console.log(`✅ No changes needed`);
+    return false;
   }
 }
 
-// Process all files
+// Execute the cleanup process
 console.log('🚀 Starting console cleanup for production...\n');
+console.log(`📊 Processing ${filesToProcess.length} files...\n`);
 
-filesToProcess.forEach(processFile);
+let processedCount = 0;
+let modifiedCount = 0;
+let errorCount = 0;
 
-console.log('\n✅ Console cleanup completed!');
+filesToProcess.forEach((file, index) => {
+  try {
+    console.log(`[${index + 1}/${filesToProcess.length}] Processing: ${file}`);
+    const wasModified = processFile(file);
+    processedCount++;
+    if (wasModified) modifiedCount++;
+  } catch (error) {
+    console.error(`❌ Error processing ${file}:`, error.message);
+    errorCount++;
+  }
+});
+
+console.log('\n🎉 Console cleanup completed!');
+console.log(`📊 Summary: ${processedCount} processed, ${modifiedCount} modified, ${errorCount} errors`);
 console.log('📊 Production optimizations applied:');
 console.log('  - Console statements replaced with production-safe logger');
 console.log('  - Error handling preserved for critical issues');

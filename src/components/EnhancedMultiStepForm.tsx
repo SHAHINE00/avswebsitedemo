@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSafeState, useSafeEffect, useSafeCallback, useSafeMemo, useSafeRef } from '@/utils/safeHooks';
+import { logError, logWarn, logInfo, logDebug } from '@/utils/logger';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -281,29 +282,29 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
       e.stopPropagation();
     }
     
-    console.log("=== FORM SUBMISSION STARTED ===");
-    console.log("Form data:", formData);
-    console.log("Network status:", networkStatus);
-    console.log("Loading state:", loading);
+    logInfo("=== FORM SUBMISSION STARTED ===");
+    logInfo("Form data:", formData);
+    logInfo("Network status:", networkStatus);
+    logInfo("Loading state:", loading);
     
     setInlineStatus({ type: 'submitting', message: 'Vérification en cours...' });
     
     if (!networkStatus.isOnline) {
-      console.log("❌ Network offline");
+      logWarn("❌ Network offline");
       setInlineStatus({ type: 'error', message: 'Pas de connexion internet. Vérifiez votre connexion.' });
       return;
     }
     
     // Check terms acceptance first
     if (!formData.acceptTerms) {
-      console.log("❌ Terms not accepted");
+      logWarn("❌ Terms not accepted");
       setInlineStatus({ type: 'error', message: 'Veuillez accepter les conditions d\'utilisation' });
       return;
     }
     
      // Check if formation is properly selected
      if (!formData.formation.formationType || !formData.formation.domaine) {
-       console.log("❌ Formation incomplete:", formData.formation);
+       logInfo("❌ Formation incomplete:", formData.formation);
        setInlineStatus({ type: 'error', message: 'Veuillez compléter votre sélection de formation' });
        return;
      }
@@ -319,25 +320,25 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
       acceptTerms: formData.acceptTerms ? 'true' : ''
     };
     
-    console.log("🔍 Starting validation...");
-    console.log("Validation values:", validationValues);
+    logDebug("🔍 Starting validation...");
+    logDebug("Validation values:", validationValues);
     const isFormValid = validateAll(validationValues);
-    console.log("Validation result:", isFormValid);
-    console.log("Current errors:", errors);
+    logDebug("Validation result:", isFormValid);
+    logDebug("Current errors:", errors);
     
     if (!isFormValid) {
-      console.log("❌ Validation failed");
+      logWarn("❌ Validation failed");
       const errorFields = Object.keys(errors).filter(key => errors[key]);
-      console.log("Error fields:", errorFields);
+      logDebug("Error fields:", errorFields);
       setInlineStatus({ type: 'error', message: 'Veuillez corriger les erreurs du formulaire' });
       return;
     }
 
     // Check email validation
     const emailResult = getValidationResult(formData.email);
-    console.log("Email validation result:", emailResult);
+    logDebug("Email validation result:", emailResult);
     if (emailResult?.isDuplicate) {
-      console.log("❌ Email already exists");
+      logWarn("❌ Email already exists");
       toast({
         title: "Email déjà utilisé",
         description: "Cette adresse email est déjà enregistrée.",
@@ -346,14 +347,14 @@ const EnhancedMultiStepForm: React.FC<EnhancedMultiStepFormProps> = ({
       return;
     }
 
-    console.log("✅ All validations passed, submitting...");
+    logInfo("✅ All validations passed, submitting...");
     
     try {
       await onSubmit(formData);
-      console.log("✅ Submission completed successfully");
+      logInfo("✅ Submission completed successfully");
       // Status will be managed by parent component
     } catch (error) {
-      console.error("❌ Submission failed:", error);
+      logError("❌ Submission failed:", error);
       setInlineStatus({ type: 'error', message: 'Erreur lors de l\'inscription' });
     }
   }, [formData, validateAll, onSubmit, networkStatus, getValidationResult, toast, errors, loading]);

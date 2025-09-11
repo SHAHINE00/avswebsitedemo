@@ -75,7 +75,7 @@ export default defineConfig(({ mode }) => {
         compress: {
           drop_console: true,
           drop_debugger: true,
-          pure_funcs: ['console.log', 'console.warn', 'console.info', 'console.debug'],
+          pure_funcs: ['console.log', 'console.warn', 'console.info', 'console.debug', 'logInfo', 'logWarn', 'logDebug'],
           passes: 3,
           unsafe_arrows: true,
           unsafe_comps: true,
