@@ -76,12 +76,13 @@ const AcademicInfoSection = () => {
       }
 
       // Fetch academic profile (you might need to create this table)
-      const { data: profileData } = await supabase
+      const { data } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
         .single();
 
+      const profileData: any = data;
       if (profileData) {
         setAcademicProfile({
           student_id: `STU${user.id.substring(0, 8).toUpperCase()}`,

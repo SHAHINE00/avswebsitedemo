@@ -62,12 +62,13 @@ const ProfileEditDialog = ({ open, onOpenChange }: ProfileEditDialogProps) => {
     if (!user) return;
 
     try {
-      const { data: profile } = await supabase
+      const { data } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
         .single();
 
+      const profile: any = data;
       if (profile) {
         setProfileData({
           full_name: profile.full_name || '',
@@ -98,7 +99,7 @@ const ProfileEditDialog = ({ open, onOpenChange }: ProfileEditDialogProps) => {
         .update({
           full_name: profileData.full_name,
           phone: profileData.phone,
-          date_of_birth: profileData.date_of_birth?.toISOString(),
+          date_of_birth: profileData.date_of_birth?.toISOString() as any,
           address: profileData.address,
           city: profileData.city,
           postal_code: profileData.postal_code,
@@ -108,7 +109,7 @@ const ProfileEditDialog = ({ open, onOpenChange }: ProfileEditDialogProps) => {
           previous_education: profileData.previous_education,
           career_goals: profileData.career_goals,
           updated_at: new Date().toISOString()
-        })
+        } as any)
         .eq('id', user.id);
 
       if (error) throw error;

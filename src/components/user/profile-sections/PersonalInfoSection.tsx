@@ -50,12 +50,13 @@ const PersonalInfoSection = () => {
     if (!user) return;
 
     try {
-      const { data: profile } = await supabase
+      const { data } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
         .single();
 
+      const profile: any = data;
       if (profile) {
         setPersonalInfo({
           full_name: profile.full_name || '',
@@ -83,14 +84,14 @@ const PersonalInfoSection = () => {
         .update({
           full_name: personalInfo.full_name,
           phone: personalInfo.phone,
-          date_of_birth: personalInfo.date_of_birth?.toISOString(),
+          date_of_birth: personalInfo.date_of_birth?.toISOString() as any,
           address: personalInfo.address,
           city: personalInfo.city,
           postal_code: personalInfo.postal_code,
           country: personalInfo.country,
           bio: personalInfo.bio,
           updated_at: new Date().toISOString()
-        })
+        } as any)
         .eq('id', user.id);
 
       if (error) throw error;
