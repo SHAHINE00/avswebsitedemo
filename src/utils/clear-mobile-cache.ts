@@ -24,9 +24,8 @@ export const clearMobileCache = async (): Promise<void> => {
       );
     }
     
-    // Force reload without cache
-    console.log('🔄 Forcing page reload...');
-    window.location.reload();
+    // Cache cleared - user can manually refresh if needed
+    console.log('✅ Cache cleared successfully');
     
   } catch (error) {
     console.error('❌ Error clearing cache:', error);

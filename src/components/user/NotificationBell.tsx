@@ -47,7 +47,13 @@ const NotificationBell = () => {
     }
     
     if (notification.action_url) {
-      window.location.href = notification.action_url;
+      // Use React Router for internal navigation to prevent page reload
+      if (notification.action_url.startsWith('/')) {
+        window.history.pushState({}, '', notification.action_url);
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      } else {
+        window.location.href = notification.action_url;
+      }
     }
   };
 
@@ -141,7 +147,8 @@ const NotificationBell = () => {
                 className="w-full text-sm"
                 onClick={() => {
                   setIsOpen(false);
-                  window.location.href = '/dashboard?tab=notifications';
+                  window.history.pushState({}, '', '/dashboard?tab=notifications');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
                 }}
               >
                 Voir toutes les notifications

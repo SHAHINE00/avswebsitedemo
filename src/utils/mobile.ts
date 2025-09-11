@@ -181,6 +181,14 @@ export const optimizeForMobile = (): void => {
     }
   }
 
+  // Initialize page visibility handling
+  if (typeof window !== 'undefined') {
+    import('./page-visibility').then(({ initPageVisibilityHandling, logNavigationType }) => {
+      initPageVisibilityHandling();
+      logNavigationType();
+    }).catch(err => console.warn('Page visibility handling failed:', err));
+  }
+  
   console.log('Universal optimizations applied');
 };
 
@@ -203,17 +211,28 @@ const setupUniversalOptimizations = (): void => {
       .then(registration => {
         console.log('SW registered successfully:', registration.scope);
         
-        // Handle updates
+        // Handle updates (no auto-reload to prevent tab switching issues)
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
           if (newWorker) {
             newWorker.addEventListener('statechange', () => {
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                console.log('New version available');
-                // Optionally notify user of update
-                if (window.confirm?.('New version available. Reload to update?')) {
-                  window.location.reload();
-                }
+                console.log('New version available (will update on next visit)');
+                // Show subtle notification without blocking user
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                  position: fixed; top: 20px; right: 20px; z-index: 10000;
+                  background: #4ade80; color: white; padding: 8px 16px;
+                  border-radius: 6px; font-size: 14px; opacity: 0.9;
+                  transition: opacity 0.3s ease;
+                `;
+                notification.textContent = 'Nouvelle version disponible';
+                document.body.appendChild(notification);
+                setTimeout(() => {
+                  if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                  }
+                }, 3000);
               }
             });
           }
@@ -335,19 +354,17 @@ const setupIOSSpecificFixes = (): void => {
       });
     }
 
-    // iOS-specific error handling for module loading
+    // iOS-specific error handling for module loading (no auto-reload)
     window.addEventListener('error', (event) => {
       if (event.message && event.message.includes('Loading chunk')) {
-        console.warn('iOS chunk loading error detected, attempting recovery');
-        setTimeout(() => {
-          if ('caches' in window) {
-            caches.keys().then(names => {
-              names.forEach(name => caches.delete(name));
-            }).finally(() => location.reload());
-          } else {
-            location.reload();
-          }
-        }, 1000);
+        console.warn('iOS chunk loading error detected, clearing caches');
+        if ('caches' in window) {
+          caches.keys().then(names => {
+            names.forEach(name => caches.delete(name));
+          });
+        }
+        // Show error message instead of auto-reload
+        console.error('Chunk loading failed. Please refresh the page manually.');
       }
     });
 

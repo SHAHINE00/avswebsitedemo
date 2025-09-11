@@ -58,7 +58,8 @@ const Dashboard = () => {
 
   useSafeEffect(() => {
     if (!user) {
-      window.location.href = '/auth';
+      window.history.pushState({}, '', '/auth');
+      window.dispatchEvent(new PopStateEvent('popstate'));
       return;
     }
     
@@ -69,7 +70,8 @@ const Dashboard = () => {
   useSafeEffect(() => {
     if (user && !loading && isAdmin && !adminLoading) {
       logInfo('Redirecting admin user to admin dashboard');
-      window.location.href = '/admin';
+      window.history.pushState({}, '', '/admin');
+      window.dispatchEvent(new PopStateEvent('popstate'));
       return;
     }
   }, [user, loading, isAdmin, adminLoading]);
@@ -126,7 +128,8 @@ const Dashboard = () => {
   const handleSignOut = async () => {
     try {
       await signOut();
-      window.location.href = '/';
+      window.history.pushState({}, '', '/');
+      window.dispatchEvent(new PopStateEvent('popstate'));
     } catch (error) {
       logError('Error signing out:', error);
       toast({

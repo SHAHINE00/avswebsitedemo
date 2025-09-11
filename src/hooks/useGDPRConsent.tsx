@@ -80,11 +80,12 @@ export const useGDPRConsent = () => {
         localStorage.setItem('gdpr-consent-timestamp', Date.now().toString());
       }
       
-      // Reload page to apply consent changes to analytics
+      // Apply consent changes without reload
       if (newConsent.analytics !== consent.analytics || newConsent.marketing !== consent.marketing) {
         // Dispatch event for analytics service to react to consent changes
         window.dispatchEvent(new CustomEvent('gdpr-consent-changed', { detail: newConsent }));
-        setTimeout(() => window.location.reload(), 100);
+        // Store in sessionStorage to persist during session
+        sessionStorage.setItem('gdpr-consent-applied', 'true');
       }
     } catch (error) {
       console.error('Error updating GDPR consent:', error);
