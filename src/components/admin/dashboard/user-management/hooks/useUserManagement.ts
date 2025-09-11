@@ -165,7 +165,9 @@ export const useUserManagement = () => {
     if (!confirm(`Envoyer un email de réinitialisation de mot de passe à ${userEmail} ?`)) return;
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(userEmail);
+      const { error } = await supabase.auth.resetPasswordForEmail(userEmail, {
+        redirectTo: `${window.location.origin}/reset-password`
+      });
       if (error) throw error;
 
       toast({

@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { 
   Server, 
   Database, 
@@ -16,7 +18,9 @@ import {
   Users,
   RefreshCw,
   Shield,
-  Mail
+  Mail,
+  Send,
+  Key
 } from 'lucide-react';
 import { useSystemHealth } from '@/hooks/useSystemHealth';
 import { formatDistanceToNow } from 'date-fns';
@@ -30,6 +34,9 @@ const SystemMonitoring = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const [sendingTest, setSendingTest] = React.useState(false);
+  const [sendingMagicLink, setSendingMagicLink] = React.useState(false);
+  const [sendingResetEmail, setSendingResetEmail] = React.useState(false);
+  const [customTestEmail, setCustomTestEmail] = React.useState('');
 
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
@@ -89,6 +96,99 @@ const SystemMonitoring = () => {
       });
     } finally {
       setSendingTest(false);
+    }
+  };
+
+  const handleSendMagicLink = async () => {
+    const emailToTest = customTestEmail || user?.email;
+    if (!emailToTest) {
+      toast({
+        title: "Email requis",
+        description: "Veuillez entrer un email ou vous connecter.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSendingMagicLink(true);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: emailToTest,
+        options: {
+          emailRedirectTo: window.location.origin
+        }
+      });
+
+      if (error) {
+        if (error.message.includes('rate_limit')) {
+          toast({
+            title: "Limite de débit atteinte",
+            description: "Attendez 60 secondes avant de renvoyer un lien magique.",
+            variant: "destructive",
+          });
+        } else {
+          throw error;
+        }
+      } else {
+        toast({
+          title: 'Lien magique envoyé ✅',
+          description: `Vérifiez votre boîte mail: ${emailToTest}`,
+        });
+      }
+    } catch (err) {
+      console.error('Magic link error:', err);
+      toast({
+        title: "Erreur d'envoi",
+        description: "Vérifiez la configuration SMTP dans Supabase Auth.",
+        variant: 'destructive',
+      });
+    } finally {
+      setSendingMagicLink(false);
+    }
+  };
+
+  const handleSendResetEmail = async () => {
+    const emailToTest = customTestEmail || user?.email;
+    if (!emailToTest) {
+      toast({
+        title: "Email requis",
+        description: "Veuillez entrer un email ou vous connecter.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSendingResetEmail(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(emailToTest, {
+        redirectTo: `${window.location.origin}/reset-password`
+      });
+
+      if (error) {
+        if (error.message.includes('rate_limit')) {
+          toast({
+            title: "Limite de débit atteinte",
+            description: "Attendez 60 secondes avant de renvoyer un email de réinitialisation.",
+            variant: "destructive",
+          });
+        } else {
+          throw error;
+        }
+      } else {
+        toast({
+          title: 'Email de réinitialisation envoyé ✅',
+          description: `Vérifiez votre boîte mail: ${emailToTest}`,
+        });
+      }
+    } catch (err) {
+      console.error('Reset email error:', err);
+      toast({
+        title: "Erreur d'envoi",
+        description: "Vérifiez la configuration SMTP dans Supabase Auth.",
+        variant: 'destructive',
+      });
+    } finally {
+      setSendingResetEmail(false);
     }
   };
   if (loading) {
@@ -159,16 +259,6 @@ const SystemMonitoring = () => {
             <RefreshCw className="w-4 h-4 mr-1" />
             Actualiser
           </Button>
-          <Button
-            variant="default"
-            size="sm"
-            onClick={handleSendTestEmail}
-            disabled={sendingTest || !user?.email}
-            title={!user?.email ? "Connectez-vous pour envoyer un email de test" : undefined}
-          >
-            <Mail className="w-4 h-4 mr-1" />
-            {sendingTest ? 'Envoi...' : 'Email de test'}
-          </Button>
           <Badge variant={hasError ? 'destructive' : connectionStatus.status === 'good' ? 'default' : connectionStatus.status === 'warning' ? 'secondary' : 'destructive'}>
             <StatusIcon className="w-4 h-4 mr-1" />
             {hasError ? 'Erreur' : connectionStatus.status === 'good' ? 'Système Sain' : 
@@ -185,6 +275,75 @@ const SystemMonitoring = () => {
           </AlertDescription>
         </Alert>
       )}
+
+      {/* Email Testing Section */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Mail className="w-5 h-5" />
+            Tests SMTP & Auth
+          </CardTitle>
+          <CardDescription>
+            Testez la configuration email de Supabase Auth et Hostinger SMTP
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="test-email">Email de test (optionnel)</Label>
+            <Input
+              id="test-email"
+              type="email"
+              placeholder={user?.email || "admin@exemple.com"}
+              value={customTestEmail}
+              onChange={(e) => setCustomTestEmail(e.target.value)}
+              className="max-w-md"
+            />
+            <p className="text-sm text-muted-foreground">
+              Laissez vide pour utiliser votre email: {user?.email}
+            </p>
+          </div>
+          
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSendMagicLink}
+              disabled={sendingMagicLink}
+            >
+              <Send className="w-4 h-4 mr-1" />
+              {sendingMagicLink ? 'Envoi...' : 'Lien magique (Auth)'}
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSendResetEmail}
+              disabled={sendingResetEmail}
+            >
+              <Key className="w-4 h-4 mr-1" />
+              {sendingResetEmail ? 'Envoi...' : 'Réinitialisation (Auth)'}
+            </Button>
+            
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handleSendTestEmail}
+              disabled={sendingTest || !user?.email}
+              title={!user?.email ? "Connectez-vous pour envoyer un email de test" : undefined}
+            >
+              <Mail className="w-4 h-4 mr-1" />
+              {sendingTest ? 'Envoi...' : 'Test Edge Function'}
+            </Button>
+          </div>
+          
+          <div className="text-xs text-muted-foreground bg-muted p-3 rounded">
+            <p><strong>Lien magique:</strong> Test Supabase Auth → connexion automatique</p>
+            <p><strong>Réinitialisation:</strong> Test Supabase Auth → lien vers /reset-password</p>
+            <p><strong>Edge Function:</strong> Test direct Hostinger SMTP</p>
+            <p className="mt-1 text-amber-600">⚠️ Limite: 1 email/60s par type et par adresse</p>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* System Overview Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">

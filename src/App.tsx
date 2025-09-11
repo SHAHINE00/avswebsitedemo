@@ -33,6 +33,7 @@ const CoursePlayer = React.lazy(() => import("./pages/CoursePlayer"));
 const Instructors = React.lazy(() => import("./pages/Instructors"));
 const Testimonials = React.lazy(() => import("./pages/Testimonials"));
 const Register = React.lazy(() => import("./pages/Register"));
+const ResetPassword = React.lazy(() => import("./pages/ResetPassword"));
 const About = React.lazy(() => import("./pages/About"));
 const FAQ = React.lazy(() => import("./pages/FAQ"));
 const Careers = React.lazy(() => import("./pages/Careers"));
@@ -115,6 +116,7 @@ const App = () => {
                       
                       {/* Secondary routes - lazy loaded */}
                       <Route path="/auth" element={<LazyWrapper><Auth /></LazyWrapper>} />
+                      <Route path="/reset-password" element={<LazyWrapper><ResetPassword /></LazyWrapper>} />
                       <Route path="/dashboard" element={<LazyWrapper><Dashboard /></LazyWrapper>} />
                       <Route path="/curriculum" element={<LazyWrapper><Curriculum /></LazyWrapper>} />
                       <Route path="/ai-course" element={<LazyWrapper><AICourse /></LazyWrapper>} />
