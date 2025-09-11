@@ -51,10 +51,9 @@ const AdminRouteGuard: React.FC<AdminRouteGuardProps> = ({ children }) => {
   // Redirect to auth if not logged in
   useSafeEffect(() => {
     if (!authLoading && !user) {
-      // Use window.location to prevent navigation loops
-      window.location.href = '/auth';
+      navigate('/auth', { replace: true });
     }
-  }, [user, authLoading]);
+  }, [user, authLoading, navigate]);
 
   // Show loading while checking authentication and admin status
   if (authLoading || loading) {
@@ -88,7 +87,7 @@ const AdminRouteGuard: React.FC<AdminRouteGuardProps> = ({ children }) => {
                   Contactez un administrateur si vous pensez avoir besoin d'un accès.
                 </p>
                 <button
-                  onClick={() => window.location.href = '/'}
+                  onClick={() => navigate('/')}
                   className="text-sm bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors"
                 >
                   Retour à l'accueil

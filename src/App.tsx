@@ -22,8 +22,6 @@ import { ReloadPreventionWrapper } from "@/components/ui/reload-prevention-wrapp
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Features from "./pages/Features";
-// Add Auth to critical pages for faster login/signup
-import Auth from "./pages/Auth";
 
 // Lazy load secondary pages
 const Curriculum = React.lazy(() => import("./pages/Curriculum"));
@@ -45,7 +43,7 @@ const Appointment = React.lazy(() => import("./pages/Appointment"));
 const PrivacyPolicy = React.lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfUse = React.lazy(() => import("./pages/TermsOfUse"));
 const CookiesPolicy = React.lazy(() => import("./pages/CookiesPolicy"));
-// Auth moved to critical pages
+const Auth = React.lazy(() => import("./pages/Auth"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Blog = React.lazy(() => import("./pages/Blog"));
 const BlogPost = React.lazy(() => import("./pages/BlogPost"));
@@ -95,12 +93,21 @@ const App = () => {
           <SafeRouter>
             <ReactSafetyWrapper>
               <AnalyticsProvider>
-                {/* Reduce nested error boundaries */}
-                <ScrollToTop />
-                <UTMTracker />
-                <SEOAnalytics />
-                <StructuredData type="website" />
-                <CookieConsentBanner />
+                <ReactSafetyWrapper>
+                  <ScrollToTop />
+                </ReactSafetyWrapper>
+                <ReactSafetyWrapper>
+                  <UTMTracker />
+                </ReactSafetyWrapper>
+                <ReactSafetyWrapper>
+                  <SEOAnalytics />
+                </ReactSafetyWrapper>
+                <ReactSafetyWrapper>
+                  <StructuredData type="website" />
+                </ReactSafetyWrapper>
+                <ReactSafetyWrapper>
+                  <CookieConsentBanner />
+                </ReactSafetyWrapper>
                 <ReactSafetyWrapper>
                   <AuthProvider>
                     <Routes>
@@ -110,7 +117,7 @@ const App = () => {
                       <Route path="*" element={<NotFound />} />
                       
                       {/* Secondary routes - lazy loaded */}
-                      <Route path="/auth" element={<Auth />} />
+                      <Route path="/auth" element={<LazyWrapper><Auth /></LazyWrapper>} />
                       <Route path="/reset-password" element={<LazyWrapper><ResetPassword /></LazyWrapper>} />
                       <Route path="/dashboard" element={<LazyWrapper><Dashboard /></LazyWrapper>} />
                       <Route path="/curriculum" element={<LazyWrapper><Curriculum /></LazyWrapper>} />

@@ -36,7 +36,6 @@ const SystemMonitoring = () => {
   const [sendingTest, setSendingTest] = React.useState(false);
   const [sendingMagicLink, setSendingMagicLink] = React.useState(false);
   const [sendingResetEmail, setSendingResetEmail] = React.useState(false);
-  const [sendingSMTPReset, setSendingSMTPReset] = React.useState(false);
   const [customTestEmail, setCustomTestEmail] = React.useState('');
 
   const formatBytes = (bytes: number) => {
@@ -149,24 +148,11 @@ const SystemMonitoring = () => {
   };
 
   const handleSendResetEmail = async () => {
-    const emailToTest = (customTestEmail || user?.email || '').trim();
+    const emailToTest = customTestEmail || user?.email;
     if (!emailToTest) {
       toast({
         title: "Email requis",
         description: "Veuillez entrer un email ou vous connecter.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const key = `pw_reset_cooldown:${emailToTest.toLowerCase()}`;
-    const now = Date.now();
-    const until = Number(localStorage.getItem(key) || 0);
-    const remaining = Math.max(0, Math.ceil((until - now) / 1000));
-    if (remaining > 0) {
-      toast({
-        title: "Veuillez patienter",
-        description: `Vous pourrez renvoyer un email dans ${remaining}s.`,
         variant: "destructive",
       });
       return;
@@ -179,63 +165,21 @@ const SystemMonitoring = () => {
       });
 
       if (error) {
-        const msg = (error as any)?.message || '';
-        const codeText = msg.toLowerCase();
-        if (codeText.includes('rate') || codeText.includes('429') || codeText.includes('over_email_send_rate_limit')) {
-          localStorage.setItem(key, String(now + 60_000));
-
-          try {
-            const { data: fnData, error: fnError } = await supabase.functions.invoke('send-password-reset-link', {
-              body: { email: emailToTest, redirectTo: `${window.location.origin}/reset-password` }
-            });
-
-            if (fnError || (fnData as any)?.error) {
-              toast({
-                title: "Limite de débit atteinte",
-                description: "Attendez 60 secondes avant de renvoyer un email de réinitialisation.",
-                variant: "destructive",
-              });
-              return;
-            }
-
-            toast({
-              title: 'Email (secours) envoyé ✅',
-              description: `Lien envoyé via SMTP: ${emailToTest}`,
-            });
-            return;
-          } catch (_) {
-            toast({
-              title: "Limite de débit atteinte",
-              description: "Attendez 60 secondes avant de renvoyer un email de réinitialisation.",
-              variant: "destructive",
-            });
-            return;
-          }
-        }
-        if (codeText.includes('invalid') || codeText.includes('not found')) {
+        if (error.message.includes('rate_limit')) {
           toast({
-            title: "Email introuvable",
-            description: "Aucun utilisateur associé à cet email.",
+            title: "Limite de débit atteinte",
+            description: "Attendez 60 secondes avant de renvoyer un email de réinitialisation.",
             variant: "destructive",
           });
-          return;
+        } else {
+          throw error;
         }
-        if (codeText.includes('timeout') || (error as any)?.status === 504) {
-          toast({
-            title: "Temps dépassé",
-            description: "Le serveur a mis trop de temps à répondre. Réessayez dans un instant.",
-            variant: "destructive",
-          });
-          return;
-        }
-        throw error;
+      } else {
+        toast({
+          title: 'Email de réinitialisation envoyé ✅',
+          description: `Vérifiez votre boîte mail: ${emailToTest}`,
+        });
       }
-
-      localStorage.setItem(key, String(Date.now() + 60_000));
-      toast({
-        title: 'Email de réinitialisation envoyé ✅',
-        description: `Vérifiez votre boîte mail: ${emailToTest}`,
-      });
     } catch (err) {
       console.error('Reset email error:', err);
       toast({
@@ -247,48 +191,6 @@ const SystemMonitoring = () => {
       setSendingResetEmail(false);
     }
   };
-
-  const handleSendSMTPResetEmail = async () => {
-    const emailToTest = (customTestEmail || user?.email || '').trim();
-    if (!emailToTest) {
-      toast({
-        title: "Email requis",
-        description: "Veuillez entrer un email ou vous connecter.",
-        variant: "destructive",
-      });
-      return;
-    }
-    setSendingSMTPReset(true);
-    console.info('[SystemMonitoring] Invoking SMTP reset for', emailToTest);
-    try {
-      const { data: fnData, error: fnError } = await supabase.functions.invoke('send-password-reset-link', {
-        body: { email: emailToTest, redirectTo: `${window.location.origin}/reset-password` }
-      });
-      if (fnError || (fnData as any)?.error) {
-        console.error('[SystemMonitoring] SMTP reset failed', fnError || (fnData as any)?.error);
-        toast({
-          title: "Échec de l'envoi (secours)",
-          description: "Consultez les logs de la fonction 'send-password-reset-link'.",
-          variant: "destructive",
-        });
-        return;
-      }
-      toast({
-        title: 'Email (secours) envoyé ✅',
-        description: `Lien envoyé via SMTP: ${emailToTest}`,
-      });
-    } catch (e) {
-      console.error('[SystemMonitoring] SMTP reset threw', e);
-      toast({
-        title: "Erreur d'envoi (secours)",
-        description: "Veuillez réessayer dans quelques instants.",
-        variant: "destructive",
-      });
-    } finally {
-      setSendingSMTPReset(false);
-    }
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -420,16 +322,6 @@ const SystemMonitoring = () => {
             >
               <Key className="w-4 h-4 mr-1" />
               {sendingResetEmail ? 'Envoi...' : 'Réinitialisation (Auth)'}
-            </Button>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleSendSMTPResetEmail}
-              disabled={sendingSMTPReset}
-            >
-              <Mail className="w-4 h-4 mr-1" />
-              {sendingSMTPReset ? 'Envoi...' : 'Réinitialisation (SMTP secours)'}
             </Button>
             
             <Button

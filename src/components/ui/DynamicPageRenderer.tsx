@@ -163,13 +163,9 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
     const pageSpecificSections = getSectionsByPage(pageName);
     const globalSections = getSectionsByPage('global');
     
-    console.log('🏠 DynamicPageRenderer - Page sections for', pageName, ':', pageSpecificSections);
-    
     // Filter visible sections
     const visiblePageSections = pageSpecificSections.filter(section => section.is_visible);
     const visibleGlobalSections = globalSections.filter(section => section.is_visible);
-    
-    console.log('👁️ DynamicPageRenderer - Visible sections:', visiblePageSections.map(s => s.section_key));
     
     // Sort page sections by display order
     const sortedPageSections = visiblePageSections.sort((a, b) => a.display_order - b.display_order);
@@ -184,21 +180,24 @@ const DynamicPageRenderer: React.FC<DynamicPageRendererProps> = ({
     result.push(...sortedPageSections);
     if (footer) result.push(footer);
     
-    console.log('📋 DynamicPageRenderer - Final ordered sections:', result.map(s => s.section_key));
-    
     return result;
   }, [getSectionsByPage, pageName, loading]);
 
   const renderSection = (sectionKey: string) => {
     const Component = SECTION_COMPONENTS[sectionKey];
-    
-    console.log('🔧 DynamicPageRenderer - Rendering section:', sectionKey, 'Component found:', !!Component);
-    
     if (!Component) {
       logWarn(`No component found for section: ${sectionKey}. Available sections:`, Object.keys(SECTION_COMPONENTS));
+      // In development, show a placeholder for missing components
+      if (process.env.NODE_ENV === 'development') {
+        return (
+          <div key={sectionKey} className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 my-4">
+            <p className="font-bold">Missing Component: {sectionKey}</p>
+            <p className="text-sm">This section exists in the database but no React component is mapped to it.</p>
+          </div>
+        );
+      }
       return null;
     }
-    
     return <Component key={sectionKey} />;
   };
 

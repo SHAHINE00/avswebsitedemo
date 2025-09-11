@@ -15,10 +15,6 @@ export default defineConfig(({ mode }) => {
       'Cache-Control': 'no-cache',
       'Access-Control-Allow-Origin': '*',
     },
-    // Optimize HMR for tab switches
-    hmr: {
-      overlay: false // Reduce aggressive overlay during tab switches
-    }
   },
   plugins: [
     react(),
@@ -104,8 +100,8 @@ export default defineConfig(({ mode }) => {
       '@supabase/supabase-js'
     ],
     exclude: ['@vite/client', '@vite/env'],
-    // Remove force: true to prevent aggressive rebuilds during tab switches
-    force: false
+    // Force pre-bundling of React to prevent HMR issues
+    force: true
   },
   
   // CRITICAL FIX: Ensure single React instance and HMR stability  
@@ -120,7 +116,7 @@ export default defineConfig(({ mode }) => {
     dedupe: ['react', 'react-dom', 'react-router-dom']
   },
   
-  // Additional HMR stability and tab switch optimization
+  // Additional HMR stability
   define: {
     // Ensure consistent globals
     'process.env.NODE_ENV': JSON.stringify(mode),

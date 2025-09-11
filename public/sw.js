@@ -68,19 +68,8 @@ self.addEventListener('fetch', (event) => {
   }
 });
 
-// Handle navigation requests - network first with tab switch optimization
+// Handle navigation requests - network first
 async function handleNavigationRequest(request) {
-  // Skip aggressive caching during tab switches
-  if (self.skipCacheUpdates) {
-    try {
-      return await fetch(request);
-    } catch (error) {
-      return await caches.match(request) || 
-             await caches.match('/index.html') || 
-             new Response('Offline', { status: 503 });
-    }
-  }
-  
   try {
     const response = await fetch(request);
     if (response?.ok) {
@@ -179,23 +168,10 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'PAGE_HIDDEN') {
     // Page is hidden, pause non-critical operations
     console.log('SW: Page hidden, reducing activity');
-    // Cancel any pending cache updates to prevent interference
-    self.skipCacheUpdates = true;
   }
   
   if (event.data && event.data.type === 'PAGE_VISIBLE') {
     // Page is visible again, resume normal operations
-    const hiddenDuration = event.data.hiddenDuration || 0;
-    console.log(`SW: Page visible after ${hiddenDuration}ms`);
-    
-    // Only resume cache updates if it wasn't a quick tab switch
-    if (hiddenDuration > 1000) {
-      self.skipCacheUpdates = false;
-    } else {
-      console.log('SW: Quick tab switch detected, maintaining cache freeze');
-      setTimeout(() => {
-        self.skipCacheUpdates = false;
-      }, 2000);
-    }
+    console.log('SW: Page visible, resuming normal activity');
   }
 });

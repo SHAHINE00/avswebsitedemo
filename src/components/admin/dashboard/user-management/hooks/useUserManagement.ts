@@ -162,100 +162,13 @@ export const useUserManagement = () => {
   };
 
   const resetUserPassword = async (userEmail: string) => {
-    const email = (userEmail || '').trim();
-    if (!email) {
-      toast({
-        title: "Email requis",
-        description: "Veuillez fournir une adresse email valide.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!confirm(`Envoyer un email de réinitialisation de mot de passe à ${email} ?`)) return;
+    if (!confirm(`Envoyer un email de réinitialisation de mot de passe à ${userEmail} ?`)) return;
 
     try {
-      const key = `pw_reset_cooldown:${email.toLowerCase()}`;
-      const now = Date.now();
-      const until = Number(localStorage.getItem(key) || 0);
-      const remaining = Math.max(0, Math.ceil((until - now) / 1000));
-      if (remaining > 0) {
-        toast({
-          title: "Veuillez patienter",
-          description: `Vous pourrez renvoyer un email dans ${remaining}s.`,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { error } = await supabase.auth.resetPasswordForEmail(userEmail, {
         redirectTo: `${window.location.origin}/reset-password`
       });
-
-      if (error) {
-        const msg = (error as any)?.message || '';
-        const codeText = msg.toLowerCase();
-
-        // Rate limit (429) → start 60s cooldown and trigger SMTP fallback
-        if ((error as any)?.status === 429 || codeText.includes('rate') || codeText.includes('429') || codeText.includes('over_email_send_rate_limit')) {
-          localStorage.setItem(key, String(now + 60_000));
-          console.info('[Admin] Reset fallback via SMTP triggered for', email);
-
-          // Attempt fallback via Edge Function using Hostinger SMTP
-          try {
-            const { data: fnData, error: fnError } = await supabase.functions.invoke('send-password-reset-link', {
-              body: { email, redirectTo: `${window.location.origin}/reset-password` }
-            });
-
-            if (fnError || (fnData as any)?.error) {
-              console.error('SMTP fallback failed', fnError || (fnData as any)?.error);
-              toast({
-                title: "Limite de débit atteinte",
-                description: "Attendez 60s avant de renvoyer l'email de réinitialisation.",
-                variant: "destructive",
-              });
-              return;
-            }
-
-            toast({
-              title: "Email envoyé (mode secours)",
-              description: "Lien de réinitialisation envoyé via SMTP.",
-            });
-            return;
-          } catch (e) {
-            console.error('SMTP fallback threw', e);
-            toast({
-              title: "Limite de débit atteinte",
-              description: "Attendez 60s avant de renvoyer l'email de réinitialisation.",
-              variant: "destructive",
-            });
-            return;
-          }
-        }
-
-        if (codeText.includes('invalid') || codeText.includes('not found')) {
-          toast({
-            title: "Email introuvable",
-            description: "Aucun utilisateur associé à cet email.",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        if (codeText.includes('timeout') || (error as any)?.status === 504) {
-          toast({
-            title: "Temps dépassé",
-            description: "Le serveur a mis trop de temps à répondre. Réessayez dans un instant.",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        throw error;
-      }
-
-      // Success: set a short cooldown to avoid rapid repeats
-      localStorage.setItem(`pw_reset_cooldown:${email.toLowerCase()}`, String(Date.now() + 60_000));
+      if (error) throw error;
 
       toast({
         title: "Succès",
@@ -275,39 +188,6 @@ export const useUserManagement = () => {
     fetchUsers();
   }, []);
 
-  const copyResetLink = async (userEmail: string) => {
-    try {
-      const { data: result, error } = await supabase.functions.invoke('send-password-reset-link', {
-        body: {
-          email: userEmail,
-          redirectTo: `${window.location.origin}/reset-password`
-        }
-      });
-
-      if (error || result?.error) {
-        throw new Error(error?.message || result?.error || 'Erreur lors de la génération du lien');
-      }
-
-      if (result?.actionLink) {
-        await navigator.clipboard.writeText(result.actionLink);
-        toast({
-          title: "Succès",
-          description: "Lien de réinitialisation copié dans le presse-papiers",
-        });
-        await logActivity('password_reset_link_copied', 'user', undefined, { target_email: userEmail });
-      } else {
-        throw new Error('Aucun lien généré');
-      }
-    } catch (error: any) {
-      logError('Copy reset link error:', error);
-      toast({
-        title: "Erreur", 
-        description: `Impossible de copier le lien: ${error.message}`,
-        variant: "destructive",
-      });
-    }
-  };
-
   return {
     users,
     loading,
@@ -316,7 +196,6 @@ export const useUserManagement = () => {
     deleteUser,
     updateUserProfile,
     inviteUser,
-    resetUserPassword,
-    copyResetLink
+    resetUserPassword
   };
 };

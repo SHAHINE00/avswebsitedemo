@@ -12,9 +12,4 @@ if (!rootElement) {
 // Initialize navigation state management
 navigationStateManager;
 
-// Wrap app in StrictMode for better development debugging
-createRoot(rootElement).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+createRoot(rootElement).render(<App />);

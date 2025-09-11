@@ -15,8 +15,6 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 
 // Use the shared UserProfile interface
 import type { UserProfile } from './hooks/useUserManagement';
@@ -27,7 +25,6 @@ interface UserCardProps {
   onToggleSelection: () => void;
   onEdit: () => void;
   onResetPassword: () => void;
-  onCopyResetLink: () => void;
   onUpdateRole: (newRole: string) => void;
   onDelete: () => void;
   onManageEnrollments?: () => void;
@@ -39,7 +36,6 @@ export const UserCard: React.FC<UserCardProps> = ({
   onToggleSelection,
   onEdit,
   onResetPassword,
-  onCopyResetLink,
   onUpdateRole,
   onDelete,
   onManageEnrollments
@@ -53,9 +49,6 @@ export const UserCard: React.FC<UserCardProps> = ({
     }
     return 'U';
   };
-
-  const { toast } = useToast();
-
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
@@ -118,15 +111,6 @@ export const UserCard: React.FC<UserCardProps> = ({
           className="h-8"
         >
           <Key className="w-4 h-4" />
-        </Button>
-        
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onCopyResetLink}
-          className="h-8"
-        >
-          <Mail className="w-4 h-4" />
         </Button>
 
         {onManageEnrollments && (
@@ -193,16 +177,6 @@ export const UserCard: React.FC<UserCardProps> = ({
           <Key className="w-4 h-4 mr-2" />
           <span className="hidden sm:inline">Mot de passe</span>
           <span className="sm:hidden">MDP</span>
-        </Button>
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onCopyResetLink}
-          className="flex-1 h-9"
-        >
-          <Mail className="w-4 h-4 mr-2" />
-          Copier
         </Button>
 
         {onManageEnrollments && (
