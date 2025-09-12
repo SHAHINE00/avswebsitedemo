@@ -29,29 +29,21 @@ export const useAppointmentBooking = () => {
     try {
       logInfo('Booking appointment:', appointmentData);
       
-      const { data, error } = await supabase
-        .from('appointments')
-        .insert({
-          user_id: user?.id || null,
-          first_name: appointmentData.firstName,
-          last_name: appointmentData.lastName,
-          email: appointmentData.email,
-          phone: appointmentData.phone,
-          appointment_date: appointmentData.appointmentDate,
-          appointment_time: appointmentData.appointmentTime,
-          appointment_type: appointmentData.appointmentType,
-          subject: appointmentData.subject || 'Consultation générale',
-          message: appointmentData.message || '',
-          status: 'pending'
-        })
-        .select()
-        .single();
+      // Use the secure edge function for booking appointments
+      const { data, error } = await supabase.functions.invoke('book-appointment', {
+        body: { appointmentData }
+      });
 
       logInfo('Appointment booking response:', { data, error });
 
       if (error) {
         logError('Appointment booking error:', error);
         throw error;
+      }
+
+      if (!data.success) {
+        logError('Appointment booking failed:', data);
+        throw new Error('Failed to book appointment');
       }
 
       // Track successful appointment booking
