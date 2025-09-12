@@ -8,6 +8,8 @@ import AnalyticsSection from '@/components/admin/dashboard/AnalyticsSection';
 import SystemMonitoring from '@/components/admin/dashboard/SystemMonitoring';
 import SubscriberManagement from '@/components/admin/dashboard/SubscriberManagement';
 import SectionVisibilityManagement from '@/components/admin/dashboard/SectionVisibilityManagement';
+import SecurityVerification from '@/components/admin/dashboard/SecurityVerification';
+import AppointmentManagement from '@/components/admin/dashboard/AppointmentManagement';
 import type { Course } from '@/hooks/useCourses';
 
 interface AdminTabsEnhancedProps {
@@ -30,7 +32,9 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
         <TabsTrigger value="courses" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Cours</TabsTrigger>
         <TabsTrigger value="users" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Utilisateurs</TabsTrigger>
         <TabsTrigger value="subscribers" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Abonnements</TabsTrigger>
+        <TabsTrigger value="appointments" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Rendez-vous</TabsTrigger>
         <TabsTrigger value="sections" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Visibilité</TabsTrigger>
+        <TabsTrigger value="security" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Sécurité</TabsTrigger>
         <TabsTrigger value="analytics" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Analytics</TabsTrigger>
         <TabsTrigger value="system" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Système</TabsTrigger>
       </TabsList>
@@ -56,8 +60,16 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
         <SubscriberManagement />
       </TabsContent>
 
+      <TabsContent value="appointments">
+        <AppointmentManagement />
+      </TabsContent>
+
       <TabsContent value="sections">
         <SectionVisibilityManagement />
+      </TabsContent>
+
+      <TabsContent value="security">
+        <SecurityVerification />
       </TabsContent>
 
       <TabsContent value="analytics">
