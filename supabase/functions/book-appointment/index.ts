@@ -36,14 +36,58 @@ serve(async (req) => {
       );
     }
 
+    // Get client IP for rate limiting
+    const clientIP = req.headers.get('x-forwarded-for') || 
+                    req.headers.get('x-real-ip') || 
+                    'unknown';
+
     // Create Supabase client with service role key (bypasses RLS)
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Insert appointment with explicit null user_id for anonymous bookings
+    // Check rate limiting (5 appointments per hour per IP)
+    const { data: rateLimitCheck, error: rateLimitError } = await supabase.rpc('check_rate_limit', {
+      p_user_identifier: clientIP,
+      p_action: 'book_appointment',
+      p_max_attempts: 5,
+      p_time_window_minutes: 60
+    });
+
+    if (rateLimitError || !rateLimitCheck) {
+      console.log('Rate limit exceeded for IP:', clientIP);
+      return new Response(
+        JSON.stringify({ 
+          error: 'Too many appointment requests. Please try again later.' 
+        }),
+        { 
+          status: 429, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
+    // Check if user is authenticated
+    const authHeader = req.headers.get('authorization');
+    let userId = null;
+    
+    if (authHeader) {
+      // Extract user from auth header if present
+      const token = authHeader.replace('Bearer ', '');
+      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+      if (!authError && user) {
+        userId = user.id;
+      }
+    }
+
+    // For anonymous bookings, create a special system user ID to avoid RLS issues
+    if (!userId) {
+      userId = '00000000-0000-0000-0000-000000000000'; // Special system user for public appointments
+    }
+
+    // Insert appointment
     const { data, error } = await supabase
       .from('appointments')
       .insert({
-        user_id: null, // Explicitly set to null for anonymous bookings
+        user_id: userId,
         first_name: appointmentData.firstName,
         last_name: appointmentData.lastName,
         email: appointmentData.email,
@@ -57,6 +101,20 @@ serve(async (req) => {
       })
       .select()
       .single();
+
+    // Log security event
+    await supabase.functions.invoke('log-security-event', {
+      body: {
+        action: 'appointment_created',
+        severity: 'low',
+        details: {
+          client_ip: clientIP,
+          user_authenticated: authHeader ? true : false,
+          appointment_type: appointmentData.appointmentType
+        },
+        user_id: userId !== '00000000-0000-0000-0000-000000000000' ? userId : null
+      }
+    });
 
     console.log('Appointment creation result:', { data, error });
 

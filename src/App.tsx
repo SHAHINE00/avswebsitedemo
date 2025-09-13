@@ -16,6 +16,7 @@ import CookieConsentBanner from "@/components/gdpr/CookieConsentBanner";
 import SafeGDPRWrapper from "@/components/gdpr/SafeGDPRWrapper";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { ReloadPreventionWrapper } from "@/components/ui/reload-prevention-wrapper";
+import { SecurityEnhancedWrapper } from "@/components/security/SecurityEnhancedWrapper";
 import { logWarn } from "@/utils/logger";
 
 
@@ -110,7 +111,8 @@ const App = () => {
                   <CookieConsentBanner />
                 </ReactSafetyWrapper>
                 <ReactSafetyWrapper>
-                  <AuthProvider>
+                  <SecurityEnhancedWrapper>
+                    <AuthProvider>
                     <Routes>
                       {/* Critical routes - no lazy loading */}
                       <Route path="/" element={<Index />} />
@@ -150,8 +152,9 @@ const App = () => {
                       <Route path="/admin/test" element={<AdminRouteGuard><LazyWrapper><AdminTest /></LazyWrapper></AdminRouteGuard>} />
                     </Routes>
                     
-                    <Toaster />
-                  </AuthProvider>
+                      <Toaster />
+                    </AuthProvider>
+                  </SecurityEnhancedWrapper>
                 </ReactSafetyWrapper>
               </AnalyticsProvider>
             </ReactSafetyWrapper>
