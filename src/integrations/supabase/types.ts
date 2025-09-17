@@ -1634,6 +1634,14 @@ export type Database = {
         Args: { appointment_id: string; new_status: string }
         Returns: undefined
       }
+      validate_rls_security: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          issues: string[]
+          security_level: string
+          table_name: string
+        }[]
+      }
     }
     Enums: {
       approval_status: "pending" | "approved" | "rejected"
