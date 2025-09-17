@@ -1538,6 +1538,16 @@ export type Database = {
         Args: { p_course_id: string }
         Returns: string
       }
+      final_security_check: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          admin_access: boolean
+          anonymous_blocked: boolean
+          rls_enabled: boolean
+          security_score: string
+          table_name: string
+        }[]
+      }
       get_advanced_analytics: {
         Args: {
           p_end_date?: string
@@ -1619,6 +1629,10 @@ export type Database = {
       simple_reorder_section: {
         Args: { p_new_order: number; p_section_key: string }
         Returns: undefined
+      }
+      test_anonymous_access_blocked: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
       }
       track_analytics: {
         Args: {
