@@ -1634,6 +1634,16 @@ export type Database = {
         Args: { appointment_id: string; new_status: string }
         Returns: undefined
       }
+      validate_comprehensive_security: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          issue_type: string
+          recommendation: string
+          security_level: string
+          severity: string
+          table_name: string
+        }[]
+      }
       validate_rls_security: {
         Args: Record<PropertyKey, never>
         Returns: {
