@@ -1785,6 +1785,10 @@ export type Database = {
           table_name: string
         }[]
       }
+      generate_certificate: {
+        Args: { p_certificate_type?: string; p_course_id: string }
+        Returns: string
+      }
       get_advanced_analytics: {
         Args: {
           p_end_date?: string
@@ -1801,6 +1805,10 @@ export type Database = {
       }
       get_dashboard_metrics: {
         Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      get_study_statistics: {
+        Args: { p_user_id?: string }
         Returns: Json
       }
       get_system_health: {
@@ -1881,8 +1889,21 @@ export type Database = {
         }
         Returns: undefined
       }
+      track_study_session: {
+        Args: {
+          p_course_id: string
+          p_duration_minutes?: number
+          p_lesson_id?: string
+          p_session_type?: string
+        }
+        Returns: string
+      }
       update_appointment_status: {
         Args: { appointment_id: string; new_status: string }
+        Returns: undefined
+      }
+      update_study_goal: {
+        Args: { p_goal_id: string; p_target_value: number }
         Returns: undefined
       }
       validate_comprehensive_security: {
