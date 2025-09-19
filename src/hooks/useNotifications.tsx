@@ -153,9 +153,9 @@ export const useNotifications = () => {
     if (user) {
       fetchNotifications();
 
-      // Set up real-time subscription for new notifications
-      const channel = supabase
-        .channel('notifications')
+      // Set up real-time subscription for notifications
+      const notificationChannel = supabase
+        .channel('user-notifications')
         .on(
           'postgres_changes',
           {
@@ -169,20 +169,45 @@ export const useNotifications = () => {
             setNotifications(prev => [newNotification, ...prev]);
             setUnreadCount(prev => prev + 1);
             
-            // Show toast for new notification
+            // Show toast for new notification with improved styling
             toast({
               title: newNotification.title,
               description: newNotification.message,
+              duration: 5000,
+            });
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'notifications',
+            filter: `user_id=eq.${user.id}`
+          },
+          (payload) => {
+            const updatedNotification = payload.new as Notification;
+            setNotifications(prev => 
+              prev.map(n => 
+                n.id === updatedNotification.id ? updatedNotification : n
+              )
+            );
+            // Update unread count based on current notifications
+            setUnreadCount(prev => {
+              const currentNotifications = notifications.map(n => 
+                n.id === updatedNotification.id ? updatedNotification : n
+              );
+              return currentNotifications.filter(n => !n.is_read).length;
             });
           }
         )
         .subscribe();
 
       return () => {
-        supabase.removeChannel(channel);
+        supabase.removeChannel(notificationChannel);
       };
     }
-  }, [user]);
+  }, [user, toast]);
 
   return {
     notifications,
