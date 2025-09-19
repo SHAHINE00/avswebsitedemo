@@ -9,6 +9,17 @@ export interface CourseBookmark {
   user_id: string;
   course_id: string;
   created_at: string;
+  courses?: {
+    id: string;
+    title: string;
+    subtitle?: string;
+    icon?: string;
+    duration?: string;
+    modules?: string;
+    gradient_from?: string;
+    gradient_to?: string;
+    status: string;
+  };
 }
 
 export interface CourseReview {
@@ -31,15 +42,38 @@ export const useCourseInteractions = () => {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
+      // First fetch bookmarks
+      const { data: bookmarksData, error: bookmarksError } = await supabase
         .from('course_bookmarks')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (bookmarksError) throw bookmarksError;
+
+      if (!bookmarksData || bookmarksData.length === 0) {
+        setBookmarks([]);
+        return;
+      }
+
+      // Get course IDs
+      const courseIds = bookmarksData.map(b => b.course_id);
+
+      // Fetch course details
+      const { data: coursesData, error: coursesError } = await supabase
+        .from('courses')
+        .select('id, title, subtitle, icon, duration, modules, gradient_from, gradient_to, status')
+        .in('id', courseIds);
+
+      if (coursesError) throw coursesError;
+
+      // Combine the data
+      const bookmarksWithCourses = bookmarksData.map(bookmark => ({
+        ...bookmark,
+        courses: coursesData?.find(course => course.id === bookmark.course_id)
+      }));
       
-      setBookmarks(data || []);
+      setBookmarks(bookmarksWithCourses);
     } catch (error) {
       logError('Error fetching bookmarks:', error);
     }
