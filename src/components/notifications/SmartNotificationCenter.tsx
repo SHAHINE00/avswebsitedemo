@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,9 +14,11 @@ import {
   TrendingUp,
   Settings,
   Check,
-  X
+  X,
+  Loader2
 } from 'lucide-react';
 import { useNotifications } from '@/hooks/useNotifications';
+import { useNotificationPreferences } from '@/hooks/useNotificationPreferences';
 
 interface NotificationPreferences {
   courseReminders: boolean;
@@ -47,51 +49,36 @@ interface SmartNotification {
 
 const SmartNotificationCenter = () => {
   const { notifications, markAsRead, markAllAsRead } = useNotifications();
-  const [preferences, setPreferences] = useState<NotificationPreferences>({
-    courseReminders: true,
-    studyStreakAlerts: true,
-    achievementNotifications: true,
-    deadlineWarnings: true,
-    weeklyProgressReports: true,
-    appointmentReminders: true,
-    newContentAlerts: false,
-    studyRecommendations: true
-  });
+  const { 
+    preferences, 
+    statistics, 
+    loading: preferencesLoading, 
+    saving, 
+    updateSinglePreference 
+  } = useNotificationPreferences();
 
-  // Mock smart notifications - replace with real data
-  const [smartNotifications] = useState<SmartNotification[]>([
-    {
-      id: '1',
-      type: 'reminder',
-      title: 'Session d\'étude programmée',
-      message: 'Il est temps pour votre session d\'IA de 60 minutes',
-      priority: 'medium',
-      scheduled: new Date(Date.now() + 3600000),
-      delivered: false,
-      actionUrl: '/course/ai-fundamentals',
-      metadata: { courseId: 'ai-fundamentals' }
-    },
-    {
-      id: '2',
-      type: 'streak',
-      title: 'Série d\'étude en danger!',
-      message: 'Vous n\'avez pas étudié aujourd\'hui. Maintenez votre série de 5 jours!',
-      priority: 'high',
-      scheduled: new Date(Date.now() + 1800000),
-      delivered: false,
-      metadata: { streakDays: 5 }
-    },
-    {
-      id: '3',
-      type: 'achievement',
-      title: 'Nouveau succès débloqué!',
-      message: 'Félicitations! Vous avez complété 10 leçons cette semaine',
-      priority: 'medium',
-      scheduled: new Date(),
+  // Convert regular notifications to smart notifications format
+  const [smartNotifications, setSmartNotifications] = useState<SmartNotification[]>([]);
+
+  useEffect(() => {
+    // Transform regular notifications into smart notifications
+    const transformedNotifications = notifications.slice(0, 10).map(notification => ({
+      id: notification.id,
+      type: (notification.type === 'achievement' ? 'achievement' : 
+             notification.type === 'reminder' ? 'reminder' :
+             notification.type === 'streak' ? 'streak' : 'reminder') as SmartNotification['type'],
+      title: notification.title,
+      message: notification.message,
+      priority: (notification.type === 'achievement' ? 'medium' :
+                notification.type === 'streak' ? 'high' : 'medium') as SmartNotification['priority'],
+      scheduled: new Date(notification.created_at),
       delivered: true,
-      metadata: { achievementId: 'weekly-warrior' }
-    }
-  ]);
+      actionUrl: notification.action_url || undefined,
+      metadata: {}
+    }));
+
+    setSmartNotifications(transformedNotifications);
+  }, [notifications]);
 
   const getNotificationIcon = (type: SmartNotification['type']) => {
     switch (type) {
@@ -125,8 +112,7 @@ const SmartNotificationCenter = () => {
   };
 
   const updatePreference = (key: keyof NotificationPreferences, value: boolean) => {
-    setPreferences(prev => ({ ...prev, [key]: value }));
-    // Save to backend
+    updateSinglePreference(key, value);
   };
 
   return (
@@ -138,8 +124,12 @@ const SmartNotificationCenter = () => {
             Restez informé de votre progression et ne manquez aucune opportunité d'apprentissage
           </p>
         </div>
-        <Button onClick={markAllAsRead} variant="outline">
-          <Check className="h-4 w-4 mr-2" />
+        <Button onClick={markAllAsRead} variant="outline" disabled={saving}>
+          {saving ? (
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          ) : (
+            <Check className="h-4 w-4 mr-2" />
+          )}
           Tout marquer comme lu
         </Button>
       </div>
@@ -158,7 +148,13 @@ const SmartNotificationCenter = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {smartNotifications.map((notification) => (
+              {preferencesLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                  <span className="ml-2">Chargement des notifications...</span>
+                </div>
+              ) : smartNotifications.length > 0 ? (
+                smartNotifications.map((notification) => (
                 <div
                   key={notification.id}
                   className={`border-l-4 p-4 rounded-lg ${getPriorityColor(notification.priority)}`}
@@ -192,7 +188,14 @@ const SmartNotificationCenter = () => {
                     )}
                   </div>
                 </div>
-              ))}
+                ))
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Bell className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Aucune notification intelligente pour le moment</p>
+                  <p className="text-sm">Nous vous tiendrons informé de votre progression</p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -210,16 +213,24 @@ const SmartNotificationCenter = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="course-reminders" className="text-sm">
-                  Rappels de cours
-                </Label>
-                <Switch
-                  id="course-reminders"
-                  checked={preferences.courseReminders}
-                  onCheckedChange={(checked) => updatePreference('courseReminders', checked)}
-                />
-              </div>
+              {preferencesLoading ? (
+                <div className="flex items-center justify-center py-4">
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  <span className="text-sm">Chargement...</span>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="course-reminders" className="text-sm">
+                      Rappels de cours
+                    </Label>
+                    <Switch
+                      id="course-reminders"
+                      checked={preferences.courseReminders}
+                      onCheckedChange={(checked) => updatePreference('courseReminders', checked)}
+                      disabled={saving}
+                    />
+                  </div>
 
               <div className="flex items-center justify-between">
                 <Label htmlFor="streak-alerts" className="text-sm">
@@ -229,6 +240,7 @@ const SmartNotificationCenter = () => {
                   id="streak-alerts"
                   checked={preferences.studyStreakAlerts}
                   onCheckedChange={(checked) => updatePreference('studyStreakAlerts', checked)}
+                  disabled={saving}
                 />
               </div>
 
@@ -240,6 +252,7 @@ const SmartNotificationCenter = () => {
                   id="achievement-notifications"
                   checked={preferences.achievementNotifications}
                   onCheckedChange={(checked) => updatePreference('achievementNotifications', checked)}
+                  disabled={saving}
                 />
               </div>
 
@@ -251,6 +264,7 @@ const SmartNotificationCenter = () => {
                   id="deadline-warnings"
                   checked={preferences.deadlineWarnings}
                   onCheckedChange={(checked) => updatePreference('deadlineWarnings', checked)}
+                  disabled={saving}
                 />
               </div>
 
@@ -262,6 +276,7 @@ const SmartNotificationCenter = () => {
                   id="weekly-reports"
                   checked={preferences.weeklyProgressReports}
                   onCheckedChange={(checked) => updatePreference('weeklyProgressReports', checked)}
+                  disabled={saving}
                 />
               </div>
 
@@ -273,6 +288,7 @@ const SmartNotificationCenter = () => {
                   id="appointment-reminders"
                   checked={preferences.appointmentReminders}
                   onCheckedChange={(checked) => updatePreference('appointmentReminders', checked)}
+                  disabled={saving}
                 />
               </div>
 
@@ -284,6 +300,7 @@ const SmartNotificationCenter = () => {
                   id="new-content"
                   checked={preferences.newContentAlerts}
                   onCheckedChange={(checked) => updatePreference('newContentAlerts', checked)}
+                  disabled={saving}
                 />
               </div>
 
@@ -295,8 +312,11 @@ const SmartNotificationCenter = () => {
                   id="recommendations"
                   checked={preferences.studyRecommendations}
                   onCheckedChange={(checked) => updatePreference('studyRecommendations', checked)}
+                  disabled={saving}
                 />
               </div>
+                </>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -313,19 +333,27 @@ const SmartNotificationCenter = () => {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">23</div>
+              <div className="text-2xl font-bold text-primary">
+                {preferencesLoading ? '...' : statistics.notificationsThisWeek}
+              </div>
               <p className="text-sm text-muted-foreground">Notifications cette semaine</p>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">87%</div>
+              <div className="text-2xl font-bold text-green-600">
+                {preferencesLoading ? '...' : `${statistics.readRate}%`}
+              </div>
               <p className="text-sm text-muted-foreground">Taux de lecture</p>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">12</div>
+              <div className="text-2xl font-bold text-blue-600">
+                {preferencesLoading ? '...' : statistics.actionsTaken}
+              </div>
               <p className="text-sm text-muted-foreground">Actions prises</p>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">5</div>
+              <div className="text-2xl font-bold text-orange-600">
+                {preferencesLoading ? '...' : statistics.streakReminders}
+              </div>
               <p className="text-sm text-muted-foreground">Rappels de série</p>
             </div>
           </div>
