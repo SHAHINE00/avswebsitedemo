@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -35,6 +35,23 @@ interface DashboardOverviewProps {
 }
 
 const DashboardOverview = ({ enrollments, appointments }: DashboardOverviewProps) => {
+  const [animationKey, setAnimationKey] = useState(0);
+
+  // Listen for real-time updates and trigger animations
+  useEffect(() => {
+    const handleRealTimeUpdate = () => {
+      setAnimationKey(prev => prev + 1);
+    };
+
+    window.addEventListener('enrollmentUpdate', handleRealTimeUpdate);
+    window.addEventListener('bookmarkUpdate', handleRealTimeUpdate);
+
+    return () => {
+      window.removeEventListener('enrollmentUpdate', handleRealTimeUpdate);
+      window.removeEventListener('bookmarkUpdate', handleRealTimeUpdate);
+    };
+  }, []);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 space-y-6">
@@ -60,7 +77,12 @@ const DashboardOverview = ({ enrollments, appointments }: DashboardOverviewProps
             ) : (
               <div className="grid gap-4">
                 {enrollments.filter(e => e.status === 'active').slice(0, 3).map((enrollment) => (
-                  <CourseProgressCard key={enrollment.id} enrollment={enrollment} />
+                  <div 
+                    key={`${enrollment.id}-${animationKey}`}
+                    className="transform transition-all duration-500 ease-in-out hover:scale-105"
+                  >
+                    <CourseProgressCard enrollment={enrollment} />
+                  </div>
                 ))}
               </div>
             )}

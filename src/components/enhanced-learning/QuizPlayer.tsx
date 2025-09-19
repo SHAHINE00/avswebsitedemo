@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAutoStudyTracking } from '@/hooks/useAutoStudyTracking';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -12,11 +13,17 @@ import { useEnhancedLearning, Quiz, QuizQuestion } from '@/hooks/useEnhancedLear
 
 interface QuizPlayerProps {
   lessonId: string;
+  courseId?: string;
   onQuizComplete: () => void;
 }
 
-const QuizPlayer: React.FC<QuizPlayerProps> = ({ lessonId, onQuizComplete }) => {
+const QuizPlayer: React.FC<QuizPlayerProps> = ({ lessonId, courseId, onQuizComplete }) => {
   const { fetchQuizzes, fetchQuizQuestions, submitQuizAttempt, loading } = useEnhancedLearning();
+  const { startTracking, stopTracking, isTracking } = useAutoStudyTracking({
+    courseId: courseId,
+    lessonId: lessonId,
+    autoSaveInterval: 30000 // Save every 30 seconds
+  });
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
@@ -63,6 +70,9 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ lessonId, onQuizComplete }) => 
     setQuizStarted(true);
     setStartTime(Date.now());
     
+    // Start auto-tracking study session
+    startTracking();
+    
     if (selectedQuiz.time_limit_minutes) {
       setTimeLeft(selectedQuiz.time_limit_minutes * 60);
     }
@@ -91,6 +101,9 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ lessonId, onQuizComplete }) => 
 
   const handleQuizSubmit = async () => {
     if (!selectedQuiz) return;
+
+    // Stop tracking study session
+    stopTracking();
 
     const timeSpent = Math.floor((Date.now() - startTime) / 1000);
     await submitQuizAttempt(selectedQuiz.id, answers, timeSpent);

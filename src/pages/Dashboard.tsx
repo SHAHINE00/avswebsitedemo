@@ -13,6 +13,7 @@ import ErrorBoundary from '@/components/ui/error-boundary';
 import { useNotifications } from '@/hooks/useNotifications';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useCourseInteractions } from '@/hooks/useCourseInteractions';
+import { useRealTimeData } from '@/hooks/useRealTimeData';
 import { logInfo, logError } from '@/utils/logger';
 import DashboardStats from '@/components/dashboard/DashboardStats';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
@@ -49,6 +50,7 @@ const Dashboard = () => {
   const { notifications, unreadCount, markAsRead } = useNotifications();
   const { achievements } = useUserProfile();
   const { bookmarks } = useCourseInteractions();
+  const { setupRealTimeSubscriptions } = useRealTimeData();
   
   const [enrollments, setEnrollments] = useSafeState<Enrollment[]>([]);
   const [appointments, setAppointments] = useSafeState<Appointment[]>([]);
@@ -64,7 +66,24 @@ const Dashboard = () => {
     }
     
     fetchDashboardData();
-  }, [user]);
+    
+    // Set up real-time subscriptions
+    const channel = setupRealTimeSubscriptions();
+    
+    // Listen for real-time enrollment updates
+    const handleEnrollmentUpdate = () => {
+      fetchDashboardData();
+    };
+    
+    window.addEventListener('enrollmentUpdate', handleEnrollmentUpdate);
+    
+    return () => {
+      window.removeEventListener('enrollmentUpdate', handleEnrollmentUpdate);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
+    };
+  }, [user, setupRealTimeSubscriptions]);
 
   // Redirect admin users to admin dashboard (unless viewing profile intentionally)
   useSafeEffect(() => {
