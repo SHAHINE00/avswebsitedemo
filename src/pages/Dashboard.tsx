@@ -66,9 +66,12 @@ const Dashboard = () => {
     fetchDashboardData();
   }, [user]);
 
-  // Redirect admin users to admin dashboard
+  // Redirect admin users to admin dashboard (unless viewing profile intentionally)
   useSafeEffect(() => {
-    if (user && !loading && isAdmin && !adminLoading) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const isProfileView = urlParams.get('profile') === 'true';
+    
+    if (user && !loading && isAdmin && !adminLoading && !isProfileView) {
       logInfo('Redirecting admin user to admin dashboard');
       window.history.pushState({}, '', '/admin');
       window.dispatchEvent(new PopStateEvent('popstate'));
@@ -186,6 +189,10 @@ const Dashboard = () => {
     );
   }
 
+  // Check if admin is viewing profile intentionally
+  const urlParams = new URLSearchParams(window.location.search);
+  const isProfileView = urlParams.get('profile') === 'true';
+
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gray-50">
@@ -193,6 +200,29 @@ const Dashboard = () => {
         <Navbar />
         
         <div className="container mx-auto px-6 py-8">
+          {/* Admin Profile View Banner */}
+          {isAdmin && isProfileView && (
+            <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                  <span className="text-blue-800 font-medium">Mode Profil Utilisateur</span>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => {
+                    window.history.pushState({}, '', '/admin');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                  }}
+                  className="text-blue-600 border-blue-300 hover:bg-blue-100"
+                >
+                  Retour à l'Administration
+                </Button>
+              </div>
+            </div>
+          )}
+          
           <DashboardHeader
             userEmail={user.email || ''}
             onSettingsClick={handleSettingsClick}

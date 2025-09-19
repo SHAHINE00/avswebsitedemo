@@ -95,7 +95,7 @@ const NavbarCore = () => {
                     </DropdownMenuItem>
                     {isAdmin && (
                       <DropdownMenuItem asChild>
-                        <Link to="/dashboard" className="flex items-center gap-2 text-academy-blue">
+                        <Link to="/dashboard?profile=true" className="flex items-center gap-2 text-academy-blue">
                           <User className="w-4 h-4" />
                           Profil Utilisateur
                         </Link>
@@ -172,7 +172,7 @@ const NavbarCore = () => {
                   </Link>
                   {isAdmin && (
                     <Link
-                      to="/dashboard"
+                      to="/dashboard?profile=true"
                       className="block px-3 py-2 rounded-md text-base font-medium text-academy-blue hover:bg-gray-50"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
