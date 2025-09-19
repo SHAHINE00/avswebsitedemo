@@ -8,6 +8,11 @@ import DashboardAchievements from './DashboardAchievements';
 import DashboardProfile from './DashboardProfile';
 import GamificationDashboard from '@/components/gamification/GamificationDashboard';
 import GDPRDashboard from '@/components/gdpr/GDPRDashboard';
+import EnhancedProgressDashboard from './EnhancedProgressDashboard';
+import PersonalStudyCalendar from './PersonalStudyCalendar';
+import SmartNotificationCenter from '@/components/notifications/SmartNotificationCenter';
+import DigitalCertificateSystem from '@/components/certificates/DigitalCertificateSystem';
+import { useStudyAnalytics } from '@/hooks/useStudyAnalytics';
 import type { Notification } from '@/hooks/useNotifications';
 import type { UserAchievement } from '@/hooks/useUserProfile';
 import type { CourseBookmark } from '@/hooks/useCourseInteractions';
@@ -57,11 +62,15 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
   unreadCount,
   markAsRead
 }) => {
+  const { studyStats, loading: analyticsLoading } = useStudyAnalytics();
   return (
     <Tabs value={activeTab} onValueChange={onTabChange} className="space-y-6">
-      <TabsList className="grid w-full grid-cols-7">
+      <TabsList className="grid w-full grid-cols-10">
         <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
+        <TabsTrigger value="progress">Progression</TabsTrigger>
+        <TabsTrigger value="calendar">Calendrier</TabsTrigger>
         <TabsTrigger value="courses">Formations</TabsTrigger>
+        <TabsTrigger value="certificates">Certificats</TabsTrigger>
         <TabsTrigger value="gamification">Récompenses</TabsTrigger>
         <TabsTrigger value="notifications" className="relative">
           Notifications
@@ -80,8 +89,29 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
         <DashboardOverview enrollments={enrollments} appointments={appointments} />
       </TabsContent>
 
+      <TabsContent value="progress" className="space-y-6">
+        {analyticsLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <div className="text-center">Chargement des statistiques...</div>
+          </div>
+        ) : (
+          <EnhancedProgressDashboard 
+            enrollments={enrollments}
+            studyStats={studyStats}
+          />
+        )}
+      </TabsContent>
+
+      <TabsContent value="calendar" className="space-y-6">
+        <PersonalStudyCalendar />
+      </TabsContent>
+
       <TabsContent value="courses" className="space-y-6">
         <DashboardCourses enrollments={enrollments} />
+      </TabsContent>
+
+      <TabsContent value="certificates" className="space-y-6">
+        <DigitalCertificateSystem />
       </TabsContent>
 
       <TabsContent value="gamification" className="space-y-6">
@@ -89,7 +119,7 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
       </TabsContent>
 
       <TabsContent value="notifications" className="space-y-6">
-        <DashboardNotifications notifications={notifications} markAsRead={markAsRead} />
+        <SmartNotificationCenter />
       </TabsContent>
 
       <TabsContent value="achievements" className="space-y-6">
