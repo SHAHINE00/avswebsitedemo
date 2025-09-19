@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useCertificateSystem } from '@/hooks/useCertificateSystem';
 import { 
   Award, 
   Download, 
@@ -51,79 +52,14 @@ interface Transcript {
 const DigitalCertificateSystem = () => {
   const [activeTab, setActiveTab] = useState('certificates');
   
-  // Mock data - replace with real data from hooks
-  const [certificates] = useState<Certificate[]>([
-    {
-      id: '1',
-      courseTitle: 'Intelligence Artificielle Fondamentale',
-      courseDuration: '40 heures',
-      completionDate: new Date('2024-01-15'),
-      grade: 92,
-      certificateNumber: 'AVS-AI-2024-001',
-      issuer: 'AVS Institute',
-      skills: ['Machine Learning', 'Deep Learning', 'Python', 'TensorFlow'],
-      type: 'excellence',
-      verified: true,
-      blockchainHash: '0x1234567890abcdef'
-    },
-    {
-      id: '2',
-      courseTitle: 'Programmation Python Avancée',
-      courseDuration: '60 heures',
-      completionDate: new Date('2024-02-20'),
-      grade: 88,
-      certificateNumber: 'AVS-PY-2024-002',
-      issuer: 'AVS Institute',
-      skills: ['Python', 'Django', 'FastAPI', 'Bases de données'],
-      type: 'completion',
-      verified: true
-    },
-    {
-      id: '3',
-      courseTitle: 'Cybersécurité Avancée',
-      courseDuration: '80 heures',
-      completionDate: new Date('2024-03-10'),
-      grade: 96,
-      certificateNumber: 'AVS-CY-2024-003',
-      issuer: 'AVS Institute',
-      skills: ['Sécurité réseau', 'Cryptographie', 'Audit sécurité', 'ISO 27001'],
-      type: 'mastery',
-      verified: true,
-      blockchainHash: '0xabcdef1234567890'
-    }
-  ]);
-
-  const [transcript] = useState<Transcript>({
-    id: 'TR-2024-001',
-    studentName: 'Mohamed Gozi',
-    studentId: 'STU-2024-001',
-    enrollmentDate: new Date('2023-09-01'),
-    courses: [
-      {
-        title: 'Intelligence Artificielle Fondamentale',
-        completionDate: new Date('2024-01-15'),
-        grade: 92,
-        credits: 6,
-        duration: '40h'
-      },
-      {
-        title: 'Programmation Python Avancée',
-        completionDate: new Date('2024-02-20'),
-        grade: 88,
-        credits: 8,
-        duration: '60h'
-      },
-      {
-        title: 'Cybersécurité Avancée',
-        completionDate: new Date('2024-03-10'),
-        grade: 96,
-        credits: 10,
-        duration: '80h'
-      }
-    ],
-    totalCredits: 24,
-    gpa: 92
-  });
+  // Use real data from hooks
+  const { 
+    certificates, 
+    transcript, 
+    loading, 
+    generateCertificate, 
+    verifyCertificate 
+  } = useCertificateSystem();
 
   const getCertificateTypeColor = (type: Certificate['type']) => {
     switch (type) {
@@ -176,7 +112,7 @@ const DigitalCertificateSystem = () => {
     }
   };
 
-  const verifyCertificate = (certificateNumber: string) => {
+  const openVerificationPortal = (certificateNumber: string) => {
     window.open(`https://avsinstitute.com/verify/${certificateNumber}`, '_blank');
   };
 
@@ -271,7 +207,7 @@ const DigitalCertificateSystem = () => {
                         Télécharger PDF
                       </Button>
                       <Button 
-                        onClick={() => verifyCertificate(certificate.certificateNumber)}
+                        onClick={() => openVerificationPortal(certificate.certificateNumber)}
                         variant="outline"
                         size="sm"
                       >
@@ -422,7 +358,7 @@ const DigitalCertificateSystem = () => {
                         <Button 
                           variant="outline" 
                           size="sm"
-                          onClick={() => verifyCertificate(certificate.certificateNumber)}
+                          onClick={() => openVerificationPortal(certificate.certificateNumber)}
                         >
                           Vérifier
                         </Button>

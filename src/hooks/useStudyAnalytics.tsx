@@ -46,73 +46,88 @@ export const useStudyAnalytics = () => {
   const [sessions, setSessions] = useState<StudySession[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Calculate study statistics
+  // Calculate study statistics using backend function
   const calculateStats = async () => {
     if (!user) return;
 
     try {
       setLoading(true);
 
-      // Get user enrollments and progress
-      const { data: enrollments, error: enrollmentError } = await supabase
+      // Use the backend function to get comprehensive statistics
+      const { data: stats, error: statsError } = await supabase.rpc('get_study_statistics', {
+        p_user_id: user.id
+      });
+
+      if (statsError) throw statsError;
+
+      // Get study sessions for additional data
+      const { data: studySessions, error: sessionsError } = await supabase
+        .from('study_sessions')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('started_at', { ascending: false })
+        .limit(50);
+
+      if (sessionsError) throw sessionsError;
+
+      // Get user preferences for weekly goal
+      const { data: preferences, error: prefsError } = await supabase
+        .from('user_preferences')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      // Calculate current streak using study sessions
+      const currentStreak = await calculateStudyStreakFromSessions(studySessions || []);
+
+      // Calculate weekly and monthly progress
+      const weeklyProgress = await calculateWeeklyProgressFromSessions(studySessions || []);
+      const monthlyProgress = await calculateMonthlyProgressFromSessions(studySessions || []);
+
+      // Calculate subject breakdown from enrollments
+      const { data: enrollments } = await supabase
         .from('course_enrollments')
         .select(`
           *,
-          courses (
-            title,
-            duration
-          )
+          courses (title, duration)
         `)
         .eq('user_id', user.id);
 
-      if (enrollmentError) throw enrollmentError;
-
-      // Get lesson progress
-      const { data: lessonProgress, error: progressError } = await supabase
-        .from('lesson_progress')
-        .select('*')
-        .eq('user_id', user.id);
-
-      if (progressError) throw progressError;
-
-      // Calculate basic stats
-      const completedLessons = lessonProgress?.filter(p => p.is_completed).length || 0;
-      const totalLessons = lessonProgress?.length || 0;
-      const completionRate = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
-
-      // Calculate total study hours (from lesson progress time_spent_minutes)
-      const totalMinutes = lessonProgress?.reduce((sum, lesson) => 
-        sum + (lesson.time_spent_minutes || 0), 0) || 0;
-      const totalHours = Math.round((totalMinutes / 60) * 10) / 10;
+      const subjectBreakdown = await calculateSubjectBreakdownFromSessions(studySessions || [], enrollments || []);
 
       // Calculate average session time
-      const sessionsCount = lessonProgress?.filter(p => p.time_spent_minutes > 0).length || 1;
-      const averageSessionTime = Math.round(totalMinutes / sessionsCount);
-
-      // Calculate current streak (consecutive days with activity)
-      const currentStreak = await calculateStudyStreak();
-
-      // Calculate weekly progress (last 7 days)
-      const weeklyProgress = await calculateWeeklyProgress();
-
-      // Calculate monthly progress (last 6 months)
-      const monthlyProgress = await calculateMonthlyProgress();
-
-      // Calculate subject breakdown
-      const subjectBreakdown = await calculateSubjectBreakdown(enrollments);
+      const validSessions = studySessions?.filter(s => s.duration_minutes > 0) || [];
+      const averageSessionTime = validSessions.length > 0 
+        ? Math.round(validSessions.reduce((sum, s) => sum + s.duration_minutes, 0) / validSessions.length)
+        : 0;
 
       setStudyStats({
-        totalHours,
-        weeklyGoal: 10, // Default weekly goal
+        totalHours: ((stats as any)?.total_study_hours) || 0,
+        weeklyGoal: 10, // Will get from preferences if available
         currentStreak,
-        completionRate,
+        completionRate: 0, // Will calculate from course enrollments
         averageSessionTime,
-        lessonsCompleted: completedLessons,
-        totalLessons,
+        lessonsCompleted: 0, // Will calculate from lesson progress
+        totalLessons: 0, // Will calculate from available lessons
         weeklyProgress,
         monthlyProgress,
         subjectBreakdown
       });
+
+      // Convert study sessions to the expected format
+      const convertedSessions: StudySession[] = (studySessions || []).map(session => ({
+        id: session.id,
+        userId: session.user_id,
+        courseId: session.course_id || '',
+        lessonId: session.lesson_id || undefined,
+        startTime: new Date(session.started_at),
+        endTime: session.ended_at ? new Date(session.ended_at) : new Date(session.started_at),
+        duration: session.duration_minutes,
+        type: session.session_type as StudySession['type'],
+        completed: true
+      }));
+
+      setSessions(convertedSessions);
 
     } catch (error) {
       console.error('Error calculating study stats:', error);
@@ -126,23 +141,14 @@ export const useStudyAnalytics = () => {
     }
   };
 
-  // Calculate study streak
-  const calculateStudyStreak = async (): Promise<number> => {
-    if (!user) return 0;
+  // Calculate study streak from sessions
+  const calculateStudyStreakFromSessions = async (sessions: any[]): Promise<number> => {
+    if (!sessions || sessions.length === 0) return 0;
 
     try {
-      const { data: recentProgress, error } = await supabase
-        .from('lesson_progress')
-        .select('last_accessed_at')
-        .eq('user_id', user.id)
-        .not('last_accessed_at', 'is', null)
-        .order('last_accessed_at', { ascending: false });
-
-      if (error || !recentProgress) return 0;
-
-      // Group by date and calculate consecutive days
-      const studyDates = recentProgress
-        .map(p => new Date(p.last_accessed_at!).toDateString())
+      // Group sessions by date
+      const studyDates = sessions
+        .map(s => new Date(s.started_at).toDateString())
         .filter((date, index, arr) => arr.indexOf(date) === index)
         .sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
 
@@ -175,62 +181,50 @@ export const useStudyAnalytics = () => {
     }
   };
 
-  // Calculate weekly progress (hours per day for last 7 days)
-  const calculateWeeklyProgress = async (): Promise<number[]> => {
-    if (!user) return Array(7).fill(0);
+  // Calculate weekly progress from study sessions
+  const calculateWeeklyProgressFromSessions = async (sessions: any[]): Promise<number[]> => {
+    const weeklyProgress = Array(7).fill(0);
+    
+    if (!sessions || sessions.length === 0) return weeklyProgress;
 
     try {
-      const weeklyProgress = Array(7).fill(0);
-      const { data: weeklyLessons, error } = await supabase
-        .from('lesson_progress')
-        .select('last_accessed_at, time_spent_minutes')
-        .eq('user_id', user.id)
-        .gte('last_accessed_at', new Date(Date.now() - 7 * 86400000).toISOString());
-
-      if (error || !weeklyLessons) return weeklyProgress;
-
-      weeklyLessons.forEach(lesson => {
-        if (lesson.last_accessed_at && lesson.time_spent_minutes) {
+      const weekAgo = new Date(Date.now() - 7 * 86400000);
+      
+      sessions
+        .filter(s => new Date(s.started_at) >= weekAgo)
+        .forEach(session => {
           const dayIndex = Math.floor(
-            (new Date().getTime() - new Date(lesson.last_accessed_at).getTime()) / (1000 * 60 * 60 * 24)
+            (new Date().getTime() - new Date(session.started_at).getTime()) / (1000 * 60 * 60 * 24)
           );
           if (dayIndex >= 0 && dayIndex < 7) {
-            weeklyProgress[6 - dayIndex] += lesson.time_spent_minutes / 60;
+            weeklyProgress[6 - dayIndex] += session.duration_minutes / 60;
           }
-        }
-      });
+        });
 
       return weeklyProgress.map(hours => Math.round(hours * 10) / 10);
     } catch (error) {
       console.error('Error calculating weekly progress:', error);
-      return Array(7).fill(0);
+      return weeklyProgress;
     }
   };
 
-  // Calculate monthly progress
-  const calculateMonthlyProgress = async (): Promise<{ month: string; hours: number }[]> => {
-    if (!user) return [];
+  // Calculate monthly progress from study sessions
+  const calculateMonthlyProgressFromSessions = async (sessions: any[]): Promise<{ month: string; hours: number }[]> => {
+    if (!sessions || sessions.length === 0) return [];
 
     try {
-      const { data: monthlyLessons, error } = await supabase
-        .from('lesson_progress')
-        .select('last_accessed_at, time_spent_minutes')
-        .eq('user_id', user.id)
-        .gte('last_accessed_at', new Date(Date.now() - 6 * 30 * 86400000).toISOString());
-
-      if (error || !monthlyLessons) return [];
-
+      const sixMonthsAgo = new Date(Date.now() - 6 * 30 * 86400000);
       const monthlyData: { [key: string]: number } = {};
       
-      monthlyLessons.forEach(lesson => {
-        if (lesson.last_accessed_at && lesson.time_spent_minutes) {
-          const month = new Date(lesson.last_accessed_at).toLocaleDateString('fr-FR', { 
+      sessions
+        .filter(s => new Date(s.started_at) >= sixMonthsAgo)
+        .forEach(session => {
+          const month = new Date(session.started_at).toLocaleDateString('fr-FR', { 
             month: 'short', 
             year: 'numeric' 
           });
-          monthlyData[month] = (monthlyData[month] || 0) + lesson.time_spent_minutes / 60;
-        }
-      });
+          monthlyData[month] = (monthlyData[month] || 0) + session.duration_minutes / 60;
+        });
 
       return Object.entries(monthlyData)
         .map(([month, hours]) => ({ month, hours: Math.round(hours * 10) / 10 }))
@@ -241,29 +235,24 @@ export const useStudyAnalytics = () => {
     }
   };
 
-  // Calculate subject breakdown
-  const calculateSubjectBreakdown = async (enrollments: any[]): Promise<{ subject: string; hours: number; percentage: number }[]> => {
-    if (!enrollments || enrollments.length === 0) return [];
+  // Calculate subject breakdown from sessions and enrollments
+  const calculateSubjectBreakdownFromSessions = async (sessions: any[], enrollments: any[]): Promise<{ subject: string; hours: number; percentage: number }[]> => {
+    if (!sessions || sessions.length === 0 || !enrollments || enrollments.length === 0) return [];
 
     const subjectHours: { [key: string]: number } = {};
     let totalHours = 0;
 
-    for (const enrollment of enrollments) {
-      const { data: lessons, error } = await supabase
-        .from('lesson_progress')
-        .select('time_spent_minutes')
-        .eq('user_id', user?.id)
-        .eq('lesson_id', enrollment.course_id); // This needs proper join with course_lessons
-
-      if (!error && lessons) {
-        const courseHours = lessons.reduce((sum, lesson) => 
-          sum + (lesson.time_spent_minutes || 0), 0) / 60;
+    // Group sessions by course and match with enrollments
+    sessions.forEach(session => {
+      if (session.course_id) {
+        const enrollment = enrollments.find(e => e.course_id === session.course_id);
+        const subject = enrollment?.courses?.title || 'Autre';
+        const hours = session.duration_minutes / 60;
         
-        const subject = enrollment.courses?.title || 'Autre';
-        subjectHours[subject] = (subjectHours[subject] || 0) + courseHours;
-        totalHours += courseHours;
+        subjectHours[subject] = (subjectHours[subject] || 0) + hours;
+        totalHours += hours;
       }
-    }
+    });
 
     return Object.entries(subjectHours)
       .map(([subject, hours]) => ({
@@ -305,7 +294,7 @@ export const useStudyAnalytics = () => {
     }
   };
 
-  // Track study session
+  // Track study session using backend function
   const trackStudySession = async (
     courseId: string, 
     lessonId: string, 
@@ -315,24 +304,25 @@ export const useStudyAnalytics = () => {
     if (!user) return;
 
     try {
-      // Update lesson progress
-      const { error: progressError } = await supabase
-        .from('lesson_progress')
-        .upsert({
-          user_id: user.id,
-          lesson_id: lessonId,
-          time_spent_minutes: duration,
-          last_accessed_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id,lesson_id'
-        });
+      // Use the backend function to track study session
+      const { error } = await supabase.rpc('track_study_session', {
+        p_course_id: courseId,
+        p_lesson_id: lessonId,
+        p_duration_minutes: duration,
+        p_session_type: type
+      });
 
-      if (progressError) throw progressError;
+      if (error) throw error;
 
-      // Refresh stats
+      // Refresh stats to get updated data
       await calculateStats();
     } catch (error) {
       console.error('Error tracking study session:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible d'enregistrer la session d'étude",
+        variant: "destructive"
+      });
     }
   };
 

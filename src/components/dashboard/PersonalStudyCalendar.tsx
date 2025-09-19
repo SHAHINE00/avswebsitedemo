@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { useStudyCalendar } from '@/hooks/useStudyCalendar';
 import {
   Dialog,
   DialogContent,
@@ -52,52 +53,14 @@ const PersonalStudyCalendar = () => {
   const [showSessionDialog, setShowSessionDialog] = useState(false);
   const [showGoalDialog, setShowGoalDialog] = useState(false);
 
-  // Mock data - replace with real data from hooks
-  const [studySessions, setStudySessions] = useState<StudySession[]>([
-    {
-      id: '1',
-      title: 'Introduction à l\'IA',
-      course: 'Intelligence Artificielle',
-      date: new Date(),
-      startTime: '09:00',
-      duration: 60,
-      type: 'lesson',
-      completed: false,
-      reminder: true
-    },
-    {
-      id: '2',
-      title: 'Quiz Python Basics',
-      course: 'Programmation Python',
-      date: new Date(Date.now() + 86400000),
-      startTime: '14:00',
-      duration: 30,
-      type: 'quiz',
-      completed: false,
-      reminder: true
-    }
-  ]);
-
-  const [studyGoals, setStudyGoals] = useState<StudyGoal[]>([
-    {
-      id: '1',
-      title: 'Terminer le cours IA',
-      target: 20,
-      current: 15,
-      unit: 'lessons',
-      deadline: new Date(Date.now() + 7 * 86400000),
-      priority: 'high'
-    },
-    {
-      id: '2',
-      title: 'Étudier 10h cette semaine',
-      target: 10,
-      current: 6,
-      unit: 'hours',
-      deadline: new Date(Date.now() + 3 * 86400000),
-      priority: 'medium'
-    }
-  ]);
+  // Use real data from hooks
+  const { 
+    studySessions, 
+    studyGoals, 
+    loading, 
+    createStudySession, 
+    createStudyGoal 
+  } = useStudyCalendar();
 
   const selectedDateSessions = studySessions.filter(
     session => session.date.toDateString() === selectedDate?.toDateString()
