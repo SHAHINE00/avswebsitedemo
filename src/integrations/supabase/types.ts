@@ -295,6 +295,48 @@ export type Database = {
           },
         ]
       }
+      certificates: {
+        Row: {
+          certificate_data: Json
+          certificate_type: string
+          course_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          issued_date: string
+          title: string
+          user_id: string
+          verification_code: string
+        }
+        Insert: {
+          certificate_data: Json
+          certificate_type: string
+          course_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          issued_date?: string
+          title: string
+          user_id: string
+          verification_code: string
+        }
+        Update: {
+          certificate_data?: Json
+          certificate_type?: string
+          course_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          issued_date?: string
+          title?: string
+          user_id?: string
+          verification_code?: string
+        }
+        Relationships: []
+      }
       course_announcements: {
         Row: {
           content: string
@@ -511,6 +553,42 @@ export type Database = {
           },
         ]
       }
+      course_progress_detailed: {
+        Row: {
+          course_id: string
+          id: string
+          lesson_id: string | null
+          metadata: Json | null
+          progress_type: string
+          progress_value: number | null
+          recorded_at: string
+          time_spent_minutes: number | null
+          user_id: string
+        }
+        Insert: {
+          course_id: string
+          id?: string
+          lesson_id?: string | null
+          metadata?: Json | null
+          progress_type: string
+          progress_value?: number | null
+          recorded_at?: string
+          time_spent_minutes?: number | null
+          user_id: string
+        }
+        Update: {
+          course_id?: string
+          id?: string
+          lesson_id?: string | null
+          metadata?: Json | null
+          progress_type?: string
+          progress_value?: number | null
+          recorded_at?: string
+          time_spent_minutes?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       course_reviews: {
         Row: {
           course_id: string
@@ -714,6 +792,48 @@ export type Database = {
           },
         ]
       }
+      learning_paths: {
+        Row: {
+          created_at: string
+          description: string | null
+          difficulty_level: string
+          estimated_duration_weeks: number | null
+          id: string
+          path_data: Json
+          progress_percentage: number
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          difficulty_level?: string
+          estimated_duration_weeks?: number | null
+          id?: string
+          path_data: Json
+          progress_percentage?: number
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          difficulty_level?: string
+          estimated_duration_weeks?: number | null
+          id?: string
+          path_data?: Json
+          progress_percentage?: number
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       lesson_discussions: {
         Row: {
           content: string
@@ -846,6 +966,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      notification_preferences: {
+        Row: {
+          created_at: string
+          email_notifications: Json
+          id: string
+          notification_frequency: string
+          push_notifications: Json
+          quiet_hours_end: string | null
+          quiet_hours_start: string | null
+          timezone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email_notifications?: Json
+          id?: string
+          notification_frequency?: string
+          push_notifications?: Json
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          timezone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email_notifications?: Json
+          id?: string
+          notification_frequency?: string
+          push_notifications?: Json
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          timezone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       notifications: {
         Row: {
@@ -1240,6 +1399,84 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      study_goals: {
+        Row: {
+          created_at: string
+          current_value: number
+          goal_type: string
+          id: string
+          period_end: string
+          period_start: string
+          status: string
+          target_value: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_value?: number
+          goal_type: string
+          id?: string
+          period_end: string
+          period_start: string
+          status?: string
+          target_value: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_value?: number
+          goal_type?: string
+          id?: string
+          period_end?: string
+          period_start?: string
+          status?: string
+          target_value?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      study_sessions: {
+        Row: {
+          course_id: string | null
+          created_at: string
+          duration_minutes: number
+          ended_at: string | null
+          id: string
+          lesson_id: string | null
+          metadata: Json | null
+          session_type: string
+          started_at: string
+          user_id: string
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string
+          duration_minutes?: number
+          ended_at?: string | null
+          id?: string
+          lesson_id?: string | null
+          metadata?: Json | null
+          session_type?: string
+          started_at?: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string
+          duration_minutes?: number
+          ended_at?: string | null
+          id?: string
+          lesson_id?: string | null
+          metadata?: Json | null
+          session_type?: string
+          started_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       subscribers: {
         Row: {
