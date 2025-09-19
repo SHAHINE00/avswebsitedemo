@@ -12,6 +12,8 @@ import EnhancedProgressDashboard from './EnhancedProgressDashboard';
 import PersonalStudyCalendar from './PersonalStudyCalendar';
 import SmartNotificationCenter from '@/components/notifications/SmartNotificationCenter';
 import DigitalCertificateSystem from '@/components/certificates/DigitalCertificateSystem';
+import AdvancedAnalytics from './AdvancedAnalytics';
+import SmartStudyRecommendations from './SmartStudyRecommendations';
 import { useStudyAnalytics } from '@/hooks/useStudyAnalytics';
 import type { Notification } from '@/hooks/useNotifications';
 import type { UserAchievement } from '@/hooks/useUserProfile';
@@ -65,13 +67,15 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
   const { studyStats, loading: analyticsLoading } = useStudyAnalytics();
   return (
     <Tabs value={activeTab} onValueChange={onTabChange} className="space-y-6">
-      <TabsList className="grid w-full grid-cols-10">
+      <TabsList className="grid w-full grid-cols-12">
         <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
         <TabsTrigger value="progress">Progression</TabsTrigger>
         <TabsTrigger value="calendar">Calendrier</TabsTrigger>
         <TabsTrigger value="courses">Formations</TabsTrigger>
         <TabsTrigger value="certificates">Certificats</TabsTrigger>
         <TabsTrigger value="gamification">Récompenses</TabsTrigger>
+        <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        <TabsTrigger value="recommendations">IA</TabsTrigger>
         <TabsTrigger value="notifications" className="relative">
           Notifications
           {unreadCount > 0 && (
@@ -128,6 +132,14 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
 
       <TabsContent value="profile" className="space-y-6">
         <DashboardProfile bookmarks={bookmarks} />
+      </TabsContent>
+
+      <TabsContent value="analytics" className="space-y-6">
+        <AdvancedAnalytics />
+      </TabsContent>
+
+      <TabsContent value="recommendations" className="space-y-6">
+        <SmartStudyRecommendations />
       </TabsContent>
 
       <TabsContent value="privacy" className="space-y-6">

@@ -3,14 +3,17 @@ import { Link, useParams, Navigate } from 'react-router-dom';
 import { useCourses } from '@/hooks/useCourses';
 import { useCourseContent } from '@/hooks/useCourseContent';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRealTimeData } from '@/hooks/useRealTimeData';
+import { useGamification } from '@/hooks/useGamification';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import EnhancedCoursePlayer from '@/components/course-player/EnhancedCoursePlayer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Play, CheckCircle, Clock, FileText, Bell, ArrowLeft, ArrowRight, Brain, StickyNote, MessageSquare } from 'lucide-react';
+import { Play, CheckCircle, Clock, FileText, Bell, ArrowLeft, ArrowRight, Brain, StickyNote, MessageSquare, Award, TrendingUp } from 'lucide-react';
 import QuizPlayer from '@/components/enhanced-learning/QuizPlayer';
 import NotesPanel from '@/components/enhanced-learning/NotesPanel';
 import DiscussionPanel from '@/components/enhanced-learning/DiscussionPanel';
@@ -32,7 +35,12 @@ const CoursePlayer = () => {
     markLessonComplete,
   } = useCourseContent();
 
+  // Real-time data and gamification
+  useRealTimeData();
+  const { userLevel, userPoints, checkAndAwardAchievements } = useGamification();
+
   const [selectedLessonId, setSelectedLessonId] = useState<string>('');
+  const [activeTab, setActiveTab] = useState('content');
 
   // Find the course by slug
   const course = courses.find(c => {
@@ -99,6 +107,14 @@ const CoursePlayer = () => {
       if (course.id) {
         fetchUserProgress(course.id);
       }
+      
+      // Check for achievements after completion
+      await checkAndAwardAchievements();
+      
+      // Dispatch lesson completion event
+      window.dispatchEvent(new CustomEvent('lesson-completed', {
+        detail: { lessonId: selectedLessonId, courseId: course.id }
+      }));
     }
   };
 
@@ -143,7 +159,17 @@ const CoursePlayer = () => {
                 </div>
                 <Progress value={progressPercentage} className="h-2" />
               </div>
-              <Badge variant="secondary">{Math.round(progressPercentage)}% terminé</Badge>
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary">{Math.round(progressPercentage)}% terminé</Badge>
+                <Badge variant="outline" className="flex items-center gap-1">
+                  <Award className="w-3 h-3" />
+                  Niveau {userLevel.level}
+                </Badge>
+                <Badge variant="outline" className="flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3" />
+                  {userPoints} pts
+                </Badge>
+              </div>
             </div>
           </div>
 
@@ -248,94 +274,34 @@ const CoursePlayer = () => {
               </Card>
             </div>
 
-            {/* Main Content - Lesson Player */}
+            {/* Main Content - Enhanced Lesson Player */}
             <div className="lg:col-span-3">
               {selectedLesson ? (
+                <EnhancedCoursePlayer
+                  course={course}
+                  lesson={selectedLesson}
+                  onLessonComplete={handleMarkComplete}
+                  onProgressUpdate={(progress) => {
+                    console.log('Progress updated:', progress);
+                  }}
+                />
+              ) : (
                 <Card>
-                  <CardHeader>
+                  <CardContent className="p-8 text-center">
+                    <Play className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">Aucune leçon sélectionnée</h3>
+                    <p className="text-muted-foreground">
+                      Sélectionnez une leçon dans la liste pour commencer.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+              
+              {/* Navigation Controls */}
+              {selectedLesson && (
+                <Card className="mt-4">
+                  <CardContent className="p-4">
                     <div className="flex items-center justify-between">
-                      <div>
-                        <CardTitle className="flex items-center gap-2">
-                          {selectedLesson.title}
-                          {isLessonCompleted(selectedLesson.id) && (
-                            <CheckCircle className="w-5 h-5 text-green-500" />
-                          )}
-                        </CardTitle>
-                        {selectedLesson.description && (
-                          <p className="text-muted-foreground mt-1">{selectedLesson.description}</p>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {!isLessonCompleted(selectedLesson.id) && (
-                          <Button onClick={handleMarkComplete}>
-                            <CheckCircle className="w-4 h-4 mr-2" />
-                            Marquer comme terminé
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    {selectedLesson.video_url && (
-                      <div className="mb-6">
-                        <div className="aspect-video bg-black rounded-lg overflow-hidden">
-                          <iframe
-                            src={selectedLesson.video_url}
-                            className="w-full h-full"
-                            allowFullScreen
-                            title={selectedLesson.title}
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="prose max-w-none">
-                      <div
-                        dangerouslySetInnerHTML={{ __html: selectedLesson.content }}
-                      />
-                    </div>
-
-                    {/* Enhanced Learning Features */}
-                    <div className="mt-8 pt-6 border-t">
-                      <Tabs defaultValue="quiz" className="w-full">
-                        <TabsList className="grid w-full grid-cols-3">
-                          <TabsTrigger value="quiz" className="flex items-center gap-2">
-                            <Brain className="w-4 h-4" />
-                            Quiz
-                          </TabsTrigger>
-                          <TabsTrigger value="notes" className="flex items-center gap-2">
-                            <StickyNote className="w-4 h-4" />
-                            Notes
-                          </TabsTrigger>
-                          <TabsTrigger value="discussions" className="flex items-center gap-2">
-                            <MessageSquare className="w-4 h-4" />
-                            Discussions
-                          </TabsTrigger>
-                        </TabsList>
-
-                        <TabsContent value="quiz" className="mt-6">
-                          <QuizPlayer 
-                            lessonId={selectedLesson.id}
-                            onQuizComplete={() => {
-                              // Refresh progress after quiz completion
-                              if (course.id) {
-                                fetchUserProgress(course.id);
-                              }
-                            }}
-                          />
-                        </TabsContent>
-
-                        <TabsContent value="notes" className="mt-6">
-                          <NotesPanel lessonId={selectedLesson.id} />
-                        </TabsContent>
-
-                        <TabsContent value="discussions" className="mt-6">
-                          <DiscussionPanel lessonId={selectedLesson.id} />
-                        </TabsContent>
-                      </Tabs>
-                    </div>
-
-                    <div className="flex items-center justify-between mt-8 pt-6 border-t">
                       <Button
                         variant="outline"
                         onClick={goToPreviousLesson}
@@ -345,6 +311,15 @@ const CoursePlayer = () => {
                         Leçon précédente
                       </Button>
 
+                      <div className="flex items-center gap-2">
+                        {!isLessonCompleted(selectedLesson.id) && (
+                          <Button onClick={handleMarkComplete}>
+                            <CheckCircle className="w-4 h-4 mr-2" />
+                            Marquer comme terminé
+                          </Button>
+                        )}
+                      </div>
+
                       <Button
                         onClick={goToNextLesson}
                         disabled={lessons.findIndex(l => l.id === selectedLessonId) === lessons.length - 1}
@@ -353,16 +328,6 @@ const CoursePlayer = () => {
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </Button>
                     </div>
-                  </CardContent>
-                </Card>
-              ) : (
-                <Card>
-                  <CardContent className="p-8 text-center">
-                    <Play className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Aucune leçon sélectionnée</h3>
-                    <p className="text-muted-foreground">
-                      Sélectionnez une leçon dans la liste pour commencer.
-                    </p>
                   </CardContent>
                 </Card>
               )}
