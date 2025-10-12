@@ -10,6 +10,7 @@ import SubscriberManagement from '@/components/admin/dashboard/SubscriberManagem
 import SectionVisibilityManagement from '@/components/admin/dashboard/SectionVisibilityManagement';
 import SecurityVerification from '@/components/admin/dashboard/SecurityVerification';
 import AppointmentManagement from '@/components/admin/dashboard/AppointmentManagement';
+import { SecurityTestSuite } from './SecurityTestSuite';
 import type { Course } from '@/hooks/useCourses';
 
 interface AdminTabsEnhancedProps {
@@ -69,7 +70,10 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
       </TabsContent>
 
       <TabsContent value="security">
-        <SecurityVerification />
+        <div className="space-y-6">
+          <SecurityTestSuite />
+          <SecurityVerification />
+        </div>
       </TabsContent>
 
       <TabsContent value="analytics">

@@ -1766,14 +1766,6 @@ export type Database = {
         Args: { p_page_name: string; p_reorders: Json }
         Returns: undefined
       }
-      check_admin_role: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      check_admin_role_strict: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
       cleanup_security_logs: {
         Args: Record<PropertyKey, never>
         Returns: undefined
