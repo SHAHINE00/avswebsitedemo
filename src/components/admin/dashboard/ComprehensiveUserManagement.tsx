@@ -16,8 +16,11 @@ import { UserInviteDialog } from './user-management/UserInviteDialog';
 import { UserEditDialog } from './user-management/UserEditDialog';
 import { UserEnrollmentDialog } from './user-management/UserEnrollmentDialog';
 import { BulkActionsTab } from './user-management/BulkActionsTab';
+import { BulkEnrollmentDialog } from './user-management/BulkEnrollmentDialog';
 import { useUserManagement, type UserProfile } from './user-management/hooks/useUserManagement';
 import { useUserFilters } from './user-management/hooks/useUserFilters';
+import { useBulkEnrollments } from '@/hooks/useBulkEnrollments';
+import { supabase } from '@/integrations/supabase/client';
 
 const ComprehensiveUserManagement = () => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -26,6 +29,8 @@ const ComprehensiveUserManagement = () => {
   const [enrollmentUser, setEnrollmentUser] = useState<UserProfile | null>(null);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteMessage, setInviteMessage] = useState('');
+  const [bulkEnrollmentOpen, setBulkEnrollmentOpen] = useState(false);
+  const [bulkActionLoading, setBulkActionLoading] = useState(false);
   const { toast } = useToast();
 
   const {
@@ -48,6 +53,8 @@ const ComprehensiveUserManagement = () => {
     sortBy,
     setSortBy
   } = useUserFilters(users);
+
+  const { bulkEnroll, bulkUnenroll, loading: enrollmentLoading } = useBulkEnrollments();
 
   const handleInviteUser = async () => {
     const success = await inviteUser(inviteEmail, inviteMessage);
@@ -75,37 +82,51 @@ const ComprehensiveUserManagement = () => {
   };
 
   const handleBulkAction = async (action: 'promote' | 'demote' | 'delete') => {
+    if (selectedUsers.length === 0) return;
+
+    setBulkActionLoading(true);
     try {
-      const promises = selectedUsers.map(async (userId) => {
-        const user = users.find(u => u.id === userId);
-        if (!user) return;
-
-        switch (action) {
-          case 'promote':
-            const isAdmin = user.roles?.includes('admin');
-            if (!isAdmin) {
-              await updateUserRole(userId, 'admin', user.roles);
-            }
-            break;
-          case 'demote':
-            const isCurrentlyAdmin = user.roles?.includes('admin');
-            if (isCurrentlyAdmin) {
-              await updateUserRole(userId, 'user', user.roles);
-            }
-            break;
-          case 'delete':
-            await deleteUser(userId, user.email || '');
-            break;
-        }
-      });
-
-      await Promise.all(promises);
-      setSelectedUsers([]);
+      if (action === 'promote') {
+        const { data, error } = await supabase.rpc('bulk_promote_users_to_admin', {
+          p_user_ids: selectedUsers
+        });
+        
+        if (error) throw error;
+        
+        const result = data as unknown as { success_count: number; failed_count: number };
+        toast({
+          title: 'Utilisateurs promus',
+          description: `${result.success_count} utilisateur(s) promu(s)${
+            result.failed_count > 0 ? `, ${result.failed_count} échec(s)` : ''
+          }`,
+        });
+      } else if (action === 'demote') {
+        const { data, error } = await supabase.rpc('bulk_demote_users_to_student', {
+          p_user_ids: selectedUsers
+        });
+        
+        if (error) throw error;
+        
+        const result = data as unknown as { success_count: number; failed_count: number };
+        toast({
+          title: 'Utilisateurs rétrogradés',
+          description: `${result.success_count} utilisateur(s) rétrogradé(s)${
+            result.failed_count > 0 ? `, ${result.failed_count} échec(s)` : ''
+          }`,
+        });
+      } else if (action === 'delete') {
+        await Promise.all(selectedUsers.map(userId => {
+          const user = users.find(u => u.id === userId);
+          return deleteUser(userId, user?.email || '');
+        }));
+        toast({
+          title: 'Utilisateurs supprimés',
+          description: `${selectedUsers.length} utilisateur(s) supprimé(s)`,
+        });
+      }
       
-      toast({
-        title: "Succès",
-        description: `Action ${action} effectuée sur ${selectedUsers.length} utilisateur(s)`,
-      });
+      setSelectedUsers([]);
+      await fetchUsers();
     } catch (error) {
       logError('Error performing bulk action:', error);
       toast({
@@ -113,7 +134,21 @@ const ComprehensiveUserManagement = () => {
         description: "Erreur lors de l'action groupée",
         variant: "destructive",
       });
+    } finally {
+      setBulkActionLoading(false);
     }
+  };
+
+  const handleBulkEnroll = async (courseId: string) => {
+    await bulkEnroll(selectedUsers, courseId);
+    setSelectedUsers([]);
+    await fetchUsers();
+  };
+
+  const handleBulkUnenroll = async (courseId: string) => {
+    await bulkUnenroll(selectedUsers, courseId);
+    setSelectedUsers([]);
+    await fetchUsers();
   };
 
   const handleEditUser = async (updatedUser: UserProfile) => {
@@ -172,6 +207,13 @@ const ComprehensiveUserManagement = () => {
             setSortBy={setSortBy}
             dateFilter="all"
             setDateFilter={() => {}}
+          />
+
+          <BulkActionsBar
+            selectedCount={selectedUsers.length}
+            onClearSelection={() => setSelectedUsers([])}
+            onBulkAction={handleBulkAction}
+            onManageEnrollments={() => setBulkEnrollmentOpen(true)}
           />
 
           <div className="grid gap-4">
@@ -233,6 +275,15 @@ const ComprehensiveUserManagement = () => {
         user={enrollmentUser}
         open={!!enrollmentUser}
         onOpenChange={(open) => !open && setEnrollmentUser(null)}
+      />
+
+      <BulkEnrollmentDialog
+        selectedUserIds={selectedUsers}
+        open={bulkEnrollmentOpen}
+        onOpenChange={setBulkEnrollmentOpen}
+        onEnroll={handleBulkEnroll}
+        onUnenroll={handleBulkUnenroll}
+        loading={enrollmentLoading || bulkActionLoading}
       />
     </div>
   );

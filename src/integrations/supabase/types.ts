@@ -1766,6 +1766,22 @@ export type Database = {
         Args: { p_page_name: string; p_reorders: Json }
         Returns: undefined
       }
+      bulk_demote_users_to_student: {
+        Args: { p_user_ids: string[] }
+        Returns: Json
+      }
+      bulk_enroll_users: {
+        Args: { p_course_id: string; p_user_ids: string[] }
+        Returns: Json
+      }
+      bulk_promote_users_to_admin: {
+        Args: { p_user_ids: string[] }
+        Returns: Json
+      }
+      bulk_unenroll_users: {
+        Args: { p_course_id: string; p_user_ids: string[] }
+        Returns: Json
+      }
       cleanup_security_logs: {
         Args: Record<PropertyKey, never>
         Returns: undefined
