@@ -25,16 +25,14 @@ const AdminRouteGuard: React.FC<AdminRouteGuardProps> = ({ children }) => {
       }
 
       try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', user.id)
-          .single();
+        const { data, error } = await supabase.rpc('is_admin', {
+          _user_id: user.id
+        });
 
         if (error) {
           setIsAdmin(false);
         } else {
-          setIsAdmin(data?.role === 'admin');
+          setIsAdmin(data === true);
         }
       } catch (error) {
         setIsAdmin(false);

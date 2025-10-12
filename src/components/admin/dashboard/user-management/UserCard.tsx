@@ -68,8 +68,8 @@ export const UserCard: React.FC<UserCardProps> = ({
             <h3 className="font-medium truncate">
               {user.full_name || 'Nom non renseigné'}
             </h3>
-            <Badge variant={user.role === 'admin' ? 'default' : 'secondary'} className="w-fit">
-              {user.role === 'admin' ? 'Admin' : 'Utilisateur'}
+            <Badge variant={user.roles?.includes('admin') ? 'default' : 'secondary'} className="w-fit">
+              {user.roles?.includes('admin') ? 'Admin' : 'Utilisateur'}
             </Badge>
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-muted-foreground">
@@ -124,7 +124,7 @@ export const UserCard: React.FC<UserCardProps> = ({
           </Button>
         )}
 
-        {user.role === 'admin' ? (
+        {user.roles?.includes('admin') ? (
           <Button
             variant="outline"
             size="sm"
@@ -192,7 +192,7 @@ export const UserCard: React.FC<UserCardProps> = ({
           </Button>
         )}
 
-        {user.role === 'admin' ? (
+        {user.roles?.includes('admin') ? (
           <Button
             variant="outline"
             size="sm"

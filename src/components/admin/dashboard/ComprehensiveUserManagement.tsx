@@ -82,13 +82,15 @@ const ComprehensiveUserManagement = () => {
 
         switch (action) {
           case 'promote':
-            if (user.role !== 'admin') {
-              await updateUserRole(userId, 'admin', user.role);
+            const isAdmin = user.roles?.includes('admin');
+            if (!isAdmin) {
+              await updateUserRole(userId, 'admin', user.roles);
             }
             break;
           case 'demote':
-            if (user.role === 'admin') {
-              await updateUserRole(userId, 'user', user.role);
+            const isCurrentlyAdmin = user.roles?.includes('admin');
+            if (isCurrentlyAdmin) {
+              await updateUserRole(userId, 'user', user.roles);
             }
             break;
           case 'delete':
@@ -120,8 +122,7 @@ const ComprehensiveUserManagement = () => {
     const updates: Partial<UserProfile> = {
       email: updatedUser.email,
       full_name: updatedUser.full_name,
-      phone: updatedUser.phone,
-      role: updatedUser.role
+      phone: updatedUser.phone
     };
     
     await updateUserProfile(editingUser.id, updates);
@@ -196,7 +197,7 @@ const ComprehensiveUserManagement = () => {
                 onToggleSelection={() => toggleUserSelection(user.id)}
                 onEdit={() => setEditingUser(user)}
                 onResetPassword={() => resetUserPassword(user.email || '')}
-                onUpdateRole={(newRole) => updateUserRole(user.id, newRole, user.role)}
+                onUpdateRole={(newRole) => updateUserRole(user.id, newRole, user.roles)}
                 onDelete={() => deleteUser(user.id, user.email || '')}
                 onManageEnrollments={() => setEnrollmentUser(user)}
               />

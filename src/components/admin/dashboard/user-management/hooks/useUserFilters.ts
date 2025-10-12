@@ -13,7 +13,7 @@ export const useUserFilters = (users: UserProfile[]) => {
     let filtered = users.filter(user => {
       const matchesSearch = user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            user.full_name?.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+      const matchesRole = roleFilter === 'all' || user.roles?.includes(roleFilter);
       
       let matchesDate = true;
       if (dateFilter !== 'all' && user.created_at) {
@@ -45,7 +45,9 @@ export const useUserFilters = (users: UserProfile[]) => {
         case 'full_name':
           return (a.full_name || '').localeCompare(b.full_name || '');
         case 'role':
-          return (a.role || '').localeCompare(b.role || '');
+          const aIsAdmin = a.roles?.includes('admin') ? 'admin' : 'user';
+          const bIsAdmin = b.roles?.includes('admin') ? 'admin' : 'user';
+          return aIsAdmin.localeCompare(bIsAdmin);
         case 'created_at':
         default:
           return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();

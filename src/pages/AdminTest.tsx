@@ -33,13 +33,11 @@ const AdminTest = () => {
     if (!user) return;
     
     try {
-      const { data } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single();
+      const { data } = await supabase.rpc('is_admin', {
+        _user_id: user.id
+      });
 
-      setIsAdmin(data?.role === 'admin');
+      setIsAdmin(data === true);
     } catch (error) {
       logError('Error checking admin status:', error);
     }

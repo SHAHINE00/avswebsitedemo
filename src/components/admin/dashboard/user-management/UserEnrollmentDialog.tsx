@@ -15,12 +15,8 @@ import { BookOpen, Plus, Trash2, Calendar, TrendingUp } from 'lucide-react';
 import { useAdminEnrollments, UserEnrollment } from '@/hooks/useAdminEnrollments';
 import { Skeleton } from '@/components/ui/skeleton';
 
-interface UserProfile {
-  id: string;
-  email: string | null;
-  full_name: string | null;
-  role: string | null;
-}
+// Use the shared UserProfile interface from useUserManagement
+import type { UserProfile } from './hooks/useUserManagement';
 
 interface UserEnrollmentDialogProps {
   user: UserProfile | null;

@@ -18,18 +18,16 @@ export const useAdminCourses = () => {
     if (!user) return;
     
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single();
+      const { data, error } = await supabase.rpc('is_admin', {
+        _user_id: user.id
+      });
 
       if (error) {
         logError('Error checking admin status:', error);
         return;
       }
 
-      setIsAdmin(data?.role === 'admin');
+      setIsAdmin(data === true);
     } catch (error) {
       logError('Error:', error);
     }

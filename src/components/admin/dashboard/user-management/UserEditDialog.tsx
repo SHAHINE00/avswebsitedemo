@@ -66,21 +66,6 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
               onChange={(e) => onUserChange({ ...user, phone: e.target.value })}
             />
           </div>
-          <div>
-            <Label htmlFor="edit-role">Rôle</Label>
-            <Select 
-              value={user.role || 'user'} 
-              onValueChange={(value) => onUserChange({ ...user, role: value })}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="user">Utilisateur</SelectItem>
-                <SelectItem value="admin">Administrateur</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onCancel}>

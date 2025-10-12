@@ -22,13 +22,28 @@ const AdminUserSetup: React.FC = () => {
 
   const fetchAdmins = async () => {
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('email, full_name, role, created_at')
+      const { data: adminRoles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('user_id')
         .eq('role', 'admin');
 
-      if (error) throw error;
-      setExistingAdmins(data || []);
+      if (rolesError) throw rolesError;
+
+      const adminUserIds = adminRoles?.map(r => r.user_id) || [];
+      
+      if (adminUserIds.length === 0) {
+        setExistingAdmins([]);
+        return;
+      }
+
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, email, full_name, created_at')
+        .in('id', adminUserIds);
+
+      if (profilesError) throw profilesError;
+      
+      setExistingAdmins(profiles || []);
     } catch (error) {
       logError('Error fetching admins:', error);
     }
@@ -49,7 +64,7 @@ const AdminUserSetup: React.FC = () => {
       // First, check if user exists
       const { data: userData, error: userError } = await supabase
         .from('profiles')
-        .select('id, email, role')
+        .select('id, email')
         .eq('email', email.trim())
         .single();
 
@@ -62,7 +77,15 @@ const AdminUserSetup: React.FC = () => {
         return;
       }
 
-      if (userData.role === 'admin') {
+      // Check if already admin
+      const { data: existingRole } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userData.id)
+        .eq('role', 'admin')
+        .single();
+
+      if (existingRole) {
         toast({
           title: 'Information',
           description: 'Cet utilisateur est déjà administrateur',
@@ -70,13 +93,12 @@ const AdminUserSetup: React.FC = () => {
         return;
       }
 
-      // Update user role to admin
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ role: 'admin' })
-        .eq('email', email.trim());
+      // Promote user to admin using RPC function
+      const { error: promoteError } = await supabase.rpc('promote_user_to_admin', {
+        p_target_user_id: userData.id
+      });
 
-      if (updateError) throw updateError;
+      if (promoteError) throw promoteError;
 
       toast({
         title: 'Succès',
@@ -101,10 +123,21 @@ const AdminUserSetup: React.FC = () => {
     if (!confirm('Êtes-vous sûr de vouloir révoquer les droits d\'administrateur ?')) return;
 
     try {
-      const { error } = await supabase
+      // Get user ID from email
+      const { data: userData } = await supabase
         .from('profiles')
-        .update({ role: 'user' })
-        .eq('email', userEmail);
+        .select('id')
+        .eq('email', userEmail)
+        .single();
+
+      if (!userData) {
+        throw new Error('User not found');
+      }
+
+      // Demote user using RPC function
+      const { error } = await supabase.rpc('demote_user_to_user', {
+        p_target_user_id: userData.id
+      });
 
       if (error) throw error;
 
