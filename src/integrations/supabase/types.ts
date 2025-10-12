@@ -1133,7 +1133,6 @@ export type Database = {
           phone: string | null
           postal_code: string | null
           previous_education: string | null
-          role: string | null
           status: Database["public"]["Enums"]["approval_status"] | null
           updated_at: string | null
         }
@@ -1153,7 +1152,6 @@ export type Database = {
           phone?: string | null
           postal_code?: string | null
           previous_education?: string | null
-          role?: string | null
           status?: Database["public"]["Enums"]["approval_status"] | null
           updated_at?: string | null
         }
@@ -1173,7 +1171,6 @@ export type Database = {
           phone?: string | null
           postal_code?: string | null
           previous_education?: string | null
-          role?: string | null
           status?: Database["public"]["Enums"]["approval_status"] | null
           updated_at?: string | null
         }
@@ -1724,6 +1721,30 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -1830,6 +1851,17 @@ export type Database = {
         Args: { p_user_id: string }
         Returns: Json
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_admin: {
+        Args: { _user_id?: string }
+        Returns: boolean
+      }
       log_admin_activity: {
         Args: {
           p_action: string
@@ -1926,6 +1958,7 @@ export type Database = {
       }
     }
     Enums: {
+      app_role: "admin" | "instructor" | "student"
       approval_status: "pending" | "approved" | "rejected"
       course_status: "draft" | "published" | "archived"
     }
@@ -2055,6 +2088,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "instructor", "student"],
       approval_status: ["pending", "approved", "rejected"],
       course_status: ["draft", "published", "archived"],
     },

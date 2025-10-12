@@ -47,14 +47,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const checkAdminStatus = async (userId: string) => {
     setAdminLoading(true);
     try {
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', userId)
-        .single();
+      const { data, error } = await supabase.rpc('is_admin', {
+        _user_id: userId
+      });
       
-      if (!error && profile) {
-        setIsAdmin(profile.role === 'admin');
+      if (!error && data !== null) {
+        setIsAdmin(data === true);
       } else {
         setIsAdmin(false);
       }

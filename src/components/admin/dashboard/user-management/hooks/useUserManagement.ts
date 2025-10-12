@@ -9,7 +9,7 @@ export interface UserProfile {
   email: string | null;
   full_name: string | null;
   phone: string | null;
-  role: string | null;
+  roles: string[] | null;
   created_at: string | null;
   updated_at: string | null;
 }
@@ -22,14 +22,27 @@ export const useUserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const { data, error } = await supabase
+      const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
-        .select('id, email, full_name, phone, role, created_at, updated_at')
+        .select('id, email, full_name, phone, created_at, updated_at')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      
-      setUsers(data || []);
+      if (profilesError) throw profilesError;
+
+      // Fetch roles for all users
+      const { data: rolesData, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('user_id, role');
+
+      if (rolesError) throw rolesError;
+
+      // Combine profiles with their roles
+      const usersWithRoles = profiles?.map(profile => ({
+        ...profile,
+        roles: rolesData?.filter(r => r.user_id === profile.id).map(r => r.role) || []
+      })) || [];
+
+      setUsers(usersWithRoles);
     } catch (error) {
       logError('Error fetching users:', error);
       toast({
@@ -42,14 +55,16 @@ export const useUserManagement = () => {
     }
   };
 
-  const updateUserRole = async (userId: string, newRole: string, currentRole: string | null) => {
+  const updateUserRole = async (userId: string, newRole: string, currentRoles: string[] | null) => {
     try {
-      if (newRole === 'admin') {
+      const isCurrentlyAdmin = currentRoles?.includes('admin') || false;
+      
+      if (newRole === 'admin' && !isCurrentlyAdmin) {
         const { error } = await supabase.rpc('promote_user_to_admin', {
           p_target_user_id: userId
         });
         if (error) throw error;
-      } else {
+      } else if (newRole !== 'admin' && isCurrentlyAdmin) {
         const { error } = await supabase.rpc('demote_user_to_user', {
           p_target_user_id: userId
         });
