@@ -10,7 +10,7 @@ import SubscriberManagement from '@/components/admin/dashboard/SubscriberManagem
 import SectionVisibilityManagement from '@/components/admin/dashboard/SectionVisibilityManagement';
 import SecurityVerification from '@/components/admin/dashboard/SecurityVerification';
 import AppointmentManagement from '@/components/admin/dashboard/AppointmentManagement';
-import StudentCRMDashboard from '@/components/admin/dashboard/student-crm/StudentCRMDashboard';
+import StudentCRMDashboardEnhanced from '@/components/admin/dashboard/student-crm/StudentCRMDashboardEnhanced';
 import { SecurityTestSuite } from './SecurityTestSuite';
 import type { Course } from '@/hooks/useCourses';
 
@@ -47,7 +47,7 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
       </TabsContent>
 
       <TabsContent value="students">
-        <StudentCRMDashboard />
+        <StudentCRMDashboardEnhanced />
       </TabsContent>
 
       <TabsContent value="courses">

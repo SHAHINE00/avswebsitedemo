@@ -1445,10 +1445,12 @@ export type Database = {
           expected_completion: string | null
           full_name: string | null
           id: string
+          last_activity_at: string | null
           phone: string | null
           postal_code: string | null
           previous_education: string | null
           status: Database["public"]["Enums"]["approval_status"] | null
+          student_status: string | null
           updated_at: string | null
         }
         Insert: {
@@ -1464,10 +1466,12 @@ export type Database = {
           expected_completion?: string | null
           full_name?: string | null
           id: string
+          last_activity_at?: string | null
           phone?: string | null
           postal_code?: string | null
           previous_education?: string | null
           status?: Database["public"]["Enums"]["approval_status"] | null
+          student_status?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -1483,10 +1487,12 @@ export type Database = {
           expected_completion?: string | null
           full_name?: string | null
           id?: string
+          last_activity_at?: string | null
           phone?: string | null
           postal_code?: string | null
           previous_education?: string | null
           status?: Database["public"]["Enums"]["approval_status"] | null
+          student_status?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -1910,6 +1916,48 @@ export type Database = {
           },
           {
             foreignKeyName: "student_notes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_tags: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          tag_color: string | null
+          tag_name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          tag_color?: string | null
+          tag_name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          tag_color?: string | null
+          tag_name?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_tags_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_tags_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -2380,6 +2428,10 @@ export type Database = {
         Returns: Json
       }
       get_revenue_analytics: {
+        Args: { p_end_date?: string; p_start_date?: string }
+        Returns: Json
+      }
+      get_student_analytics: {
         Args: { p_end_date?: string; p_start_date?: string }
         Returns: Json
       }

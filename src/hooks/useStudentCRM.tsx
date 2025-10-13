@@ -142,6 +142,98 @@ export const useStudentCRM = () => {
     }
   };
 
+  const getStudentAnalytics = async (startDate?: string, endDate?: string) => {
+    try {
+      const { data, error } = await supabase.rpc('get_student_analytics', {
+        p_start_date: startDate,
+        p_end_date: endDate
+      });
+      if (error) throw error;
+      return data || {};
+    } catch (error: any) {
+      console.error('Error fetching analytics:', error);
+      return {};
+    }
+  };
+
+  const bulkEnrollStudents = async (userIds: string[], courseId: string) => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.rpc('bulk_enroll_users', {
+        p_user_ids: userIds,
+        p_course_id: courseId
+      });
+
+      if (error) throw error;
+
+      const result = data as any;
+
+      toast({
+        title: "Succès",
+        description: `${result?.success_count || 0} étudiant(s) inscrit(s)`
+      });
+
+      return data;
+    } catch (error: any) {
+      console.error('Error bulk enrolling:', error);
+      toast({
+        title: "Erreur",
+        description: error.message,
+        variant: "destructive"
+      });
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateStudentTags = async (userId: string, tagName: string, tagColor: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('student_tags')
+        .insert({
+          user_id: userId,
+          tag_name: tagName,
+          tag_color: tagColor,
+          created_by: (await supabase.auth.getUser()).data.user?.id
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      toast({
+        title: "Succès",
+        description: "Tag ajouté"
+      });
+
+      return data;
+    } catch (error: any) {
+      console.error('Error adding tag:', error);
+      toast({
+        title: "Erreur",
+        description: error.message,
+        variant: "destructive"
+      });
+      return null;
+    }
+  };
+
+  const exportStudents = async (studentIds: string[], columns: string[]) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select(columns.join(','))
+        .in('id', studentIds);
+
+      if (error) throw error;
+      return data || [];
+    } catch (error: any) {
+      console.error('Error exporting students:', error);
+      return [];
+    }
+  };
+
   return {
     loading,
     getStudentTimeline,
@@ -149,6 +241,10 @@ export const useStudentCRM = () => {
     addStudentNote,
     logCommunication,
     getStudentNotes,
-    getCommunicationHistory
+    getCommunicationHistory,
+    getStudentAnalytics,
+    bulkEnrollStudents,
+    updateStudentTags,
+    exportStudents
   };
 };
