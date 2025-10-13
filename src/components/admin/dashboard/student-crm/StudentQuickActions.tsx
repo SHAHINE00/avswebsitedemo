@@ -41,39 +41,39 @@ export const StudentQuickActions = ({
           <span className="sr-only">Actions pour {studentName}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56 bg-background z-50">
-        <DropdownMenuItem onClick={onViewProfile} className="cursor-pointer">
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuItem onSelect={onViewProfile}>
           <Eye className="mr-2 h-4 w-4" />
           Voir le Profil
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={onEdit} className="cursor-pointer">
+        <DropdownMenuItem onSelect={onEdit}>
           <Edit className="mr-2 h-4 w-4" />
           Modifier
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onRecordPayment} className="cursor-pointer">
+        <DropdownMenuItem onSelect={onRecordPayment}>
           <CreditCard className="mr-2 h-4 w-4" />
           Enregistrer Paiement
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={onSendEmail} className="cursor-pointer">
+        <DropdownMenuItem onSelect={onSendEmail}>
           <Mail className="mr-2 h-4 w-4" />
           Envoyer Email
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={onEnrollCourse} className="cursor-pointer">
+        <DropdownMenuItem onSelect={onEnrollCourse}>
           <BookOpen className="mr-2 h-4 w-4" />
           Inscrire à un Cours
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onGenerateCertificate} className="cursor-pointer">
+        <DropdownMenuItem onSelect={onGenerateCertificate}>
           <Award className="mr-2 h-4 w-4" />
           Générer Certificat
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={onViewDocuments} className="cursor-pointer">
+        <DropdownMenuItem onSelect={onViewDocuments}>
           <FileText className="mr-2 h-4 w-4" />
           Voir Documents
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onArchive} className="cursor-pointer text-destructive">
+        <DropdownMenuItem onSelect={onArchive} className="text-destructive">
           <Archive className="mr-2 h-4 w-4" />
           Archiver
         </DropdownMenuItem>

@@ -357,7 +357,7 @@ const EnhancedCourseManagement: React.FC<EnhancedCourseManagementProps> = ({
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      <DropdownMenuItem onClick={() => onDelete(course.id)}>
+                      <DropdownMenuItem onSelect={() => onDelete(course.id)}>
                         <Trash2 className="w-4 h-4 mr-2" />
                         Supprimer
                       </DropdownMenuItem>

@@ -73,14 +73,14 @@ export function MobileDataTable<T extends { id: string }>({
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     {onEdit && (
-                      <DropdownMenuItem onClick={() => onEdit(item)}>
+                      <DropdownMenuItem onSelect={() => onEdit(item)}>
                         <Edit className="h-4 w-4 mr-2" />
                         Modifier
                       </DropdownMenuItem>
                     )}
                     {onDelete && (
                       <DropdownMenuItem 
-                        onClick={() => onDelete(item)}
+                        onSelect={() => onDelete(item)}
                         className="text-destructive"
                       >
                         <Trash2 className="h-4 w-4 mr-2" />

@@ -108,7 +108,7 @@ const NotificationBell = () => {
                     "flex flex-col items-start p-3 cursor-pointer hover:bg-accent/50",
                     !notification.is_read && "bg-accent/20"
                   )}
-                  onClick={() => handleNotificationClick(notification)}
+                  onSelect={() => handleNotificationClick(notification)}
                 >
                   <div className="flex items-start gap-3 w-full">
                     <span className="text-lg flex-shrink-0 mt-0.5">
