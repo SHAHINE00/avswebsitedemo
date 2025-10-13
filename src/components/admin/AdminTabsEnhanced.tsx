@@ -10,6 +10,7 @@ import SubscriberManagement from '@/components/admin/dashboard/SubscriberManagem
 import SectionVisibilityManagement from '@/components/admin/dashboard/SectionVisibilityManagement';
 import SecurityVerification from '@/components/admin/dashboard/SecurityVerification';
 import AppointmentManagement from '@/components/admin/dashboard/AppointmentManagement';
+import StudentCRMDashboard from '@/components/admin/dashboard/student-crm/StudentCRMDashboard';
 import { SecurityTestSuite } from './SecurityTestSuite';
 import type { Course } from '@/hooks/useCourses';
 
@@ -30,6 +31,7 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
     <Tabs defaultValue="dashboard" className="w-full">
       <TabsList className="flex w-full justify-start overflow-x-auto gap-1 sm:gap-2 mb-4 sm:mb-6 p-1 bg-muted rounded-lg scrollbar-hide">
         <TabsTrigger value="dashboard" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Vue d'ensemble</TabsTrigger>
+        <TabsTrigger value="students" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">CRM Étudiants</TabsTrigger>
         <TabsTrigger value="courses" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Cours</TabsTrigger>
         <TabsTrigger value="users" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Utilisateurs</TabsTrigger>
         <TabsTrigger value="subscribers" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Abonnements</TabsTrigger>
@@ -42,6 +44,10 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
 
       <TabsContent value="dashboard" className="space-y-6">
         <DashboardOverview />
+      </TabsContent>
+
+      <TabsContent value="students">
+        <StudentCRMDashboard />
       </TabsContent>
 
       <TabsContent value="courses">
