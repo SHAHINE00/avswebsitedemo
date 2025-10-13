@@ -1,16 +1,22 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { FileArchive, Mail } from "lucide-react";
+import { FileArchive, Mail, Download } from "lucide-react";
 import JSZip from 'jszip';
 import { useToast } from "@/hooks/use-toast";
+import { generateInvoicePDF } from "./InvoicePDFGenerator";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Receipt {
   id: string;
   invoice_number: string;
   invoice_date: string;
   amount: number;
+  tax_amount: number;
+  total_amount: number;
+  status: string;
   student_email: string;
+  user_id: string;
 }
 
 interface BulkReceiptDownloaderProps {
@@ -38,37 +44,129 @@ export const BulkReceiptDownloader = ({ receipts }: BulkReceiptDownloaderProps) 
   };
 
   const handleDownloadZip = async () => {
-    const zip = new JSZip();
-    const selectedReceiptData = receipts.filter(r => selectedReceipts.includes(r.id));
+    try {
+      const zip = new JSZip();
+      const selectedReceiptData = receipts.filter(r => selectedReceipts.includes(r.id));
 
-    selectedReceiptData.forEach(receipt => {
-      const content = `
-FACTURE ${receipt.invoice_number}
-Date: ${new Date(receipt.invoice_date).toLocaleDateString('fr-FR')}
-Montant: ${receipt.amount} MAD
-      `;
-      zip.file(`facture-${receipt.invoice_number}.txt`, content);
-    });
+      // Fetch student profiles for selected receipts
+      const userIds = [...new Set(selectedReceiptData.map(r => r.user_id))];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, email, address')
+        .in('id', userIds);
 
-    const blob = await zip.generateAsync({ type: 'blob' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `factures-${new Date().toISOString().split('T')[0]}.zip`;
-    a.click();
+      const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
 
-    toast({
-      title: "Succès",
-      description: `${selectedReceipts.length} facture(s) téléchargée(s)`
-    });
+      selectedReceiptData.forEach(receipt => {
+        const student = profileMap.get(receipt.user_id) || {
+          full_name: 'N/A',
+          email: receipt.student_email,
+          address: undefined
+        };
+
+        const pdf = generateInvoicePDF(receipt, student);
+        const pdfBlob = pdf.output('blob');
+        zip.file(`facture-${receipt.invoice_number}.pdf`, pdfBlob);
+      });
+
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `factures-${new Date().toISOString().split('T')[0]}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Succès",
+        description: `${selectedReceipts.length} facture(s) téléchargée(s)`
+      });
+    } catch (error: any) {
+      console.error('Error downloading receipts:', error);
+      toast({
+        title: "Erreur",
+        description: "Erreur lors du téléchargement",
+        variant: "destructive"
+      });
+    }
   };
 
-  const handleBulkEmail = () => {
-    const selectedReceiptData = receipts.filter(r => selectedReceipts.includes(r.id));
-    toast({
-      title: "Emails envoyés",
-      description: `Factures envoyées à ${selectedReceiptData.length} étudiant(s)`
-    });
+  const handleDownloadAll = async () => {
+    try {
+      const zip = new JSZip();
+
+      // Fetch all student profiles
+      const userIds = [...new Set(receipts.map(r => r.user_id))];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, email, address')
+        .in('id', userIds);
+
+      const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+
+      receipts.forEach(receipt => {
+        const student = profileMap.get(receipt.user_id) || {
+          full_name: 'N/A',
+          email: receipt.student_email,
+          address: undefined
+        };
+
+        const pdf = generateInvoicePDF(receipt, student);
+        const pdfBlob = pdf.output('blob');
+        zip.file(`facture-${receipt.invoice_number}.pdf`, pdfBlob);
+      });
+
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `toutes-factures-${new Date().toISOString().split('T')[0]}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Succès",
+        description: `${receipts.length} facture(s) téléchargée(s)`
+      });
+    } catch (error: any) {
+      console.error('Error downloading all receipts:', error);
+      toast({
+        title: "Erreur",
+        description: "Erreur lors du téléchargement",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleBulkEmail = async () => {
+    try {
+      const selectedReceiptData = receipts.filter(r => selectedReceipts.includes(r.id));
+      
+      const promises = selectedReceiptData.map(receipt =>
+        supabase.functions.invoke('send-invoice-email', {
+          body: {
+            invoice: receipt,
+            student: { email: receipt.student_email, id: receipt.user_id },
+            user_id: receipt.user_id
+          }
+        })
+      );
+
+      const results = await Promise.allSettled(promises);
+      const succeeded = results.filter(r => r.status === 'fulfilled').length;
+
+      toast({
+        title: "Emails envoyés",
+        description: `${succeeded}/${selectedReceipts.length} facture(s) envoyée(s)`
+      });
+    } catch (error: any) {
+      console.error('Error sending bulk emails:', error);
+      toast({
+        title: "Erreur",
+        description: "Erreur lors de l'envoi des emails",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -84,6 +182,14 @@ Montant: ${receipt.amount} MAD
           </span>
         </div>
         <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleDownloadAll}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Télécharger Tout
+          </Button>
           <Button
             size="sm"
             variant="outline"

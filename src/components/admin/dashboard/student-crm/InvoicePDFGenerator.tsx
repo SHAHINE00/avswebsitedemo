@@ -2,9 +2,11 @@ import { Button } from "@/components/ui/button";
 import { FileDown, Mail } from "lucide-react";
 import jsPDF from 'jspdf';
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface InvoicePDFGeneratorProps {
   invoice: {
+    id?: string;
     invoice_number: string;
     invoice_date: string;
     amount: number;
@@ -13,6 +15,7 @@ interface InvoicePDFGeneratorProps {
     status: string;
   };
   student: {
+    id?: string;
     full_name: string;
     email: string;
     address?: string;
@@ -20,71 +23,153 @@ interface InvoicePDFGeneratorProps {
   onEmailSent?: () => void;
 }
 
+// Export the PDF generation function for reuse
+export const generateInvoicePDF = (invoice: InvoicePDFGeneratorProps['invoice'], student: InvoicePDFGeneratorProps['student']) => {
+  const doc = new jsPDF();
+  
+  // Company Header with styling
+  doc.setFillColor(59, 130, 246);
+  doc.rect(0, 0, 210, 40, 'F');
+  
+  doc.setFontSize(24);
+  doc.setTextColor(255, 255, 255);
+  doc.setFont(undefined, 'bold');
+  doc.text('AVS INSTITUTE', 105, 15, { align: 'center' });
+  
+  doc.setFontSize(9);
+  doc.setFont(undefined, 'normal');
+  doc.text('Centre de Formation Professionnelle', 105, 22, { align: 'center' });
+  doc.text('Casablanca, Morocco | contact@avs-institute.com | +212 XXX-XXXXXX', 105, 28, { align: 'center' });
+  
+  // Invoice Title
+  doc.setFontSize(20);
+  doc.setTextColor(59, 130, 246);
+  doc.setFont(undefined, 'bold');
+  doc.text('FACTURE', 105, 52, { align: 'center' });
+  
+  // Invoice metadata box
+  doc.setDrawColor(59, 130, 246);
+  doc.setLineWidth(0.5);
+  doc.rect(130, 60, 60, 25);
+  
+  doc.setFontSize(9);
+  doc.setTextColor(0, 0, 0);
+  doc.setFont(undefined, 'bold');
+  doc.text('N° Facture:', 133, 67);
+  doc.setFont(undefined, 'normal');
+  doc.text(invoice.invoice_number, 133, 72);
+  
+  doc.setFont(undefined, 'bold');
+  doc.text('Date:', 133, 78);
+  doc.setFont(undefined, 'normal');
+  doc.text(new Date(invoice.invoice_date).toLocaleDateString('fr-FR'), 133, 83);
+  
+  // Student information box
+  doc.setFontSize(10);
+  doc.setFont(undefined, 'bold');
+  doc.text('Facturé à:', 20, 67);
+  
+  doc.setDrawColor(200, 200, 200);
+  doc.setLineWidth(0.3);
+  doc.rect(20, 70, 100, 30);
+  
+  doc.setFontSize(10);
+  doc.setFont(undefined, 'bold');
+  doc.text(student.full_name || 'N/A', 23, 77);
+  
+  doc.setFont(undefined, 'normal');
+  doc.setFontSize(9);
+  doc.text(student.email || '', 23, 83);
+  if (student.address) {
+    const addressLines = doc.splitTextToSize(student.address, 90);
+    doc.text(addressLines, 23, 89);
+  }
+  
+  // Items table
+  const tableStartY = 115;
+  
+  // Table header
+  doc.setFillColor(59, 130, 246);
+  doc.rect(20, tableStartY, 170, 10, 'F');
+  
+  doc.setFontSize(10);
+  doc.setTextColor(255, 255, 255);
+  doc.setFont(undefined, 'bold');
+  doc.text('Description', 25, tableStartY + 7);
+  doc.text('Montant (MAD)', 175, tableStartY + 7, { align: 'right' });
+  
+  // Table content
+  doc.setTextColor(0, 0, 0);
+  doc.setFont(undefined, 'normal');
+  
+  let currentY = tableStartY + 17;
+  
+  // Formation line
+  doc.text('Formation Professionnelle', 25, currentY);
+  doc.text(invoice.amount.toFixed(2), 175, currentY, { align: 'right' });
+  
+  // Separator line
+  doc.setDrawColor(230, 230, 230);
+  doc.line(20, currentY + 3, 190, currentY + 3);
+  
+  currentY += 10;
+  
+  // Tax if applicable
+  if (invoice.tax_amount > 0) {
+    doc.text('TVA (20%)', 25, currentY);
+    doc.text(invoice.tax_amount.toFixed(2), 175, currentY, { align: 'right' });
+    doc.line(20, currentY + 3, 190, currentY + 3);
+    currentY += 10;
+  }
+  
+  // Total section with highlight
+  doc.setFillColor(245, 245, 245);
+  doc.rect(20, currentY, 170, 12, 'F');
+  
+  doc.setFontSize(12);
+  doc.setFont(undefined, 'bold');
+  doc.setTextColor(59, 130, 246);
+  doc.text('TOTAL À PAYER', 25, currentY + 8);
+  doc.text(`${invoice.total_amount.toFixed(2)} MAD`, 175, currentY + 8, { align: 'right' });
+  
+  // Status badge
+  doc.setFontSize(9);
+  if (invoice.status === 'paid') {
+    doc.setFillColor(34, 197, 94);
+    doc.setTextColor(255, 255, 255);
+    doc.roundedRect(25, currentY + 15, 25, 7, 2, 2, 'F');
+    doc.text('PAYÉE', 27, currentY + 20);
+  } else if (invoice.status === 'pending') {
+    doc.setFillColor(234, 179, 8);
+    doc.setTextColor(255, 255, 255);
+    doc.roundedRect(25, currentY + 15, 30, 7, 2, 2, 'F');
+    doc.text('EN ATTENTE', 27, currentY + 20);
+  }
+  
+  // Footer with terms
+  doc.setFontSize(8);
+  doc.setFont(undefined, 'normal');
+  doc.setTextColor(100, 100, 100);
+  doc.text('Conditions de paiement: Paiement à réception de facture', 105, 260, { align: 'center' });
+  doc.text('Merci pour votre confiance et votre engagement dans votre formation.', 105, 267, { align: 'center' });
+  
+  // Bottom border
+  doc.setDrawColor(59, 130, 246);
+  doc.setLineWidth(2);
+  doc.line(20, 280, 190, 280);
+  
+  doc.setFontSize(7);
+  doc.setTextColor(150, 150, 150);
+  doc.text('AVS Institute - Tous droits réservés', 105, 287, { align: 'center' });
+  
+  return doc;
+};
+
 export const InvoicePDFGenerator = ({ invoice, student, onEmailSent }: InvoicePDFGeneratorProps) => {
   const { toast } = useToast();
 
-  const generatePDF = () => {
-    const doc = new jsPDF();
-    
-    // Header
-    doc.setFontSize(20);
-    doc.setTextColor(59, 130, 246);
-    doc.text('FACTURE', 105, 20, { align: 'center' });
-    
-    // Invoice details
-    doc.setFontSize(10);
-    doc.setTextColor(0, 0, 0);
-    doc.text(`Numéro: ${invoice.invoice_number}`, 20, 40);
-    doc.text(`Date: ${new Date(invoice.invoice_date).toLocaleDateString('fr-FR')}`, 20, 46);
-    
-    // Student info
-    doc.setFontSize(12);
-    doc.text('Facturé à:', 20, 60);
-    doc.setFontSize(10);
-    doc.text(student.full_name, 20, 66);
-    doc.text(student.email, 20, 72);
-    if (student.address) {
-      doc.text(student.address, 20, 78);
-    }
-    
-    // Items table
-    doc.setFontSize(10);
-    const startY = 100;
-    
-    // Table header
-    doc.setFillColor(59, 130, 246);
-    doc.rect(20, startY, 170, 8, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.text('Description', 25, startY + 5);
-    doc.text('Montant', 160, startY + 5, { align: 'right' });
-    
-    // Table content
-    doc.setTextColor(0, 0, 0);
-    doc.text('Formation', 25, startY + 15);
-    doc.text(`${invoice.amount.toFixed(2)} MAD`, 160, startY + 15, { align: 'right' });
-    
-    if (invoice.tax_amount > 0) {
-      doc.text('TVA', 25, startY + 22);
-      doc.text(`${invoice.tax_amount.toFixed(2)} MAD`, 160, startY + 22, { align: 'right' });
-    }
-    
-    // Total
-    doc.setFontSize(12);
-    doc.setFont(undefined, 'bold');
-    doc.text('TOTAL', 25, startY + 35);
-    doc.text(`${invoice.total_amount.toFixed(2)} MAD`, 160, startY + 35, { align: 'right' });
-    
-    // Footer
-    doc.setFontSize(8);
-    doc.setFont(undefined, 'normal');
-    doc.setTextColor(128, 128, 128);
-    doc.text('Merci pour votre confiance', 105, 280, { align: 'center' });
-    
-    return doc;
-  };
-
   const handleDownload = () => {
-    const doc = generatePDF();
+    const doc = generateInvoicePDF(invoice, student);
     doc.save(`facture-${invoice.invoice_number}.pdf`);
     
     toast({
@@ -94,11 +179,30 @@ export const InvoicePDFGenerator = ({ invoice, student, onEmailSent }: InvoicePD
   };
 
   const handleEmail = async () => {
-    toast({
-      title: "Email envoyé",
-      description: `Facture envoyée à ${student.email}`
-    });
-    onEmailSent?.();
+    try {
+      const { error } = await supabase.functions.invoke('send-invoice-email', {
+        body: {
+          invoice,
+          student,
+          user_id: student.id
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Succès",
+        description: `Facture envoyée à ${student.email}`
+      });
+      onEmailSent?.();
+    } catch (error: any) {
+      console.error('Error sending invoice email:', error);
+      toast({
+        title: "Erreur",
+        description: error.message || "Erreur lors de l'envoi de l'email",
+        variant: "destructive"
+      });
+    }
   };
 
   return (

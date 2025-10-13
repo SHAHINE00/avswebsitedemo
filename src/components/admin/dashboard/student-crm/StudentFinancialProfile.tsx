@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { InvoicePDFGenerator } from './InvoicePDFGenerator';
 import { PaymentPlanManager } from './PaymentPlanManager';
 import { BulkReceiptDownloader } from './BulkReceiptDownloader';
+import { supabase } from '@/integrations/supabase/client';
 
 interface StudentFinancialProfileProps {
   userId: string;
@@ -21,6 +22,7 @@ const StudentFinancialProfile: React.FC<StudentFinancialProfileProps> = ({ userI
   const [financialSummary, setFinancialSummary] = useState<any>(null);
   const [paymentHistory, setPaymentHistory] = useState<any[]>([]);
   const [invoices, setInvoices] = useState<any[]>([]);
+  const [studentProfile, setStudentProfile] = useState<any>(null);
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [paymentData, setPaymentData] = useState({
     amount: '',
@@ -35,15 +37,17 @@ const StudentFinancialProfile: React.FC<StudentFinancialProfileProps> = ({ userI
   }, [userId]);
 
   const fetchFinancialData = async () => {
-    const [summary, payments, inv] = await Promise.all([
+    const [summary, payments, inv, profile] = await Promise.all([
       getFinancialSummary(userId),
       getPaymentHistory(userId),
-      getInvoices(userId)
+      getInvoices(userId),
+      supabase.from('profiles').select('*').eq('id', userId).single()
     ]);
 
     setFinancialSummary(summary);
     setPaymentHistory(payments);
     setInvoices(inv);
+    setStudentProfile(profile.data);
   };
 
   const handleRecordPayment = async () => {
@@ -217,8 +221,12 @@ const StudentFinancialProfile: React.FC<StudentFinancialProfileProps> = ({ userI
                     id: inv.id,
                     invoice_number: inv.invoice_number,
                     invoice_date: inv.invoice_date,
-                    amount: inv.total_amount,
-                    student_email: ''
+                    amount: inv.amount,
+                    tax_amount: inv.tax_amount,
+                    total_amount: inv.total_amount,
+                    status: inv.status,
+                    student_email: studentProfile?.email || '',
+                    user_id: userId
                   }))}
                 />
                 <div className="space-y-2 mt-4">
@@ -234,7 +242,12 @@ const StudentFinancialProfile: React.FC<StudentFinancialProfileProps> = ({ userI
                         {getStatusBadge(invoice.status)}
                         <InvoicePDFGenerator
                           invoice={invoice}
-                          student={{ full_name: '', email: '' }}
+                          student={{
+                            id: userId,
+                            full_name: studentProfile?.full_name || 'N/A',
+                            email: studentProfile?.email || '',
+                            address: studentProfile?.address
+                          }}
                         />
                       </div>
                     </div>
