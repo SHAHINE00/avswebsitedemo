@@ -3,12 +3,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Search, Users, DollarSign, TrendingUp, AlertCircle } from 'lucide-react';
+import { Search, Users, DollarSign, TrendingUp, AlertCircle, UserPlus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useStudentCRM } from '@/hooks/useStudentCRM';
 import { useStudentFinancials } from '@/hooks/useStudentFinancials';
 import StudentProfileDrawer from './StudentProfileDrawer';
 import StudentSegments from './StudentSegments';
+import { CreateStudentDialog } from './CreateStudentDialog';
 
 interface Student {
   id: string;
@@ -24,6 +25,7 @@ const StudentCRMDashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState({
     totalStudents: 0,
@@ -151,14 +153,20 @@ const StudentCRMDashboard: React.FC = () => {
         <CardHeader>
           <CardTitle>Liste des Étudiants</CardTitle>
           <CardDescription>Recherchez et gérez vos étudiants</CardDescription>
-          <div className="relative mt-4">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Rechercher par nom, email ou téléphone..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8"
-            />
+          <div className="flex items-center gap-4 mt-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Rechercher par nom, email ou téléphone..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-8"
+              />
+            </div>
+            <Button onClick={() => setCreateDialogOpen(true)}>
+              <UserPlus className="mr-2 h-4 w-4" />
+              Créer un étudiant
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -196,6 +204,13 @@ const StudentCRMDashboard: React.FC = () => {
         student={selectedStudent}
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
+      />
+
+      {/* Create Student Dialog */}
+      <CreateStudentDialog
+        open={createDialogOpen}
+        onOpenChange={setCreateDialogOpen}
+        onSuccess={fetchStudents}
       />
     </div>
   );
