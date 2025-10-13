@@ -124,7 +124,7 @@ export const useStudentFinancials = () => {
   }) => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      const { data: payment, error } = await supabase
         .from('payment_transactions')
         .insert({
           ...paymentData,
@@ -137,12 +137,20 @@ export const useStudentFinancials = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Succès",
-        description: "Paiement enregistré avec succès"
+      // Auto-generate invoice for the payment
+      const invoice = await generateInvoice({
+        user_id: paymentData.user_id,
+        transaction_id: payment.id,
+        amount: paymentData.amount,
+        tax_amount: 0
       });
 
-      return data;
+      toast({
+        title: "Succès",
+        description: "Paiement et facture créés avec succès"
+      });
+
+      return { payment, invoice };
     } catch (error: any) {
       console.error('Error recording payment:', error);
       toast({

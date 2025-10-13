@@ -30,7 +30,7 @@ const StudentFinancialProfile: React.FC<StudentFinancialProfileProps> = ({ userI
     notes: ''
   });
 
-  const { getFinancialSummary, getPaymentHistory, getInvoices, recordPayment, loading } = useStudentFinancials();
+  const { getFinancialSummary, getPaymentHistory, getInvoices, recordPayment, generateInvoice, loading } = useStudentFinancials();
 
   useEffect(() => {
     fetchFinancialData();
@@ -75,6 +75,27 @@ const StudentFinancialProfile: React.FC<StudentFinancialProfileProps> = ({ userI
       refunded: 'outline'
     };
     return <Badge variant={variants[status] || 'default'}>{status}</Badge>;
+  };
+
+  const handleGenerateMissingInvoices = async () => {
+    const completedPayments = paymentHistory.filter(p => p.payment_status === 'completed');
+    const invoiceTransactionIds = invoices.map(inv => inv.transaction_id);
+    const paymentsWithoutInvoice = completedPayments.filter(p => !invoiceTransactionIds.includes(p.id));
+
+    if (paymentsWithoutInvoice.length === 0) {
+      return;
+    }
+
+    for (const payment of paymentsWithoutInvoice) {
+      await generateInvoice({
+        user_id: userId,
+        transaction_id: payment.id,
+        amount: Number(payment.amount),
+        tax_amount: 0
+      });
+    }
+
+    fetchFinancialData();
   };
 
   return (
@@ -208,12 +229,39 @@ const StudentFinancialProfile: React.FC<StudentFinancialProfileProps> = ({ userI
       <TabsContent value="invoices" className="space-y-4">
         <Card>
           <CardHeader>
-            <CardTitle>Factures</CardTitle>
-            <CardDescription>Gérer et télécharger les factures</CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Factures</CardTitle>
+                <CardDescription>Gérer et télécharger les factures</CardDescription>
+              </div>
+              {paymentHistory.some(p => p.payment_status === 'completed') && (
+                <Button onClick={handleGenerateMissingInvoices} disabled={loading} variant="outline">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Générer les factures manquantes
+                </Button>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             {invoices.length === 0 ? (
-              <p className="text-center text-muted-foreground py-4">Aucune facture</p>
+              <div className="text-center py-8 space-y-4">
+                <p className="text-muted-foreground">Aucune facture générée pour cet étudiant</p>
+                {paymentHistory.some(p => p.payment_status === 'completed') ? (
+                  <div className="space-y-2">
+                    <p className="text-sm text-muted-foreground">
+                      Des paiements complétés existent. Cliquez pour générer les factures manquantes.
+                    </p>
+                    <Button onClick={handleGenerateMissingInvoices} disabled={loading}>
+                      <Plus className="w-4 h-4 mr-2" />
+                      Générer les factures manquantes
+                    </Button>
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Enregistrez un paiement dans l'onglet "Vue d'ensemble" pour créer une facture automatiquement.
+                  </p>
+                )}
+              </div>
             ) : (
               <>
                 <BulkReceiptDownloader 
