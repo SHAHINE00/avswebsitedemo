@@ -31,6 +31,13 @@ interface StudentDataTableProps {
   onSort: (column: string) => void;
   sortColumn?: string;
   sortDirection?: 'asc' | 'desc';
+  onEdit?: (student: Student) => void;
+  onRecordPayment?: (student: Student) => void;
+  onSendEmail?: (student: Student) => void;
+  onEnrollCourse?: (student: Student) => void;
+  onGenerateCertificate?: (student: Student) => void;
+  onViewDocuments?: (student: Student) => void;
+  onArchive?: (student: Student) => void;
 }
 
 const getStatusBadgeVariant = (status?: string) => {
@@ -63,7 +70,14 @@ export const StudentDataTable = ({
   onViewProfile,
   onSort,
   sortColumn,
-  sortDirection
+  sortDirection,
+  onEdit,
+  onRecordPayment,
+  onSendEmail,
+  onEnrollCourse,
+  onGenerateCertificate,
+  onViewDocuments,
+  onArchive
 }: StudentDataTableProps) => {
   const allSelected = students.length > 0 && selectedStudents.length === students.length;
   const someSelected = selectedStudents.length > 0 && !allSelected;
@@ -186,13 +200,13 @@ export const StudentDataTable = ({
                     studentId={student.id}
                     studentName={student.full_name || 'N/A'}
                     onViewProfile={() => onViewProfile(student)}
-                    onEdit={() => onViewProfile(student)}
-                    onRecordPayment={() => console.log('Record payment', student.id)}
-                    onSendEmail={() => console.log('Send email', student.id)}
-                    onEnrollCourse={() => console.log('Enroll course', student.id)}
-                    onGenerateCertificate={() => console.log('Generate cert', student.id)}
-                    onViewDocuments={() => console.log('View docs', student.id)}
-                    onArchive={() => console.log('Archive', student.id)}
+                    onEdit={() => onEdit ? onEdit(student) : onViewProfile(student)}
+                    onRecordPayment={() => onRecordPayment && onRecordPayment(student)}
+                    onSendEmail={() => onSendEmail && onSendEmail(student)}
+                    onEnrollCourse={() => onEnrollCourse && onEnrollCourse(student)}
+                    onGenerateCertificate={() => onGenerateCertificate && onGenerateCertificate(student)}
+                    onViewDocuments={() => onViewDocuments && onViewDocuments(student)}
+                    onArchive={() => onArchive && onArchive(student)}
                   />
                 </TableCell>
               </TableRow>

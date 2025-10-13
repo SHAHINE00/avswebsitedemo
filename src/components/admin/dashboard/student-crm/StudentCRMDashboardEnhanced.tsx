@@ -35,6 +35,7 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerTab, setDrawerTab] = useState<'overview' | 'enrollments' | 'finances' | 'documents' | 'timeline' | 'notes' | 'certificates' | 'communication'>('overview');
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -217,6 +218,37 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
 
   const handleSelectAll = (selected: boolean) => {
     setSelectedStudents(selected ? filteredStudents.map(s => s.id) : []);
+  };
+
+  const openStudent = (student: Student, tab: 'overview' | 'enrollments' | 'finances' | 'documents' | 'timeline' | 'notes' | 'certificates' | 'communication') => {
+    setSelectedStudent(student);
+    setDrawerTab(tab);
+    setDrawerOpen(true);
+  };
+
+  const handleArchive = async (student: Student) => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ student_status: 'inactive' })
+        .eq('id', student.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Étudiant archivé",
+        description: `${student.full_name} a été archivé avec succès.`
+      });
+
+      fetchStudents();
+    } catch (error) {
+      console.error('Error archiving student:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible d'archiver l'étudiant.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleExport = async (options: any) => {
@@ -411,10 +443,14 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
             selectedStudents={selectedStudents}
             onSelectStudent={handleSelectStudent}
             onSelectAll={handleSelectAll}
-            onViewProfile={(student) => {
-              setSelectedStudent(student);
-              setDrawerOpen(true);
-            }}
+            onViewProfile={(student) => openStudent(student, 'overview')}
+            onEdit={(student) => openStudent(student, 'overview')}
+            onRecordPayment={(student) => openStudent(student, 'finances')}
+            onSendEmail={(student) => openStudent(student, 'communication')}
+            onEnrollCourse={(student) => openStudent(student, 'enrollments')}
+            onGenerateCertificate={(student) => openStudent(student, 'certificates')}
+            onViewDocuments={(student) => openStudent(student, 'documents')}
+            onArchive={handleArchive}
             onSort={handleSort}
             sortColumn={sortColumn}
             sortDirection={sortDirection}
@@ -427,6 +463,7 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
         student={selectedStudent}
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
+        activeTab={drawerTab}
       />
 
       {/* Create Student Dialog */}
