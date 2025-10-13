@@ -9,6 +9,8 @@ import StudentDocumentVault from './StudentDocumentVault';
 import StudentTimeline from './StudentTimeline';
 import StudentEnrollments from './StudentEnrollments';
 import StudentNotes from './StudentNotes';
+import { CertificateGenerator } from './CertificateGenerator';
+import { CommunicationCenter } from './CommunicationCenter';
 
 interface StudentProfile {
   id: string;
@@ -65,31 +67,15 @@ const StudentProfileDrawer: React.FC<StudentProfileDrawerProps> = ({ student, op
         </SheetHeader>
 
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
-            <TabsTrigger value="overview">
-              <User className="w-4 h-4 mr-1" />
-              Vue
-            </TabsTrigger>
-            <TabsTrigger value="enrollments">
-              <BookOpen className="w-4 h-4 mr-1" />
-              Cours
-            </TabsTrigger>
-            <TabsTrigger value="finances">
-              <DollarSign className="w-4 h-4 mr-1" />
-              Finance
-            </TabsTrigger>
-            <TabsTrigger value="documents">
-              <FileText className="w-4 h-4 mr-1" />
-              Docs
-            </TabsTrigger>
-            <TabsTrigger value="timeline">
-              <Clock className="w-4 h-4 mr-1" />
-              Activité
-            </TabsTrigger>
-            <TabsTrigger value="notes">
-              <MessageSquare className="w-4 h-4 mr-1" />
-              Notes
-            </TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
+            <TabsTrigger value="overview">Vue</TabsTrigger>
+            <TabsTrigger value="enrollments">Cours</TabsTrigger>
+            <TabsTrigger value="finances">Finance</TabsTrigger>
+            <TabsTrigger value="documents">Docs</TabsTrigger>
+            <TabsTrigger value="timeline">Activité</TabsTrigger>
+            <TabsTrigger value="notes">Notes</TabsTrigger>
+            <TabsTrigger value="certificates">Certificats</TabsTrigger>
+            <TabsTrigger value="communication">Contact</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4 mt-4">
@@ -114,6 +100,17 @@ const StudentProfileDrawer: React.FC<StudentProfileDrawerProps> = ({ student, op
 
           <TabsContent value="notes" className="space-y-4 mt-4">
             <StudentNotes userId={student.id} />
+          </TabsContent>
+
+          <TabsContent value="certificates" className="space-y-4 mt-4">
+            <CertificateGenerator
+              studentName={student.full_name || 'Student'}
+              studentEmail={student.email || ''}
+            />
+          </TabsContent>
+
+          <TabsContent value="communication" className="space-y-4 mt-4">
+            <CommunicationCenter selectedStudents={[student.id]} />
           </TabsContent>
         </Tabs>
       </SheetContent>

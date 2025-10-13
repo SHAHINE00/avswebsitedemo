@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DollarSign, CreditCard, Download, Plus } from 'lucide-react';
 import { useStudentFinancials } from '@/hooks/useStudentFinancials';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { InvoicePDFGenerator } from './InvoicePDFGenerator';
+import { PaymentPlanManager } from './PaymentPlanManager';
+import { BulkReceiptDownloader } from './BulkReceiptDownloader';
 
 interface StudentFinancialProfileProps {
   userId: string;
@@ -70,10 +74,17 @@ const StudentFinancialProfile: React.FC<StudentFinancialProfileProps> = ({ userI
   };
 
   return (
-    <div className="space-y-4">
-      {/* Financial Summary */}
-      {financialSummary && (
-        <div className="grid gap-4 md:grid-cols-3">
+    <Tabs defaultValue="overview" className="w-full">
+      <TabsList>
+        <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
+        <TabsTrigger value="invoices">Factures</TabsTrigger>
+        <TabsTrigger value="plans">Plans de Paiement</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="overview" className="space-y-4">
+        {/* Financial Summary */}
+        {financialSummary && (
+          <div className="grid gap-4 md:grid-cols-3">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium">Total Payé</CardTitle>
@@ -188,39 +199,59 @@ const StudentFinancialProfile: React.FC<StudentFinancialProfileProps> = ({ userI
         </CardContent>
       </Card>
 
-      {/* Invoices */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Factures</CardTitle>
-          <CardDescription>Historique des factures générées</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
+      </TabsContent>
+
+      <TabsContent value="invoices" className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Factures</CardTitle>
+            <CardDescription>Gérer et télécharger les factures</CardDescription>
+          </CardHeader>
+          <CardContent>
             {invoices.length === 0 ? (
               <p className="text-center text-muted-foreground py-4">Aucune facture</p>
             ) : (
-              invoices.map((invoice) => (
-                <div key={invoice.id} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex-1">
-                    <p className="font-medium">{invoice.invoice_number}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {invoice.total_amount} MAD • {new Date(invoice.invoice_date).toLocaleDateString('fr-FR')}
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    {getStatusBadge(invoice.status)}
-                    <Button variant="outline" size="sm">
-                      <Download className="w-4 h-4" />
-                    </Button>
-                  </div>
+              <>
+                <BulkReceiptDownloader 
+                  receipts={invoices.map(inv => ({
+                    id: inv.id,
+                    invoice_number: inv.invoice_number,
+                    invoice_date: inv.invoice_date,
+                    amount: inv.total_amount,
+                    student_email: ''
+                  }))}
+                />
+                <div className="space-y-2 mt-4">
+                  {invoices.map((invoice) => (
+                    <div key={invoice.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex-1">
+                        <p className="font-medium">{invoice.invoice_number}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {invoice.total_amount} MAD • {new Date(invoice.invoice_date).toLocaleDateString('fr-FR')}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        {getStatusBadge(invoice.status)}
+                        <InvoicePDFGenerator
+                          invoice={invoice}
+                          student={{ full_name: '', email: '' }}
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))
+              </>
             )}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      <TabsContent value="plans" className="space-y-4">
+        <PaymentPlanManager userId={userId} onPlanCreated={fetchFinancialData} />
+      </TabsContent>
+    </Tabs>
   );
 };
+
 
 export default StudentFinancialProfile;

@@ -173,6 +173,36 @@ export type Database = {
           },
         ]
       }
+      automated_tasks: {
+        Row: {
+          created_at: string | null
+          executed_at: string | null
+          id: string
+          metadata: Json | null
+          scheduled_for: string | null
+          task_status: string
+          task_type: string
+        }
+        Insert: {
+          created_at?: string | null
+          executed_at?: string | null
+          id?: string
+          metadata?: Json | null
+          scheduled_for?: string | null
+          task_status?: string
+          task_type: string
+        }
+        Update: {
+          created_at?: string | null
+          executed_at?: string | null
+          id?: string
+          metadata?: Json | null
+          scheduled_for?: string | null
+          task_status?: string
+          task_type?: string
+        }
+        Relationships: []
+      }
       blog_categories: {
         Row: {
           created_at: string
@@ -845,6 +875,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      email_templates: {
+        Row: {
+          body: string
+          created_at: string | null
+          created_by: string | null
+          id: string
+          name: string
+          subject: string
+          template_type: string
+          updated_at: string | null
+          variables: Json | null
+        }
+        Insert: {
+          body: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          name: string
+          subject: string
+          template_type?: string
+          updated_at?: string | null
+          variables?: Json | null
+        }
+        Update: {
+          body?: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          name?: string
+          subject?: string
+          template_type?: string
+          updated_at?: string | null
+          variables?: Json | null
+        }
+        Relationships: []
       }
       invoices: {
         Row: {
@@ -1713,6 +1779,36 @@ export type Database = {
           },
         ]
       }
+      student_cohorts: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          enrollment_end_date: string | null
+          enrollment_start_date: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          enrollment_end_date?: string | null
+          enrollment_start_date?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          enrollment_end_date?: string | null
+          enrollment_start_date?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       student_documents: {
         Row: {
           created_at: string
@@ -2210,6 +2306,14 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      create_bulk_email_task: {
+        Args: {
+          p_custom_variables?: Json
+          p_template_id: string
+          p_user_ids: string[]
+        }
+        Returns: string
+      }
       create_notification: {
         Args: {
           p_action_url?: string
@@ -2260,8 +2364,27 @@ export type Database = {
           value: number
         }[]
       }
+      get_at_risk_students: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          email: string
+          full_name: string
+          last_activity: string
+          risk_details: Json
+          risk_type: string
+          user_id: string
+        }[]
+      }
       get_dashboard_metrics: {
         Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      get_revenue_analytics: {
+        Args: { p_end_date?: string; p_start_date?: string }
+        Returns: Json
+      }
+      get_student_engagement_score: {
+        Args: { p_user_id: string }
         Returns: Json
       }
       get_student_financial_summary: {
