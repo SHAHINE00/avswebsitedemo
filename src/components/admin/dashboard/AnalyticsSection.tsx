@@ -1,11 +1,12 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BarChart3, TrendingUp, Users, Award } from 'lucide-react';
+import { BarChart3, TrendingUp, Users, Award, Lightbulb } from 'lucide-react';
 import AdvancedAnalytics from './AdvancedAnalytics';
 import EnrollmentAnalytics from './EnrollmentAnalytics';
 import CoursePerformanceMetrics from './CoursePerformanceMetrics';
 import RealTimeAnalytics from './RealTimeAnalytics';
+import CourseInsightsPanel from './analytics/CourseInsightsPanel';
 
 const AnalyticsSection: React.FC = () => {
   return (
@@ -22,8 +23,12 @@ const AnalyticsSection: React.FC = () => {
         </CardHeader>
       </Card>
 
-      <Tabs defaultValue="realtime" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 max-w-2xl">
+      <Tabs defaultValue="insights" className="w-full">
+        <TabsList className="grid w-full grid-cols-5 max-w-3xl">
+          <TabsTrigger value="insights" className="flex items-center gap-2">
+            <Lightbulb className="w-4 h-4" />
+            Insights
+          </TabsTrigger>
           <TabsTrigger value="realtime" className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4" />
             Temps Réel
@@ -41,6 +46,10 @@ const AnalyticsSection: React.FC = () => {
             Performance
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="insights" className="mt-6">
+          <CourseInsightsPanel />
+        </TabsContent>
 
         <TabsContent value="realtime" className="mt-6">
           <RealTimeAnalytics />
