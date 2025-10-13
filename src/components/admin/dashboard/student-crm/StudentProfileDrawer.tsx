@@ -28,6 +28,12 @@ interface StudentProfileDrawerProps {
 }
 
 const StudentProfileDrawer: React.FC<StudentProfileDrawerProps> = ({ student, open, onOpenChange, activeTab }) => {
+  const [currentTab, setCurrentTab] = useState<'overview' | 'enrollments' | 'finances' | 'documents' | 'timeline' | 'notes' | 'certificates' | 'communication'>(activeTab ?? 'overview');
+
+  useEffect(() => {
+    setCurrentTab(activeTab ?? 'overview');
+  }, [activeTab]);
+
   if (!student) return null;
 
   const getInitials = (name: string) => {
@@ -67,7 +73,7 @@ const StudentProfileDrawer: React.FC<StudentProfileDrawerProps> = ({ student, op
           </div>
         </SheetHeader>
 
-        <Tabs value={activeTab || 'overview'} className="w-full">
+        <Tabs value={currentTab} onValueChange={(value) => setCurrentTab(value as typeof currentTab)} className="w-full">
           <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
             <TabsTrigger value="overview">Vue</TabsTrigger>
             <TabsTrigger value="enrollments">Cours</TabsTrigger>

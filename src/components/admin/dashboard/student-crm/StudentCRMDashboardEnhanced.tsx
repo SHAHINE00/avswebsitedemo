@@ -8,6 +8,7 @@ import { useStudentCRM } from '@/hooks/useStudentCRM';
 import StudentProfileDrawer from './StudentProfileDrawer';
 import StudentSegments from './StudentSegments';
 import { CreateStudentDialog } from './CreateStudentDialog';
+import { EditStudentDialog } from './EditStudentDialog';
 import { StudentAnalyticsCharts } from './StudentAnalyticsCharts';
 import { StudentFilters, StudentFilterValues } from './StudentFilters';
 import { StudentBulkActions } from './StudentBulkActions';
@@ -37,6 +38,8 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerTab, setDrawerTab] = useState<'overview' | 'enrollments' | 'finances' | 'documents' | 'timeline' | 'notes' | 'certificates' | 'communication'>('overview');
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [studentToEdit, setStudentToEdit] = useState<Student | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sortColumn, setSortColumn] = useState<string>('created_at');
@@ -224,6 +227,11 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
     setSelectedStudent(student);
     setDrawerTab(tab);
     setDrawerOpen(true);
+  };
+
+  const handleEdit = (student: Student) => {
+    setStudentToEdit(student);
+    setEditDialogOpen(true);
   };
 
   const handleArchive = async (student: Student) => {
@@ -444,7 +452,7 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
             onSelectStudent={handleSelectStudent}
             onSelectAll={handleSelectAll}
             onViewProfile={(student) => openStudent(student, 'overview')}
-            onEdit={(student) => openStudent(student, 'overview')}
+            onEdit={handleEdit}
             onRecordPayment={(student) => openStudent(student, 'finances')}
             onSendEmail={(student) => openStudent(student, 'communication')}
             onEnrollCourse={(student) => openStudent(student, 'enrollments')}
@@ -470,6 +478,14 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
       <CreateStudentDialog
         open={createDialogOpen}
         onOpenChange={setCreateDialogOpen}
+        onSuccess={fetchStudents}
+      />
+
+      {/* Edit Student Dialog */}
+      <EditStudentDialog
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        student={studentToEdit}
         onSuccess={fetchStudents}
       />
 
