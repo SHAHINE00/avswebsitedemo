@@ -337,6 +337,60 @@ export type Database = {
         }
         Relationships: []
       }
+      communication_log: {
+        Row: {
+          communication_type: string
+          created_at: string
+          direction: string
+          id: string
+          message: string
+          metadata: Json | null
+          sent_by: string | null
+          status: string | null
+          subject: string | null
+          user_id: string
+        }
+        Insert: {
+          communication_type: string
+          created_at?: string
+          direction: string
+          id?: string
+          message: string
+          metadata?: Json | null
+          sent_by?: string | null
+          status?: string | null
+          subject?: string | null
+          user_id: string
+        }
+        Update: {
+          communication_type?: string
+          created_at?: string
+          direction?: string
+          id?: string
+          message?: string
+          metadata?: Json | null
+          sent_by?: string | null
+          status?: string | null
+          subject?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communication_log_sent_by_fkey"
+            columns: ["sent_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "communication_log_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_announcements: {
         Row: {
           content: string
@@ -792,6 +846,75 @@ export type Database = {
           },
         ]
       }
+      invoices: {
+        Row: {
+          amount: number
+          created_at: string
+          due_date: string | null
+          email_sent_at: string | null
+          id: string
+          invoice_date: string
+          invoice_number: string
+          metadata: Json | null
+          pdf_url: string | null
+          status: string
+          tax_amount: number
+          total_amount: number
+          transaction_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          due_date?: string | null
+          email_sent_at?: string | null
+          id?: string
+          invoice_date?: string
+          invoice_number: string
+          metadata?: Json | null
+          pdf_url?: string | null
+          status?: string
+          tax_amount?: number
+          total_amount: number
+          transaction_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          due_date?: string | null
+          email_sent_at?: string | null
+          id?: string
+          invoice_date?: string
+          invoice_number?: string
+          metadata?: Json | null
+          pdf_url?: string | null
+          status?: string
+          tax_amount?: number
+          total_amount?: number
+          transaction_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "payment_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       learning_paths: {
         Row: {
           created_at: string
@@ -1044,6 +1167,132 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      payment_plans: {
+        Row: {
+          course_id: string | null
+          created_at: string
+          id: string
+          installments: Json
+          notes: string | null
+          paid_amount: number
+          remaining_amount: number | null
+          status: string
+          total_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          installments?: Json
+          notes?: string | null
+          paid_amount?: number
+          remaining_amount?: number | null
+          status?: string
+          total_amount: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          installments?: Json
+          notes?: string | null
+          paid_amount?: number
+          remaining_amount?: number | null
+          status?: string
+          total_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_plans_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_plans_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_transactions: {
+        Row: {
+          amount: number
+          course_id: string | null
+          created_at: string
+          currency: string
+          id: string
+          metadata: Json | null
+          notes: string | null
+          paid_at: string | null
+          payment_method: string
+          payment_status: string
+          stripe_payment_id: string | null
+          stripe_session_id: string | null
+          transaction_ref: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          course_id?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          metadata?: Json | null
+          notes?: string | null
+          paid_at?: string | null
+          payment_method: string
+          payment_status?: string
+          stripe_payment_id?: string | null
+          stripe_session_id?: string | null
+          transaction_ref?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          course_id?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          metadata?: Json | null
+          notes?: string | null
+          paid_at?: string | null
+          payment_method?: string
+          payment_status?: string
+          stripe_payment_id?: string | null
+          stripe_session_id?: string | null
+          transaction_ref?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_transactions_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pending_users: {
         Row: {
@@ -1317,6 +1566,73 @@ export type Database = {
           },
         ]
       }
+      refunds: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          notes: string | null
+          processed_at: string | null
+          processed_by: string | null
+          reason: string | null
+          requested_at: string
+          status: string
+          stripe_refund_id: string | null
+          transaction_id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          notes?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          reason?: string | null
+          requested_at?: string
+          status?: string
+          stripe_refund_id?: string | null
+          transaction_id: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          notes?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          reason?: string | null
+          requested_at?: string
+          status?: string
+          stripe_refund_id?: string | null
+          transaction_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refunds_processed_by_fkey"
+            columns: ["processed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "refunds_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "payment_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "refunds_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       report_templates: {
         Row: {
           config: Json
@@ -1391,6 +1707,114 @@ export type Database = {
           {
             foreignKeyName: "section_visibility_created_by_fkey"
             columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_documents: {
+        Row: {
+          created_at: string
+          document_name: string
+          document_type: string
+          file_size: number | null
+          file_url: string
+          id: string
+          is_verified: boolean | null
+          metadata: Json | null
+          mime_type: string | null
+          updated_at: string
+          uploaded_by: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          document_name: string
+          document_type: string
+          file_size?: number | null
+          file_url: string
+          id?: string
+          is_verified?: boolean | null
+          metadata?: Json | null
+          mime_type?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          document_name?: string
+          document_type?: string
+          file_size?: number | null
+          file_url?: string
+          id?: string
+          is_verified?: boolean | null
+          metadata?: Json | null
+          mime_type?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_documents_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_documents_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_notes: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          is_private: boolean | null
+          note_text: string
+          note_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          id?: string
+          is_private?: boolean | null
+          note_text: string
+          note_type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          is_private?: boolean | null
+          note_text?: string
+          note_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_notes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_notes_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -1818,6 +2242,10 @@ export type Database = {
         Args: { p_certificate_type?: string; p_course_id: string }
         Returns: string
       }
+      generate_invoice_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_advanced_analytics: {
         Args: {
           p_end_date?: string
@@ -1835,6 +2263,29 @@ export type Database = {
       get_dashboard_metrics: {
         Args: Record<PropertyKey, never>
         Returns: Json
+      }
+      get_student_financial_summary: {
+        Args: { p_user_id: string }
+        Returns: Json
+      }
+      get_student_segments: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          segment_count: number
+          segment_name: string
+          student_ids: string[]
+        }[]
+      }
+      get_student_timeline: {
+        Args: { p_limit?: number; p_user_id: string }
+        Returns: {
+          description: string
+          event_date: string
+          event_id: string
+          event_type: string
+          metadata: Json
+          title: string
+        }[]
       }
       get_study_statistics: {
         Args: { p_user_id?: string }
