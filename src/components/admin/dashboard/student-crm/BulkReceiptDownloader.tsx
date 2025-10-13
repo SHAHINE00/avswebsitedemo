@@ -52,7 +52,7 @@ export const BulkReceiptDownloader = ({ receipts }: BulkReceiptDownloaderProps) 
       const userIds = [...new Set(selectedReceiptData.map(r => r.user_id))];
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, full_name, email, address')
+        .select('id, full_name, email, phone, address, city, postal_code, country')
         .in('id', userIds);
 
       const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
@@ -61,7 +61,11 @@ export const BulkReceiptDownloader = ({ receipts }: BulkReceiptDownloaderProps) 
         const student = profileMap.get(receipt.user_id) || {
           full_name: 'N/A',
           email: receipt.student_email,
-          address: undefined
+          phone: undefined,
+          address: undefined,
+          city: undefined,
+          postal_code: undefined,
+          country: undefined
         };
 
         const pdf = generateInvoicePDF(receipt, student);
@@ -99,7 +103,7 @@ export const BulkReceiptDownloader = ({ receipts }: BulkReceiptDownloaderProps) 
       const userIds = [...new Set(receipts.map(r => r.user_id))];
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, full_name, email, address')
+        .select('id, full_name, email, phone, address, city, postal_code, country')
         .in('id', userIds);
 
       const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
@@ -108,7 +112,11 @@ export const BulkReceiptDownloader = ({ receipts }: BulkReceiptDownloaderProps) 
         const student = profileMap.get(receipt.user_id) || {
           full_name: 'N/A',
           email: receipt.student_email,
-          address: undefined
+          phone: undefined,
+          address: undefined,
+          city: undefined,
+          postal_code: undefined,
+          country: undefined
         };
 
         const pdf = generateInvoicePDF(receipt, student);

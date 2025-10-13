@@ -18,7 +18,11 @@ interface InvoicePDFGeneratorProps {
     id?: string;
     full_name: string;
     email: string;
+    phone?: string;
     address?: string;
+    city?: string;
+    postal_code?: string;
+    country?: string;
   };
   onEmailSent?: () => void;
 }
@@ -29,7 +33,7 @@ export const generateInvoicePDF = (invoice: InvoicePDFGeneratorProps['invoice'],
   
   // Company Header with styling
   doc.setFillColor(59, 130, 246);
-  doc.rect(0, 0, 210, 40, 'F');
+  doc.rect(0, 0, 210, 45, 'F');
   
   doc.setFontSize(24);
   doc.setTextColor(255, 255, 255);
@@ -39,54 +43,75 @@ export const generateInvoicePDF = (invoice: InvoicePDFGeneratorProps['invoice'],
   doc.setFontSize(9);
   doc.setFont(undefined, 'normal');
   doc.text('Centre de Formation Professionnelle', 105, 22, { align: 'center' });
-  doc.text('Casablanca, Morocco | contact@avs-institute.com | +212 XXX-XXXXXX', 105, 28, { align: 'center' });
+  doc.text('Avenue Allal El Fassi – Alpha 2000, Marrakech | info@avs.ma', 105, 28, { align: 'center' });
+  doc.text('Tél: +212 6 62 63 29 53 / +212 5 24 31 19 82', 105, 34, { align: 'center' });
   
   // Invoice Title
   doc.setFontSize(20);
   doc.setTextColor(59, 130, 246);
   doc.setFont(undefined, 'bold');
-  doc.text('FACTURE', 105, 52, { align: 'center' });
+  doc.text('FACTURE', 105, 57, { align: 'center' });
   
   // Invoice metadata box
   doc.setDrawColor(59, 130, 246);
   doc.setLineWidth(0.5);
-  doc.rect(130, 60, 60, 25);
+  doc.rect(130, 65, 60, 25);
   
   doc.setFontSize(9);
   doc.setTextColor(0, 0, 0);
   doc.setFont(undefined, 'bold');
-  doc.text('N° Facture:', 133, 67);
+  doc.text('N° Facture:', 133, 72);
   doc.setFont(undefined, 'normal');
-  doc.text(invoice.invoice_number, 133, 72);
+  doc.text(invoice.invoice_number, 133, 77);
   
   doc.setFont(undefined, 'bold');
-  doc.text('Date:', 133, 78);
+  doc.text('Date:', 133, 83);
   doc.setFont(undefined, 'normal');
-  doc.text(new Date(invoice.invoice_date).toLocaleDateString('fr-FR'), 133, 83);
+  doc.text(new Date(invoice.invoice_date).toLocaleDateString('fr-FR'), 133, 88);
   
   // Student information box
   doc.setFontSize(10);
   doc.setFont(undefined, 'bold');
-  doc.text('Facturé à:', 20, 67);
+  doc.text('Facturé à:', 20, 72);
   
   doc.setDrawColor(200, 200, 200);
   doc.setLineWidth(0.3);
-  doc.rect(20, 70, 100, 30);
+  doc.rect(20, 75, 100, 50);
   
+  let studentY = 82;
   doc.setFontSize(10);
   doc.setFont(undefined, 'bold');
-  doc.text(student.full_name || 'N/A', 23, 77);
+  doc.text(student.full_name || 'N/A', 23, studentY);
   
   doc.setFont(undefined, 'normal');
   doc.setFontSize(9);
-  doc.text(student.email || '', 23, 83);
+  studentY += 6;
+  doc.text(student.email || '', 23, studentY);
+  
+  if (student.phone) {
+    studentY += 6;
+    doc.text(`Tél: ${student.phone}`, 23, studentY);
+  }
+  
   if (student.address) {
+    studentY += 6;
     const addressLines = doc.splitTextToSize(student.address, 90);
-    doc.text(addressLines, 23, 89);
+    doc.text(addressLines, 23, studentY);
+    studentY += (addressLines.length * 5);
+  }
+  
+  if (student.city || student.postal_code) {
+    studentY += 6;
+    doc.text(`${student.postal_code || ''} ${student.city || ''}`, 23, studentY);
+  }
+  
+  if (student.country && student.country !== 'Morocco' && student.country !== 'Maroc') {
+    studentY += 6;
+    doc.text(student.country, 23, studentY);
   }
   
   // Items table
-  const tableStartY = 115;
+  const tableStartY = 135;
   
   // Table header
   doc.setFillColor(59, 130, 246);
@@ -160,7 +185,7 @@ export const generateInvoicePDF = (invoice: InvoicePDFGeneratorProps['invoice'],
   
   doc.setFontSize(7);
   doc.setTextColor(150, 150, 150);
-  doc.text('AVS Institute - Tous droits réservés', 105, 287, { align: 'center' });
+  doc.text('AVS Institute - Avenue Allal El Fassi, Alpha 2000, Marrakech - info@avs.ma', 105, 287, { align: 'center' });
   
   return doc;
 };

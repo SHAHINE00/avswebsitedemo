@@ -20,7 +20,11 @@ interface InvoiceEmailRequest {
     id?: string;
     email: string;
     full_name?: string;
+    phone?: string;
     address?: string;
+    city?: string;
+    postal_code?: string;
+    country?: string;
   };
   user_id: string;
 }
@@ -58,6 +62,18 @@ serve(async (req) => {
           </p>
           
           <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <h3 style="margin: 0 0 15px 0; color: #1f2937; font-size: 16px;">Informations client</h3>
+            <p style="margin: 0; color: #4b5563; line-height: 1.8;">
+              <strong>Nom:</strong> ${student.full_name || 'N/A'}<br>
+              <strong>Email:</strong> ${student.email}<br>
+              ${student.phone ? `<strong>Téléphone:</strong> ${student.phone}<br>` : ''}
+              ${student.address ? `<strong>Adresse:</strong> ${student.address}<br>` : ''}
+              ${student.city || student.postal_code ? `<strong>Ville:</strong> ${student.postal_code || ''} ${student.city || ''}<br>` : ''}
+              ${student.country ? `<strong>Pays:</strong> ${student.country}` : ''}
+            </p>
+          </div>
+          
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0;">
             <table style="width: 100%; border-collapse: collapse;">
               <tr>
                 <td style="padding: 8px 0; color: #6b7280;">Numéro de facture:</td>
@@ -89,11 +105,12 @@ serve(async (req) => {
           </p>
           
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
-            <p style="color: #6b7280; font-size: 14px; margin: 5px 0;">
-              AVS Institute<br>
-              Casablanca, Morocco<br>
-              Email: contact@avs-institute.com<br>
-              Tél: +212 XXX-XXXXXX
+            <p style="color: #6b7280; font-size: 14px; margin: 5px 0; line-height: 1.6;">
+              <strong>AVS Institute</strong><br>
+              Avenue Allal El Fassi – Alpha 2000<br>
+              Marrakech – MAROC<br>
+              Email: info@avs.ma<br>
+              Tél: +212 6 62 63 29 53 / +212 5 24 31 19 82
             </p>
           </div>
         </div>
