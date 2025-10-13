@@ -23,6 +23,10 @@ interface CreateStudentRequest {
   formation_domaine?: string;
   formation_programme?: string;
   formation_tag?: string;
+  parent_name?: string;
+  parent_phone?: string;
+  parent_email?: string;
+  parent_relationship?: string;
 }
 
 serve(async (req) => {

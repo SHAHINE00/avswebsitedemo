@@ -28,6 +28,10 @@ const createStudentSchema = z.object({
   formation_domaine: z.string().optional(),
   formation_programme: z.string().optional(),
   formation_tag: z.string().optional(),
+  parent_name: z.string().optional(),
+  parent_phone: z.string().optional(),
+  parent_email: z.string().email("Email invalide").optional().or(z.literal("")),
+  parent_relationship: z.string().optional(),
 });
 
 type CreateStudentFormData = z.infer<typeof createStudentSchema>;
@@ -274,6 +278,61 @@ export const CreateStudentDialog = ({ open, onOpenChange, onSuccess }: CreateStu
                   placeholder="Ex: 2024-DEV-WEB"
                   {...form.register('formation_tag')}
                 />
+              </div>
+            </div>
+          </div>
+
+          {/* Parent Information */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-muted-foreground">Informations du parent/tuteur</h3>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="parent_name">Nom du parent</Label>
+                <Input
+                  id="parent_name"
+                  placeholder="Prénom Nom"
+                  {...form.register('parent_name')}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="parent_relationship">Relation</Label>
+                <Select onValueChange={(value) => form.setValue('parent_relationship', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sélectionner" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Père">Père</SelectItem>
+                    <SelectItem value="Mère">Mère</SelectItem>
+                    <SelectItem value="Tuteur">Tuteur</SelectItem>
+                    <SelectItem value="Autre">Autre</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="parent_phone">Téléphone du parent</Label>
+                <Input
+                  id="parent_phone"
+                  placeholder="+212 6 12 34 56 78"
+                  {...form.register('parent_phone')}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="parent_email">Email du parent</Label>
+                <Input
+                  id="parent_email"
+                  type="email"
+                  placeholder="parent@example.com"
+                  {...form.register('parent_email')}
+                />
+                {form.formState.errors.parent_email && (
+                  <p className="text-sm text-destructive">{form.formState.errors.parent_email.message}</p>
+                )}
               </div>
             </div>
           </div>
