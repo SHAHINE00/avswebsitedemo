@@ -472,6 +472,7 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
         activeTab={drawerTab}
+        onEditStudent={handleEdit}
       />
 
       {/* Create Student Dialog */}

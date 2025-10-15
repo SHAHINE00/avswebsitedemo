@@ -11,6 +11,7 @@ import StudentEnrollments from './StudentEnrollments';
 import StudentNotes from './StudentNotes';
 import { CertificateGenerator } from './CertificateGenerator';
 import { CommunicationCenter } from './CommunicationCenter';
+import { StudentOverview } from './StudentOverview';
 
 interface StudentProfile {
   id: string;
@@ -25,9 +26,10 @@ interface StudentProfileDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   activeTab?: 'overview' | 'enrollments' | 'finances' | 'documents' | 'timeline' | 'notes' | 'certificates' | 'communication';
+  onEditStudent?: (student: StudentProfile) => void;
 }
 
-const StudentProfileDrawer: React.FC<StudentProfileDrawerProps> = ({ student, open, onOpenChange, activeTab }) => {
+const StudentProfileDrawer: React.FC<StudentProfileDrawerProps> = ({ student, open, onOpenChange, activeTab, onEditStudent }) => {
   const [currentTab, setCurrentTab] = useState<'overview' | 'enrollments' | 'finances' | 'documents' | 'timeline' | 'notes' | 'certificates' | 'communication'>(activeTab ?? 'overview');
 
   useEffect(() => {
@@ -86,7 +88,7 @@ const StudentProfileDrawer: React.FC<StudentProfileDrawerProps> = ({ student, op
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4 mt-4">
-            <StudentEnrollments userId={student.id} />
+            <StudentOverview student={student} onEditStudent={onEditStudent} />
           </TabsContent>
 
           <TabsContent value="enrollments" className="space-y-4 mt-4">
