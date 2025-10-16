@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardOverview from '@/components/admin/dashboard/DashboardOverview';
 import CourseManagementSection from '@/components/admin/dashboard/CourseManagementSection';
@@ -27,8 +27,17 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
   onEdit,
   onDelete
 }) => {
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    const saved = sessionStorage.getItem('admin_active_tab');
+    return saved || 'dashboard';
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem('admin_active_tab', activeTab);
+  }, [activeTab]);
+
   return (
-    <Tabs defaultValue="dashboard" className="w-full">
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
       <TabsList className="flex w-full justify-start overflow-x-auto gap-1 sm:gap-2 mb-4 sm:mb-6 p-1 bg-muted rounded-lg scrollbar-hide">
         <TabsTrigger value="dashboard" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Vue d'ensemble</TabsTrigger>
         <TabsTrigger value="students" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Étudiants</TabsTrigger>
