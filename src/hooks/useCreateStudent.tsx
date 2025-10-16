@@ -28,8 +28,9 @@ export const useCreateStudent = () => {
   const createStudent = async (studentData: CreateStudentData) => {
     setLoading(true);
     try {
+      const payload = { ...studentData, email: studentData.email.trim().toLowerCase() };
       const { data, error } = await supabase.functions.invoke('admin-create-student', {
-        body: studentData
+        body: payload
       });
 
       // When edge function returns 400, data contains the error object

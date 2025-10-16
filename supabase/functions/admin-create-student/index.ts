@@ -66,6 +66,9 @@ serve(async (req) => {
       throw new Error('Email, password, and full name are required');
     }
 
+    // Normalize email to avoid case/space issues
+    studentData.email = studentData.email.trim().toLowerCase();
+
     // Create Supabase admin client for auth operations
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
@@ -78,7 +81,10 @@ serve(async (req) => {
       }
     );
 
-    // Create auth user
+    // Create auth user (or link to existing one if email already registered)
+    let newUserId = '';
+    let createdNewUser = false;
+
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email: studentData.email,
       password: studentData.password,
@@ -90,15 +96,54 @@ serve(async (req) => {
 
     if (authError) {
       console.error('Auth creation error:', authError);
-      throw new Error(`Failed to create user: ${authError.message}`);
+      const msg = (authError as any)?.message?.toLowerCase?.() || '';
+      const alreadyExists = msg.includes('already been registered') || msg.includes('already registered');
+
+      if (alreadyExists) {
+        // Try to find existing user by email and link profile/role
+        let page = 1;
+        const perPage = 1000;
+        let foundUser: any = null;
+
+        while (!foundUser) {
+          const { data: listData, error: listError } = await supabaseAdmin.auth.admin.listUsers({ page, perPage });
+          if (listError) break;
+          const users = (listData as any)?.users || [];
+          foundUser = users.find((u: any) => (u.email || '').toLowerCase() === studentData.email);
+          if (foundUser || users.length < perPage) break;
+          page += 1;
+          if (page > 10) break; // safety stop
+        }
+
+        if (!foundUser) {
+          throw new Error(`Failed to create user: ${authError.message}`);
+        }
+
+        newUserId = foundUser.id;
+
+        // Ensure metadata has full_name
+        try {
+          const metaName = (foundUser.user_metadata?.full_name || '').trim();
+          if (!metaName && studentData.full_name) {
+            await supabaseAdmin.auth.admin.updateUserById(newUserId, {
+              user_metadata: { full_name: studentData.full_name }
+            });
+          }
+        } catch (e) {
+          console.error('Metadata update warning:', e);
+        }
+      } else {
+        throw new Error(`Failed to create user: ${ (authError as any)?.message || 'unknown error' }`);
+      }
+    } else {
+      newUserId = authData!.user.id;
+      createdNewUser = true;
     }
 
-    const newUserId = authData.user.id;
-
-    // Create profile
+    // Create or update profile
     const { error: profileError } = await supabaseAdmin
       .from('profiles')
-      .insert({
+      .upsert({
         id: newUserId,
         email: studentData.email,
         full_name: studentData.full_name,
@@ -112,12 +157,14 @@ serve(async (req) => {
         previous_education: studentData.previous_education,
         career_goals: studentData.career_goals,
         status: 'approved'
-      });
+      }, { onConflict: 'id' });
 
     if (profileError) {
       console.error('Profile creation error:', profileError);
-      // Try to clean up the auth user if profile creation fails
-      await supabaseAdmin.auth.admin.deleteUser(newUserId);
+      // Try to clean up the auth user if profile creation fails and we just created it
+      if (createdNewUser) {
+        await supabaseAdmin.auth.admin.deleteUser(newUserId);
+      }
       throw new Error(`Failed to create profile: ${profileError.message}`);
     }
 
@@ -136,7 +183,7 @@ serve(async (req) => {
 
     // Log admin activity
     await supabaseClient.rpc('log_admin_activity', {
-      p_action: 'student_created_manually',
+      p_action: createdNewUser ? 'student_created_manually' : 'student_linked_existing_auth',
       p_entity_type: 'user',
       p_entity_id: newUserId,
       p_details: {
