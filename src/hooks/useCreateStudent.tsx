@@ -32,16 +32,20 @@ export const useCreateStudent = () => {
         body: studentData
       });
 
-      // Check for error in response data first (contains detailed message)
+      // When edge function returns 400, data contains the error object
       if (data?.error) {
         throw new Error(data.error);
       }
 
-      // Then check for Supabase client error
+      // Check for network/invocation errors
       if (error) {
-        // Extract the actual error message from the response context
-        const errorMessage = error.context?.error || error.message || "Erreur lors de la création de l'étudiant";
-        throw new Error(errorMessage);
+        // For FunctionsHttpError, the message is already descriptive
+        throw new Error(error.message || "Erreur lors de la création de l'étudiant");
+      }
+
+      // Check if we got a success response
+      if (!data?.success) {
+        throw new Error("Réponse inattendue du serveur");
       }
 
       toast({
