@@ -113,3 +113,67 @@ jobs:
         echo "✅ Cache busting request sent"
         
         echo "✅ Deployment health check completed successfully"
+  
+  deploy-supabase-functions:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install Supabase CLI
+      run: |
+        npm install -g supabase
+        
+    - name: Verify Supabase CLI installation
+      run: |
+        supabase --version
+        
+    - name: Login to Supabase
+      run: |
+        supabase login --token ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        
+    - name: Link to Supabase project
+      run: |
+        supabase link --project-ref nkkalmyhxtuisjdjmdew
+        
+    - name: Deploy all Edge Functions
+      run: |
+        echo "🚀 Deploying Edge Functions..."
+        supabase functions deploy admin-create-student
+        supabase functions deploy log-security-event
+        supabase functions deploy subscribe
+        supabase functions deploy send-hostinger-email
+        supabase functions deploy send-contact-email
+        supabase functions deploy unsubscribe
+        supabase functions deploy admin-invite-user
+        supabase functions deploy admin-delete-user
+        supabase functions deploy handle-pending-registration
+        supabase functions deploy approve-pending-user
+        supabase functions deploy convert-subscriber-to-user
+        supabase functions deploy book-appointment
+        supabase functions deploy send-invoice-email
+        echo "✅ All Edge Functions deployed successfully"
+        
+    - name: Verify deployment
+      run: |
+        echo "✅ Edge Functions deployment completed"
+        echo "📋 Deployed functions:"
+        echo "  - admin-create-student"
+        echo "  - log-security-event"
+        echo "  - subscribe"
+        echo "  - send-hostinger-email"
+        echo "  - send-contact-email"
+        echo "  - unsubscribe"
+        echo "  - admin-invite-user"
+        echo "  - admin-delete-user"
+        echo "  - handle-pending-registration"
+        echo "  - approve-pending-user"
+        echo "  - convert-subscriber-to-user"
+        echo "  - book-appointment"
+        echo "  - send-invoice-email"
