@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Mail, Phone, Calendar, Edit, User } from 'lucide-react';
+import { Mail, Phone, Calendar, Edit, User, MapPin, GraduationCap, Target, BookOpen } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface StudentProfile {
@@ -13,6 +13,18 @@ interface StudentProfile {
   phone?: string;
   created_at?: string;
   student_status?: string;
+  date_of_birth?: string;
+  address?: string;
+  city?: string;
+  postal_code?: string;
+  country?: string;
+  academic_level?: string;
+  previous_education?: string;
+  career_goals?: string;
+  formation_type?: string;
+  formation_domaine?: string;
+  formation_programme?: string;
+  formation_tag?: string;
 }
 
 interface StudentOverviewProps {
@@ -64,6 +76,7 @@ export const StudentOverview: React.FC<StudentOverviewProps> = ({ student, onEdi
 
   return (
     <div className="space-y-6">
+      {/* Basic Contact Info */}
       <Card>
         <CardHeader>
           <div className="flex items-start justify-between">
@@ -142,6 +155,126 @@ export const StudentOverview: React.FC<StudentOverviewProps> = ({ student, onEdi
           </div>
         </CardContent>
       </Card>
+
+      {/* Personal Information */}
+      {(student.date_of_birth || student.address || student.city) && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <MapPin className="h-5 w-5" />
+              Informations Personnelles
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-2">
+              {student.date_of_birth && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Date de Naissance</p>
+                  <p className="text-sm mt-1">{format(new Date(student.date_of_birth), 'dd/MM/yyyy')}</p>
+                </div>
+              )}
+              {student.address && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Adresse</p>
+                  <p className="text-sm mt-1">{student.address}</p>
+                </div>
+              )}
+              {student.city && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Ville</p>
+                  <p className="text-sm mt-1">{student.city}</p>
+                </div>
+              )}
+              {student.postal_code && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Code Postal</p>
+                  <p className="text-sm mt-1">{student.postal_code}</p>
+                </div>
+              )}
+              {student.country && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Pays</p>
+                  <p className="text-sm mt-1">{student.country}</p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Academic Background */}
+      {(student.academic_level || student.previous_education || student.career_goals) && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <GraduationCap className="h-5 w-5" />
+              Parcours Académique
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {student.academic_level && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Niveau Académique</p>
+                  <p className="text-sm mt-1">{student.academic_level}</p>
+                </div>
+              )}
+              {student.previous_education && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Formation Antérieure</p>
+                  <p className="text-sm mt-1">{student.previous_education}</p>
+                </div>
+              )}
+              {student.career_goals && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Objectifs de Carrière</p>
+                  <p className="text-sm mt-1">{student.career_goals}</p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Formation Details */}
+      {(student.formation_type || student.formation_domaine || student.formation_programme || student.formation_tag) && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <BookOpen className="h-5 w-5" />
+              Programme de Formation
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-2">
+              {student.formation_type && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Type de Formation</p>
+                  <p className="text-sm mt-1">{student.formation_type}</p>
+                </div>
+              )}
+              {student.formation_domaine && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Domaine</p>
+                  <p className="text-sm mt-1">{student.formation_domaine}</p>
+                </div>
+              )}
+              {student.formation_programme && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Programme</p>
+                  <p className="text-sm mt-1">{student.formation_programme}</p>
+                </div>
+              )}
+              {student.formation_tag && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Tag</p>
+                  <Badge variant="secondary">{student.formation_tag}</Badge>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

@@ -1443,6 +1443,10 @@ export type Database = {
           date_of_birth: string | null
           email: string | null
           expected_completion: string | null
+          formation_domaine: string | null
+          formation_programme: string | null
+          formation_tag: string | null
+          formation_type: string | null
           full_name: string | null
           id: string
           last_activity_at: string | null
@@ -1464,6 +1468,10 @@ export type Database = {
           date_of_birth?: string | null
           email?: string | null
           expected_completion?: string | null
+          formation_domaine?: string | null
+          formation_programme?: string | null
+          formation_tag?: string | null
+          formation_type?: string | null
           full_name?: string | null
           id: string
           last_activity_at?: string | null
@@ -1485,6 +1493,10 @@ export type Database = {
           date_of_birth?: string | null
           email?: string | null
           expected_completion?: string | null
+          formation_domaine?: string | null
+          formation_programme?: string | null
+          formation_tag?: string | null
+          formation_type?: string | null
           full_name?: string | null
           id?: string
           last_activity_at?: string | null
@@ -1917,6 +1929,44 @@ export type Database = {
           {
             foreignKeyName: "student_notes_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_parents: {
+        Row: {
+          created_at: string
+          id: string
+          parent_email: string | null
+          parent_name: string | null
+          parent_phone: string | null
+          parent_relationship: string | null
+          student_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          parent_email?: string | null
+          parent_name?: string | null
+          parent_phone?: string | null
+          parent_relationship?: string | null
+          student_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          parent_email?: string | null
+          parent_name?: string | null
+          parent_phone?: string | null
+          parent_relationship?: string | null
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_parents_student_id_fkey"
+            columns: ["student_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]

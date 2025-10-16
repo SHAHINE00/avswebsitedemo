@@ -17,6 +17,19 @@ interface Student {
   full_name: string;
   phone?: string;
   created_at: string;
+  student_status?: string;
+  date_of_birth?: string;
+  address?: string;
+  city?: string;
+  postal_code?: string;
+  country?: string;
+  academic_level?: string;
+  previous_education?: string;
+  career_goals?: string;
+  formation_type?: string;
+  formation_domaine?: string;
+  formation_programme?: string;
+  formation_tag?: string;
 }
 
 const StudentCRMDashboard: React.FC = () => {
@@ -61,7 +74,26 @@ const StudentCRMDashboard: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, email, full_name, phone, created_at')
+        .select(`
+          id, 
+          email, 
+          full_name, 
+          phone, 
+          created_at,
+          student_status,
+          date_of_birth,
+          address,
+          city,
+          postal_code,
+          country,
+          academic_level,
+          previous_education,
+          career_goals,
+          formation_type,
+          formation_domaine,
+          formation_programme,
+          formation_tag
+        `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;

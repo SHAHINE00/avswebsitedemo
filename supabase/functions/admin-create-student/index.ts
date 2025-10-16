@@ -189,6 +189,10 @@ serve(async (req) => {
         academic_level: studentData.academic_level,
         previous_education: studentData.previous_education,
         career_goals: studentData.career_goals,
+        formation_type: studentData.formation_type,
+        formation_domaine: studentData.formation_domaine,
+        formation_programme: studentData.formation_programme,
+        formation_tag: studentData.formation_tag,
         status: 'approved'
       }, { onConflict: 'id' });
 
@@ -202,6 +206,27 @@ serve(async (req) => {
       throw new Error(`Failed to create profile: ${profileError.message}`);
     }
     console.log('✅ Profile created/updated successfully');
+
+    // Insert parent information if provided
+    if (studentData.parent_name || studentData.parent_email || studentData.parent_phone) {
+      console.log('👨‍👩‍👧 Saving parent information...');
+      const { error: parentError } = await supabaseAdmin
+        .from('student_parents')
+        .insert({
+          student_id: newUserId,
+          parent_name: studentData.parent_name,
+          parent_phone: studentData.parent_phone,
+          parent_email: studentData.parent_email,
+          parent_relationship: studentData.parent_relationship || 'Autre'
+        });
+      
+      if (parentError) {
+        console.error('⚠️ Parent information error:', parentError.message);
+        // Continue even if parent info fails - not critical
+      } else {
+        console.log('✅ Parent information saved successfully');
+      }
+    }
 
     // Assign student role
     console.log('🎓 Assigning student role...');
