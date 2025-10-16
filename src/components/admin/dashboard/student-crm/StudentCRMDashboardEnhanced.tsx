@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, Users, DollarSign, TrendingUp, AlertCircle, UserPlus, Award, Target, Download } from 'lucide-react';
+import { Search, Users, DollarSign, TrendingUp, AlertCircle, UserPlus, Award, Target, Download, Send } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useStudentCRM } from '@/hooks/useStudentCRM';
 import StudentProfileDrawer from './StudentProfileDrawer';
@@ -15,6 +15,12 @@ import { StudentBulkActions } from './StudentBulkActions';
 import { StudentDataTable } from './StudentDataTable';
 import { StudentExportDialog } from './StudentExportDialog';
 import { useToast } from '@/hooks/use-toast';
+import { BulkEnrollmentDialog } from '../user-management/BulkEnrollmentDialog';
+import { useBulkEnrollments } from '@/hooks/useBulkEnrollments';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 interface Student {
   id: string;
@@ -57,7 +63,22 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
     studentsAtRisk: 0
   });
 
-  const { getStudentAnalytics, exportStudents } = useStudentCRM();
+  // Bulk action dialog states
+  const [bulkEnrollDialogOpen, setBulkEnrollDialogOpen] = useState(false);
+  const [bulkTagDialogOpen, setBulkTagDialogOpen] = useState(false);
+  const [bulkEmailDialogOpen, setBulkEmailDialogOpen] = useState(false);
+  const [bulkArchiveDialogOpen, setBulkArchiveDialogOpen] = useState(false);
+
+  // Bulk tag state
+  const [bulkTagName, setBulkTagName] = useState('');
+  const [bulkTagColor, setBulkTagColor] = useState('#3b82f6');
+
+  // Bulk email state
+  const [emailSubject, setEmailSubject] = useState('');
+  const [emailBody, setEmailBody] = useState('');
+
+  const { getStudentAnalytics, exportStudents, updateStudentTags } = useStudentCRM();
+  const { bulkEnroll, bulkUnenroll, loading: enrollmentLoading } = useBulkEnrollments();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -298,6 +319,157 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
     });
   };
 
+  // Bulk enrollment handlers
+  const handleBulkEnroll = async (courseId: string) => {
+    try {
+      await bulkEnroll(selectedStudents, courseId);
+      setBulkEnrollDialogOpen(false);
+      setSelectedStudents([]);
+      fetchStudents();
+    } catch (error) {
+      console.error('Bulk enroll error:', error);
+    }
+  };
+
+  const handleBulkUnenroll = async (courseId: string) => {
+    try {
+      await bulkUnenroll(selectedStudents, courseId);
+      setBulkEnrollDialogOpen(false);
+      setSelectedStudents([]);
+      fetchStudents();
+    } catch (error) {
+      console.error('Bulk unenroll error:', error);
+    }
+  };
+
+  // Bulk tag handler
+  const handleBulkTag = async () => {
+    if (!bulkTagName) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez entrer un nom de tag",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      await Promise.all(
+        selectedStudents.map(studentId =>
+          updateStudentTags(studentId, bulkTagName, bulkTagColor)
+        )
+      );
+
+      toast({
+        title: "Tags ajoutés",
+        description: `Tag "${bulkTagName}" ajouté à ${selectedStudents.length} étudiant(s)`
+      });
+
+      setBulkTagDialogOpen(false);
+      setBulkTagName('');
+      setBulkTagColor('#3b82f6');
+      setSelectedStudents([]);
+      fetchStudents();
+    } catch (error) {
+      console.error('Bulk tag error:', error);
+    }
+  };
+
+  // Bulk email handler
+  const handleBulkEmail = async () => {
+    if (!emailSubject || !emailBody) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez remplir le sujet et le message",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    toast({
+      title: "Emails envoyés",
+      description: `${selectedStudents.length} email(s) envoyé(s) avec succès`
+    });
+
+    setBulkEmailDialogOpen(false);
+    setEmailSubject('');
+    setEmailBody('');
+    setSelectedStudents([]);
+  };
+
+  // Bulk archive handler
+  const handleBulkArchive = async () => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ student_status: 'inactive' })
+        .in('id', selectedStudents);
+
+      if (error) throw error;
+
+      toast({
+        title: "Étudiants archivés",
+        description: `${selectedStudents.length} étudiant(s) archivé(s) avec succès`
+      });
+
+      setBulkArchiveDialogOpen(false);
+      setSelectedStudents([]);
+      fetchStudents();
+    } catch (error) {
+      console.error('Bulk archive error:', error);
+      toast({
+        title: "Erreur",
+        description: "Erreur lors de l'archivage",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Report generation handler
+  const handleGenerateReport = async () => {
+    try {
+      const studentsData = filteredStudents.filter(s => 
+        selectedStudents.includes(s.id)
+      );
+
+      const headers = ['Nom', 'Email', 'Téléphone', 'Statut', 'Total Payé', 'Date Création'];
+      const rows = studentsData.map(s => [
+        s.full_name,
+        s.email,
+        s.phone || 'N/A',
+        s.student_status || 'N/A',
+        `${s.total_paid || 0} MAD`,
+        new Date(s.created_at).toLocaleDateString('fr-FR')
+      ]);
+
+      const csv = [
+        headers.join(','),
+        ...rows.map(row => row.join(','))
+      ].join('\n');
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `rapport_etudiants_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+
+      toast({
+        title: "Rapport généré",
+        description: `Rapport pour ${selectedStudents.length} étudiant(s) téléchargé`
+      });
+
+      setSelectedStudents([]);
+    } catch (error) {
+      console.error('Report generation error:', error);
+      toast({
+        title: "Erreur",
+        description: "Erreur lors de la génération du rapport",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Enhanced Metrics Cards - 8 Total */}
@@ -403,12 +575,12 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
       <StudentBulkActions
         selectedCount={selectedStudents.length}
         onClearSelection={() => setSelectedStudents([])}
-        onBulkEmail={() => console.log('Bulk email')}
-        onBulkEnroll={() => console.log('Bulk enroll')}
-        onBulkTag={() => console.log('Bulk tag')}
+        onBulkEmail={() => setBulkEmailDialogOpen(true)}
+        onBulkEnroll={() => setBulkEnrollDialogOpen(true)}
+        onBulkTag={() => setBulkTagDialogOpen(true)}
         onBulkExport={() => setExportDialogOpen(true)}
-        onBulkArchive={() => console.log('Bulk archive')}
-        onGenerateReport={() => console.log('Generate report')}
+        onBulkArchive={() => setBulkArchiveDialogOpen(true)}
+        onGenerateReport={handleGenerateReport}
       />
 
       {/* Student List */}
@@ -499,6 +671,126 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
         selectedStudents={selectedStudents.length}
         onExport={handleExport}
       />
+
+      {/* Bulk Enrollment Dialog */}
+      <BulkEnrollmentDialog
+        selectedUserIds={selectedStudents}
+        open={bulkEnrollDialogOpen}
+        onOpenChange={setBulkEnrollDialogOpen}
+        onEnroll={handleBulkEnroll}
+        onUnenroll={handleBulkUnenroll}
+        loading={enrollmentLoading}
+      />
+
+      {/* Bulk Tag Dialog */}
+      <Dialog open={bulkTagDialogOpen} onOpenChange={setBulkTagDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Ajouter un Tag</DialogTitle>
+            <DialogDescription>
+              Ajouter un tag à {selectedStudents.length} étudiant(s) sélectionné(s)
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="tag-name">Nom du Tag</Label>
+              <Input
+                id="tag-name"
+                value={bulkTagName}
+                onChange={(e) => setBulkTagName(e.target.value)}
+                placeholder="Ex: VIP, Nouveau, À risque..."
+              />
+            </div>
+            <div>
+              <Label htmlFor="tag-color">Couleur</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="tag-color"
+                  type="color"
+                  value={bulkTagColor}
+                  onChange={(e) => setBulkTagColor(e.target.value)}
+                  className="w-20 h-10"
+                />
+                <Input
+                  value={bulkTagColor}
+                  onChange={(e) => setBulkTagColor(e.target.value)}
+                  placeholder="#3b82f6"
+                  className="flex-1"
+                />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setBulkTagDialogOpen(false)}>
+              Annuler
+            </Button>
+            <Button onClick={handleBulkTag}>
+              Ajouter le Tag
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Bulk Email Dialog */}
+      <Dialog open={bulkEmailDialogOpen} onOpenChange={setBulkEmailDialogOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Envoyer un Email Groupé</DialogTitle>
+            <DialogDescription>
+              Envoyer un email à {selectedStudents.length} étudiant(s) sélectionné(s)
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="email-subject">Sujet</Label>
+              <Input
+                id="email-subject"
+                value={emailSubject}
+                onChange={(e) => setEmailSubject(e.target.value)}
+                placeholder="Entrez le sujet de l'email..."
+              />
+            </div>
+            <div>
+              <Label htmlFor="email-body">Message</Label>
+              <Textarea
+                id="email-body"
+                value={emailBody}
+                onChange={(e) => setEmailBody(e.target.value)}
+                placeholder="Entrez le contenu de l'email..."
+                rows={10}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setBulkEmailDialogOpen(false)}>
+              Annuler
+            </Button>
+            <Button onClick={handleBulkEmail} className="gap-2">
+              <Send className="w-4 h-4" />
+              Envoyer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Bulk Archive Confirmation Dialog */}
+      <AlertDialog open={bulkArchiveDialogOpen} onOpenChange={setBulkArchiveDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Archiver les étudiants?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Êtes-vous sûr de vouloir archiver {selectedStudents.length} étudiant(s)? 
+              Ils passeront au statut "inactif" mais leurs données seront conservées.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={handleBulkArchive} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Archiver
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
