@@ -27,7 +27,8 @@ export const StudentFilters = ({ filters, onFilterChange, onClearFilters }: Stud
   const [isOpen, setIsOpen] = useState(false);
 
   const handleFilterChange = (key: keyof StudentFilterValues, value: any) => {
-    onFilterChange({ ...filters, [key]: value });
+    const filterValue = value === 'all' ? undefined : value;
+    onFilterChange({ ...filters, [key]: filterValue });
   };
 
   const hasActiveFilters = Object.values(filters).some(v => v !== undefined && v !== '');
@@ -58,12 +59,12 @@ export const StudentFilters = ({ filters, onFilterChange, onClearFilters }: Stud
           {/* Student Status */}
           <div>
             <Label htmlFor="status">Statut Étudiant</Label>
-            <Select value={filters.status || ''} onValueChange={(v) => handleFilterChange('status', v)}>
+            <Select value={filters.status || 'all'} onValueChange={(v) => handleFilterChange('status', v)}>
               <SelectTrigger id="status">
                 <SelectValue placeholder="Tous" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Tous</SelectItem>
+                <SelectItem value="all">Tous</SelectItem>
                 <SelectItem value="active">Actif</SelectItem>
                 <SelectItem value="on_hold">En Pause</SelectItem>
                 <SelectItem value="suspended">Suspendu</SelectItem>
@@ -76,12 +77,12 @@ export const StudentFilters = ({ filters, onFilterChange, onClearFilters }: Stud
           {/* Enrollment Status */}
           <div>
             <Label htmlFor="enrollmentStatus">Statut Inscription</Label>
-            <Select value={filters.enrollmentStatus || ''} onValueChange={(v) => handleFilterChange('enrollmentStatus', v)}>
+            <Select value={filters.enrollmentStatus || 'all'} onValueChange={(v) => handleFilterChange('enrollmentStatus', v)}>
               <SelectTrigger id="enrollmentStatus">
                 <SelectValue placeholder="Tous" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Tous</SelectItem>
+                <SelectItem value="all">Tous</SelectItem>
                 <SelectItem value="active">Actif</SelectItem>
                 <SelectItem value="completed">Complété</SelectItem>
                 <SelectItem value="dropped">Abandonné</SelectItem>
@@ -92,12 +93,12 @@ export const StudentFilters = ({ filters, onFilterChange, onClearFilters }: Stud
           {/* Payment Status */}
           <div>
             <Label htmlFor="paymentStatus">Statut Paiement</Label>
-            <Select value={filters.paymentStatus || ''} onValueChange={(v) => handleFilterChange('paymentStatus', v)}>
+            <Select value={filters.paymentStatus || 'all'} onValueChange={(v) => handleFilterChange('paymentStatus', v)}>
               <SelectTrigger id="paymentStatus">
                 <SelectValue placeholder="Tous" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Tous</SelectItem>
+                <SelectItem value="all">Tous</SelectItem>
                 <SelectItem value="completed">Payé</SelectItem>
                 <SelectItem value="pending">En Attente</SelectItem>
                 <SelectItem value="failed">Échoué</SelectItem>
