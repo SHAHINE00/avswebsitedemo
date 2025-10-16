@@ -179,12 +179,12 @@ export const useStudentFinancials = () => {
   }) => {
     setLoading(true);
     try {
-      // Generate invoice number
-      const { data: invoiceNumber, error: invoiceNumError } = await supabase
-        .rpc('generate_invoice_number');
-
-      if (invoiceNumError) throw invoiceNumError;
-
+      // Get the next invoice number
+      const { count } = await supabase
+        .from('invoices')
+        .select('*', { count: 'exact', head: true });
+      
+      const invoiceNumber = `INV-${String((count || 0) + 1).padStart(5, '0')}`;
       const totalAmount = invoiceData.amount + (invoiceData.tax_amount || 0);
 
       const { data, error } = await supabase
@@ -196,6 +196,7 @@ export const useStudentFinancials = () => {
           amount: invoiceData.amount,
           tax_amount: invoiceData.tax_amount || 0,
           total_amount: totalAmount,
+          invoice_date: new Date().toISOString().split('T')[0],
           status: 'draft'
         })
         .select()
