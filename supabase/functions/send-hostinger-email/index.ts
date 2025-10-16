@@ -4,6 +4,7 @@ import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.50.2";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const RESEND_FROM = Deno.env.get("RESEND_FROM") || "AVS Institute <onboarding@resend.dev>";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -101,12 +102,13 @@ async function sendViaSMTP(to: string[], subject: string, html: string, from: st
 }
 
 async function sendViaResend(to: string[], subject: string, html: string, from: string) {
-  console.log(`Sending via Resend to: ${to.join(', ')}`);
+  const fromAddress = RESEND_FROM || from;
+  console.log(`Sending via Resend to: ${to.join(', ')} | FROM: ${fromAddress}`);
   return await resend.emails.send({
-    from: from,
-    to: to,
-    subject: subject,
-    html: html,
+    from: fromAddress,
+    to,
+    subject,
+    html,
   });
 }
 
