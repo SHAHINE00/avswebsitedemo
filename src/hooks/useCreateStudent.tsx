@@ -39,8 +39,27 @@ export const useCreateStudent = () => {
 
       // Check for network/invocation errors
       if (error) {
-        // For FunctionsHttpError, the message is already descriptive
-        throw new Error(error.message || "Erreur lors de la création de l'étudiant");
+        // Try to extract the real error message from the edge function response
+        let errorMessage = (error as any)?.message || "Erreur lors de la création de l'étudiant";
+        try {
+          const response = (error as any)?.context?.response as Response | undefined;
+          if (response) {
+            const contentType = response.headers?.get?.('content-type') || '';
+            if (contentType.includes('application/json')) {
+              const body: any = await (response as any).json();
+              errorMessage = body?.error || body?.message || errorMessage;
+            } else {
+              const text = await (response as any).text();
+              if (text) errorMessage = text;
+            }
+          } else if ((error as any)?.context?.error) {
+            // Some versions put error string directly under context.error
+            errorMessage = (error as any).context.error;
+          }
+        } catch (_) {
+          // ignore parsing failures and fall back to default message
+        }
+        throw new Error(errorMessage);
       }
 
       // Check if we got a success response
