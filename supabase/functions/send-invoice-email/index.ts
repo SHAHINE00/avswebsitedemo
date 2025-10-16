@@ -126,11 +126,10 @@ serve(async (req) => {
     // Call the existing send-hostinger-email function to send the email
     const { error: emailError } = await supabaseClient.functions.invoke('send-hostinger-email', {
       body: {
-        to: student.email,
+        type: 'custom',
+        to: [student.email],
         subject: emailSubject,
-        html: emailBody,
-        attachInvoice: true,
-        invoice: invoice
+        html: emailBody
       }
     });
 

@@ -92,6 +92,7 @@ const StudentFinancialProfile: React.FC<StudentFinancialProfileProps> = ({ userI
       return;
     }
 
+    // Generate invoices sequentially
     for (const payment of paymentsWithoutInvoice) {
       await generateInvoice({
         user_id: userId,
@@ -101,7 +102,8 @@ const StudentFinancialProfile: React.FC<StudentFinancialProfileProps> = ({ userI
       });
     }
 
-    fetchFinancialData();
+    // Refresh data after all invoices are generated
+    await fetchFinancialData();
   };
 
   return (
