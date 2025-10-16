@@ -39,7 +39,9 @@ export const useCreateStudent = () => {
 
       // Then check for Supabase client error
       if (error) {
-        throw new Error(error.message || "Erreur lors de la création de l'étudiant");
+        // Extract the actual error message from the response context
+        const errorMessage = error.context?.error || error.message || "Erreur lors de la création de l'étudiant";
+        throw new Error(errorMessage);
       }
 
       toast({

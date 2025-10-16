@@ -2,14 +2,19 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useCreateStudent } from '@/hooks/useCreateStudent';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, CalendarIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const createStudentSchema = z.object({
   email: z.string().email("Email invalide"),
@@ -144,11 +149,37 @@ export const CreateStudentDialog = ({ open, onOpenChange, onSuccess }: CreateStu
 
               <div className="space-y-2">
                 <Label htmlFor="date_of_birth">Date de naissance</Label>
-                <Input
-                  id="date_of_birth"
-                  type="date"
-                  {...form.register('date_of_birth')}
-                />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !form.watch('date_of_birth') && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {form.watch('date_of_birth') 
+                        ? format(new Date(form.watch('date_of_birth')), 'dd MMMM yyyy', { locale: fr })
+                        : "Sélectionner une date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={form.watch('date_of_birth') ? new Date(form.watch('date_of_birth')) : undefined}
+                      onSelect={(date) => {
+                        if (date) {
+                          form.setValue('date_of_birth', format(date, 'yyyy-MM-dd'));
+                        }
+                      }}
+                      disabled={(date) => date > new Date()}
+                      initialFocus
+                      locale={fr}
+                      className="pointer-events-auto"
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
           </div>
