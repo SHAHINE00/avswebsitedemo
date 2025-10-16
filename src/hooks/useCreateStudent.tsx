@@ -32,10 +32,14 @@ export const useCreateStudent = () => {
         body: studentData
       });
 
-      if (error) throw error;
-
+      // Check for error in response data first (contains detailed message)
       if (data?.error) {
         throw new Error(data.error);
+      }
+
+      // Then check for Supabase client error
+      if (error) {
+        throw new Error(error.message || "Erreur lors de la création de l'étudiant");
       }
 
       toast({
