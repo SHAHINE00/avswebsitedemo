@@ -3,16 +3,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { DollarSign, CreditCard, Download, Plus } from 'lucide-react';
+import { CalendarIcon, Plus } from 'lucide-react';
 import { useStudentFinancials } from '@/hooks/useStudentFinancials';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
 import { InvoicePDFGenerator } from './InvoicePDFGenerator';
 import { PaymentPlanManager } from './PaymentPlanManager';
 import { BulkReceiptDownloader } from './BulkReceiptDownloader';
 import { supabase } from '@/integrations/supabase/client';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 interface StudentFinancialProfileProps {
   userId: string;
@@ -27,6 +31,7 @@ const StudentFinancialProfile: React.FC<StudentFinancialProfileProps> = ({ userI
   const [paymentData, setPaymentData] = useState({
     amount: '',
     payment_method: 'cash',
+    payment_date: new Date(),
     notes: ''
   });
 
@@ -57,12 +62,13 @@ const StudentFinancialProfile: React.FC<StudentFinancialProfileProps> = ({ userI
       user_id: userId,
       amount: parseFloat(paymentData.amount),
       payment_method: paymentData.payment_method,
+      payment_date: paymentData.payment_date,
       notes: paymentData.notes
     });
 
     if (success) {
       setShowPaymentDialog(false);
-      setPaymentData({ amount: '', payment_method: 'cash', notes: '' });
+      setPaymentData({ amount: '', payment_method: 'cash', payment_date: new Date(), notes: '' });
       fetchFinancialData();
     }
   };
@@ -172,6 +178,33 @@ const StudentFinancialProfile: React.FC<StudentFinancialProfileProps> = ({ userI
                       onChange={(e) => setPaymentData({ ...paymentData, amount: e.target.value })}
                       placeholder="0.00"
                     />
+                  </div>
+                  <div>
+                    <Label>Date de Paiement</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !paymentData.payment_date && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {paymentData.payment_date ? format(paymentData.payment_date, "dd/MM/yyyy") : <span>Sélectionner une date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={paymentData.payment_date}
+                          onSelect={(date) => setPaymentData({ ...paymentData, payment_date: date || new Date() })}
+                          disabled={(date) => date > new Date()}
+                          initialFocus
+                          className="pointer-events-auto"
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </div>
                   <div>
                     <Label>Méthode de Paiement</Label>

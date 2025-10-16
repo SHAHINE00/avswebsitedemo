@@ -120,6 +120,7 @@ export const useStudentFinancials = () => {
     course_id?: string;
     amount: number;
     payment_method: string;
+    payment_date?: Date;
     notes?: string;
   }) => {
     setLoading(true);
@@ -127,9 +128,15 @@ export const useStudentFinancials = () => {
       const { data: payment, error } = await supabase
         .from('payment_transactions')
         .insert({
-          ...paymentData,
+          user_id: paymentData.user_id,
+          course_id: paymentData.course_id,
+          amount: paymentData.amount,
+          payment_method: paymentData.payment_method,
+          notes: paymentData.notes,
           payment_status: 'completed',
-          paid_at: new Date().toISOString(),
+          paid_at: paymentData.payment_date 
+            ? paymentData.payment_date.toISOString() 
+            : new Date().toISOString(),
           transaction_ref: `TXN-${Date.now()}`
         })
         .select()
