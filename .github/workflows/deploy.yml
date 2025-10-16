@@ -54,6 +54,15 @@ jobs:
         username: ${{ secrets.VPS_USERNAME }}
         key: ${{ secrets.VPS_SSH_KEY }}
         script: |
+            # Initialize repository if it doesn't exist
+            if [ ! -d "/var/www/avswebsite" ]; then
+              echo "📁 Directory not found, initializing repository..."
+              sudo mkdir -p /var/www
+              cd /var/www
+              sudo git clone https://github.com/${{ github.repository }}.git avswebsite
+              sudo chown -R $USER:www-data avswebsite
+            fi
+            
             cd /var/www/avswebsite
             git pull origin main
             
