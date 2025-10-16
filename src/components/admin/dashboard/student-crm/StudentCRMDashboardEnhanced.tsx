@@ -191,6 +191,12 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
     if (filters.status) {
       result = result.filter(s => s.student_status === filters.status);
     }
+    if (filters.enrollmentStatus) {
+      result = result.filter(s => s.enrollment_status === filters.enrollmentStatus);
+    }
+    if (filters.formationType) {
+      result = result.filter(s => s.formation_type === filters.formationType);
+    }
     if (filters.dateFrom) {
       result = result.filter(s => new Date(s.created_at) >= new Date(filters.dateFrom!));
     }
