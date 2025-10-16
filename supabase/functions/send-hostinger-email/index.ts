@@ -13,16 +13,23 @@ const corsHeaders = {
 };
 
 // SMTP Configuration
+const smtpPort = parseInt(Deno.env.get("SMTP_PORT") || "587");
 const SMTP_CONFIG = {
-  hostname: Deno.env.get("SMTP_HOST") || "",
-  port: parseInt(Deno.env.get("SMTP_PORT") || "587"),
-  username: Deno.env.get("SMTP_USERNAME") || "",
-  password: Deno.env.get("SMTP_PASSWORD") || "",
-  tls: Deno.env.get("SMTP_SECURE") === "true",
+  connection: {
+    hostname: Deno.env.get("SMTP_HOST") || "",
+    port: smtpPort,
+    tls: smtpPort === 465, // Force TLS for port 465 (SSL)
+    auth: {
+      username: Deno.env.get("SMTP_USERNAME") || "",
+      password: Deno.env.get("SMTP_PASSWORD") || "",
+    },
+  },
 };
 
 // Check if SMTP is configured
-const SMTP_ENABLED = SMTP_CONFIG.hostname && SMTP_CONFIG.username && SMTP_CONFIG.password;
+const SMTP_ENABLED = SMTP_CONFIG.connection.hostname && 
+                     SMTP_CONFIG.connection.auth.username && 
+                     SMTP_CONFIG.connection.auth.password;
 
 // Supabase client for unsubscribe checks
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
