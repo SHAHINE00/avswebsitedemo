@@ -173,6 +173,57 @@ export type Database = {
           },
         ]
       }
+      attendance: {
+        Row: {
+          attendance_date: string
+          course_id: string
+          created_at: string | null
+          id: string
+          notes: string | null
+          professor_id: string
+          status: string
+          student_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          attendance_date: string
+          course_id: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          professor_id: string
+          status: string
+          student_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          attendance_date?: string
+          course_id?: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          professor_id?: string
+          status?: string
+          student_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_professor_id_fkey"
+            columns: ["professor_id"]
+            isOneToOne: false
+            referencedRelation: "professors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       automated_tasks: {
         Row: {
           created_at: string | null
@@ -430,6 +481,7 @@ export type Database = {
           id: string
           is_pinned: boolean
           priority: string
+          professor_id: string | null
           title: string
           updated_at: string
         }
@@ -441,6 +493,7 @@ export type Database = {
           id?: string
           is_pinned?: boolean
           priority?: string
+          professor_id?: string | null
           title: string
           updated_at?: string
         }
@@ -452,6 +505,7 @@ export type Database = {
           id?: string
           is_pinned?: boolean
           priority?: string
+          professor_id?: string | null
           title?: string
           updated_at?: string
         }
@@ -461,6 +515,13 @@ export type Database = {
             columns: ["course_id"]
             isOneToOne: false
             referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_announcements_professor_id_fkey"
+            columns: ["professor_id"]
+            isOneToOne: false
+            referencedRelation: "professors"
             referencedColumns: ["id"]
           },
         ]
@@ -911,6 +972,63 @@ export type Database = {
           variables?: Json | null
         }
         Relationships: []
+      }
+      grades: {
+        Row: {
+          assignment_name: string
+          comment: string | null
+          course_id: string
+          created_at: string | null
+          grade: number
+          graded_at: string | null
+          id: string
+          max_grade: number | null
+          professor_id: string
+          student_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          assignment_name: string
+          comment?: string | null
+          course_id: string
+          created_at?: string | null
+          grade: number
+          graded_at?: string | null
+          id?: string
+          max_grade?: number | null
+          professor_id: string
+          student_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          assignment_name?: string
+          comment?: string | null
+          course_id?: string
+          created_at?: string | null
+          grade?: number
+          graded_at?: string | null
+          id?: string
+          max_grade?: number | null
+          professor_id?: string
+          student_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grades_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "grades_professor_id_fkey"
+            columns: ["professor_id"]
+            isOneToOne: false
+            referencedRelation: "professors"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       invoices: {
         Row: {
@@ -1430,6 +1548,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      professors: {
+        Row: {
+          bio: string | null
+          created_at: string | null
+          email: string
+          full_name: string
+          id: string
+          phone: string | null
+          photo_url: string | null
+          specialization: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string | null
+          email: string
+          full_name: string
+          id?: string
+          phone?: string | null
+          photo_url?: string | null
+          specialization?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          phone?: string | null
+          photo_url?: string | null
+          specialization?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -2194,6 +2354,45 @@ export type Database = {
           value?: number
         }
         Relationships: []
+      }
+      teaching_assignments: {
+        Row: {
+          assigned_at: string | null
+          course_id: string
+          created_at: string | null
+          id: string
+          professor_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          course_id: string
+          created_at?: string | null
+          id?: string
+          professor_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          course_id?: string
+          created_at?: string | null
+          id?: string
+          professor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teaching_assignments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teaching_assignments_professor_id_fkey"
+            columns: ["professor_id"]
+            isOneToOne: false
+            referencedRelation: "professors"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       unsubscribe_tokens: {
         Row: {
