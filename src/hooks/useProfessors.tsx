@@ -46,19 +46,25 @@ export const useProfessors = () => {
   const createProfessor = async (professor: Partial<Professor>) => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.rpc('admin_create_professor', {
-        p_email: professor.email,
-        p_full_name: professor.full_name,
-        p_phone: professor.phone,
-        p_specialization: professor.specialization,
-        p_bio: professor.bio
+      const { data, error } = await supabase.functions.invoke('create-professor', {
+        body: {
+          email: professor.email,
+          full_name: professor.full_name,
+          phone: professor.phone,
+          specialization: professor.specialization,
+          bio: professor.bio
+        }
       });
 
       if (error) throw error;
 
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to create professor');
+      }
+
       toast({
         title: "Succès",
-        description: "Professeur créé avec succès",
+        description: data.message || "Professeur créé avec succès",
       });
 
       await fetchProfessors();
