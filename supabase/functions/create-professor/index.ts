@@ -59,9 +59,17 @@ Deno.serve(async (req) => {
     const requestData: CreateProfessorRequest = await req.json();
     const { email, full_name, phone, specialization, bio } = requestData;
 
+    // Basic input validation
+    if (!email || !email.includes('@')) {
+      throw new Error('Invalid email address');
+    }
+    if (!full_name || full_name.trim().length < 2) {
+      throw new Error('Full name is required');
+    }
+
     console.log('Creating professor:', { email, full_name });
 
-    // Generate a random password for the professor
+    // Generate a random password for the professor (fallback)
     const randomPassword = crypto.randomUUID();
 
     // Create the auth user
@@ -80,6 +88,20 @@ Deno.serve(async (req) => {
     }
 
     console.log('Auth user created:', authData.user.id);
+
+    // Send invitation email so the professor can set a password
+    try {
+      const { error: inviteError } = await supabaseClient.auth.admin.inviteUserByEmail(email, {
+        data: { full_name },
+        redirectTo: `${new URL(req.url).origin}/auth`
+      } as any);
+      if (inviteError) {
+        console.warn('Invitation email error (non-blocking):', inviteError);
+      }
+    } catch (e) {
+      console.warn('Failed to send invitation email (non-blocking):', e);
+    }
+
 
     // Create the professor record
     const { data: professorData, error: professorError } = await supabaseClient
@@ -116,6 +138,10 @@ Deno.serve(async (req) => {
 
     if (roleError) {
       console.error('Error assigning professor role:', roleError);
+      // Cleanup on partial failure
+      try { await supabaseClient.from('professors').delete().eq('id', professorData.id); } catch (_) {}
+      try { await supabaseClient.auth.admin.deleteUser(authData.user.id); } catch (_) {}
+      throw roleError;
     }
 
     // Log admin activity
