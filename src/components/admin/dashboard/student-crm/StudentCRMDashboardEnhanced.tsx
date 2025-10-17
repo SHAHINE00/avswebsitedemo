@@ -33,6 +33,17 @@ interface Student {
   total_paid?: number;
   enrollment_status?: string;
   tags?: Array<{ tag_name: string; tag_color: string }>;
+  date_of_birth?: string;
+  address?: string;
+  city?: string;
+  postal_code?: string;
+  country?: string;
+  academic_level?: string;
+  previous_education?: string;
+  career_goals?: string;
+  formation_domaine?: string;
+  formation_programme?: string;
+  formation_tag?: string;
 }
 
 const StudentCRMDashboardEnhanced: React.FC = () => {
@@ -95,7 +106,12 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, email, full_name, phone, created_at, student_status')
+        .select(`
+          id, email, full_name, phone, created_at, student_status,
+          date_of_birth, address, city, postal_code, country,
+          academic_level, previous_education, career_goals,
+          formation_type, formation_domaine, formation_programme, formation_tag
+        `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -120,6 +136,18 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
             phone: student.phone,
             created_at: student.created_at,
             student_status: student.student_status,
+            date_of_birth: student.date_of_birth,
+            address: student.address,
+            city: student.city,
+            postal_code: student.postal_code,
+            country: student.country,
+            academic_level: student.academic_level,
+            previous_education: student.previous_education,
+            career_goals: student.career_goals,
+            formation_type: student.formation_type,
+            formation_domaine: student.formation_domaine,
+            formation_programme: student.formation_programme,
+            formation_tag: student.formation_tag,
             tags: tagsResult.data || [],
             total_paid
           };
