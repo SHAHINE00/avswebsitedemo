@@ -2567,6 +2567,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_assign_professor_to_course: {
+        Args: { p_course_id: string; p_professor_id: string }
+        Returns: string
+      }
+      admin_create_professor: {
+        Args: {
+          p_bio?: string
+          p_email: string
+          p_full_name: string
+          p_phone?: string
+          p_specialization?: string
+        }
+        Returns: string
+      }
       admin_enroll_user_in_course: {
         Args: { p_course_id: string; p_user_id: string }
         Returns: string
@@ -2676,6 +2690,14 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
+      get_professor_dashboard_stats: {
+        Args: { p_professor_id?: string }
+        Returns: Json
+      }
+      get_professor_id: {
+        Args: { _user_id?: string }
+        Returns: string
+      }
       get_revenue_analytics: {
         Args: { p_end_date?: string; p_start_date?: string }
         Returns: Json
@@ -2742,6 +2764,10 @@ export type Database = {
         Returns: boolean
       }
       is_admin: {
+        Args: { _user_id?: string }
+        Returns: boolean
+      }
+      is_professor: {
         Args: { _user_id?: string }
         Returns: boolean
       }
