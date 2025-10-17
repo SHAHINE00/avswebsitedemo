@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Mail, Phone, Calendar, Edit, User, MapPin, GraduationCap, Target, BookOpen } from 'lucide-react';
+import { Mail, Phone, Calendar, Edit, User, MapPin, GraduationCap, Target, BookOpen, Users } from 'lucide-react';
 import { format } from 'date-fns';
+import { supabase } from '@/integrations/supabase/client';
 
 interface StudentProfile {
   id: string;
@@ -67,12 +68,30 @@ const getStatusLabel = (status?: string) => {
 };
 
 export const StudentOverview: React.FC<StudentOverviewProps> = ({ student, onEditStudent }) => {
+  const [parentInfo, setParentInfo] = useState<any>(null);
+  
   const initials = student.full_name
     ?.split(' ')
     .map(n => n[0])
     .join('')
     .toUpperCase()
     .substring(0, 2) || 'ST';
+
+  useEffect(() => {
+    const fetchParentInfo = async () => {
+      const { data } = await supabase
+        .from('student_parents')
+        .select('*')
+        .eq('student_id', student.id)
+        .maybeSingle();
+      
+      if (data) {
+        setParentInfo(data);
+      }
+    };
+
+    fetchParentInfo();
+  }, [student.id]);
 
   return (
     <div className="space-y-6">
@@ -269,6 +288,46 @@ export const StudentOverview: React.FC<StudentOverviewProps> = ({ student, onEdi
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Tag</p>
                   <Badge variant="secondary">{student.formation_tag}</Badge>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Parent/Guardian Information */}
+      {parentInfo && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Informations du parent/tuteur
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-2">
+              {parentInfo.parent_name && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Nom du parent</p>
+                  <p className="text-sm mt-1">{parentInfo.parent_name}</p>
+                </div>
+              )}
+              {parentInfo.parent_email && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Email du parent</p>
+                  <p className="text-sm mt-1">{parentInfo.parent_email}</p>
+                </div>
+              )}
+              {parentInfo.parent_phone && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Téléphone du parent</p>
+                  <p className="text-sm mt-1">{parentInfo.parent_phone}</p>
+                </div>
+              )}
+              {parentInfo.relationship && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Lien de parenté</p>
+                  <p className="text-sm mt-1">{parentInfo.relationship}</p>
                 </div>
               )}
             </div>
