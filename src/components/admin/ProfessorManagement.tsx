@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Search, Edit, Trash2, UserPlus, Copy, Check } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, UserPlus, Copy, Check, Key } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 import { useProfessors, Professor } from '@/hooks/useProfessors';
 import {
   Table,
@@ -96,6 +97,45 @@ const ProfessorManagement: React.FC = () => {
     }
   };
 
+  const handleResetPassword = async (professor: Professor) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Erreur",
+          description: "Session expirée",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const response = await supabase.functions.invoke('send-professor-reset', {
+        body: { professorId: professor.id },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (response.error) throw response.error;
+      
+      if (response.data?.resetLink) {
+        setResetLink(response.data.resetLink);
+        setIsResetLinkDialogOpen(true);
+        toast({
+          title: "Succès",
+          description: "Lien de réinitialisation généré",
+        });
+      }
+    } catch (error) {
+      console.error('Reset password error:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de générer le lien",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -163,6 +203,14 @@ const ProfessorManagement: React.FC = () => {
                             <Button
                               variant="ghost"
                               size="icon"
+                              onClick={() => handleResetPassword(professor)}
+                              title="Réinitialiser le mot de passe"
+                            >
+                              <Key className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
                               onClick={() => handleAssign(professor)}
                               title="Assigner des cours"
                             >
@@ -219,7 +267,7 @@ const ProfessorManagement: React.FC = () => {
       <Dialog open={isResetLinkDialogOpen} onOpenChange={setIsResetLinkDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Professeur créé avec succès</DialogTitle>
+            <DialogTitle>Lien de réinitialisation généré</DialogTitle>
             <DialogDescription>
               Partagez ce lien avec le professeur pour qu'il puisse définir son mot de passe.
               Ce lien expire dans 24 heures.
