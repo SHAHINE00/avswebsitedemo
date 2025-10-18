@@ -1,17 +1,47 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, BookOpen, TrendingUp, Award, ArrowRight } from 'lucide-react';
+import { Users, BookOpen, TrendingUp, Award, ArrowRight, AlertCircle } from 'lucide-react';
 import { useProfessorDashboard } from '@/hooks/useProfessorDashboard';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
 const ProfessorDashboard: React.FC = () => {
-  const { stats, courses, loading } = useProfessorDashboard();
+  const { stats, courses, loading, error, refetchAll } = useProfessorDashboard();
   const navigate = useNavigate();
 
-  if (loading || !stats) {
-    return <div>Chargement...</div>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Chargement de votre tableau de bord...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="p-6">
+        <div className="text-center space-y-4">
+          <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
+          <h3 className="text-lg font-semibold">Erreur de chargement</h3>
+          <p className="text-muted-foreground">{error}</p>
+          <Button onClick={refetchAll}>Réessayer</Button>
+        </div>
+      </Card>
+    );
+  }
+
+  if (!stats) {
+    return (
+      <Card className="p-6">
+        <div className="text-center">
+          <p className="text-muted-foreground">Aucune donnée disponible</p>
+        </div>
+      </Card>
+    );
   }
 
   return (
@@ -24,7 +54,7 @@ const ProfessorDashboard: React.FC = () => {
             <BookOpen className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.total_courses}</div>
+            <div className="text-2xl font-bold">{stats?.total_courses ?? 0}</div>
           </CardContent>
         </Card>
 
@@ -34,7 +64,7 @@ const ProfessorDashboard: React.FC = () => {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.total_students}</div>
+            <div className="text-2xl font-bold">{stats?.total_students ?? 0}</div>
           </CardContent>
         </Card>
 
@@ -44,8 +74,8 @@ const ProfessorDashboard: React.FC = () => {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.attendance_rate}%</div>
-            <Progress value={stats.attendance_rate} className="mt-2" />
+            <div className="text-2xl font-bold">{stats?.attendance_rate ?? 0}%</div>
+            <Progress value={stats?.attendance_rate ?? 0} className="mt-2" />
           </CardContent>
         </Card>
 
@@ -55,7 +85,7 @@ const ProfessorDashboard: React.FC = () => {
             <Award className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.average_grade}/100</div>
+            <div className="text-2xl font-bold">{stats?.average_grade ?? 0}/100</div>
           </CardContent>
         </Card>
       </div>

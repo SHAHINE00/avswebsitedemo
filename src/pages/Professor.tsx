@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
 
 const Professor: React.FC = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, isProfessor } = useAuth();
 
   if (loading) {
     return (
@@ -19,6 +19,10 @@ const Professor: React.FC = () => {
 
   if (!user) {
     return <Navigate to="/auth" replace />;
+  }
+
+  if (!isProfessor) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return (

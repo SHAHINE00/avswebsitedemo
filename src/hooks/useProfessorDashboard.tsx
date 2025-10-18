@@ -21,7 +21,8 @@ export interface AssignedCourse {
 export const useProfessorDashboard = () => {
   const [stats, setStats] = useState<ProfessorStats | null>(null);
   const [courses, setCourses] = useState<AssignedCourse[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
   const fetchStats = async () => {
@@ -46,16 +47,26 @@ export const useProfessorDashboard = () => {
   };
 
   const fetchCourses = async () => {
-    setLoading(true);
     try {
       // Get professor ID first
-      const { data: professor } = await supabase
+      const currentUser = (await supabase.auth.getUser()).data.user;
+      console.log('Fetching courses for user:', currentUser?.email);
+      
+      const { data: professor, error: profError } = await supabase
         .from('professors')
         .select('id')
-        .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
-        .single();
+        .eq('user_id', currentUser?.id)
+        .maybeSingle();
 
-      if (!professor) throw new Error('Professor not found');
+      console.log('Professor lookup result:', professor, 'Error:', profError);
+
+      if (profError) {
+        throw new Error(`Professor lookup failed: ${profError.message}`);
+      }
+
+      if (!professor) {
+        throw new Error('Professor record not found. Please contact admin.');
+      }
 
       // Get assigned courses
       const { data: assignments, error } = await supabase
@@ -73,6 +84,8 @@ export const useProfessorDashboard = () => {
 
       if (error) throw error;
 
+      console.log('Teaching assignments:', assignments);
+
       // Get student counts for each course
       const coursesWithCounts = await Promise.all(
         (assignments || []).map(async (assignment: any) => {
@@ -88,29 +101,44 @@ export const useProfessorDashboard = () => {
         })
       );
 
+      console.log('Courses with counts:', coursesWithCounts);
       setCourses(coursesWithCounts);
     } catch (error: any) {
       console.error('Error fetching courses:', error);
+      setError(error.message || 'Impossible de charger les cours');
       toast({
         title: "Erreur",
-        description: "Impossible de charger les cours",
+        description: error.message || "Impossible de charger les cours",
         variant: "destructive",
       });
+    }
+  };
+
+  const fetchDashboardData = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      await Promise.all([fetchStats(), fetchCourses()]);
+    } catch (err: any) {
+      console.error('Dashboard data error:', err);
+      setError('Failed to load dashboard data');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchStats();
-    fetchCourses();
+    fetchDashboardData();
   }, []);
 
   return {
     stats,
     courses,
     loading,
+    error,
     refetchStats: fetchStats,
-    refetchCourses: fetchCourses
+    refetchCourses: fetchCourses,
+    refetchAll: fetchDashboardData
   };
 };
