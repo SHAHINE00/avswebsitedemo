@@ -7,9 +7,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
 
 const Professor: React.FC = () => {
-  const { user, loading, isProfessor } = useAuth();
+  const { user, loading, isProfessor, adminLoading } = useAuth();
 
-  if (loading) {
+  if (loading || adminLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div>Chargement...</div>
@@ -21,9 +21,8 @@ const Professor: React.FC = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  if (!isProfessor) {
-    return <Navigate to="/dashboard" replace />;
-  }
+  // Note: Route is already protected by ProfessorRouteGuard. Avoid redundant redirects here.
+
 
   return (
     <>
