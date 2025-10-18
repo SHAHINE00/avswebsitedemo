@@ -6,8 +6,9 @@ import CourseCatalog from '@/components/student/CourseCatalog';
 import MyCourses from '@/components/student/MyCourses';
 import NotificationCenter from '@/components/student/NotificationCenter';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { GraduationCap, BookOpen, Bell, Calendar } from 'lucide-react';
+import { GraduationCap, BookOpen, Bell, Calendar, ClipboardCheck } from 'lucide-react';
 import { MySchedule } from '@/components/student/MySchedule';
+import { MyAttendance } from '@/components/student/MyAttendance';
 
 const Student: React.FC = () => {
   const [activeTab, setActiveTab] = useState('catalog');
@@ -24,10 +25,14 @@ const Student: React.FC = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-8">
             <TabsTrigger value="schedule" className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
               Emploi du temps
+            </TabsTrigger>
+            <TabsTrigger value="attendance" className="flex items-center gap-2">
+              <ClipboardCheck className="h-4 w-4" />
+              Présences
             </TabsTrigger>
             <TabsTrigger value="catalog" className="flex items-center gap-2">
               <BookOpen className="h-4 w-4" />
@@ -45,6 +50,10 @@ const Student: React.FC = () => {
 
           <TabsContent value="schedule">
             <MySchedule />
+          </TabsContent>
+
+          <TabsContent value="attendance">
+            <MyAttendance />
           </TabsContent>
 
           <TabsContent value="catalog">
