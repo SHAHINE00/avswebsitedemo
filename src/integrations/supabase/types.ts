@@ -14,6 +14,59 @@ export type Database = {
   }
   public: {
     Tables: {
+      absence_justifications: {
+        Row: {
+          admin_notes: string | null
+          attendance_id: string
+          created_at: string
+          document_url: string | null
+          id: string
+          justification_type: string
+          reason: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          attendance_id: string
+          created_at?: string
+          document_url?: string | null
+          id?: string
+          justification_type: string
+          reason: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          attendance_id?: string
+          created_at?: string
+          document_url?: string | null
+          id?: string
+          justification_type?: string
+          reason?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "absence_justifications_attendance_id_fkey"
+            columns: ["attendance_id"]
+            isOneToOne: false
+            referencedRelation: "attendance"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admin_activity_logs: {
         Row: {
           action: string
@@ -181,6 +234,7 @@ export type Database = {
           id: string
           notes: string | null
           professor_id: string
+          session_id: string | null
           status: string
           student_id: string
           updated_at: string | null
@@ -192,6 +246,7 @@ export type Database = {
           id?: string
           notes?: string | null
           professor_id: string
+          session_id?: string | null
           status: string
           student_id: string
           updated_at?: string | null
@@ -203,6 +258,7 @@ export type Database = {
           id?: string
           notes?: string | null
           professor_id?: string
+          session_id?: string | null
           status?: string
           student_id?: string
           updated_at?: string | null
@@ -220,6 +276,13 @@ export type Database = {
             columns: ["professor_id"]
             isOneToOne: false
             referencedRelation: "professors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "class_sessions"
             referencedColumns: ["id"]
           },
         ]
@@ -417,6 +480,139 @@ export type Database = {
           verification_code?: string
         }
         Relationships: []
+      }
+      class_schedules: {
+        Row: {
+          course_id: string
+          created_at: string
+          day_of_week: number
+          end_time: string
+          id: string
+          is_recurring: boolean
+          notes: string | null
+          professor_id: string
+          room_location: string | null
+          session_type: string
+          start_time: string
+          updated_at: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          day_of_week: number
+          end_time: string
+          id?: string
+          is_recurring?: boolean
+          notes?: string | null
+          professor_id: string
+          room_location?: string | null
+          session_type?: string
+          start_time: string
+          updated_at?: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          day_of_week?: number
+          end_time?: string
+          id?: string
+          is_recurring?: boolean
+          notes?: string | null
+          professor_id?: string
+          room_location?: string | null
+          session_type?: string
+          start_time?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "class_schedules_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "class_schedules_professor_id_fkey"
+            columns: ["professor_id"]
+            isOneToOne: false
+            referencedRelation: "professors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      class_sessions: {
+        Row: {
+          attendance_marked: boolean
+          course_id: string
+          created_at: string
+          end_time: string
+          id: string
+          notes: string | null
+          professor_id: string
+          room_location: string | null
+          schedule_id: string | null
+          session_date: string
+          session_type: string
+          start_time: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          attendance_marked?: boolean
+          course_id: string
+          created_at?: string
+          end_time: string
+          id?: string
+          notes?: string | null
+          professor_id: string
+          room_location?: string | null
+          schedule_id?: string | null
+          session_date: string
+          session_type?: string
+          start_time: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          attendance_marked?: boolean
+          course_id?: string
+          created_at?: string
+          end_time?: string
+          id?: string
+          notes?: string | null
+          professor_id?: string
+          room_location?: string | null
+          schedule_id?: string | null
+          session_date?: string
+          session_type?: string
+          start_time?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "class_sessions_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "class_sessions_professor_id_fkey"
+            columns: ["professor_id"]
+            isOneToOne: false
+            referencedRelation: "professors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "class_sessions_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: false
+            referencedRelation: "class_schedules"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       communication_log: {
         Row: {
@@ -2696,6 +2892,17 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      generate_sessions_from_schedule: {
+        Args: {
+          p_end_date: string
+          p_schedule_id: string
+          p_start_date: string
+        }
+        Returns: {
+          session_date: string
+          session_id: string
+        }[]
+      }
       get_advanced_analytics: {
         Args: {
           p_end_date?: string
@@ -2838,6 +3045,21 @@ export type Database = {
           event_type: string
           metadata: Json
           title: string
+        }[]
+      }
+      get_student_upcoming_sessions: {
+        Args: { p_days_ahead?: number; p_student_id?: string }
+        Returns: {
+          course_id: string
+          course_title: string
+          end_time: string
+          professor_name: string
+          room_location: string
+          session_date: string
+          session_id: string
+          session_type: string
+          start_time: string
+          status: string
         }[]
       }
       get_study_statistics: {

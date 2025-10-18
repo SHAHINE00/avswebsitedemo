@@ -15,6 +15,9 @@ import GradesTab from '@/components/professor/course/GradesTab';
 import AnnouncementsTab from '@/components/professor/course/AnnouncementsTab';
 import MaterialsTab from '@/components/professor/course/MaterialsTab';
 import ProfessorAnalytics from '@/components/professor/analytics/ProfessorAnalytics';
+import { ClassScheduleManager } from '@/components/professor/ClassScheduleManager';
+import { TodaysSessions } from '@/components/professor/TodaysSessions';
+import { AbsenceApprovalList } from '@/components/professor/AbsenceApprovalList';
 
 const ProfessorCourse: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
@@ -87,7 +90,8 @@ const ProfessorCourse: React.FC = () => {
           </div>
 
           <Tabs defaultValue="students" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-6">
+            <TabsList className="grid w-full grid-cols-7">
+              <TabsTrigger value="schedule">Emploi du temps</TabsTrigger>
               <TabsTrigger value="students">Étudiants</TabsTrigger>
               <TabsTrigger value="attendance">Présences</TabsTrigger>
               <TabsTrigger value="grades">Notes</TabsTrigger>
@@ -95,6 +99,16 @@ const ProfessorCourse: React.FC = () => {
               <TabsTrigger value="materials">Documents</TabsTrigger>
               <TabsTrigger value="analytics">Statistiques</TabsTrigger>
             </TabsList>
+
+            <TabsContent value="schedule">
+              <ClassScheduleManager courseId={courseId} professorId={user?.id || ''} />
+              <div className="mt-6">
+                <TodaysSessions courseId={courseId} />
+              </div>
+              <div className="mt-6">
+                <AbsenceApprovalList />
+              </div>
+            </TabsContent>
 
             <TabsContent value="students">
               <StudentListTab courseId={courseId} />
