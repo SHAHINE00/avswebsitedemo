@@ -1,11 +1,14 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, BookOpen, TrendingUp, Award } from 'lucide-react';
+import { Users, BookOpen, TrendingUp, Award, ArrowRight } from 'lucide-react';
 import { useProfessorDashboard } from '@/hooks/useProfessorDashboard';
 import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 const ProfessorDashboard: React.FC = () => {
   const { stats, courses, loading } = useProfessorDashboard();
+  const navigate = useNavigate();
 
   if (loading || !stats) {
     return <div>Chargement...</div>;
@@ -84,7 +87,13 @@ const ProfessorDashboard: React.FC = () => {
                     </p>
                   </div>
                   <div className="flex gap-2">
-                    {/* Action buttons can be added here */}
+                    <Button
+                      onClick={() => navigate(`/professor/course/${course.id}`)}
+                      variant="default"
+                    >
+                      Gérer le cours
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               ))

@@ -61,6 +61,7 @@ const Admin = React.lazy(() => import("./pages/Admin"));
 
 // Professor pages
 const Professor = React.lazy(() => import("./pages/Professor"));
+const ProfessorCourse = React.lazy(() => import("./pages/ProfessorCourse"));
 
 // Optimized lazy wrapper component
 const LazyWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -157,6 +158,7 @@ const App = () => {
                       
                       {/* Professor routes - protected and lazy loaded */}
                       <Route path="/professor" element={<ProfessorRouteGuard><LazyWrapper><Professor /></LazyWrapper></ProfessorRouteGuard>} />
+                      <Route path="/professor/course/:courseId" element={<ProfessorRouteGuard><LazyWrapper><ProfessorCourse /></LazyWrapper></ProfessorRouteGuard>} />
                     </Routes>
                     
                       <Toaster />
