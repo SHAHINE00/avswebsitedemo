@@ -53,7 +53,12 @@ export const ClassScheduleManager: React.FC<ClassScheduleManagerProps> = ({ cour
     const success = await createSchedule({
       course_id: courseId,
       professor_id: professorId,
-      ...formData,
+      day_of_week: formData.day_of_week,
+      start_time: formData.start_time,
+      end_time: formData.end_time,
+      room_location: formData.room_location || null,
+      session_type: formData.session_type,
+      notes: formData.notes || null,
       is_recurring: true
     });
     if (success) {
