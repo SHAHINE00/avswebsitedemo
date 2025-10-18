@@ -119,11 +119,11 @@ const StudentListTab: React.FC<StudentListTabProps> = ({ courseId }) => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">Nom complet</p>
-                    <p className="font-medium">{selectedStudent.profile.full_name || selectedStudent.profile.email}</p>
+                    <p className="font-medium">{selectedStudent.profile?.full_name || selectedStudent.profile?.email || 'Profil indisponible'}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Email</p>
-                    <p className="font-medium">{selectedStudent.profile.email}</p>
+                    <p className="font-medium">{selectedStudent.profile?.email || '—'}</p>
                   </div>
                 </div>
               </div>
