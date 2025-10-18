@@ -64,17 +64,47 @@ export const useProfessorDashboard = () => {
       }
     } catch (error: any) {
       console.error('Error fetching stats:', error);
-      setProfessorRecordExists(false);
-      setError(error.message || 'Impossible de charger les statistiques');
-      toast({
-        title: "Erreur",
-        description: error.message?.includes('Professor record not found')
-          ? "Votre profil professeur n'a pas été configuré"
-          : (error.message?.includes('Could not choose the best candidate function')
-            ? "Conflit de fonctions détecté, merci de réessayer"
-            : 'Impossible de charger les statistiques'),
-        variant: "destructive",
-      });
+      const msg: string = error?.message || '';
+
+      if (msg.includes('Professor record not found')) {
+        setProfessorRecordExists(false);
+        // Provide safe default stats so the page still renders
+        setStats({
+          total_courses: 0,
+          total_students: 0,
+          attendance_rate: 0,
+          average_grade: 0,
+          recent_announcements: 0,
+        });
+        setError("Votre profil professeur n'a pas été configuré");
+        toast({
+          title: 'Erreur',
+          description: "Votre profil professeur n'a pas été configuré",
+          variant: 'destructive',
+        });
+      } else if (msg.toLowerCase().includes('access denied')) {
+        // Stats function not accessible to professor (likely admin-only version)
+        // Do not block the page: show zeroed stats silently
+        setProfessorRecordExists(true);
+        setStats({
+          total_courses: 0,
+          total_students: 0,
+          attendance_rate: 0,
+          average_grade: 0,
+          recent_announcements: 0,
+        });
+        setError(null);
+      } else {
+        setProfessorRecordExists(true);
+        setError('Impossible de charger les statistiques');
+        toast({
+          title: 'Erreur',
+          description: msg?.includes('Could not choose the best candidate function')
+            ? 'Conflit de fonctions détecté, merci de réessayer'
+            : 'Impossible de charger les statistiques',
+          variant: 'destructive',
+        });
+      }
     } finally {
       setLoading(false);
     }
