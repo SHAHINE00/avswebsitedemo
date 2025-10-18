@@ -64,7 +64,7 @@ export const useProfessorStudents = (courseId: string) => {
         .from('profiles')
         .select('*')
         .eq('id', studentId)
-        .single();
+        .maybeSingle();
 
       if (profileError) throw profileError;
 
@@ -74,7 +74,7 @@ export const useProfessorStudents = (courseId: string) => {
         .select('*')
         .eq('user_id', studentId)
         .eq('course_id', courseId)
-        .single();
+        .maybeSingle();
 
       if (enrollmentError) throw enrollmentError;
 
