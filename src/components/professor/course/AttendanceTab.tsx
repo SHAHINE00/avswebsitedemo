@@ -34,6 +34,30 @@ const AttendanceTab: React.FC<AttendanceTabProps> = ({ courseId, sessionId }) =>
     }
   }, [courseId, sessionId]);
 
+  // Fetch attendance when date changes
+  useEffect(() => {
+    const dateStr = format(date, 'yyyy-MM-dd');
+    fetchAttendance(dateStr, dateStr);
+  }, [date]);
+
+  // Pre-populate selected students from existing attendance records
+  useEffect(() => {
+    const dateStr = format(date, 'yyyy-MM-dd');
+    const todaysAttendance = attendance.filter(
+      record => record.attendance_date === dateStr
+    );
+    
+    if (todaysAttendance.length > 0) {
+      const preselected: Record<string, string> = {};
+      todaysAttendance.forEach(record => {
+        preselected[record.student_id] = record.status;
+      });
+      setSelectedStudents(preselected);
+    } else {
+      setSelectedStudents({});
+    }
+  }, [attendance, date]);
+
   const fetchSessionDetails = async () => {
     if (!sessionId) return;
     try {
@@ -98,7 +122,7 @@ const AttendanceTab: React.FC<AttendanceTabProps> = ({ courseId, sessionId }) =>
               </div>
             </div>
           )}
-          <div className="flex items-center gap-4 mt-4">
+          <div className="flex items-center gap-4 mt-4 justify-between">
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" disabled={!!sessionId}>
@@ -116,6 +140,12 @@ const AttendanceTab: React.FC<AttendanceTabProps> = ({ courseId, sessionId }) =>
                 />
               </PopoverContent>
             </Popover>
+            {Object.keys(selectedStudents).length > 0 && (
+              <div className="text-sm text-muted-foreground">
+                {Object.values(selectedStudents).filter(s => s === 'present').length} présents, 
+                {' '}{Object.values(selectedStudents).filter(s => s === 'absent').length} absents
+              </div>
+            )}
           </div>
         </CardHeader>
         <CardContent>
