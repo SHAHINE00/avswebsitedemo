@@ -18,7 +18,7 @@ import {
 const NavbarCore = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useSafeState(false);
   const location = useSafeLocation();
-  const { user, isAdmin, signOut } = useSafeAuth();
+  const { user, isAdmin, isProfessor = false, signOut } = useSafeAuth();
 
   const navigation = [
     { name: 'Accueil', href: '/' },
@@ -88,7 +88,7 @@ const NavbarCore = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" sideOffset={8} className="w-56">
                     <DropdownMenuItem asChild>
-                      <Link to={isAdmin ? "/admin" : "/dashboard"} className="flex items-center gap-2">
+                      <Link to={isAdmin ? "/admin" : isProfessor ? "/professor" : "/dashboard"} className="flex items-center gap-2">
                         <Settings className="w-4 h-4" />
                         {isAdmin ? "Admin Dashboard" : "Tableau de bord"}
                       </Link>
@@ -164,7 +164,7 @@ const NavbarCore = () => {
               {user ? (
                 <>
                   <Link
-                    to={isAdmin ? "/admin" : "/dashboard"}
+                    to={isAdmin ? "/admin" : isProfessor ? "/professor" : "/dashboard"}
                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-academy-blue hover:bg-gray-50"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
