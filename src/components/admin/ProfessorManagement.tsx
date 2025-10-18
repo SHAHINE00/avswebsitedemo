@@ -105,7 +105,8 @@ const ProfessorManagement: React.FC = () => {
   const handleResetPassword = async (professor: Professor) => {
     const generateLink = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('send-professor-reset', {
+        // Use the new setup-professor-auth function
+        const { data, error } = await supabase.functions.invoke('setup-professor-auth', {
           body: { professorId: professor.id }
         });
 
@@ -114,17 +115,17 @@ const ProfessorManagement: React.FC = () => {
         if (data?.resetLink) {
           toast({
             title: "Succès",
-            description: "Lien de réinitialisation généré avec succès",
+            description: data.message || "Lien de réinitialisation généré avec succès",
           });
           return data.resetLink;
         }
         
         throw new Error("Aucun lien généré");
       } catch (error: any) {
-        console.error('Error generating reset link:', error);
+        console.error('Error setting up auth:', error);
         toast({
           title: "Erreur",
-          description: error.message || "Impossible de générer le lien de réinitialisation",
+          description: error.message || "Impossible de configurer l'authentification",
           variant: "destructive",
         });
         return null;

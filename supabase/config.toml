@@ -53,3 +53,6 @@ verify_jwt = true
 
 [functions.send-professor-reset]
 verify_jwt = true
+
+[functions.setup-professor-auth]
+verify_jwt = true
