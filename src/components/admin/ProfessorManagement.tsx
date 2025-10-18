@@ -143,6 +143,11 @@ const ProfessorManagement: React.FC = () => {
 
         if (error) throw error;
 
+        // Handle soft-fail responses from the function (e.g., weak password)
+        if (data && data.success === false) {
+          throw new Error(data.error || 'Mot de passe refusé. Utilisez un mot de passe plus fort (12+ caractères, chiffres et symboles).');
+        }
+
         if (data?.success) {
           toast({
             title: "Succès",
@@ -156,7 +161,7 @@ const ProfessorManagement: React.FC = () => {
         console.error('Error setting password:', error);
         toast({
           title: "Erreur",
-          description: error.message || "Impossible de définir le mot de passe",
+          description: error?.message || "Impossible de définir le mot de passe. Essayez un mot de passe plus fort (12+ caractères, chiffres et symboles).",
           variant: "destructive",
         });
         return false;

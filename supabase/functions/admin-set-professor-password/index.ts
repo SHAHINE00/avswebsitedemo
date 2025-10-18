@@ -113,8 +113,24 @@ Deno.serve(async (req) => {
         status: 200,
       }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in admin-set-professor-password function:', error);
+
+    // Gracefully handle weak passwords with a 200 response so the client can show a friendly message
+    if (error?.code === 'weak_password' || error?.name?.toLowerCase?.().includes('weakpassword')) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          code: 'weak_password',
+          error: 'Mot de passe trop faible ou compromis. Veuillez choisir un mot de passe plus fort (12+ caractères, chiffres, majuscules, minuscules et symboles).',
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      );
+    }
+
     return new Response(
       JSON.stringify({
         success: false,
