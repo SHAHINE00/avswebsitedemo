@@ -79,22 +79,10 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
 
   const getPasswordStrength = (password: string): { strength: string; color: string; isStrong: boolean } => {
     if (password.length === 0) return { strength: '', color: '', isStrong: false };
-    if (password.length < 12) return { strength: 'Trop court (min 12)', color: 'text-red-600', isStrong: false };
+    if (password.length < 8) return { strength: 'Trop court (min 8)', color: 'text-red-600', isStrong: false };
     
-    let score = 0;
-    if (password.length >= 16) score++;
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
-    if (/\d/.test(password)) score++;
-    if (/[^a-zA-Z\d]/.test(password)) score++;
-    
-    // Avoid common patterns
-    const hasCommonPatterns = /12345|abcde|qwerty|password|admin/i.test(password);
-    if (hasCommonPatterns) return { strength: 'Trop prévisible', color: 'text-red-600', isStrong: false };
-    
-    if (score <= 1) return { strength: 'Faible', color: 'text-orange-600', isStrong: false };
-    if (score <= 2) return { strength: 'Moyen', color: 'text-yellow-600', isStrong: false };
-    if (score === 3) return { strength: 'Bon', color: 'text-blue-600', isStrong: true };
-    return { strength: 'Excellent', color: 'text-green-600', isStrong: true };
+    // Simplified: just need 8+ characters
+    return { strength: 'Bon', color: 'text-green-600', isStrong: true };
   };
 
   const passwordStrength = getPasswordStrength(newPassword);
@@ -197,7 +185,7 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
                     type={showPassword ? 'text' : 'password'}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Minimum 12 caractères"
+                    placeholder="Minimum 8 caractères"
                     className="pr-10"
                   />
                   <button
@@ -215,24 +203,12 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
                   </div>
                 )}
 
-                <Alert variant={passwordStrength.isStrong ? "default" : "destructive"} className="text-xs">
+                <Alert className="text-xs">
                   <AlertDescription>
-                    <strong>Exigences :</strong>
-                    <ul className="list-disc list-inside space-y-1 mt-2">
-                      <li className={newPassword.length >= 12 ? 'text-green-600 font-semibold' : ''}>
-                        Au moins 12 caractères
-                      </li>
-                      <li className={/[A-Z]/.test(newPassword) && /[a-z]/.test(newPassword) ? 'text-green-600 font-semibold' : ''}>
-                        Majuscules ET minuscules
-                      </li>
-                      <li className={/\d/.test(newPassword) ? 'text-green-600 font-semibold' : ''}>
-                        Au moins un chiffre
-                      </li>
-                      <li className={/[^a-zA-Z\d]/.test(newPassword) ? 'text-green-600 font-semibold' : ''}>
-                        Au moins un symbole (!@#$%&*)
-                      </li>
-                      <li className={!/12345|abcde|qwerty|password|admin/i.test(newPassword) || !newPassword ? '' : 'text-red-600 font-semibold'}>
-                        Éviter les séquences prévisibles (12345, abcde, password, etc.)
+                    <strong>Exigence :</strong>
+                    <ul className="list-disc list-inside mt-2">
+                      <li className={newPassword.length >= 8 ? 'text-green-600 font-semibold' : ''}>
+                        Au moins 8 caractères
                       </li>
                     </ul>
                   </AlertDescription>
