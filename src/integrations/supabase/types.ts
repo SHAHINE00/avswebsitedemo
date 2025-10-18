@@ -2567,6 +2567,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_course_material: {
+        Args: {
+          p_course_id: string
+          p_description?: string
+          p_file_size?: number
+          p_file_type: string
+          p_file_url: string
+          p_is_public?: boolean
+          p_lesson_id?: string
+          p_title: string
+        }
+        Returns: string
+      }
       admin_assign_professor_to_course: {
         Args: { p_course_id: string; p_professor_id: string }
         Returns: string
@@ -2625,6 +2638,16 @@ export type Database = {
         }
         Returns: string
       }
+      create_course_announcement: {
+        Args: {
+          p_content: string
+          p_course_id: string
+          p_is_pinned?: boolean
+          p_priority?: string
+          p_title: string
+        }
+        Returns: string
+      }
       create_notification: {
         Args: {
           p_action_url?: string
@@ -2634,6 +2657,18 @@ export type Database = {
           p_user_id: string
         }
         Returns: string
+      }
+      delete_course_announcement: {
+        Args: { p_announcement_id: string }
+        Returns: undefined
+      }
+      delete_course_material: {
+        Args: { p_material_id: string }
+        Returns: undefined
+      }
+      delete_grade_record: {
+        Args: { p_grade_id: string }
+        Returns: undefined
       }
       demote_user_to_user: {
         Args: { p_target_user_id: string }
@@ -2686,12 +2721,80 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_attendance_statistics: {
+        Args: { p_course_id: string }
+        Returns: Json
+      }
+      get_course_attendance: {
+        Args: {
+          p_course_id: string
+          p_end_date?: string
+          p_start_date?: string
+        }
+        Returns: {
+          attendance_date: string
+          attendance_id: string
+          created_at: string
+          notes: string
+          status: string
+          student_id: string
+          student_name: string
+        }[]
+      }
+      get_course_gradebook: {
+        Args: { p_course_id: string }
+        Returns: {
+          assignment_name: string
+          comment: string
+          grade: number
+          grade_id: string
+          graded_at: string
+          max_grade: number
+          percentage: number
+          student_id: string
+          student_name: string
+        }[]
+      }
+      get_course_students: {
+        Args: { p_course_id: string }
+        Returns: {
+          absent_count: number
+          average_grade: number
+          email: string
+          enrolled_at: string
+          full_name: string
+          present_count: number
+          progress_percentage: number
+          status: string
+          student_id: string
+          total_attendance: number
+        }[]
+      }
       get_dashboard_metrics: {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
+      get_grade_statistics: {
+        Args: { p_course_id: string }
+        Returns: Json
+      }
+      get_professor_course_materials: {
+        Args: { p_course_id: string }
+        Returns: {
+          created_at: string
+          description: string
+          download_count: number
+          file_size: number
+          file_type: string
+          file_url: string
+          is_public: boolean
+          lesson_id: string
+          material_id: string
+          title: string
+        }[]
+      }
       get_professor_dashboard_stats: {
-        Args: { p_professor_id?: string }
+        Args: Record<PropertyKey, never> | { p_professor_id?: string }
         Returns: Json
       }
       get_professor_id: {
@@ -2704,6 +2807,10 @@ export type Database = {
       }
       get_student_analytics: {
         Args: { p_end_date?: string; p_start_date?: string }
+        Returns: Json
+      }
+      get_student_detail: {
+        Args: { p_course_id: string; p_student_id: string }
         Returns: Json
       }
       get_student_engagement_score: {
@@ -2780,6 +2887,16 @@ export type Database = {
         }
         Returns: undefined
       }
+      mark_attendance_bulk: {
+        Args: {
+          p_attendance_date: string
+          p_course_id: string
+          p_notes?: string
+          p_status: string
+          p_student_ids: string[]
+        }
+        Returns: Json
+      }
       mark_notification_read: {
         Args: { p_notification_id: string }
         Returns: undefined
@@ -2843,9 +2960,34 @@ export type Database = {
         Args: { appointment_id: string; new_status: string }
         Returns: undefined
       }
+      update_attendance_record: {
+        Args: { p_attendance_id: string; p_notes?: string; p_status: string }
+        Returns: undefined
+      }
+      update_course_announcement: {
+        Args: {
+          p_announcement_id: string
+          p_content?: string
+          p_is_pinned?: boolean
+          p_priority?: string
+          p_title?: string
+        }
+        Returns: undefined
+      }
       update_study_goal: {
         Args: { p_goal_id: string; p_target_value: number }
         Returns: undefined
+      }
+      upsert_grade: {
+        Args: {
+          p_assignment_name: string
+          p_comment?: string
+          p_course_id: string
+          p_grade: number
+          p_max_grade?: number
+          p_student_id: string
+        }
+        Returns: string
       }
       validate_comprehensive_security: {
         Args: Record<PropertyKey, never>
