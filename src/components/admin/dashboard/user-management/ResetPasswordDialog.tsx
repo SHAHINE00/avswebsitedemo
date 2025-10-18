@@ -77,22 +77,37 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
     onOpenChange(false);
   };
 
-  const getPasswordStrength = (password: string): { strength: string; color: string } => {
-    if (password.length === 0) return { strength: '', color: '' };
-    if (password.length < 8) return { strength: 'Faible', color: 'text-red-600' };
+  const getPasswordStrength = (password: string): { strength: string; color: string; isStrong: boolean } => {
+    if (password.length === 0) return { strength: '', color: '', isStrong: false };
+    if (password.length < 12) return { strength: 'Trop court (min 12)', color: 'text-red-600', isStrong: false };
     
     let score = 0;
-    if (password.length >= 12) score++;
+    if (password.length >= 16) score++;
     if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
     if (/\d/.test(password)) score++;
     if (/[^a-zA-Z\d]/.test(password)) score++;
     
-    if (score <= 1) return { strength: 'Moyen', color: 'text-orange-600' };
-    if (score <= 2) return { strength: 'Bon', color: 'text-blue-600' };
-    return { strength: 'Excellent', color: 'text-green-600' };
+    // Avoid common patterns
+    const hasCommonPatterns = /12345|abcde|qwerty|password|admin/i.test(password);
+    if (hasCommonPatterns) return { strength: 'Trop prévisible', color: 'text-red-600', isStrong: false };
+    
+    if (score <= 1) return { strength: 'Faible', color: 'text-orange-600', isStrong: false };
+    if (score <= 2) return { strength: 'Moyen', color: 'text-yellow-600', isStrong: false };
+    if (score === 3) return { strength: 'Bon', color: 'text-blue-600', isStrong: true };
+    return { strength: 'Excellent', color: 'text-green-600', isStrong: true };
   };
 
   const passwordStrength = getPasswordStrength(newPassword);
+  
+  // Generate a strong password suggestion
+  const generateStrongPassword = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%&*';
+    let password = '';
+    for (let i = 0; i < 16; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setNewPassword(password);
+  };
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -163,15 +178,26 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
                 </AlertDescription>
               </Alert>
 
-              <div className="space-y-2">
-                <Label htmlFor="new-password">Nouveau mot de passe</Label>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="new-password">Nouveau mot de passe</Label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={generateStrongPassword}
+                    className="text-xs"
+                  >
+                    Générer un mot de passe fort
+                  </Button>
+                </div>
                 <div className="relative">
                   <Input
                     id="new-password"
                     type={showPassword ? 'text' : 'password'}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Minimum 8 caractères"
+                    placeholder="Minimum 12 caractères"
                     className="pr-10"
                   />
                   <button
@@ -189,28 +215,29 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
                   </div>
                 )}
 
-                <div className="text-xs text-muted-foreground space-y-1">
-                  <p>Le mot de passe doit contenir:</p>
-                  <ul className="list-disc list-inside space-y-1">
-                    <li className={newPassword.length >= 8 ? 'text-green-600' : ''}>
-                      Au moins 8 caractères
-                    </li>
-                    <li className={/[A-Z]/.test(newPassword) && /[a-z]/.test(newPassword) ? 'text-green-600' : ''}>
-                      Majuscules et minuscules (recommandé)
-                    </li>
-                    <li className={/\d/.test(newPassword) ? 'text-green-600' : ''}>
-                      Au moins un chiffre (recommandé)
-                    </li>
-                  </ul>
-                </div>
+                <Alert variant={passwordStrength.isStrong ? "default" : "destructive"} className="text-xs">
+                  <AlertDescription>
+                    <strong>Exigences :</strong>
+                    <ul className="list-disc list-inside space-y-1 mt-2">
+                      <li className={newPassword.length >= 12 ? 'text-green-600 font-semibold' : ''}>
+                        Au moins 12 caractères
+                      </li>
+                      <li className={/[A-Z]/.test(newPassword) && /[a-z]/.test(newPassword) ? 'text-green-600 font-semibold' : ''}>
+                        Majuscules ET minuscules
+                      </li>
+                      <li className={/\d/.test(newPassword) ? 'text-green-600 font-semibold' : ''}>
+                        Au moins un chiffre
+                      </li>
+                      <li className={/[^a-zA-Z\d]/.test(newPassword) ? 'text-green-600 font-semibold' : ''}>
+                        Au moins un symbole (!@#$%&*)
+                      </li>
+                      <li className={!/12345|abcde|qwerty|password|admin/i.test(newPassword) || !newPassword ? '' : 'text-red-600 font-semibold'}>
+                        Éviter les séquences prévisibles (12345, abcde, password, etc.)
+                      </li>
+                    </ul>
+                  </AlertDescription>
+                </Alert>
               </div>
-
-              <Alert variant="destructive">
-                <AlertDescription className="text-sm">
-                  <strong>Important :</strong> Assurez-vous de partager ce mot de passe de manière sécurisée avec l'utilisateur.
-                  Recommandez-lui de le changer lors de sa première connexion.
-                </AlertDescription>
-              </Alert>
             </div>
           )}
 
@@ -288,7 +315,7 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
               </Button>
               <Button 
                 onClick={handleSetPassword} 
-                disabled={settingPassword || newPassword.length < 8}
+                disabled={settingPassword || !passwordStrength.isStrong}
               >
                 {settingPassword ? (
                   <>
