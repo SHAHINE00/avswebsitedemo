@@ -7,6 +7,8 @@ import { Toaster } from "@/components/ui/toaster";
 import AdminRouteGuard from "@/components/admin/AdminRouteGuard";
 import ProfessorRouteGuard from "@/components/professor/ProfessorRouteGuard";
 import StudentRouteGuard from "@/components/student/StudentRouteGuard";
+import { RoleRouter } from "@/components/auth/RoleRouter";
+import { DebugRoleBanner } from "@/components/debug/DebugRoleBanner";
 import { GlobalErrorBoundary } from "@/components/ui/global-error-boundary";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import { usePageTracking, useScrollTracking } from "@/hooks/useAnalytics";
@@ -129,9 +131,9 @@ const App = () => {
                       <Route path="*" element={<NotFound />} />
                       
                       {/* Secondary routes - lazy loaded */}
-                      <Route path="/auth" element={<LazyWrapper><Auth /></LazyWrapper>} />
+                      <Route path="/auth" element={<RoleRouter><LazyWrapper><Auth /></LazyWrapper></RoleRouter>} />
                       <Route path="/reset-password" element={<LazyWrapper><ResetPassword /></LazyWrapper>} />
-                      <Route path="/dashboard" element={<LazyWrapper><Dashboard /></LazyWrapper>} />
+                      <Route path="/dashboard" element={<StudentRouteGuard><LazyWrapper><Dashboard /></LazyWrapper></StudentRouteGuard>} />
                       <Route path="/curriculum" element={<LazyWrapper><Curriculum /></LazyWrapper>} />
                       <Route path="/ai-course" element={<LazyWrapper><AICourse /></LazyWrapper>} />
                       <Route path="/programming-course" element={<LazyWrapper><ProgrammingCourse /></LazyWrapper>} />
@@ -169,6 +171,7 @@ const App = () => {
                     </Routes>
                     
                       <Toaster />
+                      <DebugRoleBanner />
                     </AuthProvider>
                   </SecurityEnhancedWrapper>
                 </ReactSafetyWrapper>
