@@ -52,7 +52,7 @@ export const useProfessorAnnouncements = (courseId: string) => {
     isPinned: boolean = false
   ) => {
     try {
-      const { error } = await supabase.rpc('create_course_announcement', {
+      const { data, error } = await supabase.rpc('create_course_announcement', {
         p_course_id: courseId,
         p_title: title,
         p_content: content,
@@ -62,9 +62,22 @@ export const useProfessorAnnouncements = (courseId: string) => {
 
       if (error) throw error;
 
+      // Trigger email notification to students
+      const announcementId = data;
+      if (announcementId) {
+        supabase.functions.invoke('send-announcement-email', {
+          body: {
+            announcementId,
+            courseId,
+            title,
+            content
+          }
+        }).catch(err => console.error('Email sending failed:', err));
+      }
+
       toast({
         title: "Succès",
-        description: "Annonce créée",
+        description: "Annonce créée et notifications envoyées",
       });
 
       await fetchAnnouncements();

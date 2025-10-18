@@ -14,6 +14,7 @@ import AttendanceTab from '@/components/professor/course/AttendanceTab';
 import GradesTab from '@/components/professor/course/GradesTab';
 import AnnouncementsTab from '@/components/professor/course/AnnouncementsTab';
 import MaterialsTab from '@/components/professor/course/MaterialsTab';
+import ProfessorAnalytics from '@/components/professor/analytics/ProfessorAnalytics';
 
 const ProfessorCourse: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
@@ -86,12 +87,13 @@ const ProfessorCourse: React.FC = () => {
           </div>
 
           <Tabs defaultValue="students" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="students">Étudiants</TabsTrigger>
               <TabsTrigger value="attendance">Présences</TabsTrigger>
               <TabsTrigger value="grades">Notes</TabsTrigger>
               <TabsTrigger value="announcements">Annonces</TabsTrigger>
               <TabsTrigger value="materials">Documents</TabsTrigger>
+              <TabsTrigger value="analytics">Statistiques</TabsTrigger>
             </TabsList>
 
             <TabsContent value="students">
@@ -112,6 +114,10 @@ const ProfessorCourse: React.FC = () => {
 
             <TabsContent value="materials">
               <MaterialsTab courseId={courseId} />
+            </TabsContent>
+
+            <TabsContent value="analytics">
+              <ProfessorAnalytics courseId={courseId} />
             </TabsContent>
           </Tabs>
         </main>
