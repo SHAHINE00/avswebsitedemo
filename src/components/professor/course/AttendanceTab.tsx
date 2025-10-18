@@ -37,8 +37,10 @@ const AttendanceTab: React.FC<AttendanceTabProps> = ({ courseId, sessionId }) =>
   // Fetch attendance when date changes
   useEffect(() => {
     const dateStr = format(date, 'yyyy-MM-dd');
+    console.log('📆 Date changed to:', dateStr);
+    setSelectedStudents({});
     fetchAttendance(dateStr, dateStr);
-  }, [date]);
+  }, [date, fetchAttendance]);
 
   // Pre-populate selected students from existing attendance records
   useEffect(() => {
@@ -47,14 +49,15 @@ const AttendanceTab: React.FC<AttendanceTabProps> = ({ courseId, sessionId }) =>
       record => record.attendance_date === dateStr
     );
     
+    console.log('👥 Pre-populating attendance for', dateStr, ':', todaysAttendance.length, 'records');
+    
     if (todaysAttendance.length > 0) {
       const preselected: Record<string, string> = {};
       todaysAttendance.forEach(record => {
         preselected[record.student_id] = record.status;
       });
+      console.log('✅ Pre-selected students:', preselected);
       setSelectedStudents(preselected);
-    } else {
-      setSelectedStudents({});
     }
   }, [attendance, date]);
 
@@ -149,7 +152,9 @@ const AttendanceTab: React.FC<AttendanceTabProps> = ({ courseId, sessionId }) =>
           </div>
         </CardHeader>
         <CardContent>
-          {students.length === 0 ? (
+          {loading ? (
+            <div className="text-center text-muted-foreground py-8">Chargement...</div>
+          ) : students.length === 0 ? (
             <p className="text-center text-muted-foreground py-8">Aucun étudiant inscrit</p>
           ) : (
             <>

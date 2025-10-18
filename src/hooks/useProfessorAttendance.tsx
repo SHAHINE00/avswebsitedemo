@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -18,9 +18,10 @@ export const useProfessorAttendance = (courseId: string) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const fetchAttendance = async (startDate?: string, endDate?: string) => {
+  const fetchAttendance = useCallback(async (startDate?: string, endDate?: string) => {
     if (!courseId) return;
     
+    console.log('📅 Fetching attendance for date:', startDate, endDate);
     setLoading(true);
     try {
       const { data, error } = await supabase.rpc('get_course_attendance', {
@@ -30,6 +31,7 @@ export const useProfessorAttendance = (courseId: string) => {
       });
 
       if (error) throw error;
+      console.log('✅ Fetched attendance records:', data?.length || 0);
       setAttendance(data || []);
     } catch (error: any) {
       console.error('Error fetching attendance:', error);
@@ -41,9 +43,9 @@ export const useProfessorAttendance = (courseId: string) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [courseId, toast]);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     if (!courseId) return;
     
     try {
@@ -56,9 +58,9 @@ export const useProfessorAttendance = (courseId: string) => {
     } catch (error: any) {
       console.error('Error fetching attendance stats:', error);
     }
-  };
+  }, [courseId]);
 
-  const markAttendance = async (
+  const markAttendance = useCallback(async (
     studentIds: string[],
     date: string,
     status: string,
@@ -83,7 +85,7 @@ export const useProfessorAttendance = (courseId: string) => {
         description: `${result.inserted} présence(s) enregistrée(s)`,
       });
 
-      await fetchAttendance();
+      await fetchAttendance(date, date);
       return true;
     } catch (error: any) {
       console.error('Error marking attendance:', error);
@@ -94,9 +96,9 @@ export const useProfessorAttendance = (courseId: string) => {
       });
       return false;
     }
-  };
+  }, [courseId, toast, fetchAttendance]);
 
-  const updateAttendance = async (
+  const updateAttendance = useCallback(async (
     attendanceId: string,
     status: string,
     notes?: string
@@ -126,7 +128,7 @@ export const useProfessorAttendance = (courseId: string) => {
       });
       return false;
     }
-  };
+  }, [courseId, toast, fetchAttendance]);
 
   return {
     attendance,
