@@ -71,6 +71,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { data: professorData, error: professorError } = await supabase.rpc('is_professor', {
         _user_id: userId
       });
+
+      // DEBUG: Log professor check results
+      console.log('🔍 Professor check result:', { 
+        professorData, 
+        professorError, 
+        userId,
+        timestamp: new Date().toISOString()
+      });
       
       if (!professorError && professorData !== null) {
         setIsProfessor(professorData === true);
