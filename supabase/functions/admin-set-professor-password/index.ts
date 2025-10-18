@@ -84,6 +84,22 @@ Deno.serve(async (req) => {
 
     if (updateError) {
       console.error('Password update error:', updateError);
+      
+      // Handle weak/pwned password errors
+      if (updateError.code === 'weak_password' || updateError.name === 'AuthWeakPasswordError') {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            code: 'weak_password',
+            error: 'Ce mot de passe a été trouvé dans des bases de données de mots de passe compromis. Veuillez en choisir un différent ou utiliser le générateur.',
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 200,
+          }
+        );
+      }
+      
       throw updateError;
     }
 
@@ -115,21 +131,6 @@ Deno.serve(async (req) => {
     );
   } catch (error: any) {
     console.error('Error in admin-set-professor-password function:', error);
-
-    // Gracefully handle weak passwords with a 200 response so the client can show a friendly message
-    if (error?.code === 'weak_password' || error?.name?.toLowerCase?.().includes('weakpassword')) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          code: 'weak_password',
-          error: 'Mot de passe trop faible ou compromis. Veuillez choisir un mot de passe plus fort (12+ caractères, chiffres, majuscules, minuscules et symboles).',
-        }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200,
-        }
-      );
-    }
 
     return new Response(
       JSON.stringify({

@@ -91,7 +91,8 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
   const generateStrongPassword = () => {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%&*';
     let password = '';
-    for (let i = 0; i < 16; i++) {
+    // Make it longer and more random to avoid pwned databases
+    for (let i = 0; i < 20; i++) {
       password += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     setNewPassword(password);
@@ -209,6 +210,12 @@ export const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
                     <ul className="list-disc list-inside mt-2">
                       <li className={newPassword.length >= 8 ? 'text-green-600 font-semibold' : ''}>
                         Au moins 8 caractères
+                      </li>
+                      <li className="text-yellow-600 font-semibold">
+                        ⚠️ Certains mots de passe simples sont refusés même s'ils respectent la longueur minimum
+                      </li>
+                      <li className="text-blue-600">
+                        💡 Utilisez le bouton "Générer un mot de passe fort" pour éviter les refus
                       </li>
                     </ul>
                   </AlertDescription>
