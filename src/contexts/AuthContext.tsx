@@ -9,7 +9,10 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   isAdmin: boolean;
+  isProfessor: boolean;
+  isStudent: boolean;
   adminLoading: boolean;
+  professorProfile: any | null;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signUp: (email: string, password: string, fullName: string, metadata?: any) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
@@ -27,7 +30,10 @@ export const useAuth = () => {
       user: null,
       session: null,
       isAdmin: false,
+      isProfessor: false,
+      isStudent: false,
       adminLoading: false,
+      professorProfile: null,
       loading: false,
       signIn: async () => ({ error: new Error('Auth not available') }),
       signUp: async () => ({ error: new Error('Auth not available') }),
@@ -42,23 +48,64 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useSafeState<Session | null>(null);
   const [loading, setLoading] = useSafeState(true);
   const [isAdmin, setIsAdmin] = useSafeState(false);
+  const [isProfessor, setIsProfessor] = useSafeState(false);
+  const [isStudent, setIsStudent] = useSafeState(false);
+  const [professorProfile, setProfessorProfile] = useSafeState<any | null>(null);
   const [adminLoading, setAdminLoading] = useSafeState(false);
 
-  const checkAdminStatus = async (userId: string) => {
+  const checkRolesAndProfile = async (userId: string) => {
     setAdminLoading(true);
     try {
-      const { data, error } = await supabase.rpc('is_admin', {
+      // Check admin role
+      const { data: adminData, error: adminError } = await supabase.rpc('is_admin', {
         _user_id: userId
       });
       
-      if (!error && data !== null) {
-        setIsAdmin(data === true);
+      if (!adminError && adminData !== null) {
+        setIsAdmin(adminData === true);
       } else {
         setIsAdmin(false);
       }
+
+      // Check professor role
+      const { data: professorData, error: professorError } = await supabase.rpc('is_professor', {
+        _user_id: userId
+      });
+      
+      if (!professorError && professorData !== null) {
+        setIsProfessor(professorData === true);
+        
+        // Fetch professor profile if they are a professor
+        if (professorData === true) {
+          const { data: profProfile } = await supabase
+            .from('professors')
+            .select('*')
+            .eq('user_id', userId)
+            .single();
+          
+          setProfessorProfile(profProfile);
+        }
+      } else {
+        setIsProfessor(false);
+        setProfessorProfile(null);
+      }
+
+      // Check if user is a student (has student role or no admin/professor role)
+      const { data: roles } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId);
+      
+      const hasStudentRole = roles?.some(r => r.role === 'student') || false;
+      const hasOnlyStudentRole = !adminData && !professorData;
+      setIsStudent(hasStudentRole || hasOnlyStudentRole);
+
     } catch (error) {
-      logError('Error checking admin status:', error);
+      logError('Error checking roles:', error);
       setIsAdmin(false);
+      setIsProfessor(false);
+      setIsStudent(false);
+      setProfessorProfile(null);
     } finally {
       setAdminLoading(false);
     }
@@ -72,11 +119,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user ?? null);
         setLoading(false);
         
-        // Check admin status when user logs in
+        // Check roles when user logs in
         if (session?.user) {
-          checkAdminStatus(session.user.id);
+          checkRolesAndProfile(session.user.id);
         } else {
           setIsAdmin(false);
+          setIsProfessor(false);
+          setIsStudent(false);
+          setProfessorProfile(null);
           setAdminLoading(false);
         }
       }
@@ -88,9 +138,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(session?.user ?? null);
       setLoading(false);
       
-      // Check admin status for existing session
+      // Check roles for existing session
       if (session?.user) {
-        checkAdminStatus(session.user.id);
+        checkRolesAndProfile(session.user.id);
       }
     });
 
@@ -140,12 +190,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(null);
       setSession(null);
       setIsAdmin(false);
+      setIsProfessor(false);
+      setIsStudent(false);
+      setProfessorProfile(null);
     } catch (error) {
       logError('Unexpected logout error:', error);
       // Force clear state on any error
       setUser(null);
       setSession(null);
       setIsAdmin(false);
+      setIsProfessor(false);
+      setIsStudent(false);
+      setProfessorProfile(null);
     }
   };
 
@@ -153,7 +209,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     user,
     session,
     isAdmin,
+    isProfessor,
+    isStudent,
     adminLoading,
+    professorProfile,
     signIn,
     signUp,
     signOut,

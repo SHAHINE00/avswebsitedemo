@@ -6,6 +6,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
 import AdminRouteGuard from "@/components/admin/AdminRouteGuard";
 import ProfessorRouteGuard from "@/components/professor/ProfessorRouteGuard";
+import StudentRouteGuard from "@/components/student/StudentRouteGuard";
 import { GlobalErrorBoundary } from "@/components/ui/global-error-boundary";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import { usePageTracking, useScrollTracking } from "@/hooks/useAnalytics";
@@ -62,6 +63,9 @@ const Admin = React.lazy(() => import("./pages/Admin"));
 // Professor pages
 const Professor = React.lazy(() => import("./pages/Professor"));
 const ProfessorCourse = React.lazy(() => import("./pages/ProfessorCourse"));
+
+// Student pages
+const Student = React.lazy(() => import("./pages/Student"));
 
 // Optimized lazy wrapper component
 const LazyWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -159,6 +163,9 @@ const App = () => {
                       {/* Professor routes - protected and lazy loaded */}
                       <Route path="/professor" element={<ProfessorRouteGuard><LazyWrapper><Professor /></LazyWrapper></ProfessorRouteGuard>} />
                       <Route path="/professor/course/:courseId" element={<ProfessorRouteGuard><LazyWrapper><ProfessorCourse /></LazyWrapper></ProfessorRouteGuard>} />
+                      
+                      {/* Student routes - protected and lazy loaded */}
+                      <Route path="/student" element={<StudentRouteGuard><LazyWrapper><Student /></LazyWrapper></StudentRouteGuard>} />
                     </Routes>
                     
                       <Toaster />
