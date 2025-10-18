@@ -54,7 +54,7 @@ export const useProfessorDashboard = () => {
       setProfessorRecordExists(true);
 
       const { data, error } = await supabase.rpc('get_professor_dashboard_stats', {
-        p_professor_id: professor.id,
+        _user_id: currentUser.id,
       });
 
       if (error) throw error;
