@@ -3,10 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Search, Eye } from 'lucide-react';
+import { Search, Eye, Calendar, CheckCircle, XCircle, AlertCircle, TrendingUp } from 'lucide-react';
 import { useProfessorStudents } from '@/hooks/useProfessorStudents';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 interface StudentListTabProps {
   courseId: string;
@@ -108,72 +111,206 @@ const StudentListTab: React.FC<StudentListTabProps> = ({ courseId }) => {
       </Card>
 
       <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Détails de l'étudiant</DialogTitle>
           </DialogHeader>
           {selectedStudent && (
-            <div className="space-y-4">
-              <div>
-                <h3 className="font-semibold text-lg mb-2">Informations générales</h3>
-                <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-6">
+              {/* Informations générales */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Eye className="h-5 w-5" />
+                    Informations générales
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">Nom complet</p>
-                    <p className="font-medium">{selectedStudent.profile?.full_name || selectedStudent.profile?.email || 'Profil indisponible'}</p>
+                    <p className="font-medium">{selectedStudent.profile?.full_name || 'Non renseigné'}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Email</p>
                     <p className="font-medium">{selectedStudent.profile?.email || '—'}</p>
                   </div>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="font-semibold text-lg mb-2">Statistiques</h3>
-                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">Taux de présence</p>
-                    <p className="text-2xl font-bold">{selectedStudent.statistics.attendance_rate}%</p>
+                    <p className="text-sm text-muted-foreground">Formation</p>
+                    <p className="font-medium">{selectedStudent.profile?.formation_tag || 'Non renseignée'}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Moyenne générale</p>
-                    <p className="text-2xl font-bold">
-                      {selectedStudent.statistics.average_grade || '-'}/100
+                    <p className="text-sm text-muted-foreground">Statut</p>
+                    <Badge variant={selectedStudent.enrollment?.status === 'active' ? 'default' : 'secondary'}>
+                      {selectedStudent.enrollment?.status === 'active' ? 'Actif' : selectedStudent.enrollment?.status || 'Inconnu'}
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Date d'inscription</p>
+                    <p className="font-medium">
+                      {selectedStudent.enrollment?.enrolled_at 
+                        ? format(new Date(selectedStudent.enrollment.enrolled_at), 'dd MMMM yyyy', { locale: fr })
+                        : '—'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Total présences</p>
-                    <p className="text-xl font-semibold">{selectedStudent.statistics.present_count}/{selectedStudent.statistics.total_attendance}</p>
+                    <p className="text-sm text-muted-foreground">Progrès du cours</p>
+                    <div className="space-y-1">
+                      <Progress value={selectedStudent.enrollment?.progress_percentage || 0} className="h-2" />
+                      <p className="text-xs font-medium">{selectedStudent.enrollment?.progress_percentage || 0}%</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Notes enregistrées</p>
-                    <p className="text-xl font-semibold">{selectedStudent.statistics.total_grades}</p>
-                  </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
 
-              {selectedStudent.grades && selectedStudent.grades.length > 0 && (
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">Dernières notes</h3>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Devoir</TableHead>
-                        <TableHead>Note</TableHead>
-                        <TableHead>Date</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {selectedStudent.grades.slice(0, 5).map((grade: any, idx: number) => (
-                        <TableRow key={idx}>
-                          <TableCell>{grade.assignment_name}</TableCell>
-                          <TableCell>{grade.grade}/{grade.max_grade}</TableCell>
-                          <TableCell>{new Date(grade.graded_at).toLocaleDateString()}</TableCell>
+              {/* Statistiques */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5" />
+                    Statistiques de performance
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="text-center p-4 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground mb-1">Taux de présence</p>
+                    <p className="text-3xl font-bold text-primary">{selectedStudent.statistics.attendance_rate}%</p>
+                  </div>
+                  <div className="text-center p-4 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground mb-1">Moyenne générale</p>
+                    <p className="text-3xl font-bold text-primary">
+                      {selectedStudent.statistics.average_grade ? selectedStudent.statistics.average_grade.toFixed(1) : '—'}
+                    </p>
+                  </div>
+                  <div className="text-center p-4 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground mb-1">Présences</p>
+                    <p className="text-2xl font-semibold text-green-600">
+                      {selectedStudent.statistics.present_count}/{selectedStudent.statistics.total_attendance}
+                    </p>
+                  </div>
+                  <div className="text-center p-4 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground mb-1">Notes</p>
+                    <p className="text-2xl font-semibold text-blue-600">{selectedStudent.statistics.total_grades}</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Historique des présences */}
+              {selectedStudent.attendance_records && selectedStudent.attendance_records.length > 0 ? (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Calendar className="h-5 w-5" />
+                      Historique des présences
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Statut</TableHead>
+                          <TableHead>Notes</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                      </TableHeader>
+                      <TableBody>
+                        {selectedStudent.attendance_records.map((record: any) => (
+                          <TableRow key={record.id}>
+                            <TableCell>
+                              {format(new Date(record.attendance_date), 'dd/MM/yyyy', { locale: fr })}
+                            </TableCell>
+                            <TableCell>
+                              <Badge 
+                                variant={
+                                  record.status === 'present' ? 'default' : 
+                                  record.status === 'absent' ? 'destructive' : 
+                                  'secondary'
+                                }
+                                className="flex items-center gap-1 w-fit"
+                              >
+                                {record.status === 'present' && <CheckCircle className="h-3 w-3" />}
+                                {record.status === 'absent' && <XCircle className="h-3 w-3" />}
+                                {record.status === 'excused' && <AlertCircle className="h-3 w-3" />}
+                                {record.status === 'present' ? 'Présent' : 
+                                 record.status === 'absent' ? 'Absent' : 
+                                 record.status === 'excused' ? 'Excusé' : record.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {record.notes || '—'}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card>
+                  <CardContent className="py-8 text-center text-muted-foreground">
+                    <Calendar className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                    <p>Aucun enregistrement de présence</p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Historique des notes */}
+              {selectedStudent.grades && selectedStudent.grades.length > 0 ? (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5" />
+                      Toutes les notes
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Devoir</TableHead>
+                          <TableHead>Note</TableHead>
+                          <TableHead>Pourcentage</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Commentaire</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {selectedStudent.grades.map((grade: any) => {
+                          const percentage = (grade.grade / grade.max_grade) * 100;
+                          return (
+                            <TableRow key={grade.id}>
+                              <TableCell className="font-medium">{grade.assignment_name}</TableCell>
+                              <TableCell>{grade.grade}/{grade.max_grade}</TableCell>
+                              <TableCell>
+                                <Badge 
+                                  variant={
+                                    percentage >= 75 ? 'default' : 
+                                    percentage >= 50 ? 'secondary' : 
+                                    'destructive'
+                                  }
+                                >
+                                  {percentage.toFixed(0)}%
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                {format(new Date(grade.graded_at), 'dd/MM/yyyy', { locale: fr })}
+                              </TableCell>
+                              <TableCell className="text-sm text-muted-foreground">
+                                {grade.comment || '—'}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card>
+                  <CardContent className="py-8 text-center text-muted-foreground">
+                    <TrendingUp className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                    <p>Aucune note enregistrée</p>
+                  </CardContent>
+                </Card>
               )}
             </div>
           )}
