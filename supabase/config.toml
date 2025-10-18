@@ -3,6 +3,9 @@ project_id = "nkkalmyhxtuisjdjmdew"
 [functions.admin-create-student]
 verify_jwt = true
 
+[functions.admin-set-professor-password]
+verify_jwt = true
+
 [functions.log-security-event]
 verify_jwt = false
 

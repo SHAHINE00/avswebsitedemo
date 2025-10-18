@@ -24,6 +24,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import ProfessorFormDialog from './professor/ProfessorFormDialog';
 import ProfessorAssignDialog from './professor/ProfessorAssignDialog';
+import { ResetPasswordDialog } from './dashboard/user-management/ResetPasswordDialog';
 
 const ProfessorManagement: React.FC = () => {
   const { professors, loading, createProfessor, updateProfessor, deleteProfessor, assignToCourse } = useProfessors();
@@ -36,6 +37,10 @@ const ProfessorManagement: React.FC = () => {
   const [resetLink, setResetLink] = useState<string | null>(null);
   const [isResetLinkDialogOpen, setIsResetLinkDialogOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isResetPasswordOpen, setIsResetPasswordOpen] = useState(false);
+  const [resetPasswordEmail, setResetPasswordEmail] = useState('');
+  const [resetPasswordCallback, setResetPasswordCallback] = useState<() => () => Promise<string | null>>(() => async () => null);
+  const [setPasswordCallback, setSetPasswordCallback] = useState<() => (password: string) => Promise<boolean>>(() => async () => false);
 
   const filteredProfessors = professors.filter(prof =>
     prof.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -98,42 +103,70 @@ const ProfessorManagement: React.FC = () => {
   };
 
   const handleResetPassword = async (professor: Professor) => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
+    const generateLink = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('send-professor-reset', {
+          body: { professorId: professor.id }
+        });
+
+        if (error) throw error;
+
+        if (data?.resetLink) {
+          toast({
+            title: "Succès",
+            description: "Lien de réinitialisation généré avec succès",
+          });
+          return data.resetLink;
+        }
+        
+        throw new Error("Aucun lien généré");
+      } catch (error: any) {
+        console.error('Error generating reset link:', error);
         toast({
           title: "Erreur",
-          description: "Session expirée",
+          description: error.message || "Impossible de générer le lien de réinitialisation",
           variant: "destructive",
         });
-        return;
+        return null;
       }
+    };
 
-      const response = await supabase.functions.invoke('send-professor-reset', {
-        body: { professorId: professor.id },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-
-      if (response.error) throw response.error;
-      
-      if (response.data?.resetLink) {
-        setResetLink(response.data.resetLink);
-        setIsResetLinkDialogOpen(true);
-        toast({
-          title: "Succès",
-          description: "Lien de réinitialisation généré",
+    const setPassword = async (password: string) => {
+      try {
+        const { data, error } = await supabase.functions.invoke('admin-set-professor-password', {
+          body: { 
+            professorId: professor.id,
+            professorEmail: professor.email,
+            newPassword: password
+          }
         });
+
+        if (error) throw error;
+
+        if (data?.success) {
+          toast({
+            title: "Succès",
+            description: "Mot de passe défini avec succès",
+          });
+          return true;
+        }
+        
+        throw new Error("Impossible de définir le mot de passe");
+      } catch (error: any) {
+        console.error('Error setting password:', error);
+        toast({
+          title: "Erreur",
+          description: error.message || "Impossible de définir le mot de passe",
+          variant: "destructive",
+        });
+        return false;
       }
-    } catch (error) {
-      console.error('Reset password error:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de générer le lien",
-        variant: "destructive",
-      });
-    }
+    };
+
+    setResetPasswordEmail(professor.email);
+    setResetPasswordCallback(() => () => generateLink());
+    setSetPasswordCallback(() => (password: string) => setPassword(password));
+    setIsResetPasswordOpen(true);
   };
 
   return (
@@ -294,6 +327,20 @@ const ProfessorManagement: React.FC = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <ResetPasswordDialog
+        open={isResetPasswordOpen}
+        onOpenChange={setIsResetPasswordOpen}
+        userEmail={resetPasswordEmail}
+        onGenerateLink={async () => {
+          const result = resetPasswordCallback();
+          return result();
+        }}
+        onSetPassword={async (password: string) => {
+          const result = setPasswordCallback();
+          return result(password);
+        }}
+      />
     </div>
   );
 };
