@@ -39,8 +39,8 @@ const ProfessorManagement: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [isResetPasswordOpen, setIsResetPasswordOpen] = useState(false);
   const [resetPasswordEmail, setResetPasswordEmail] = useState('');
-  const [resetPasswordCallback, setResetPasswordCallback] = useState<() => () => Promise<string | null>>(() => async () => null);
-  const [setPasswordCallback, setSetPasswordCallback] = useState<() => (password: string) => Promise<boolean>>(() => async () => false);
+  const [generateLinkFn, setGenerateLinkFn] = useState<(() => Promise<string | null>) | null>(null);
+  const [setPasswordFn, setSetPasswordFn] = useState<((password: string) => Promise<boolean>) | null>(null);
 
   const filteredProfessors = professors.filter(prof =>
     prof.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -164,8 +164,8 @@ const ProfessorManagement: React.FC = () => {
     };
 
     setResetPasswordEmail(professor.email);
-    setResetPasswordCallback(() => () => generateLink());
-    setSetPasswordCallback(() => (password: string) => setPassword(password));
+    setGenerateLinkFn(() => generateLink);
+    setSetPasswordFn(() => setPassword);
     setIsResetPasswordOpen(true);
   };
 
@@ -332,14 +332,8 @@ const ProfessorManagement: React.FC = () => {
         open={isResetPasswordOpen}
         onOpenChange={setIsResetPasswordOpen}
         userEmail={resetPasswordEmail}
-        onGenerateLink={async () => {
-          const result = resetPasswordCallback();
-          return result();
-        }}
-        onSetPassword={async (password: string) => {
-          const result = setPasswordCallback();
-          return result(password);
-        }}
+        onGenerateLink={generateLinkFn || (async () => null)}
+        onSetPassword={setPasswordFn || undefined}
       />
     </div>
   );
