@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -24,6 +24,8 @@ const AttendanceTab: React.FC<AttendanceTabProps> = ({ courseId, sessionId }) =>
   const [date, setDate] = useState<Date>(new Date());
   const [selectedStudents, setSelectedStudents] = useState<Record<string, string>>({});
   const [sessionDetails, setSessionDetails] = useState<any>(null);
+  const isFetchingRef = useRef(false);
+  const lastPrePopulatedDateRef = useRef<string>('');
 
   useEffect(() => {
     fetchAttendance();
@@ -36,29 +38,43 @@ const AttendanceTab: React.FC<AttendanceTabProps> = ({ courseId, sessionId }) =>
 
   // Fetch attendance when date changes
   useEffect(() => {
+    if (isFetchingRef.current) return;
+    
     const dateStr = format(date, 'yyyy-MM-dd');
     console.log('📆 Date changed to:', dateStr);
-    setSelectedStudents({});
-    fetchAttendance(dateStr, dateStr);
-  }, [date, fetchAttendance]);
+    
+    isFetchingRef.current = true;
+    fetchAttendance(dateStr, dateStr).finally(() => {
+      isFetchingRef.current = false;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [date]);
 
   // Pre-populate selected students from existing attendance records
   useEffect(() => {
     const dateStr = format(date, 'yyyy-MM-dd');
+    
+    // Skip if we already pre-populated for this date
+    if (lastPrePopulatedDateRef.current === dateStr) return;
+    
     const todaysAttendance = attendance.filter(
       record => record.attendance_date === dateStr
     );
     
     console.log('👥 Pre-populating attendance for', dateStr, ':', todaysAttendance.length, 'records');
     
+    const preselected: Record<string, string> = {};
     if (todaysAttendance.length > 0) {
-      const preselected: Record<string, string> = {};
       todaysAttendance.forEach(record => {
         preselected[record.student_id] = record.status;
       });
       console.log('✅ Pre-selected students:', preselected);
-      setSelectedStudents(preselected);
+    } else {
+      console.log('🔄 No existing attendance, clearing selection');
     }
+    
+    setSelectedStudents(preselected);
+    lastPrePopulatedDateRef.current = dateStr;
   }, [attendance, date]);
 
   const fetchSessionDetails = async () => {
@@ -93,7 +109,8 @@ const AttendanceTab: React.FC<AttendanceTabProps> = ({ courseId, sessionId }) =>
       await markAttendance(absentStudents, format(date, 'yyyy-MM-dd'), 'absent', undefined, sessionId);
     }
     
-    setSelectedStudents({});
+    // Reset the ref to allow pre-populate to update after save
+    lastPrePopulatedDateRef.current = '';
   };
 
   const toggleStudent = (studentId: string, status: string) => {
