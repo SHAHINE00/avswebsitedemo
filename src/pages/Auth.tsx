@@ -24,7 +24,7 @@ const Auth = () => {
   const [rateLimited, setRateLimited] = useSafeState(false);
   const [cooldownEnd, setCooldownEnd] = useSafeState<number | null>(null);
   const [cooldownTime, setCooldownTime] = useSafeState(0);
-  const { signIn, signUp, user, isAdmin, adminLoading } = useAuth();
+  const { signIn, signUp, user, isAdmin, isProfessor, loading: authLoading, adminLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -51,20 +51,17 @@ const Auth = () => {
   }, [cooldownEnd]);
 
   useSafeEffect(() => {
-    if (user && !adminLoading) {
-      console.log('Auth redirect - User:', user.email, 'IsAdmin:', isAdmin, 'AdminLoading:', adminLoading);
-      // Add a small delay to ensure admin status is fully set
-      setTimeout(() => {
-        if (isAdmin) {
-          console.log('Redirecting admin user to /admin');
-          navigate('/admin');
-        } else {
-          console.log('Redirecting regular user to /');
-          navigate('/');
-        }
-      }, 100);
+    if (user && !authLoading && !adminLoading) {
+      // Role-based redirect with priority: admin > professor > student
+      if (isAdmin) {
+        navigate('/admin', { replace: true });
+      } else if (isProfessor) {
+        navigate('/professor', { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
     }
-  }, [user, isAdmin, adminLoading, navigate]);
+  }, [user, authLoading, adminLoading, isAdmin, isProfessor, navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();

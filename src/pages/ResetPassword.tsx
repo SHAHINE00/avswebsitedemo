@@ -73,13 +73,32 @@ const ResetPassword = () => {
 
       toast({
         title: 'Mot de passe mis à jour ✅',
-        description: 'Votre mot de passe a été modifié avec succès.',
+        description: 'Redirection vers votre espace...',
       });
 
-      // Redirect to auth page after successful password update
-      setTimeout(() => {
+      // Check user roles and redirect to appropriate dashboard
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        // Check if user is admin
+        const { data: adminData } = await supabase.rpc('is_admin', { _user_id: user.id });
+        if (adminData) {
+          navigate('/admin', { replace: true });
+          return;
+        }
+
+        // Check if user is professor
+        const { data: profData } = await supabase.rpc('is_professor', { _user_id: user.id });
+        if (profData) {
+          navigate('/professor', { replace: true });
+          return;
+        }
+
+        // Default to student dashboard
+        navigate('/dashboard', { replace: true });
+      } else {
         navigate('/auth', { replace: true });
-      }, 1500);
+      }
 
     } catch (err: any) {
       console.error('Password reset error:', err);
