@@ -12,11 +12,9 @@ export const DebugRoleBanner: React.FC = () => {
   const { user } = useAuth();
   const [roles, setRoles] = useState<string[]>([]);
 
-  // Only show in development
-  if (import.meta.env.PROD) return null;
-  if (!user) return null;
-
   useEffect(() => {
+    if (!user) return;
+    
     const fetchRoles = async () => {
       const { data } = await supabase
         .from('user_roles')
@@ -27,7 +25,11 @@ export const DebugRoleBanner: React.FC = () => {
     };
 
     fetchRoles();
-  }, [user.id]);
+  }, [user?.id]);
+
+  // Only show in development
+  if (import.meta.env.PROD) return null;
+  if (!user) return null;
 
   return (
     <div className="fixed bottom-4 right-4 z-50 bg-card border border-border rounded-lg p-3 shadow-lg max-w-xs">
