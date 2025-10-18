@@ -3001,7 +3001,7 @@ export type Database = {
         }[]
       }
       get_professor_dashboard_stats: {
-        Args: Record<PropertyKey, never> | { p_professor_id?: string }
+        Args: Record<PropertyKey, never> | { _user_id?: string }
         Returns: Json
       }
       get_professor_id: {
