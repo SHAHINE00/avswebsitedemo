@@ -72,7 +72,10 @@ Deno.serve(async (req) => {
     // Generate a random password for the professor (fallback)
     const randomPassword = crypto.randomUUID();
 
-    // Create the auth user
+    // Create the auth user (or reuse existing if email already registered)
+    let authUserId: string | null = null;
+    let userCreated = false;
+
     const { data: authData, error: authError } = await supabaseClient.auth.admin.createUser({
       email,
       password: randomPassword,
@@ -83,11 +86,40 @@ Deno.serve(async (req) => {
     });
 
     if (authError) {
-      console.error('Error creating auth user:', authError);
-      throw authError;
-    }
+      // Handle already-registered email without failing the whole operation
+      // @ts-ignore access supabase error fields
+      const code = (authError as any).code || (authError as any).error || '';
+      // @ts-ignore status field on error
+      const status = (authError as any).status;
+      if (status === 422 || code === 'email_exists') {
+        console.warn('Auth user already exists for email, reusing existing account');
+        // Try to resolve the existing user id from profiles table
+        const { data: existingProfile, error: profileErr } = await supabaseClient
+          .from('profiles')
+          .select('id')
+          .eq('email', email)
+          .maybeSingle();
 
-    console.log('Auth user created:', authData.user.id);
+        if (profileErr) {
+          console.error('Error fetching existing profile by email:', profileErr);
+          throw authError; // bubble up original
+        }
+
+        if (!existingProfile) {
+          // Without a profile we can't assign roles or link professor
+          throw new Error('Email already registered but no profile found. Ask the user to log in once, then try again.');
+        }
+
+        authUserId = existingProfile.id;
+      } else {
+        console.error('Error creating auth user:', authError);
+        throw authError;
+      }
+    } else {
+      authUserId = authData.user.id;
+      userCreated = true;
+      console.log('Auth user created:', authUserId);
+    }
 
     // Generate password reset link for the professor
     let resetLink = null;
@@ -112,7 +144,7 @@ Deno.serve(async (req) => {
     const { data: professorData, error: professorError } = await supabaseClient
       .from('professors')
       .insert({
-        user_id: authData.user.id,
+        user_id: authUserId!,
         full_name,
         email,
         phone,
@@ -126,7 +158,9 @@ Deno.serve(async (req) => {
     if (professorError) {
       console.error('Error creating professor record:', professorError);
       // Try to clean up the auth user
-      await supabaseClient.auth.admin.deleteUser(authData.user.id);
+      if (userCreated && authUserId) {
+        await supabaseClient.auth.admin.deleteUser(authUserId);
+      }
       throw professorError;
     }
 
@@ -135,17 +169,16 @@ Deno.serve(async (req) => {
     // Assign professor role
     const { error: roleError } = await supabaseClient
       .from('user_roles')
-      .insert({
-        user_id: authData.user.id,
-        role: 'professor',
-        assigned_by: user.id,
-      });
+      .upsert(
+        { user_id: authUserId!, role: 'professor', assigned_by: user.id },
+        { onConflict: 'user_id,role', ignoreDuplicates: true }
+      );
 
     if (roleError) {
       console.error('Error assigning professor role:', roleError);
       // Cleanup on partial failure
       try { await supabaseClient.from('professors').delete().eq('id', professorData.id); } catch (_) {}
-      try { await supabaseClient.auth.admin.deleteUser(authData.user.id); } catch (_) {}
+      try { if (userCreated && authUserId) { await supabaseClient.auth.admin.deleteUser(authUserId); } } catch (_) {}
       throw roleError;
     }
 
@@ -160,7 +193,7 @@ Deno.serve(async (req) => {
         details: {
           email,
           full_name,
-          auth_user_id: authData.user.id,
+          auth_user_id: authUserId,
         },
       });
 
