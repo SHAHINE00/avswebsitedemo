@@ -25,6 +25,8 @@ const ProfessorCourse: React.FC = () => {
   const { user, loading } = useAuth();
   const [course, setCourse] = useState<any>(null);
   const [courseLoading, setCourseLoading] = useState(true);
+  const [professorId, setProfessorId] = useState<string | null>(null);
+  const [profLoading, setProfLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('students');
   const sessionId = searchParams.get('session');
 
@@ -35,10 +37,34 @@ const ProfessorCourse: React.FC = () => {
   }, [sessionId]);
 
   useEffect(() => {
+    if (user?.id) {
+      fetchProfessorId();
+    }
+  }, [user?.id]);
+
+  useEffect(() => {
     if (courseId) {
       fetchCourse();
     }
   }, [courseId]);
+
+  const fetchProfessorId = async () => {
+    try {
+      setProfLoading(true);
+      const { data, error } = await supabase
+        .from('professors')
+        .select('id')
+        .eq('user_id', user?.id)
+        .maybeSingle();
+      if (error) throw error;
+      setProfessorId(data?.id ?? null);
+    } catch (error) {
+      console.error('Error fetching professor id:', error);
+      setProfessorId(null);
+    } finally {
+      setProfLoading(false);
+    }
+  };
 
   const fetchCourse = async () => {
     try {
@@ -57,7 +83,7 @@ const ProfessorCourse: React.FC = () => {
     }
   };
 
-  if (loading || courseLoading) {
+  if (loading || courseLoading || profLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div>Chargement...</div>
@@ -110,7 +136,18 @@ const ProfessorCourse: React.FC = () => {
             </TabsList>
 
             <TabsContent value="schedule">
-              <ClassScheduleManager courseId={courseId} professorId={user?.id || ''} />
+              {professorId ? (
+                <ClassScheduleManager courseId={courseId} professorId={professorId} />
+              ) : (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Configuration requise</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">Votre profil professeur n'est pas configuré. Contactez l'administrateur.</p>
+                  </CardContent>
+                </Card>
+              )}
               <div className="mt-6">
                 <TodaysSessions courseId={courseId} />
               </div>
