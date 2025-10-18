@@ -44,3 +44,9 @@ verify_jwt = true
 
 [functions.send-class-reminders]
 verify_jwt = false
+
+[functions.create-professor]
+verify_jwt = true
+
+[functions.send-professor-reset]
+verify_jwt = true

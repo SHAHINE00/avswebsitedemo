@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Search, Edit, Trash2, UserPlus } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, UserPlus, Copy, Check } from 'lucide-react';
 import { useProfessors, Professor } from '@/hooks/useProfessors';
 import {
   Table,
@@ -13,16 +13,28 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
 import ProfessorFormDialog from './professor/ProfessorFormDialog';
 import ProfessorAssignDialog from './professor/ProfessorAssignDialog';
 
 const ProfessorManagement: React.FC = () => {
   const { professors, loading, createProfessor, updateProfessor, deleteProfessor, assignToCourse } = useProfessors();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
   const [selectedProfessor, setSelectedProfessor] = useState<Professor | null>(null);
+  const [resetLink, setResetLink] = useState<string | null>(null);
+  const [isResetLinkDialogOpen, setIsResetLinkDialogOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const filteredProfessors = professors.filter(prof =>
     prof.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -30,9 +42,25 @@ const ProfessorManagement: React.FC = () => {
   );
 
   const handleCreate = async (professor: Partial<Professor>) => {
-    const success = await createProfessor(professor);
-    if (success) {
+    const result = await createProfessor(professor);
+    if (result && typeof result === 'object' && 'resetLink' in result && result.resetLink) {
       setIsCreateDialogOpen(false);
+      setResetLink(result.resetLink as string);
+      setIsResetLinkDialogOpen(true);
+    } else if (result) {
+      setIsCreateDialogOpen(false);
+    }
+  };
+
+  const copyResetLink = async () => {
+    if (resetLink) {
+      await navigator.clipboard.writeText(resetLink);
+      setCopied(true);
+      toast({
+        title: "Lien copié!",
+        description: "Le lien de réinitialisation a été copié dans le presse-papier.",
+      });
+      setTimeout(() => setCopied(false), 2000);
     }
   };
 
@@ -187,6 +215,37 @@ const ProfessorManagement: React.FC = () => {
         professor={selectedProfessor}
         onAssign={handleAssignCourse}
       />
+
+      <Dialog open={isResetLinkDialogOpen} onOpenChange={setIsResetLinkDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Professeur créé avec succès</DialogTitle>
+            <DialogDescription>
+              Partagez ce lien avec le professeur pour qu'il puisse définir son mot de passe.
+              Ce lien expire dans 24 heures.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Input
+                readOnly
+                value={resetLink || ''}
+                className="flex-1"
+              />
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={copyResetLink}
+              >
+                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              </Button>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Le professeur devra cliquer sur ce lien pour définir son mot de passe initial.
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

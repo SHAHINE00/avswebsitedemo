@@ -221,8 +221,16 @@ const Auth = () => {
                       required
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Mot de passe</Label>
+                   <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="password">Mot de passe</Label>
+                      <a 
+                        href="/reset-password" 
+                        className="text-xs text-primary hover:underline"
+                      >
+                        Mot de passe oublié?
+                      </a>
+                    </div>
                     <Input
                       id="password"
                       type="password"

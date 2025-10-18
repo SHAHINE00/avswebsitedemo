@@ -89,17 +89,22 @@ Deno.serve(async (req) => {
 
     console.log('Auth user created:', authData.user.id);
 
-    // Send invitation email so the professor can set a password
+    // Generate password reset link for the professor
+    let resetLink = null;
     try {
-      const { error: inviteError } = await supabaseClient.auth.admin.inviteUserByEmail(email, {
-        data: { full_name },
-        redirectTo: `${new URL(req.url).origin}/auth`
-      } as any);
-      if (inviteError) {
-        console.warn('Invitation email error (non-blocking):', inviteError);
+      const { data: resetData, error: resetError } = await supabaseClient.auth.admin.generateLink({
+        type: 'recovery',
+        email: email,
+      });
+      
+      if (resetError) {
+        console.error('Password reset link generation error:', resetError);
+      } else {
+        resetLink = resetData.properties.action_link;
+        console.log('Password reset link generated successfully');
       }
     } catch (e) {
-      console.warn('Failed to send invitation email (non-blocking):', e);
+      console.error('Failed to generate password reset link:', e);
     }
 
 
@@ -165,7 +170,10 @@ Deno.serve(async (req) => {
       JSON.stringify({
         success: true,
         professor: professorData,
-        message: 'Professor created successfully. They will receive an email to set their password.',
+        resetLink: resetLink,
+        message: resetLink 
+          ? 'Professor created successfully. Use the reset link to set their password.'
+          : 'Professor created successfully, but password reset link generation failed. Use manual reset.',
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

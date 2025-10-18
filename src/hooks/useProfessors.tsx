@@ -68,7 +68,7 @@ export const useProfessors = () => {
       });
 
       await fetchProfessors();
-      return true;
+      return data; // Return the full data object including resetLink
     } catch (error: any) {
       console.error('Error creating professor:', error);
       toast({
@@ -76,7 +76,7 @@ export const useProfessors = () => {
         description: error.message || "Erreur lors de la création",
         variant: "destructive",
       });
-      return false;
+      return null;
     } finally {
       setLoading(false);
     }
