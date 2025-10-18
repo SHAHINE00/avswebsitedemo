@@ -3120,22 +3120,14 @@ export type Database = {
         Returns: undefined
       }
       mark_attendance_bulk: {
-        Args:
-          | {
-              p_attendance_date: string
-              p_course_id: string
-              p_notes?: string
-              p_session_id?: string
-              p_status: string
-              p_student_ids: string[]
-            }
-          | {
-              p_attendance_date: string
-              p_course_id: string
-              p_notes?: string
-              p_status: string
-              p_student_ids: string[]
-            }
+        Args: {
+          p_attendance_date: string
+          p_course_id: string
+          p_notes?: string
+          p_session_id?: string
+          p_status: string
+          p_student_ids: string[]
+        }
         Returns: Json
       }
       mark_notification_read: {
