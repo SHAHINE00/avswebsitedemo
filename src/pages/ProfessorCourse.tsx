@@ -30,6 +30,10 @@ const ProfessorCourse: React.FC = () => {
   const [activeTab, setActiveTab] = useState('students');
   const sessionId = searchParams.get('session');
 
+  // Guard: validate UUID to avoid calling Supabase with ":courseId"
+  const isValidUUID = (id: string) =>
+    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/.test(id);
+
   useEffect(() => {
     if (sessionId) {
       setActiveTab('attendance');
@@ -43,9 +47,13 @@ const ProfessorCourse: React.FC = () => {
   }, [user?.id]);
 
   useEffect(() => {
-    if (courseId) {
-      fetchCourse();
+    if (!courseId) return;
+    if (!isValidUUID(courseId)) {
+      // Invalid course ID in URL (e.g., ":courseId") -> stop loading to avoid infinite spinner
+      setCourseLoading(false);
+      return;
     }
+    fetchCourse();
   }, [courseId]);
 
   const fetchProfessorId = async () => {
@@ -91,8 +99,12 @@ const ProfessorCourse: React.FC = () => {
     );
   }
 
-  if (!user || !courseId) {
+  if (!user) {
     return <Navigate to="/auth" replace />;
+  }
+
+  if (!courseId || !isValidUUID(courseId)) {
+    return <Navigate to="/professor" replace />;
   }
 
   return (
