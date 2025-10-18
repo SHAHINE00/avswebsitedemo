@@ -46,14 +46,18 @@ export const useClassSchedule = (courseId?: string) => {
   const createSchedule = async (schedule: Omit<ClassSchedule, 'id' | 'created_at' | 'updated_at'>) => {
     try {
       const { error } = await supabase.from('class_schedules').insert(schedule);
-      if (error) throw error;
+      if (error) {
+        console.error('Error creating schedule:', error);
+        throw error;
+      }
       toast({ title: "Succès", description: "Emploi du temps créé" });
       await fetchSchedules();
       return true;
     } catch (error: any) {
+      console.error('Error creating schedule:', error);
       toast({
         title: "Erreur",
-        description: "Impossible de créer l'emploi du temps",
+        description: error.message || "Impossible de créer l'emploi du temps",
         variant: "destructive",
       });
       return false;

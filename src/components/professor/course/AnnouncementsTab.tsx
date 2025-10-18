@@ -62,7 +62,7 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({ courseId }) => {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'urgent': return 'destructive';
-      case 'important': return 'default';
+      case 'high': return 'default';
       default: return 'secondary';
     }
   };
@@ -110,7 +110,7 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({ courseId }) => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="normal">Normal</SelectItem>
-                    <SelectItem value="important">Important</SelectItem>
+                    <SelectItem value="high">Important</SelectItem>
                     <SelectItem value="urgent">Urgent</SelectItem>
                   </SelectContent>
                 </Select>
@@ -142,7 +142,7 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({ courseId }) => {
                     <h3 className="font-semibold text-lg">{announcement.title}</h3>
                     {announcement.is_pinned && <Pin className="h-4 w-4 text-primary" />}
                     <Badge variant={getPriorityColor(announcement.priority)}>
-                      {announcement.priority}
+                      {announcement.priority === 'high' ? 'Important' : announcement.priority === 'urgent' ? 'Urgent' : 'Normal'}
                     </Badge>
                   </div>
                   <div className="flex gap-2">

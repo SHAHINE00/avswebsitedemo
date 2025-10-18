@@ -52,6 +52,7 @@ export const useProfessorAnnouncements = (courseId: string) => {
     isPinned: boolean = false
   ) => {
     try {
+      console.log('Creating announcement with:', { courseId, title, content, priority, isPinned });
       const { data, error } = await supabase.rpc('create_course_announcement', {
         p_course_id: courseId,
         p_title: title,
