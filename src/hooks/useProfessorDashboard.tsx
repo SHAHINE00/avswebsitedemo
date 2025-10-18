@@ -31,15 +31,36 @@ export const useProfessorDashboard = () => {
     try {
       const { data, error } = await supabase.rpc('get_professor_dashboard_stats');
 
-      if (error) throw error;
+      if (error) {
+        // Check if it's a "Professor record not found" error
+        if (error.message?.includes('Professor record not found')) {
+          console.log('Professor record not found, skipping stats fetch');
+          setProfessorRecordExists(false);
+          setStats({
+            total_courses: 0,
+            total_students: 0,
+            attendance_rate: 0,
+            average_grade: 0,
+            recent_announcements: 0
+          });
+          return;
+        }
+        throw error;
+      }
+      
       if (data) {
+        setProfessorRecordExists(true);
         setStats(data as unknown as ProfessorStats);
       }
     } catch (error: any) {
       console.error('Error fetching stats:', error);
+      setProfessorRecordExists(false);
+      setError(error.message || 'Impossible de charger les statistiques');
       toast({
         title: "Erreur",
-        description: "Impossible de charger les statistiques",
+        description: error.message?.includes('Professor record not found') 
+          ? "Votre profil professeur n'a pas été configuré" 
+          : "Impossible de charger les statistiques",
         variant: "destructive",
       });
     } finally {
