@@ -5,27 +5,50 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { CalendarIcon, Save } from 'lucide-react';
+import { CalendarIcon, Save, Clock, MapPin } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useProfessorAttendance } from '@/hooks/useProfessorAttendance';
 import { useProfessorStudents } from '@/hooks/useProfessorStudents';
+import { supabase } from '@/integrations/supabase/client';
+import { AttendanceAnalytics } from '@/components/professor/AttendanceAnalytics';
 
 interface AttendanceTabProps {
   courseId: string;
+  sessionId?: string;
 }
 
-const AttendanceTab: React.FC<AttendanceTabProps> = ({ courseId }) => {
+const AttendanceTab: React.FC<AttendanceTabProps> = ({ courseId, sessionId }) => {
   const { attendance, stats, loading, fetchAttendance, fetchStats, markAttendance } = useProfessorAttendance(courseId);
   const { students, fetchStudents } = useProfessorStudents(courseId);
   const [date, setDate] = useState<Date>(new Date());
   const [selectedStudents, setSelectedStudents] = useState<Record<string, string>>({});
+  const [sessionDetails, setSessionDetails] = useState<any>(null);
 
   useEffect(() => {
     fetchAttendance();
     fetchStats();
     fetchStudents();
-  }, [courseId]);
+    if (sessionId) {
+      fetchSessionDetails();
+    }
+  }, [courseId, sessionId]);
+
+  const fetchSessionDetails = async () => {
+    if (!sessionId) return;
+    try {
+      const { data, error } = await supabase
+        .from('class_sessions')
+        .select('*')
+        .eq('id', sessionId)
+        .single();
+      if (error) throw error;
+      setSessionDetails(data);
+      setDate(new Date(data.session_date));
+    } catch (error) {
+      console.error('Error fetching session details:', error);
+    }
+  };
 
   const handleSaveAttendance = async () => {
     const presentStudents = Object.entries(selectedStudents)
@@ -37,10 +60,10 @@ const AttendanceTab: React.FC<AttendanceTabProps> = ({ courseId }) => {
       .map(([id]) => id);
 
     if (presentStudents.length > 0) {
-      await markAttendance(presentStudents, format(date, 'yyyy-MM-dd'), 'present');
+      await markAttendance(presentStudents, format(date, 'yyyy-MM-dd'), 'present', undefined, sessionId);
     }
     if (absentStudents.length > 0) {
-      await markAttendance(absentStudents, format(date, 'yyyy-MM-dd'), 'absent');
+      await markAttendance(absentStudents, format(date, 'yyyy-MM-dd'), 'absent', undefined, sessionId);
     }
     
     setSelectedStudents({});
@@ -58,10 +81,27 @@ const AttendanceTab: React.FC<AttendanceTabProps> = ({ courseId }) => {
       <Card>
         <CardHeader>
           <CardTitle>Marquer les présences</CardTitle>
+          {sessionDetails && (
+            <div className="mt-2 p-3 bg-muted rounded-lg">
+              <div className="flex items-center gap-4 text-sm">
+                <div className="flex items-center gap-1">
+                  <Clock className="h-4 w-4" />
+                  <span>{sessionDetails.start_time} - {sessionDetails.end_time}</span>
+                </div>
+                {sessionDetails.room_location && (
+                  <div className="flex items-center gap-1">
+                    <MapPin className="h-4 w-4" />
+                    <span>{sessionDetails.room_location}</span>
+                  </div>
+                )}
+                <span className="capitalize">{sessionDetails.session_type}</span>
+              </div>
+            </div>
+          )}
           <div className="flex items-center gap-4 mt-4">
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline">
+                <Button variant="outline" disabled={!!sessionId}>
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {format(date, 'PPP')}
                 </Button>
@@ -146,6 +186,8 @@ const AttendanceTab: React.FC<AttendanceTabProps> = ({ courseId }) => {
           </CardContent>
         </Card>
       )}
+      
+      <AttendanceAnalytics courseId={courseId} />
     </div>
   );
 };

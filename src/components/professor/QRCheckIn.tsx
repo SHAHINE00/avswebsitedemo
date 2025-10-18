@@ -20,26 +20,18 @@ export const QRCheckIn: React.FC<QRCheckInProps> = ({ sessionId, courseId, onClo
   }, [sessionId]);
 
   const generateQRCode = () => {
-    // Generate unique QR code data
-    const timestamp = Date.now();
-    const token = `${sessionId}-${timestamp}`;
-    const qrData = btoa(JSON.stringify({
+    const expiresAt = new Date(Date.now() + 15 * 60000); // 15 minutes
+    setExpiresAt(expiresAt);
+    
+    // Generate signed token with session data
+    const qrToken = btoa(JSON.stringify({
       sessionId,
       courseId,
-      timestamp,
-      token
+      expiresAt: expiresAt.toISOString()
     }));
-
-    // In production, you would use a QR code library like qrcode.react
-    // For now, we'll create a simple data URL representation
-    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrData)}`;
     
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrToken)}`;
     setQrCode(qrCodeUrl);
-    
-    // Set expiration to 15 minutes from now
-    const expiry = new Date();
-    expiry.setMinutes(expiry.getMinutes() + 15);
-    setExpiresAt(expiry);
 
     toast({
       title: "QR Code généré",

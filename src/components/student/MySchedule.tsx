@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, Clock, MapPin } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Calendar, Clock, MapPin, QrCode } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { QRScanner } from './QRScanner';
 
 interface UpcomingSession {
   session_id: string;
@@ -21,6 +23,7 @@ export const MySchedule: React.FC = () => {
   const { user } = useAuth();
   const [sessions, setSessions] = useState<UpcomingSession[]>([]);
   const [loading, setLoading] = useState(true);
+  const [scannerOpen, setScannerOpen] = useState(false);
 
   useEffect(() => {
     if (user) fetchUpcomingSessions();
@@ -86,7 +89,7 @@ export const MySchedule: React.FC = () => {
                 <div className="space-y-3">
                   {dateSessions.map((session) => (
                     <div key={session.session_id} className="ml-6 p-3 border rounded-lg">
-                      <div className="flex items-start justify-between">
+                      <div className="flex items-start justify-between gap-2">
                         <div className="flex-1">
                           <h4 className="font-medium">{session.course_title}</h4>
                           <p className="text-sm text-muted-foreground">{session.professor_name}</p>
@@ -104,6 +107,16 @@ export const MySchedule: React.FC = () => {
                             <span className="capitalize text-muted-foreground">{session.session_type}</span>
                           </div>
                         </div>
+                        {session.status === 'in_progress' && (
+                          <Button
+                            size="sm"
+                            onClick={() => setScannerOpen(true)}
+                            className="flex items-center gap-1"
+                          >
+                            <QrCode className="h-4 w-4" />
+                            Scanner
+                          </Button>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -113,6 +126,12 @@ export const MySchedule: React.FC = () => {
           </div>
         )}
       </CardContent>
+      
+      <QRScanner
+        open={scannerOpen}
+        onClose={() => setScannerOpen(false)}
+        onSuccess={() => fetchUpcomingSessions()}
+      />
     </Card>
   );
 };

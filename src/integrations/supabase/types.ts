@@ -3012,6 +3012,16 @@ export type Database = {
         Args: { p_end_date?: string; p_start_date?: string }
         Returns: Json
       }
+      get_session_attendance: {
+        Args: { p_session_id: string }
+        Returns: {
+          attendance_id: string
+          attendance_status: string
+          student_email: string
+          student_id: string
+          student_name: string
+        }[]
+      }
       get_student_analytics: {
         Args: { p_end_date?: string; p_start_date?: string }
         Returns: Json
@@ -3110,13 +3120,22 @@ export type Database = {
         Returns: undefined
       }
       mark_attendance_bulk: {
-        Args: {
-          p_attendance_date: string
-          p_course_id: string
-          p_notes?: string
-          p_status: string
-          p_student_ids: string[]
-        }
+        Args:
+          | {
+              p_attendance_date: string
+              p_course_id: string
+              p_notes?: string
+              p_session_id?: string
+              p_status: string
+              p_student_ids: string[]
+            }
+          | {
+              p_attendance_date: string
+              p_course_id: string
+              p_notes?: string
+              p_status: string
+              p_student_ids: string[]
+            }
         Returns: Json
       }
       mark_notification_read: {

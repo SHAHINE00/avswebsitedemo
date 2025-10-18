@@ -38,3 +38,9 @@ verify_jwt = false
 
 [functions.send-invoice-email]
 verify_jwt = false
+
+[functions.validate-qr-checkin]
+verify_jwt = true
+
+[functions.send-class-reminders]
+verify_jwt = false

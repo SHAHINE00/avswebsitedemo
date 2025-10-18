@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams, Navigate, useSearchParams } from 'react-router-dom';
 import SEOHead from '@/components/SEOHead';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -21,9 +21,18 @@ import { AbsenceApprovalList } from '@/components/professor/AbsenceApprovalList'
 
 const ProfessorCourse: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
+  const [searchParams] = useSearchParams();
   const { user, loading } = useAuth();
   const [course, setCourse] = useState<any>(null);
   const [courseLoading, setCourseLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('students');
+  const sessionId = searchParams.get('session');
+
+  useEffect(() => {
+    if (sessionId) {
+      setActiveTab('attendance');
+    }
+  }, [sessionId]);
 
   useEffect(() => {
     if (courseId) {
@@ -89,7 +98,7 @@ const ProfessorCourse: React.FC = () => {
             </Card>
           </div>
 
-          <Tabs defaultValue="students" className="space-y-4">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
             <TabsList className="grid w-full grid-cols-7">
               <TabsTrigger value="schedule">Emploi du temps</TabsTrigger>
               <TabsTrigger value="students">Étudiants</TabsTrigger>
@@ -115,7 +124,7 @@ const ProfessorCourse: React.FC = () => {
             </TabsContent>
 
             <TabsContent value="attendance">
-              <AttendanceTab courseId={courseId} />
+              <AttendanceTab courseId={courseId} sessionId={sessionId || undefined} />
             </TabsContent>
 
             <TabsContent value="grades">

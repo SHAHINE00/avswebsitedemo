@@ -62,7 +62,8 @@ export const useProfessorAttendance = (courseId: string) => {
     studentIds: string[],
     date: string,
     status: string,
-    notes?: string
+    notes?: string,
+    sessionId?: string
   ) => {
     try {
       const { data, error } = await supabase.rpc('mark_attendance_bulk', {
@@ -70,7 +71,8 @@ export const useProfessorAttendance = (courseId: string) => {
         p_student_ids: studentIds,
         p_attendance_date: date,
         p_status: status,
-        p_notes: notes || null
+        p_notes: notes || null,
+        p_session_id: sessionId || null
       });
 
       if (error) throw error;
