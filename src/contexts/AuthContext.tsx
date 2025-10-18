@@ -98,15 +98,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setProfessorProfile(null);
       }
 
-      // Check if user is a student (has student role or no admin/professor role)
+      // Check if user is a student (only if explicitly has student role)
       const { data: roles } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', userId);
+
+      console.log('📊 AuthContext roles snapshot:', { userId, roles });
       
       const hasStudentRole = roles?.some(r => r.role === 'student') || false;
-      const hasOnlyStudentRole = !adminData && !professorData;
-      setIsStudent(hasStudentRole || hasOnlyStudentRole);
+      setIsStudent(hasStudentRole);
 
     } catch (error) {
       logError('Error checking roles:', error);

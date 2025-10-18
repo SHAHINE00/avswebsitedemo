@@ -22,15 +22,19 @@ const ProfessorRouteGuard: React.FC<ProfessorRouteGuardProps> = ({ children }) =
       }
 
       try {
-        const { data, error } = await supabase.rpc('is_professor', {
-          _user_id: user.id
-        });
+        // Fetch roles directly from user_roles table
+        const { data: roles, error } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id);
+
+        console.log('🔍 ProfessorRouteGuard roles:', { userId: user.id, roles });
 
         if (error) {
           console.error('Error checking professor status:', error);
           setIsProfessor(false);
         } else {
-          setIsProfessor(data || false);
+          setIsProfessor(roles?.some(r => r.role === 'professor') || false);
         }
       } catch (error) {
         console.error('Error:', error);

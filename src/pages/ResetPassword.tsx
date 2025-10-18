@@ -80,16 +80,23 @@ const ResetPassword = () => {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user) {
-        // Check if user is admin
-        const { data: adminData } = await supabase.rpc('is_admin', { _user_id: user.id });
-        if (adminData) {
+        // Fetch roles directly from user_roles table
+        const { data: roles } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id);
+
+        console.log('🔄 Role-based redirect after reset:', { userId: user.id, roles });
+
+        const hasAdmin = roles?.some(r => r.role === 'admin') || false;
+        const hasProfessor = roles?.some(r => r.role === 'professor') || false;
+
+        if (hasAdmin) {
           navigate('/admin', { replace: true });
           return;
         }
 
-        // Check if user is professor
-        const { data: profData } = await supabase.rpc('is_professor', { _user_id: user.id });
-        if (profData) {
+        if (hasProfessor) {
           navigate('/professor', { replace: true });
           return;
         }
