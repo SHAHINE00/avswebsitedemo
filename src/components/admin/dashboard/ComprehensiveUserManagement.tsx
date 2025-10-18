@@ -17,6 +17,7 @@ import { UserEditDialog } from './user-management/UserEditDialog';
 import { UserEnrollmentDialog } from './user-management/UserEnrollmentDialog';
 import { BulkActionsTab } from './user-management/BulkActionsTab';
 import { BulkEnrollmentDialog } from './user-management/BulkEnrollmentDialog';
+import { ResetPasswordDialog } from './user-management/ResetPasswordDialog';
 import { useUserManagement, type UserProfile } from './user-management/hooks/useUserManagement';
 import { useUserFilters } from './user-management/hooks/useUserFilters';
 import { useBulkEnrollments } from '@/hooks/useBulkEnrollments';
@@ -27,6 +28,7 @@ const ComprehensiveUserManagement = () => {
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [enrollmentUser, setEnrollmentUser] = useState<UserProfile | null>(null);
+  const [resetPasswordUser, setResetPasswordUser] = useState<UserProfile | null>(null);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteMessage, setInviteMessage] = useState('');
   const [bulkEnrollmentOpen, setBulkEnrollmentOpen] = useState(false);
@@ -41,7 +43,8 @@ const ComprehensiveUserManagement = () => {
     deleteUser,
     updateUserProfile,
     inviteUser,
-    resetUserPassword
+    resetUserPassword,
+    generateResetLink
   } = useUserManagement();
 
   const {
@@ -239,6 +242,7 @@ const ComprehensiveUserManagement = () => {
                 onToggleSelection={() => toggleUserSelection(user.id)}
                 onEdit={() => setEditingUser(user)}
                 onResetPassword={() => resetUserPassword(user.email || '')}
+                onGenerateResetLink={() => setResetPasswordUser(user)}
                 onUpdateRole={(newRole) => updateUserRole(user.id, newRole, user.roles)}
                 onDelete={() => deleteUser(user.id, user.email || '')}
                 onManageEnrollments={() => setEnrollmentUser(user)}
@@ -284,6 +288,16 @@ const ComprehensiveUserManagement = () => {
         onEnroll={handleBulkEnroll}
         onUnenroll={handleBulkUnenroll}
         loading={enrollmentLoading || bulkActionLoading}
+      />
+
+      <ResetPasswordDialog
+        open={!!resetPasswordUser}
+        onOpenChange={(open) => !open && setResetPasswordUser(null)}
+        userEmail={resetPasswordUser?.email || ''}
+        onGenerateLink={async () => {
+          if (!resetPasswordUser) return null;
+          return await generateResetLink(resetPasswordUser.id, resetPasswordUser.email || '');
+        }}
       />
     </div>
   );

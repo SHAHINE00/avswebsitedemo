@@ -11,7 +11,8 @@ import {
   UserCheck, 
   UserX, 
   Trash2,
-  BookOpen
+  BookOpen,
+  Link as LinkIcon
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -25,6 +26,7 @@ interface UserCardProps {
   onToggleSelection: () => void;
   onEdit: () => void;
   onResetPassword: () => void;
+  onGenerateResetLink: () => void;
   onUpdateRole: (newRole: string) => void;
   onDelete: () => void;
   onManageEnrollments?: () => void;
@@ -36,6 +38,7 @@ export const UserCard: React.FC<UserCardProps> = ({
   onToggleSelection,
   onEdit,
   onResetPassword,
+  onGenerateResetLink,
   onUpdateRole,
   onDelete,
   onManageEnrollments
@@ -109,8 +112,19 @@ export const UserCard: React.FC<UserCardProps> = ({
           size="sm"
           onClick={onResetPassword}
           className="h-8"
+          title="Envoyer email de réinitialisation"
         >
           <Key className="w-4 h-4" />
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onGenerateResetLink}
+          className="h-8"
+          title="Générer lien de réinitialisation"
+        >
+          <LinkIcon className="w-4 h-4" />
         </Button>
 
         {onManageEnrollments && (
@@ -173,10 +187,23 @@ export const UserCard: React.FC<UserCardProps> = ({
           size="sm"
           onClick={onResetPassword}
           className="flex-1 h-9"
+          title="Envoyer email"
         >
           <Key className="w-4 h-4 mr-2" />
-          <span className="hidden sm:inline">Mot de passe</span>
-          <span className="sm:hidden">MDP</span>
+          <span className="hidden sm:inline">Email MDP</span>
+          <span className="sm:hidden">Email</span>
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onGenerateResetLink}
+          className="flex-1 h-9"
+          title="Générer lien"
+        >
+          <LinkIcon className="w-4 h-4 mr-2" />
+          <span className="hidden sm:inline">Lien MDP</span>
+          <span className="sm:hidden">Lien</span>
         </Button>
 
         {onManageEnrollments && (

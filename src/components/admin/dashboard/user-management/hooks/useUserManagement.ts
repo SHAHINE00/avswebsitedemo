@@ -176,6 +176,46 @@ export const useUserManagement = () => {
     }
   };
 
+  const generateResetLink = async (userId: string, userEmail: string): Promise<string | null> => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Erreur",
+          description: "Session expirée",
+          variant: "destructive",
+        });
+        return null;
+      }
+
+      const { data, error } = await supabase.functions.invoke('admin-generate-reset-link', {
+        body: { userId, userEmail }
+      });
+
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      if (!data?.resetLink) {
+        throw new Error('No reset link returned');
+      }
+
+      toast({
+        title: "Succès",
+        description: "Lien de réinitialisation généré",
+      });
+
+      return data.resetLink;
+    } catch (error) {
+      logError('Error generating reset link:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de générer le lien de réinitialisation",
+        variant: "destructive",
+      });
+      return null;
+    }
+  };
+
   const resetUserPassword = async (userEmail: string) => {
     if (!confirm(`Envoyer un email de réinitialisation de mot de passe à ${userEmail} ?`)) return;
 
@@ -211,6 +251,7 @@ export const useUserManagement = () => {
     deleteUser,
     updateUserProfile,
     inviteUser,
-    resetUserPassword
+    resetUserPassword,
+    generateResetLink
   };
 };
