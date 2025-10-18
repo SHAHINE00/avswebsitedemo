@@ -22,16 +22,7 @@ class ReactSafetyWrapper extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('React Safety Wrapper caught an error:', error, errorInfo);
-    
-    // Check if it's a React null error
-    if (error.message.includes('Cannot read properties of null')) {
-      console.warn('React null error detected, attempting recovery...');
-      
-      // Attempt to recover by forcing a re-render
-      setTimeout(() => {
-        this.setState({ hasError: false, error: undefined });
-      }, 100);
-    }
+    // Avoid automatic retries to prevent render loops
   }
 
   render() {

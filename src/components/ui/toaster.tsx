@@ -9,13 +9,13 @@ import {
   ToastTitle,
   ToastViewport,
 } from "@/components/ui/toast";
-import ReactSafetyWrapper from "@/components/ui/react-safety-wrapper";
+import SafeComponentWrapper from "@/components/ui/SafeComponentWrapper";
 
 export function Toaster() {
   return (
-    <ReactSafetyWrapper>
+    <SafeComponentWrapper componentName="Toaster">
       <ToasterCore />
-    </ReactSafetyWrapper>
+    </SafeComponentWrapper>
   );
 }
 
