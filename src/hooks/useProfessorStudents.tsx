@@ -59,13 +59,66 @@ export const useProfessorStudents = (courseId: string) => {
 
   const fetchStudentDetail = async (studentId: string): Promise<StudentDetail | null> => {
     try {
-      const { data, error } = await supabase.rpc('get_student_detail', {
-        p_student_id: studentId,
-        p_course_id: courseId
-      });
+      // Fetch user profile
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', studentId)
+        .single();
 
-      if (error) throw error;
-      return data as unknown as StudentDetail;
+      if (profileError) throw profileError;
+
+      // Fetch enrollment
+      const { data: enrollment, error: enrollmentError } = await supabase
+        .from('course_enrollments')
+        .select('*')
+        .eq('user_id', studentId)
+        .eq('course_id', courseId)
+        .single();
+
+      if (enrollmentError) throw enrollmentError;
+
+      // Fetch attendance records
+      const { data: attendance_records, error: attendanceError } = await supabase
+        .from('attendance')
+        .select('*')
+        .eq('student_id', studentId)
+        .eq('course_id', courseId)
+        .order('attendance_date', { ascending: false });
+
+      if (attendanceError) throw attendanceError;
+
+      // Fetch grades
+      const { data: grades, error: gradesError } = await supabase
+        .from('grades')
+        .select('*')
+        .eq('student_id', studentId)
+        .eq('course_id', courseId)
+        .order('graded_at', { ascending: false });
+
+      if (gradesError) throw gradesError;
+
+      // Calculate statistics
+      const total_attendance = attendance_records?.length || 0;
+      const present_count = attendance_records?.filter(a => a.status === 'present').length || 0;
+      const attendance_rate = total_attendance > 0 ? Math.round((present_count / total_attendance) * 100) : 0;
+      const average_grade = grades && grades.length > 0
+        ? grades.reduce((sum, g) => sum + Number(g.grade), 0) / grades.length
+        : 0;
+
+      return {
+        profile,
+        enrollment,
+        attendance_records: attendance_records || [],
+        grades: grades || [],
+        statistics: {
+          total_attendance,
+          present_count,
+          attendance_rate,
+          average_grade,
+          total_grades: grades?.length || 0,
+        }
+      };
     } catch (error: any) {
       console.error('Error fetching student detail:', error);
       toast({
