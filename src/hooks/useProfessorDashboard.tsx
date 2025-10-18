@@ -23,6 +23,7 @@ export const useProfessorDashboard = () => {
   const [courses, setCourses] = useState<AssignedCourse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [professorRecordExists, setProfessorRecordExists] = useState(true);
   const { toast } = useToast();
 
   const fetchStats = async () => {
@@ -61,12 +62,16 @@ export const useProfessorDashboard = () => {
       console.log('Professor lookup result:', professor, 'Error:', profError);
 
       if (profError) {
-        throw new Error(`Professor lookup failed: ${profError.message}`);
+        setProfessorRecordExists(false);
+        throw new Error(`Erreur lors de la recherche du profil professeur: ${profError.message}`);
       }
 
       if (!professor) {
-        throw new Error('Professor record not found. Please contact admin.');
+        setProfessorRecordExists(false);
+        throw new Error('Votre compte professeur n\'a pas été correctement configuré. Veuillez contacter l\'administrateur pour créer votre profil professeur.');
       }
+
+      setProfessorRecordExists(true);
 
       // Get assigned courses
       const { data: assignments, error } = await supabase
@@ -137,6 +142,7 @@ export const useProfessorDashboard = () => {
     courses,
     loading,
     error,
+    professorRecordExists,
     refetchStats: fetchStats,
     refetchCourses: fetchCourses,
     refetchAll: fetchDashboardData

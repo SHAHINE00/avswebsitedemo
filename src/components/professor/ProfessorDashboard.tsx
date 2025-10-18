@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
 const ProfessorDashboard: React.FC = () => {
-  const { stats, courses, loading, error, refetchAll } = useProfessorDashboard();
+  const { stats, courses, loading, error, professorRecordExists, refetchAll } = useProfessorDashboard();
   const navigate = useNavigate();
 
   if (loading) {
@@ -26,19 +26,35 @@ const ProfessorDashboard: React.FC = () => {
       <Card className="p-6">
         <div className="text-center space-y-4">
           <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
-          <h3 className="text-lg font-semibold">Erreur de chargement</h3>
-          <p className="text-muted-foreground">{error}</p>
-          <Button onClick={refetchAll}>Réessayer</Button>
+          <h3 className="text-lg font-semibold">
+            {!professorRecordExists 
+              ? 'Configuration du compte requise' 
+              : 'Erreur de chargement'}
+          </h3>
+          <p className="text-muted-foreground max-w-md mx-auto">{error}</p>
+          {!professorRecordExists ? (
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">
+                L'administrateur doit créer votre profil professeur dans le panneau d'administration.
+              </p>
+            </div>
+          ) : (
+            <Button onClick={refetchAll}>Réessayer</Button>
+          )}
         </div>
       </Card>
     );
   }
 
-  if (!stats) {
+  if (!stats && courses.length === 0) {
     return (
       <Card className="p-6">
-        <div className="text-center">
-          <p className="text-muted-foreground">Aucune donnée disponible</p>
+        <div className="text-center space-y-4">
+          <BookOpen className="h-12 w-12 text-muted-foreground mx-auto" />
+          <h3 className="text-lg font-semibold">Aucun cours assigné</h3>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Vous n'avez pas encore de cours assignés. Veuillez contacter l'administrateur pour qu'il vous assigne des cours.
+          </p>
         </div>
       </Card>
     );
