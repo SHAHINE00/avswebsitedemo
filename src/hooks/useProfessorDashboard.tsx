@@ -29,27 +29,37 @@ export const useProfessorDashboard = () => {
   const fetchStats = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.rpc('get_professor_dashboard_stats');
-
-      if (error) {
-        // Check if it's a "Professor record not found" error
-        if (error.message?.includes('Professor record not found')) {
-          console.log('Professor record not found, skipping stats fetch');
-          setProfessorRecordExists(false);
-          setStats({
-            total_courses: 0,
-            total_students: 0,
-            attendance_rate: 0,
-            average_grade: 0,
-            recent_announcements: 0
-          });
-          return;
-        }
-        throw error;
+      // Resolve ambiguity by explicitly passing professor id to the RPC
+      const currentUser = (await supabase.auth.getUser()).data.user;
+      if (!currentUser) {
+        throw new Error('Utilisateur non authentifié');
       }
-      
+
+      const { data: professor, error: profError } = await supabase
+        .from('professors')
+        .select('id')
+        .eq('user_id', currentUser.id)
+        .maybeSingle();
+
+      if (profError) {
+        throw new Error(`Erreur lors de la recherche du profil professeur: ${profError.message}`);
+      }
+
+      if (!professor?.id) {
+        // Mirror the behavior used elsewhere and surface a clear message
+        setProfessorRecordExists(false);
+        throw new Error('Professor record not found');
+      }
+
+      setProfessorRecordExists(true);
+
+      const { data, error } = await supabase.rpc('get_professor_dashboard_stats', {
+        p_professor_id: professor.id,
+      });
+
+      if (error) throw error;
+
       if (data) {
-        setProfessorRecordExists(true);
         setStats(data as unknown as ProfessorStats);
       }
     } catch (error: any) {
@@ -58,9 +68,11 @@ export const useProfessorDashboard = () => {
       setError(error.message || 'Impossible de charger les statistiques');
       toast({
         title: "Erreur",
-        description: error.message?.includes('Professor record not found') 
-          ? "Votre profil professeur n'a pas été configuré" 
-          : "Impossible de charger les statistiques",
+        description: error.message?.includes('Professor record not found')
+          ? "Votre profil professeur n'a pas été configuré"
+          : (error.message?.includes('Could not choose the best candidate function')
+            ? "Conflit de fonctions détecté, merci de réessayer"
+            : 'Impossible de charger les statistiques'),
         variant: "destructive",
       });
     } finally {
