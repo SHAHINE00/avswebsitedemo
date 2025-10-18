@@ -8,7 +8,6 @@ import AdminRouteGuard from "@/components/admin/AdminRouteGuard";
 import ProfessorRouteGuard from "@/components/professor/ProfessorRouteGuard";
 import StudentRouteGuard from "@/components/student/StudentRouteGuard";
 import { RoleRouter } from "@/components/auth/RoleRouter";
-import { DebugRoleBanner } from "@/components/debug/DebugRoleBanner";
 import { GlobalErrorBoundary } from "@/components/ui/global-error-boundary";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import { usePageTracking, useScrollTracking } from "@/hooks/useAnalytics";
@@ -171,7 +170,6 @@ const App = () => {
                     </Routes>
                     
                       <Toaster />
-                      <DebugRoleBanner />
                     </AuthProvider>
                   </SecurityEnhancedWrapper>
                 </ReactSafetyWrapper>
