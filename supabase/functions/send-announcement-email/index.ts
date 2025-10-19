@@ -29,19 +29,30 @@ serve(async (req) => {
     // Get enrolled students
     const { data: enrollments, error: enrollError } = await supabaseClient
       .from("course_enrollments")
-      .select(`
-        user_id,
-        profiles:user_id (
-          email,
-          full_name
-        )
-      `)
+      .select("user_id")
       .eq("course_id", courseId);
 
     if (enrollError) {
       console.error("Error fetching enrollments:", enrollError);
       throw enrollError;
     }
+
+    if (!enrollments || enrollments.length === 0) {
+      console.log("No students enrolled in this course");
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          notificationsSent: 0,
+          message: "No students enrolled"
+        }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        }
+      );
+    }
+
+    console.log(`Found ${enrollments.length} enrolled students`);
 
     // Get course info
     const { data: course } = await supabaseClient
