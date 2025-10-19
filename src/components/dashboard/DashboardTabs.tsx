@@ -67,7 +67,7 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
   const { studyStats, loading: analyticsLoading } = useStudyAnalytics();
   return (
     <Tabs value={activeTab} onValueChange={onTabChange} className="space-y-6">
-      <TabsList className="flex flex-wrap w-full gap-2 p-2">
+      <TabsList className="flex flex-wrap w-full gap-2 p-2 h-auto mb-4">
         <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
         <TabsTrigger value="progress">Progression</TabsTrigger>
         <TabsTrigger value="calendar">Calendrier</TabsTrigger>
