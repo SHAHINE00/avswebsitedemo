@@ -106,7 +106,8 @@ export const useClassSchedule = (courseId?: string) => {
         p_end_date: endDate
       });
       if (error) throw error;
-      toast({ title: "Succès", description: `${data?.length || 0} séances générées` });
+      const result = data as { sessions_created?: number } | null;
+      toast({ title: "Succès", description: `${result?.sessions_created || 0} séances générées` });
       return true;
     } catch (error: any) {
       toast({
