@@ -2898,10 +2898,7 @@ export type Database = {
           p_schedule_id: string
           p_start_date: string
         }
-        Returns: {
-          session_date: string
-          session_id: string
-        }[]
+        Returns: Json
       }
       get_advanced_analytics: {
         Args: {
