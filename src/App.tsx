@@ -130,9 +130,9 @@ const App = () => {
                       <Route path="*" element={<NotFound />} />
                       
                       {/* Secondary routes - lazy loaded */}
-                      <Route path="/auth" element={<RoleRouter><LazyWrapper><Auth /></LazyWrapper></RoleRouter>} />
+                      <Route path="/auth" element={<LazyWrapper><Auth /></LazyWrapper>} />
                       <Route path="/reset-password" element={<LazyWrapper><ResetPassword /></LazyWrapper>} />
-                      <Route path="/dashboard" element={<RoleRouter><StudentRouteGuard><LazyWrapper><Dashboard /></LazyWrapper></StudentRouteGuard></RoleRouter>} />
+                      <Route path="/dashboard" element={<StudentRouteGuard><LazyWrapper><Dashboard /></LazyWrapper></StudentRouteGuard>} />
                       <Route path="/curriculum" element={<LazyWrapper><Curriculum /></LazyWrapper>} />
                       <Route path="/ai-course" element={<LazyWrapper><AICourse /></LazyWrapper>} />
                       <Route path="/programming-course" element={<LazyWrapper><ProgrammingCourse /></LazyWrapper>} />
