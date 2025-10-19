@@ -24,7 +24,7 @@ const Auth = () => {
   const [rateLimited, setRateLimited] = useSafeState(false);
   const [cooldownEnd, setCooldownEnd] = useSafeState<number | null>(null);
   const [cooldownTime, setCooldownTime] = useSafeState(0);
-  const { signIn, signUp, user, isAdmin, isProfessor, loading: authLoading, adminLoading } = useAuth();
+  const { signIn, signUp, user, isAdmin, isProfessor, isStudent, loading: authLoading, adminLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -52,7 +52,11 @@ const Auth = () => {
 
   // Synchronous redirect based on role - happens before render
   if (user && !authLoading && !adminLoading) {
-    const redirectPath = isAdmin ? '/admin' : isProfessor ? '/professor' : '/dashboard';
+    const redirectPath = isAdmin
+      ? '/admin'
+      : isProfessor
+        ? '/professor'
+        : (useAuth().isStudent ? '/dashboard' : '/');
     console.info(`Auth redirect → ${redirectPath}`);
     return <Navigate to={redirectPath} replace />;
   }
