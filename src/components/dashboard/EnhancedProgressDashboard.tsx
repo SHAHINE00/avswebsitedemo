@@ -13,10 +13,16 @@ import {
   BarChart3,
   Timer,
   Sparkles,
-  Brain
+  Brain,
+  Zap,
+  Users
 } from 'lucide-react';
 import SmartStudyRecommendations from './SmartStudyRecommendations';
-import AdvancedAnalytics from './AdvancedAnalytics';
+import { useStudyAnalytics } from '@/hooks/useStudyAnalytics';
+import { useGamification } from '@/hooks/useGamification';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+
+const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', 'hsl(var(--muted))'];
 
 interface Enrollment {
   id: string;
@@ -40,6 +46,7 @@ interface StudyStats {
   averageSessionTime: number;
   lessonsCompleted: number;
   totalLessons: number;
+  weeklyProgress: number[];
 }
 
 interface EnhancedProgressDashboardProps {
@@ -51,6 +58,9 @@ const EnhancedProgressDashboard = ({
   enrollments, 
   studyStats 
 }: EnhancedProgressDashboardProps) => {
+  const { studyStats: analyticsStats, loading: studyLoading } = useStudyAnalytics();
+  const { userLevel, userRank } = useGamification();
+  
   const activeEnrollments = enrollments.filter(e => e.status === 'active');
   const completedEnrollments = enrollments.filter(e => e.status === 'completed');
   
@@ -59,6 +69,42 @@ const EnhancedProgressDashboard = ({
     : 0;
 
   const weeklyProgressPercentage = (studyStats.totalHours / studyStats.weeklyGoal) * 100;
+
+  // Calculate insights from study data
+  const calculateInsights = () => {
+    const insights = [];
+    
+    if (analyticsStats.currentStreak >= 7) {
+      insights.push({
+        type: 'success',
+        title: 'Excellente régularité !',
+        description: `Vous avez une série de ${analyticsStats.currentStreak} jours d'étude.`,
+        icon: <Zap className="w-4 h-4" />
+      });
+    }
+    
+    if (analyticsStats.completionRate >= 80) {
+      insights.push({
+        type: 'success',
+        title: 'Taux de réussite élevé',
+        description: `Vous terminez ${analyticsStats.completionRate}% de vos leçons.`,
+        icon: <Target className="w-4 h-4" />
+      });
+    }
+    
+    if (analyticsStats.averageSessionTime < 15) {
+      insights.push({
+        type: 'info',
+        title: 'Sessions courtes détectées',
+        description: 'Essayez des sessions plus longues pour une meilleure rétention.',
+        icon: <Timer className="w-4 h-4" />
+      });
+    }
+    
+    return insights;
+  };
+
+  const insights = studyLoading ? [] : calculateInsights();
 
   return (
     <div className="space-y-6">
@@ -274,7 +320,176 @@ const EnhancedProgressDashboard = ({
         </TabsContent>
 
         <TabsContent value="insights" className="space-y-4">
-          <AdvancedAnalytics />
+          {/* Key Metrics Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-primary" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Temps total</p>
+                    <p className="text-2xl font-bold">{analyticsStats.totalHours}h</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-orange-500" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Série actuelle</p>
+                    <p className="text-2xl font-bold">{analyticsStats.currentStreak} jours</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <Award className="w-4 h-4 text-yellow-500" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Niveau</p>
+                    <p className="text-2xl font-bold">{userLevel.level}</p>
+                    <p className="text-xs text-muted-foreground">{userLevel.title}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-blue-500" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Classement</p>
+                    <p className="text-2xl font-bold">#{userRank || 'N/A'}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Charts Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Weekly Progress Chart */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  Progression hebdomadaire
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={analyticsStats.weeklyProgress.map((hours, index) => ({
+                    day: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'][index],
+                    hours
+                  }))}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="day" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="hours" fill="hsl(var(--primary))" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Subject Breakdown */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookOpen className="w-4 h-4" />
+                  Répartition par matière
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={200}>
+                  <PieChart>
+                    <Pie
+                      data={analyticsStats.subjectBreakdown}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="hours"
+                      label={({ subject, percentage }) => `${subject} (${percentage}%)`}
+                    >
+                      {analyticsStats.subjectBreakdown.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Monthly Progress Trend */}
+            <Card className="lg:col-span-2">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4" />
+                  Évolution mensuelle
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={analyticsStats.monthlyProgress}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line 
+                      type="monotone" 
+                      dataKey="hours" 
+                      stroke="hsl(var(--primary))" 
+                      strokeWidth={2}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Insights Cards */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Insights personnalisés</h3>
+            {insights.length > 0 ? (
+              insights.map((insight, index) => (
+                <Card key={index}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className={`p-2 rounded-full ${
+                        insight.type === 'success' ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' :
+                        insight.type === 'info' ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' :
+                        'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400'
+                      }`}>
+                        {insight.icon}
+                      </div>
+                      <div>
+                        <h4 className="font-medium">{insight.title}</h4>
+                        <p className="text-sm text-muted-foreground">{insight.description}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <Brain className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">Aucun insight disponible</h3>
+                  <p className="text-muted-foreground">
+                    Continuez à étudier pour obtenir des insights personnalisés.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </TabsContent>
 
         <TabsContent value="recommendations" className="space-y-4">
