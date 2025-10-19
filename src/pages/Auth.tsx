@@ -51,12 +51,14 @@ const Auth = () => {
   }, [cooldownEnd]);
 
   // Synchronous redirect based on role - happens before render
-  if (user && !authLoading && !adminLoading) {
+  if (user && !authLoading) {
     const redirectPath = isAdmin
       ? '/admin'
       : isProfessor
         ? '/professor'
-        : (useAuth().isStudent ? '/dashboard' : '/');
+        : isStudent
+          ? '/dashboard'
+          : '/dashboard'; // Default to dashboard, route guards will handle final access
     console.info(`Auth redirect → ${redirectPath}`);
     return <Navigate to={redirectPath} replace />;
   }
