@@ -6,10 +6,11 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Download } from 'lucide-react';
 import { useProfessorGrades } from '@/hooks/useProfessorGrades';
 import { useProfessorStudents } from '@/hooks/useProfessorStudents';
 import { Textarea } from '@/components/ui/textarea';
+import Papa from 'papaparse';
 
 interface GradesTabProps {
   courseId: string;
@@ -61,12 +62,44 @@ const GradesTab: React.FC<GradesTabProps> = ({ courseId }) => {
     }
   };
 
+  const handleExportCSV = () => {
+    const exportData = grades.map(grade => ({
+      'Étudiant': grade.student_name,
+      'Devoir': grade.assignment_name,
+      'Note': grade.grade,
+      'Note maximale': grade.max_grade,
+      'Pourcentage': grade.percentage,
+      'Commentaire': grade.comment || '',
+      'Date de notation': new Date(grade.graded_at).toLocaleDateString('fr-FR')
+    }));
+
+    const csv = Papa.unparse(exportData);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `notes_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-4">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Carnet de notes</CardTitle>
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={handleExportCSV}
+              disabled={grades.length === 0}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Exporter CSV
+            </Button>
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button>
                 <Plus className="h-4 w-4 mr-2" />
@@ -135,6 +168,7 @@ const GradesTab: React.FC<GradesTabProps> = ({ courseId }) => {
               </form>
             </DialogContent>
           </Dialog>
+          </div>
         </CardHeader>
         <CardContent>
           {loading ? (

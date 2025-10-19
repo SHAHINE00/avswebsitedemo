@@ -5,8 +5,9 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { CalendarIcon, Save, Clock, MapPin } from 'lucide-react';
+import { CalendarIcon, Save, Clock, MapPin, Download } from 'lucide-react';
 import { format } from 'date-fns';
+import Papa from 'papaparse';
 import { cn } from '@/lib/utils';
 import { useProfessorAttendance } from '@/hooks/useProfessorAttendance';
 import { useProfessorStudents } from '@/hooks/useProfessorStudents';
@@ -121,13 +122,43 @@ const AttendanceTab: React.FC<AttendanceTabProps> = ({ courseId, sessionId }) =>
     }));
   };
 
+  const handleExportCSV = () => {
+    const exportData = attendance.map(record => ({
+      'Date': new Date(record.attendance_date).toLocaleDateString('fr-FR'),
+      'Étudiant': record.student_name,
+      'Statut': record.status === 'present' ? 'Présent' : record.status === 'absent' ? 'Absent' : 'Retard',
+      'Notes': record.notes || ''
+    }));
+
+    const csv = Papa.unparse(exportData);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `presences_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-4">
       <TodaysSessions courseId={courseId} />
       
       <Card>
         <CardHeader>
-          <CardTitle>Marquer les présences</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>Marquer les présences</CardTitle>
+            <Button
+              variant="outline"
+              onClick={handleExportCSV}
+              disabled={attendance.length === 0}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Exporter CSV
+            </Button>
+          </div>
           {sessionDetails && (
             <div className="mt-2 p-3 bg-muted rounded-lg">
               <div className="flex items-center gap-4 text-sm">
