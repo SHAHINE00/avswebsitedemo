@@ -33,6 +33,22 @@ export const useCreateStudent = () => {
     });
     
     try {
+      // Get fresh session to ensure valid auth token
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        console.error('❌ [Client] No valid session:', sessionError);
+        toast({
+          title: "Erreur d'authentification",
+          description: "Veuillez vous reconnecter",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
+      console.log('✅ [Client] Session valid, proceeding with student creation');
+      
       const payload = { ...studentData, email: studentData.email.trim().toLowerCase() };
       console.log('📤 [Client] Invoking edge function with payload:', {
         ...payload,
@@ -40,7 +56,10 @@ export const useCreateStudent = () => {
       });
       
       const { data, error } = await supabase.functions.invoke('admin-create-student', {
-        body: payload
+        body: payload,
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
       });
 
       console.log('📥 [Client] Edge function response:', {

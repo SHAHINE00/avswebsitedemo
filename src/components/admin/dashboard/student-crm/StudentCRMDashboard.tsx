@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Search, Users, DollarSign, TrendingUp, AlertCircle, UserPlus } from 'lucide-react';
+import { Search, Users, DollarSign, TrendingUp, AlertCircle, UserPlus, Key, Edit2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useStudentCRM } from '@/hooks/useStudentCRM';
 import { useStudentFinancials } from '@/hooks/useStudentFinancials';
@@ -278,19 +278,49 @@ const StudentCRMDashboard: React.FC = () => {
               filteredStudents.map((student) => (
                 <div
                   key={student.id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent cursor-pointer transition-colors"
-                  onClick={() => handleStudentClick(student)}
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent transition-colors group"
                 >
-                  <div className="flex-1">
+                  <div 
+                    className="flex-1 cursor-pointer"
+                    onClick={() => handleStudentClick(student)}
+                  >
                     <p className="font-medium">{student.full_name || student.email}</p>
                     <p className="text-sm text-muted-foreground">{student.email}</p>
                     {student.phone && (
                       <p className="text-sm text-muted-foreground">{student.phone}</p>
                     )}
                   </div>
-                  <Badge variant="outline">
-                    {new Date(student.created_at).toLocaleDateString('fr-FR')}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline">
+                      {new Date(student.created_at).toLocaleDateString('fr-FR')}
+                    </Badge>
+                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleStudentClick(student);
+                        }}
+                        title="Voir le profil"
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleResetPassword(student);
+                        }}
+                        title="Réinitialiser le mot de passe"
+                      >
+                        <Key className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               ))
             )}
