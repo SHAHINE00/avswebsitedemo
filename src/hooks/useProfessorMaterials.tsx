@@ -62,16 +62,14 @@ export const useProfessorMaterials = (courseId: string) => {
 
       if (uploadError) throw uploadError;
 
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('course-materials')
-        .getPublicUrl(filePath);
+      // Store relative path instead of full Supabase URL
+      const relativeUrl = `/files/course-materials/${filePath}`;
 
       // Add material record
       const { error: dbError } = await supabase.rpc('add_course_material', {
         p_course_id: courseId,
         p_title: title,
-        p_file_url: publicUrl,
+        p_file_url: relativeUrl,
         p_file_type: file.type,
         p_lesson_id: lessonId || null,
         p_description: description || null,

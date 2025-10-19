@@ -1,5 +1,8 @@
 project_id = "nkkalmyhxtuisjdjmdew"
 
+[functions.proxy-file]
+verify_jwt = false
+
 [functions.admin-create-student]
 verify_jwt = true
 
