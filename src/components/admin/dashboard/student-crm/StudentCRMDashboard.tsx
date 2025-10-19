@@ -7,9 +7,11 @@ import { Search, Users, DollarSign, TrendingUp, AlertCircle, UserPlus } from 'lu
 import { supabase } from '@/integrations/supabase/client';
 import { useStudentCRM } from '@/hooks/useStudentCRM';
 import { useStudentFinancials } from '@/hooks/useStudentFinancials';
+import { useToast } from '@/hooks/use-toast';
 import StudentProfileDrawer from './StudentProfileDrawer';
 import StudentSegments from './StudentSegments';
 import { CreateStudentDialog } from './CreateStudentDialog';
+import { ResetPasswordDialog } from '../user-management/ResetPasswordDialog';
 
 interface Student {
   id: string;
@@ -39,6 +41,10 @@ const StudentCRMDashboard: React.FC = () => {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [isResetPasswordOpen, setIsResetPasswordOpen] = useState(false);
+  const [resetPasswordEmail, setResetPasswordEmail] = useState('');
+  const [generateLinkFn, setGenerateLinkFn] = useState<(() => Promise<string | null>) | null>(null);
+  const [setPasswordFn, setSetPasswordFn] = useState<((password: string) => Promise<boolean>) | null>(null);
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState({
     totalStudents: 0,
@@ -48,6 +54,7 @@ const StudentCRMDashboard: React.FC = () => {
   });
 
   const { getStudentSegments } = useStudentCRM();
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchStudents();
@@ -130,6 +137,66 @@ const StudentCRMDashboard: React.FC = () => {
   const handleStudentClick = (student: Student) => {
     setSelectedStudent(student);
     setDrawerOpen(true);
+  };
+
+  const handleResetPassword = async (student: Student) => {
+    // Generate Link Function
+    const generateLink = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('admin-generate-reset-link', {
+          body: { userId: student.id, userEmail: student.email }
+        });
+        
+        if (error) throw error;
+        
+        toast({
+          title: "Lien généré",
+          description: "Le lien de réinitialisation a été généré avec succès"
+        });
+        
+        return data?.resetLink || null;
+      } catch (error: any) {
+        console.error('Error generating reset link:', error);
+        toast({
+          title: "Erreur",
+          description: error.message || "Impossible de générer le lien",
+          variant: "destructive"
+        });
+        throw error;
+      }
+    };
+
+    // Set Password Function
+    const setPassword = async (password: string) => {
+      try {
+        const { data, error } = await supabase.functions.invoke('admin-set-user-password', {
+          body: { userId: student.id, userEmail: student.email, newPassword: password }
+        });
+        
+        if (error) throw error;
+        
+        toast({
+          title: "Succès",
+          description: "Le mot de passe a été mis à jour"
+        });
+        
+        return data?.success || false;
+      } catch (error: any) {
+        console.error('Error setting password:', error);
+        toast({
+          title: "Erreur",
+          description: error.message || "Impossible de définir le mot de passe",
+          variant: "destructive"
+        });
+        throw error;
+      }
+    };
+
+    // Setup and open dialog
+    setResetPasswordEmail(student.email);
+    setGenerateLinkFn(() => generateLink);
+    setSetPasswordFn(() => setPassword);
+    setIsResetPasswordOpen(true);
   };
 
   return (
@@ -236,6 +303,7 @@ const StudentCRMDashboard: React.FC = () => {
         student={selectedStudent}
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
+        onResetPassword={handleResetPassword}
       />
 
       {/* Create Student Dialog */}
@@ -243,6 +311,15 @@ const StudentCRMDashboard: React.FC = () => {
         open={createDialogOpen}
         onOpenChange={setCreateDialogOpen}
         onSuccess={fetchStudents}
+      />
+
+      {/* Reset Password Dialog */}
+      <ResetPasswordDialog
+        open={isResetPasswordOpen}
+        onOpenChange={setIsResetPasswordOpen}
+        userEmail={resetPasswordEmail}
+        onGenerateLink={generateLinkFn || undefined}
+        onSetPassword={setPasswordFn || undefined}
       />
     </div>
   );

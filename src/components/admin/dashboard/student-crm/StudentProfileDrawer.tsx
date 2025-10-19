@@ -3,7 +3,8 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { User, DollarSign, FileText, MessageSquare, Clock, BookOpen } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { User, DollarSign, FileText, MessageSquare, Clock, BookOpen, Key } from 'lucide-react';
 import StudentFinancialProfile from './StudentFinancialProfile';
 import StudentDocumentVault from './StudentDocumentVault';
 import StudentTimeline from './StudentTimeline';
@@ -40,9 +41,10 @@ interface StudentProfileDrawerProps {
   onOpenChange: (open: boolean) => void;
   activeTab?: 'overview' | 'enrollments' | 'finances' | 'documents' | 'timeline' | 'notes' | 'certificates' | 'communication';
   onEditStudent?: (student: StudentProfile) => void;
+  onResetPassword?: (student: StudentProfile) => void;
 }
 
-const StudentProfileDrawer: React.FC<StudentProfileDrawerProps> = ({ student, open, onOpenChange, activeTab, onEditStudent }) => {
+const StudentProfileDrawer: React.FC<StudentProfileDrawerProps> = ({ student, open, onOpenChange, activeTab, onEditStudent, onResetPassword }) => {
   const [currentTab, setCurrentTab] = useState<'overview' | 'enrollments' | 'finances' | 'documents' | 'timeline' | 'notes' | 'certificates' | 'communication'>(activeTab ?? 'overview');
 
   useEffect(() => {
@@ -71,18 +73,33 @@ const StudentProfileDrawer: React.FC<StudentProfileDrawerProps> = ({ student, op
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <SheetTitle className="text-2xl">{student.full_name || student.email}</SheetTitle>
-              <SheetDescription className="mt-1">
-                {student.email}
-              </SheetDescription>
-              {student.phone && (
-                <p className="text-sm text-muted-foreground mt-1">{student.phone}</p>
-              )}
-              <div className="flex gap-2 mt-2">
-                <Badge variant="outline">Étudiant</Badge>
-                <Badge variant="secondary">
-                  Inscrit {new Date(student.created_at).toLocaleDateString('fr-FR')}
-                </Badge>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <SheetTitle className="text-2xl">{student.full_name || student.email}</SheetTitle>
+                  <SheetDescription className="mt-1">
+                    {student.email}
+                  </SheetDescription>
+                  {student.phone && (
+                    <p className="text-sm text-muted-foreground mt-1">{student.phone}</p>
+                  )}
+                  <div className="flex gap-2 mt-2">
+                    <Badge variant="outline">Étudiant</Badge>
+                    <Badge variant="secondary">
+                      Inscrit {new Date(student.created_at).toLocaleDateString('fr-FR')}
+                    </Badge>
+                  </div>
+                </div>
+                {onResetPassword && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onResetPassword(student)}
+                    className="ml-2"
+                  >
+                    <Key className="w-4 h-4 mr-2" />
+                    Réinitialiser
+                  </Button>
+                )}
               </div>
             </div>
           </div>
