@@ -3,8 +3,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import DashboardOverview from './DashboardOverview';
 import DashboardCourses from './DashboardCourses';
-import DashboardNotifications from './DashboardNotifications';
-import DashboardAchievements from './DashboardAchievements';
 import DashboardProfile from './DashboardProfile';
 import GamificationDashboard from '@/components/gamification/GamificationDashboard';
 import GDPRDashboard from '@/components/gdpr/GDPRDashboard';
@@ -12,8 +10,6 @@ import EnhancedProgressDashboard from './EnhancedProgressDashboard';
 import PersonalStudyCalendar from './PersonalStudyCalendar';
 import SmartNotificationCenter from '@/components/notifications/SmartNotificationCenter';
 import DigitalCertificateSystem from '@/components/certificates/DigitalCertificateSystem';
-import AdvancedAnalytics from './AdvancedAnalytics';
-import SmartStudyRecommendations from './SmartStudyRecommendations';
 import { useStudyAnalytics } from '@/hooks/useStudyAnalytics';
 import type { Notification } from '@/hooks/useNotifications';
 import type { UserAchievement } from '@/hooks/useUserProfile';
@@ -74,8 +70,6 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
         <TabsTrigger value="courses">Formations</TabsTrigger>
         <TabsTrigger value="certificates">Certificats</TabsTrigger>
         <TabsTrigger value="gamification">Récompenses</TabsTrigger>
-        <TabsTrigger value="analytics">Analytics</TabsTrigger>
-        <TabsTrigger value="recommendations">IA</TabsTrigger>
         <TabsTrigger value="notifications" className="relative">
           Notifications
           {unreadCount > 0 && (
@@ -84,7 +78,6 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
             </Badge>
           )}
         </TabsTrigger>
-        <TabsTrigger value="achievements">Succès</TabsTrigger>
         <TabsTrigger value="profile">Profil</TabsTrigger>
         <TabsTrigger value="privacy">Confidentialité</TabsTrigger>
       </TabsList>
@@ -126,20 +119,8 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
         <SmartNotificationCenter />
       </TabsContent>
 
-      <TabsContent value="achievements" className="space-y-6">
-        <DashboardAchievements achievements={achievements} />
-      </TabsContent>
-
       <TabsContent value="profile" className="space-y-6">
         <DashboardProfile bookmarks={bookmarks} />
-      </TabsContent>
-
-      <TabsContent value="analytics" className="space-y-6">
-        <AdvancedAnalytics />
-      </TabsContent>
-
-      <TabsContent value="recommendations" className="space-y-6">
-        <SmartStudyRecommendations />
       </TabsContent>
 
       <TabsContent value="privacy" className="space-y-6">

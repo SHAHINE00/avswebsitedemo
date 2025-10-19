@@ -11,8 +11,12 @@ import {
   Calendar,
   Award,
   BarChart3,
-  Timer
+  Timer,
+  Sparkles,
+  Brain
 } from 'lucide-react';
+import SmartStudyRecommendations from './SmartStudyRecommendations';
+import AdvancedAnalytics from './AdvancedAnalytics';
 
 interface Enrollment {
   id: string;
@@ -111,10 +115,18 @@ const EnhancedProgressDashboard = ({
 
       {/* Detailed Progress */}
       <Tabs defaultValue="courses" className="space-y-4">
-        <TabsList>
+        <TabsList className="flex flex-wrap w-full gap-2 h-auto">
           <TabsTrigger value="courses">Formations</TabsTrigger>
           <TabsTrigger value="analytics">Analytiques</TabsTrigger>
           <TabsTrigger value="goals">Objectifs</TabsTrigger>
+          <TabsTrigger value="insights">
+            <Brain className="h-4 w-4 mr-2" />
+            Insights
+          </TabsTrigger>
+          <TabsTrigger value="recommendations">
+            <Sparkles className="h-4 w-4 mr-2" />
+            Recommandations IA
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="courses" className="space-y-4">
@@ -259,6 +271,14 @@ const EnhancedProgressDashboard = ({
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="insights" className="space-y-4">
+          <AdvancedAnalytics />
+        </TabsContent>
+
+        <TabsContent value="recommendations" className="space-y-4">
+          <SmartStudyRecommendations />
         </TabsContent>
       </Tabs>
     </div>
