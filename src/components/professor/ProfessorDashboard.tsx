@@ -5,6 +5,7 @@ import { useProfessorDashboard } from '@/hooks/useProfessorDashboard';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import BulkAnnouncementDialog from './BulkAnnouncementDialog';
 
 const ProfessorDashboard: React.FC = () => {
   const { stats, courses, loading, error, professorRecordExists, refetchAll } = useProfessorDashboard();
@@ -62,6 +63,11 @@ const ProfessorDashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Quick Actions */}
+      <div className="flex justify-end">
+        <BulkAnnouncementDialog />
+      </div>
+
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>

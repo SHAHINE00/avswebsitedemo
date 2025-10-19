@@ -2826,6 +2826,16 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      create_bulk_announcements: {
+        Args: {
+          p_content: string
+          p_course_ids: string[]
+          p_is_pinned?: boolean
+          p_priority?: string
+          p_title: string
+        }
+        Returns: number
+      }
       create_bulk_email_task: {
         Args: {
           p_custom_variables?: Json

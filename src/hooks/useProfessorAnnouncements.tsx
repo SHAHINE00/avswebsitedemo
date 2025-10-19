@@ -156,11 +156,47 @@ export const useProfessorAnnouncements = (courseId: string) => {
     }
   };
 
+  const createBulkAnnouncement = async (
+    courseIds: string[],
+    title: string,
+    content: string,
+    priority: string = 'normal',
+    isPinned: boolean = false
+  ) => {
+    try {
+      const { data, error } = await supabase.rpc('create_bulk_announcements', {
+        p_course_ids: courseIds,
+        p_title: title,
+        p_content: content,
+        p_priority: priority,
+        p_is_pinned: isPinned
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Succès",
+        description: `${data} annonce(s) créée(s)`,
+      });
+
+      return true;
+    } catch (error: any) {
+      console.error('Error creating bulk announcements:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de créer les annonces",
+        variant: "destructive",
+      });
+      return false;
+    }
+  };
+
   return {
     announcements,
     loading,
     fetchAnnouncements,
     createAnnouncement,
+    createBulkAnnouncement,
     updateAnnouncement,
     deleteAnnouncement
   };
