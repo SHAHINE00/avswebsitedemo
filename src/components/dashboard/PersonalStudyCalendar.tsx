@@ -209,12 +209,12 @@ const PersonalStudyCalendar = () => {
               Calendrier
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex justify-center">
             <Calendar
               mode="single"
               selected={selectedDate}
               onSelect={setSelectedDate}
-              className="rounded-md border"
+              className="pointer-events-auto"
             />
           </CardContent>
         </Card>
@@ -236,7 +236,7 @@ const PersonalStudyCalendar = () => {
           <CardContent>
             {selectedDateSessions.length === 0 ? (
               <div className="text-center py-6 text-muted-foreground">
-                <Calendar className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <CalendarIcon className="h-8 w-8 mx-auto mb-2 opacity-50" />
                 <p>Aucune session prévue</p>
               </div>
             ) : (
