@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import AdvancedCourseAnalytics from './AdvancedCourseAnalytics';
 
 interface AnalyticsProps {
   courseId: string;
@@ -54,7 +56,13 @@ const ProfessorAnalytics: React.FC<AnalyticsProps> = ({ courseId }) => {
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
   return (
-    <div className="space-y-6">
+    <Tabs defaultValue="basic" className="space-y-6">
+      <TabsList>
+        <TabsTrigger value="basic">Statistiques de base</TabsTrigger>
+        <TabsTrigger value="advanced">Analyses avancées</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="basic" className="space-y-6">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
@@ -144,7 +152,12 @@ const ProfessorAnalytics: React.FC<AnalyticsProps> = ({ courseId }) => {
           </CardContent>
         </Card>
       )}
-    </div>
+      </TabsContent>
+
+      <TabsContent value="advanced">
+        <AdvancedCourseAnalytics courseId={courseId} />
+      </TabsContent>
+    </Tabs>
   );
 };
 

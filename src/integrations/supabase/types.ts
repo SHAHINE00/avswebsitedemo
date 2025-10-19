@@ -2798,6 +2798,20 @@ export type Database = {
         Args: { p_course_id: string; p_user_id: string }
         Returns: undefined
       }
+      analyze_student_risk: {
+        Args: { p_course_id: string }
+        Returns: {
+          attendance_rate: number
+          average_grade: number
+          last_activity_days: number
+          missing_assignments: number
+          recommendations: Json
+          risk_level: string
+          risk_score: number
+          student_id: string
+          student_name: string
+        }[]
+      }
       approve_pending_user: {
         Args: { p_admin_id: string; p_pending_user_id: string }
         Returns: Json
@@ -2935,6 +2949,16 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_attendance_grade_correlation: {
+        Args: { p_course_id: string }
+        Returns: {
+          avg_attendance_high_grades: number
+          avg_attendance_low_grades: number
+          correlation_coefficient: number
+          data_points: Json
+          total_students: number
+        }[]
+      }
       get_attendance_statistics: {
         Args: { p_course_id: string }
         Returns: Json
@@ -2991,6 +3015,16 @@ export type Database = {
       get_grade_statistics: {
         Args: { p_course_id: string }
         Returns: Json
+      }
+      get_performance_trends: {
+        Args: { p_course_id: string; p_weeks_back?: number }
+        Returns: {
+          avg_attendance_rate: number
+          avg_grade: number
+          total_assignments: number
+          total_sessions: number
+          week_start: string
+        }[]
       }
       get_professor_course_materials: {
         Args: { p_course_id: string }
