@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Trash2, Download } from 'lucide-react';
+import { Plus, Trash2, Download, Upload } from 'lucide-react';
 import { useProfessorGrades } from '@/hooks/useProfessorGrades';
 import { useProfessorStudents } from '@/hooks/useProfessorStudents';
 import { Textarea } from '@/components/ui/textarea';
@@ -20,6 +20,9 @@ const GradesTab: React.FC<GradesTabProps> = ({ courseId }) => {
   const { grades, stats, loading, fetchGrades, fetchStats, upsertGrade, deleteGrade } = useProfessorGrades(courseId);
   const { students, fetchStudents } = useProfessorStudents(courseId);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [importStatus, setImportStatus] = useState<string>('');
   const [formData, setFormData] = useState({
     studentId: '',
     assignmentName: '',
@@ -85,6 +88,72 @@ const GradesTab: React.FC<GradesTabProps> = ({ courseId }) => {
     document.body.removeChild(link);
   };
 
+  const handleImportCSV = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setImportStatus('Traitement du fichier...');
+    
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: async (results) => {
+        const data = results.data as Array<{
+          'Email étudiant': string;
+          'Devoir': string;
+          'Note': string;
+          'Note maximale': string;
+          'Commentaire'?: string;
+        }>;
+
+        let successCount = 0;
+        let errorCount = 0;
+
+        for (const row of data) {
+          try {
+            // Find student by email
+            const student = students.find(s => 
+              s.email?.toLowerCase() === row['Email étudiant']?.toLowerCase()
+            );
+
+            if (!student) {
+              console.error('Student not found:', row['Email étudiant']);
+              errorCount++;
+              continue;
+            }
+
+            const success = await upsertGrade(
+              student.student_id,
+              row['Devoir'],
+              parseFloat(row['Note']),
+              parseFloat(row['Note maximale'] || '100'),
+              row['Commentaire'] || undefined
+            );
+
+            if (success) {
+              successCount++;
+            } else {
+              errorCount++;
+            }
+          } catch (error) {
+            console.error('Error importing row:', error);
+            errorCount++;
+          }
+        }
+
+        setImportStatus(`Import terminé: ${successCount} notes importées, ${errorCount} erreurs`);
+        setTimeout(() => {
+          setImportDialogOpen(false);
+          setImportStatus('');
+          if (fileInputRef.current) fileInputRef.current.value = '';
+        }, 3000);
+      },
+      error: (error) => {
+        setImportStatus(`Erreur: ${error.message}`);
+      }
+    });
+  };
+
   return (
     <div className="space-y-4">
       <Card>
@@ -99,6 +168,42 @@ const GradesTab: React.FC<GradesTabProps> = ({ courseId }) => {
               <Download className="h-4 w-4 mr-2" />
               Exporter CSV
             </Button>
+            <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline">
+                  <Upload className="h-4 w-4 mr-2" />
+                  Importer CSV
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Importer des notes depuis CSV</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Le fichier CSV doit contenir les colonnes suivantes:
+                    </p>
+                    <ul className="text-sm list-disc list-inside space-y-1 mb-4">
+                      <li>Email étudiant</li>
+                      <li>Devoir</li>
+                      <li>Note</li>
+                      <li>Note maximale</li>
+                      <li>Commentaire (optionnel)</li>
+                    </ul>
+                  </div>
+                  <Input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".csv"
+                    onChange={handleImportCSV}
+                  />
+                  {importStatus && (
+                    <p className="text-sm font-medium">{importStatus}</p>
+                  )}
+                </div>
+              </DialogContent>
+            </Dialog>
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button>
