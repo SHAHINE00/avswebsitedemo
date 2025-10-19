@@ -204,7 +204,7 @@ const Student: React.FC = () => {
 
   if (loading || adminLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 pt-16 sm:pt-20 lg:pt-24">
         <SEOHead {...utilityPagesSEO.dashboard} />
         <Navbar />
         <div className="container mx-auto px-6 py-8">
@@ -219,7 +219,7 @@ const Student: React.FC = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 pt-16 sm:pt-20 lg:pt-24">
         <SEOHead {...utilityPagesSEO.dashboard} />
         <Navbar />
         <div className="container mx-auto px-6 py-8">
@@ -235,7 +235,7 @@ const Student: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 pt-16 sm:pt-20 lg:pt-24">
         <SEOHead {...utilityPagesSEO.dashboard} />
         <Navbar />
         
