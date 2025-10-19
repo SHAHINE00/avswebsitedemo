@@ -142,7 +142,7 @@ const CoursePlayer = () => {
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-4">
               <Button variant="outline" size="sm" asChild>
-                <Link to="/dashboard">
+                <Link to="/student">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Retour au tableau de bord
                 </Link>

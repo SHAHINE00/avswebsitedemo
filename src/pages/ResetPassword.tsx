@@ -102,7 +102,7 @@ const ResetPassword = () => {
         }
 
         // Default to student dashboard
-        navigate('/dashboard', { replace: true });
+        navigate('/student', { replace: true });
       } else {
         navigate('/auth', { replace: true });
       }

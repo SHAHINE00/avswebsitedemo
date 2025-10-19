@@ -57,8 +57,8 @@ const Auth = () => {
       : isProfessor
         ? '/professor'
         : isStudent
-          ? '/dashboard'
-          : '/dashboard'; // Default to dashboard, route guards will handle final access
+          ? '/student'
+          : '/auth'; // No role assigned yet - stay at auth
     console.info(`Auth redirect → ${redirectPath}`);
     return <Navigate to={redirectPath} replace />;
   }
