@@ -250,62 +250,71 @@ const DigitalCertificateSystem = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-6">
-                {/* Student Info */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-muted rounded-lg">
-                  <div>
-                    <p className="text-sm font-medium">Étudiant</p>
-                    <p className="text-lg font-bold">{transcript.studentName}</p>
-                    <p className="text-sm text-muted-foreground">ID: {transcript.studentId}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">Période d'études</p>
-                    <p className="text-sm">
-                      Du {transcript.enrollmentDate.toLocaleDateString()} à aujourd'hui
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {transcript.totalCredits} crédits • Moyenne: {transcript.gpa}%
-                    </p>
-                  </div>
+              {!transcript ? (
+                <div className="text-center py-12">
+                  <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground">
+                    Aucun relevé de notes disponible. Complétez des formations pour générer votre relevé.
+                  </p>
                 </div>
+              ) : (
+                <div className="space-y-6">
+                  {/* Student Info */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-muted rounded-lg">
+                    <div>
+                      <p className="text-sm font-medium">Étudiant</p>
+                      <p className="text-lg font-bold">{transcript.studentName}</p>
+                      <p className="text-sm text-muted-foreground">ID: {transcript.studentId}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">Période d'études</p>
+                      <p className="text-sm">
+                        Du {transcript.enrollmentDate.toLocaleDateString()} à aujourd'hui
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {transcript.totalCredits} crédits • Moyenne: {transcript.gpa}%
+                      </p>
+                    </div>
+                  </div>
 
-                {/* Course List */}
-                <div>
-                  <h4 className="font-medium mb-4">Formations Complétées</h4>
-                  <div className="space-y-2">
-                    {transcript.courses.map((course, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div>
-                          <p className="font-medium">{course.title}</p>
-                          <p className="text-sm text-muted-foreground">
-                            Terminé le {course.completionDate.toLocaleDateString()} • {course.duration}
-                          </p>
+                  {/* Course List */}
+                  <div>
+                    <h4 className="font-medium mb-4">Formations Complétées</h4>
+                    <div className="space-y-2">
+                      {transcript.courses.map((course, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div>
+                            <p className="font-medium">{course.title}</p>
+                            <p className="text-sm text-muted-foreground">
+                              Terminé le {course.completionDate.toLocaleDateString()} • {course.duration}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-bold text-lg">{course.grade}%</p>
+                            <p className="text-sm text-muted-foreground">{course.credits} crédits</p>
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <p className="font-bold text-lg">{course.grade}%</p>
-                          <p className="text-sm text-muted-foreground">{course.credits} crédits</p>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                {/* Summary Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-primary/5 rounded-lg">
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-primary">{transcript.courses.length}</p>
-                    <p className="text-sm text-muted-foreground">Formations terminées</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-primary">{transcript.totalCredits}</p>
-                    <p className="text-sm text-muted-foreground">Crédits obtenus</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-primary">{transcript.gpa}%</p>
-                    <p className="text-sm text-muted-foreground">Moyenne générale</p>
+                  {/* Summary Stats */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-primary/5 rounded-lg">
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-primary">{transcript.courses.length}</p>
+                      <p className="text-sm text-muted-foreground">Formations terminées</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-primary">{transcript.totalCredits}</p>
+                      <p className="text-sm text-muted-foreground">Crédits obtenus</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-primary">{transcript.gpa}%</p>
+                      <p className="text-sm text-muted-foreground">Moyenne générale</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
