@@ -4,7 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowUpDown, ArrowUp, ArrowDown, Key } from "lucide-react";
 import { StudentQuickActions } from "./StudentQuickActions";
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -38,6 +38,7 @@ interface StudentDataTableProps {
   onGenerateCertificate?: (student: Student) => void;
   onViewDocuments?: (student: Student) => void;
   onArchive?: (student: Student) => void;
+  onResetPassword?: (student: Student) => void;
 }
 
 const getStatusBadgeVariant = (status?: string) => {
@@ -77,7 +78,8 @@ export const StudentDataTable = ({
   onEnrollCourse,
   onGenerateCertificate,
   onViewDocuments,
-  onArchive
+  onArchive,
+  onResetPassword,
 }: StudentDataTableProps) => {
   const allSelected = students.length > 0 && selectedStudents.length === students.length;
   const someSelected = selectedStudents.length > 0 && !allSelected;
@@ -196,18 +198,32 @@ export const StudentDataTable = ({
                   {formatDistanceToNow(new Date(student.created_at), { addSuffix: true, locale: fr })}
                 </TableCell>
                 <TableCell className="text-right">
-                  <StudentQuickActions
-                    studentId={student.id}
-                    studentName={student.full_name || 'N/A'}
-                    onViewProfile={() => onViewProfile(student)}
-                    onEdit={() => onEdit ? onEdit(student) : onViewProfile(student)}
-                    onRecordPayment={() => onRecordPayment && onRecordPayment(student)}
-                    onSendEmail={() => onSendEmail && onSendEmail(student)}
-                    onEnrollCourse={() => onEnrollCourse && onEnrollCourse(student)}
-                    onGenerateCertificate={() => onGenerateCertificate && onGenerateCertificate(student)}
-                    onViewDocuments={() => onViewDocuments && onViewDocuments(student)}
-                    onArchive={() => onArchive && onArchive(student)}
-                  />
+                  <div className="flex items-center justify-end gap-1">
+                    {onResetPassword && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => onResetPassword(student)}
+                        title="Réinitialiser le mot de passe"
+                      >
+                        <Key className="h-4 w-4" />
+                      </Button>
+                    )}
+                    <StudentQuickActions
+                      studentId={student.id}
+                      studentName={student.full_name || 'N/A'}
+                      onViewProfile={() => onViewProfile(student)}
+                      onEdit={() => onEdit ? onEdit(student) : onViewProfile(student)}
+                      onRecordPayment={() => onRecordPayment && onRecordPayment(student)}
+                      onSendEmail={() => onSendEmail && onSendEmail(student)}
+                      onEnrollCourse={() => onEnrollCourse && onEnrollCourse(student)}
+                      onGenerateCertificate={() => onGenerateCertificate && onGenerateCertificate(student)}
+                      onViewDocuments={() => onViewDocuments && onViewDocuments(student)}
+                      onArchive={() => onArchive && onArchive(student)}
+                      onResetPassword={() => onResetPassword && onResetPassword(student)}
+                    />
+                  </div>
                 </TableCell>
               </TableRow>
             ))

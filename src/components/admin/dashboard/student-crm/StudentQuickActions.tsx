@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, Eye, Edit, CreditCard, Mail, BookOpen, Award, FileText, Archive } from "lucide-react";
+import { MoreVertical, Eye, Edit, CreditCard, Mail, BookOpen, Award, FileText, Archive, Key } from "lucide-react";
 
 interface StudentQuickActionsProps {
   studentId: string;
@@ -19,6 +19,7 @@ interface StudentQuickActionsProps {
   onGenerateCertificate: () => void;
   onViewDocuments: () => void;
   onArchive: () => void;
+  onResetPassword?: () => void;
 }
 
 export const StudentQuickActions = ({
@@ -31,7 +32,8 @@ export const StudentQuickActions = ({
   onEnrollCourse,
   onGenerateCertificate,
   onViewDocuments,
-  onArchive
+  onArchive,
+  onResetPassword,
 }: StudentQuickActionsProps) => {
   return (
     <DropdownMenu>
@@ -71,6 +73,10 @@ export const StudentQuickActions = ({
         <DropdownMenuItem onSelect={onViewDocuments}>
           <FileText className="mr-2 h-4 w-4" />
           Voir Documents
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={onResetPassword}>
+          <Key className="mr-2 h-4 w-4" />
+          Réinitialiser le mot de passe
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={onArchive} className="text-destructive">

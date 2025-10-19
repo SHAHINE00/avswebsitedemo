@@ -21,6 +21,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { ResetPasswordDialog } from '../user-management/ResetPasswordDialog';
 
 interface Student {
   id: string;
@@ -63,6 +64,11 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [filters, setFilters] = useState<StudentFilterValues>({});
   const [analytics, setAnalytics] = useState<any>(null);
+  // Reset password dialog state
+  const [isResetPasswordOpen, setIsResetPasswordOpen] = useState(false);
+  const [resetPasswordEmail, setResetPasswordEmail] = useState('');
+  const [generateLinkFn, setGenerateLinkFn] = useState<(() => Promise<string | null>) | null>(null);
+  const [setPasswordFn, setSetPasswordFn] = useState<((password: string) => Promise<boolean>) | null>(null);
   const [metrics, setMetrics] = useState({
     totalStudents: 0,
     newThisMonth: 0,
@@ -314,6 +320,42 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
     }
   };
 
+  const handleResetPassword = async (student: Student) => {
+    const generateLink = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('admin-generate-reset-link', {
+          body: { userId: student.id, userEmail: student.email }
+        });
+        if (error) throw error;
+        toast({ title: 'Lien généré', description: 'Le lien de réinitialisation a été généré avec succès' });
+        return data?.resetLink || null;
+      } catch (error: any) {
+        console.error('Error generating reset link:', error);
+        toast({ title: 'Erreur', description: error.message || 'Impossible de générer le lien', variant: 'destructive' });
+        throw error;
+      }
+    };
+
+    const setPassword = async (password: string) => {
+      try {
+        const { data, error } = await supabase.functions.invoke('admin-set-user-password', {
+          body: { userId: student.id, userEmail: student.email, newPassword: password }
+        });
+        if (error) throw error;
+        toast({ title: 'Succès', description: 'Le mot de passe a été mis à jour' });
+        return data?.success || false;
+      } catch (error: any) {
+        console.error('Error setting password:', error);
+        toast({ title: 'Erreur', description: error.message || 'Impossible de définir le mot de passe', variant: 'destructive' });
+        throw error;
+      }
+    };
+
+    setResetPasswordEmail(student.email);
+    setGenerateLinkFn(() => generateLink);
+    setSetPasswordFn(() => setPassword);
+    setIsResetPasswordOpen(true);
+  };
   const handleExport = async (options: any) => {
     let studentsToExport: string[] = [];
     
@@ -668,6 +710,7 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
             onSort={handleSort}
             sortColumn={sortColumn}
             sortDirection={sortDirection}
+            onResetPassword={handleResetPassword}
           />
         </CardContent>
       </Card>
@@ -704,6 +747,17 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
         filteredStudents={filteredStudents.length}
         selectedStudents={selectedStudents.length}
         onExport={handleExport}
+      />
+
+      {/* Bulk Enrollment Dialog */}
+
+      {/* Reset Password Dialog */}
+      <ResetPasswordDialog
+        open={isResetPasswordOpen}
+        onOpenChange={setIsResetPasswordOpen}
+        userEmail={resetPasswordEmail}
+        onGenerateLink={generateLinkFn || (async () => null)}
+        onSetPassword={setPasswordFn || undefined}
       />
 
       {/* Bulk Enrollment Dialog */}
