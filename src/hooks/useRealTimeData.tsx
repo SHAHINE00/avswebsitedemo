@@ -11,8 +11,9 @@ export const useRealTimeData = () => {
   const setupRealTimeSubscriptions = useCallback(() => {
     if (!user) return null;
 
-    // Combined real-time channel for all user data
-    const channel = supabase
+    try {
+      // Combined real-time channel for all user data
+      const channel = supabase
       .channel('user-data-updates')
       
       // Study sessions updates
@@ -132,15 +133,19 @@ export const useRealTimeData = () => {
         }
       )
       
-      .subscribe((status) => {
+      .subscribe((status, err) => {
         if (status === 'SUBSCRIBED') {
           console.log('Real-time subscriptions established');
         } else if (status === 'CHANNEL_ERROR') {
-          logError('Real-time subscription error');
+          console.warn('Real-time subscription error:', err);
         }
       });
 
-    return channel;
+      return channel;
+    } catch (error) {
+      console.warn('Failed to setup real-time subscriptions:', error);
+      return null;
+    }
   }, [user, toast]);
 
   useEffect(() => {

@@ -33,11 +33,40 @@ interface DashboardStatsProps {
 }
 
 const DashboardStats = ({ enrollments, appointments }: DashboardStatsProps) => {
-  const { studyStats, loading, refreshStats } = useStudyAnalytics();
   const [statsKey, setStatsKey] = useState(0);
   
-  // Initialize real-time data subscriptions
-  useRealTimeData();
+  // Use defensive loading for analytics hook
+  let studyStats, loading, refreshStats;
+  
+  try {
+    const analytics = useStudyAnalytics();
+    studyStats = analytics.studyStats;
+    loading = analytics.loading;
+    refreshStats = analytics.refreshStats;
+  } catch (error) {
+    console.warn('useStudyAnalytics failed, using defaults:', error);
+    studyStats = {
+      totalHours: 0,
+      weeklyGoal: 10,
+      currentStreak: 0,
+      completionRate: 0,
+      averageSessionTime: 0,
+      lessonsCompleted: 0,
+      totalLessons: 0,
+      weeklyProgress: 0,
+      monthlyProgress: [],
+      subjectBreakdown: []
+    };
+    loading = false;
+    refreshStats = () => {};
+  }
+  
+  // Initialize real-time data subscriptions with error handling
+  try {
+    useRealTimeData();
+  } catch (error) {
+    console.warn('useRealTimeData failed:', error);
+  }
   
   const completedEnrollments = enrollments.filter(e => e.status === 'completed').length;
   const upcomingAppointments = appointments.filter(apt => apt.status === 'pending' || apt.status === 'confirmed').length;

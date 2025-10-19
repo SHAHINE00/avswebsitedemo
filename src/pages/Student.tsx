@@ -45,11 +45,53 @@ interface Appointment {
 const Student: React.FC = () => {
   const { user, signOut, isAdmin, adminLoading } = useAuth();
   const { toast } = useToast();
-  const { getUserAppointments } = useAppointmentBooking();
-  const { notifications, unreadCount, markAsRead } = useNotifications();
-  const { achievements } = useUserProfile();
-  const { bookmarks } = useCourseInteractions();
-  const { setupRealTimeSubscriptions } = useRealTimeData();
+  
+  // Use defensive loading for all hooks
+  let getUserAppointments, notifications, unreadCount, markAsRead, achievements, bookmarks, setupRealTimeSubscriptions;
+  
+  try {
+    const appointmentHook = useAppointmentBooking();
+    getUserAppointments = appointmentHook.getUserAppointments;
+  } catch (error) {
+    console.warn('useAppointmentBooking failed:', error);
+    getUserAppointments = async () => [];
+  }
+  
+  try {
+    const notifHook = useNotifications();
+    notifications = notifHook.notifications;
+    unreadCount = notifHook.unreadCount;
+    markAsRead = notifHook.markAsRead;
+  } catch (error) {
+    console.warn('useNotifications failed:', error);
+    notifications = [];
+    unreadCount = 0;
+    markAsRead = () => Promise.resolve();
+  }
+  
+  try {
+    const profileHook = useUserProfile();
+    achievements = profileHook.achievements;
+  } catch (error) {
+    console.warn('useUserProfile failed:', error);
+    achievements = [];
+  }
+  
+  try {
+    const courseHook = useCourseInteractions();
+    bookmarks = courseHook.bookmarks;
+  } catch (error) {
+    console.warn('useCourseInteractions failed:', error);
+    bookmarks = [];
+  }
+  
+  try {
+    const realtimeHook = useRealTimeData();
+    setupRealTimeSubscriptions = realtimeHook.setupRealTimeSubscriptions;
+  } catch (error) {
+    console.warn('useRealTimeData failed:', error);
+    setupRealTimeSubscriptions = () => null;
+  }
   
   const [enrollments, setEnrollments] = useSafeState<Enrollment[]>([]);
   const [appointments, setAppointments] = useSafeState<Appointment[]>([]);
