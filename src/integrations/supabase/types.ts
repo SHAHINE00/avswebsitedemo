@@ -3131,6 +3131,10 @@ export type Database = {
         Args: { p_notification_id: string }
         Returns: undefined
       }
+      notify_upcoming_session: {
+        Args: { p_hours_before?: number; p_session_id: string }
+        Returns: number
+      }
       promote_user_to_admin: {
         Args: { p_target_user_id: string }
         Returns: undefined
