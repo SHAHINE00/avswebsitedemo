@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import LoadingSpinner from '@/components/ui/loading-spinner';
@@ -53,13 +53,6 @@ const AdminRouteGuard: React.FC<AdminRouteGuardProps> = ({ children }) => {
     }
   }, [user, authLoading, navigate]);
 
-  // Redirect to auth if not logged in
-  useSafeEffect(() => {
-    if (!authLoading && !user) {
-      navigate('/auth', { replace: true });
-    }
-  }, [user, authLoading, navigate]);
-
   // Show loading while checking authentication and admin status
   if (authLoading || loading) {
     return (
@@ -72,9 +65,9 @@ const AdminRouteGuard: React.FC<AdminRouteGuardProps> = ({ children }) => {
     );
   }
 
-  // User not logged in
+  // User not logged in - synchronous redirect
   if (!user) {
-    return null; // Will redirect via useEffect
+    return <Navigate to="/auth" replace />;
   }
 
   // User logged in but not admin

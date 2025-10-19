@@ -56,15 +56,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const checkRolesAndProfile = async (userId: string) => {
     setAdminLoading(true);
     try {
-      // Check admin role
+      // Get user roles first (fallback for admin detection)
+      const { data: roles } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId);
+      
+      const hasAdminRole = roles?.some(r => r.role === 'admin') || false;
+      
+      // Check admin role via RPC
       const { data: adminData, error: adminError } = await supabase.rpc('is_admin', {
         _user_id: userId
       });
       
+      // Use RPC result if available, otherwise fallback to roles table
       if (!adminError && adminData !== null) {
         setIsAdmin(adminData === true);
       } else {
-        setIsAdmin(false);
+        setIsAdmin(hasAdminRole);
       }
 
       // Check professor role
@@ -97,12 +106,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsProfessor(false);
         setProfessorProfile(null);
       }
-
-      // Check if user is a student (only if explicitly has student role)
-      const { data: roles } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId);
 
       console.log('📊 AuthContext roles snapshot:', { userId, roles });
       

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -50,18 +50,12 @@ const Auth = () => {
     };
   }, [cooldownEnd]);
 
-  useSafeEffect(() => {
-    if (user && !authLoading && !adminLoading) {
-      // Role-based redirect with priority: admin > professor > student
-      if (isAdmin) {
-        navigate('/admin', { replace: true });
-      } else if (isProfessor) {
-        navigate('/professor', { replace: true });
-      } else {
-        navigate('/dashboard', { replace: true });
-      }
-    }
-  }, [user, authLoading, adminLoading, isAdmin, isProfessor, navigate]);
+  // Synchronous redirect based on role - happens before render
+  if (user && !authLoading && !adminLoading) {
+    const redirectPath = isAdmin ? '/admin' : isProfessor ? '/professor' : '/dashboard';
+    console.info(`Auth redirect → ${redirectPath}`);
+    return <Navigate to={redirectPath} replace />;
+  }
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
