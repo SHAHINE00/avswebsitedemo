@@ -25,17 +25,24 @@ const AdminRouteGuard: React.FC<AdminRouteGuardProps> = ({ children }) => {
       }
 
       try {
-        const { data, error } = await supabase.rpc('is_admin', {
-          _user_id: user.id
-        });
+        // Check if user has admin role
+        const { data: roles } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id);
 
-        if (error) {
-          setIsAdmin(false);
+        const hasAdmin = roles?.some(r => r.role === 'admin');
+        
+        if (hasAdmin) {
+          setIsAdmin(true);
         } else {
-          setIsAdmin(data === true);
+          setIsAdmin(false);
+          // Redirect students/professors immediately
+          navigate('/dashboard', { replace: true });
         }
       } catch (error) {
         setIsAdmin(false);
+        navigate('/dashboard', { replace: true });
       } finally {
         setLoading(false);
       }
@@ -44,7 +51,7 @@ const AdminRouteGuard: React.FC<AdminRouteGuardProps> = ({ children }) => {
     if (!authLoading) {
       checkAdminStatus();
     }
-  }, [user, authLoading]);
+  }, [user, authLoading, navigate]);
 
   // Redirect to auth if not logged in
   useSafeEffect(() => {

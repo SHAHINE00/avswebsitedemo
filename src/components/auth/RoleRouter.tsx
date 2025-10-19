@@ -18,11 +18,17 @@ export const RoleRouter: React.FC<{ children: React.ReactNode }> = ({ children }
       // Don't redirect if still loading or no user
       if (loading || !user) return;
 
+      // Block students from accessing admin/professor routes
+      const isStudentBlockedRoute = 
+        location.pathname.startsWith('/admin') || 
+        location.pathname.startsWith('/professor');
+
       // Only redirect from specific entry points to avoid loops
       const shouldRedirect = 
         location.pathname === '/auth' || 
         location.pathname === '/' ||
-        location.pathname === '/dashboard';
+        location.pathname === '/dashboard' ||
+        isStudentBlockedRoute;
 
       if (!shouldRedirect) return;
 
@@ -46,12 +52,21 @@ export const RoleRouter: React.FC<{ children: React.ReactNode }> = ({ children }
         // Priority-based routing
         const hasAdmin = roles.some(r => r.role === 'admin');
         const hasProfessor = roles.some(r => r.role === 'professor');
+        const isStudent = !hasAdmin && !hasProfessor;
 
-        if (hasAdmin && location.pathname !== '/admin') {
+        // Block students from admin/professor routes
+        if (isStudent && (location.pathname.startsWith('/admin') || location.pathname.startsWith('/professor'))) {
+          console.log('🚫 Student blocked from accessing protected route, redirecting to /dashboard');
+          navigate('/dashboard', { replace: true });
+          return;
+        }
+
+        // Priority-based routing for entry points
+        if (hasAdmin && location.pathname !== '/admin' && !location.pathname.startsWith('/admin/')) {
           navigate('/admin', { replace: true });
-        } else if (hasProfessor && !hasAdmin && location.pathname !== '/professor') {
+        } else if (hasProfessor && !hasAdmin && location.pathname !== '/professor' && !location.pathname.startsWith('/professor/')) {
           navigate('/professor', { replace: true });
-        } else if (!hasAdmin && !hasProfessor && location.pathname !== '/dashboard') {
+        } else if (isStudent && location.pathname !== '/dashboard') {
           navigate('/dashboard', { replace: true });
         }
       } catch (error) {
