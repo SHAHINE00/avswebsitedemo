@@ -35,6 +35,16 @@ interface DashboardStatsProps {
 const DashboardStats = ({ enrollments, appointments }: DashboardStatsProps) => {
   const [statsKey, setStatsKey] = useState(0);
   
+  // Configuration for which stats to show
+  const SHOW_STATS = {
+    enrollments: true,
+    appointments: true,
+    completed: true,
+    studyHours: true,
+    streak: false,       // hide from overview
+    weeklyGoal: false    // hide from overview
+  };
+  
   // Use defensive loading for analytics hook
   let studyStats, loading, refreshStats;
   
@@ -97,10 +107,19 @@ const DashboardStats = ({ enrollments, appointments }: DashboardStatsProps) => {
     };
   }, [refreshStats]);
 
+  // Compute grid columns based on enabled stats
+  const enabledCount = Object.values(SHOW_STATS).filter(Boolean).length;
+  const gridCols =
+    enabledCount >= 6 ? "xl:grid-cols-6" :
+    enabledCount === 5 ? "xl:grid-cols-5" :
+    enabledCount === 4 ? "xl:grid-cols-4" :
+    enabledCount === 3 ? "xl:grid-cols-3" :
+    enabledCount === 2 ? "xl:grid-cols-2" : "xl:grid-cols-1";
+
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-        {Array.from({ length: 6 }).map((_, i) => (
+      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ${gridCols} gap-4`}>
+        {Array.from({ length: enabledCount }).map((_, i) => (
           <Card key={i} className="animate-pulse">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <div className="h-4 bg-muted rounded w-20"></div>
@@ -116,7 +135,8 @@ const DashboardStats = ({ enrollments, appointments }: DashboardStatsProps) => {
   }
 
   return (
-    <div key={statsKey} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+    <div key={statsKey} className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ${gridCols} gap-4`}>
+      {SHOW_STATS.enrollments && (
       <Card className="transition-all duration-300 hover:shadow-md">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
@@ -131,7 +151,9 @@ const DashboardStats = ({ enrollments, appointments }: DashboardStatsProps) => {
           </p>
         </CardContent>
       </Card>
+      )}
       
+      {SHOW_STATS.appointments && (
       <Card className="transition-all duration-300 hover:shadow-md">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
@@ -146,7 +168,9 @@ const DashboardStats = ({ enrollments, appointments }: DashboardStatsProps) => {
           </p>
         </CardContent>
       </Card>
+      )}
       
+      {SHOW_STATS.completed && (
       <Card className="transition-all duration-300 hover:shadow-md">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
@@ -161,7 +185,9 @@ const DashboardStats = ({ enrollments, appointments }: DashboardStatsProps) => {
           </p>
         </CardContent>
       </Card>
+      )}
 
+      {SHOW_STATS.studyHours && (
       <Card className="transition-all duration-300 hover:shadow-md">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
@@ -179,7 +205,9 @@ const DashboardStats = ({ enrollments, appointments }: DashboardStatsProps) => {
           )}
         </CardContent>
       </Card>
+      )}
 
+      {SHOW_STATS.streak && (
       <Card className="transition-all duration-300 hover:shadow-md">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
@@ -197,7 +225,9 @@ const DashboardStats = ({ enrollments, appointments }: DashboardStatsProps) => {
           )}
         </CardContent>
       </Card>
+      )}
 
+      {SHOW_STATS.weeklyGoal && (
       <Card className="transition-all duration-300 hover:shadow-md">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
@@ -218,6 +248,7 @@ const DashboardStats = ({ enrollments, appointments }: DashboardStatsProps) => {
           )}
         </CardContent>
       </Card>
+      )}
     </div>
   );
 };
