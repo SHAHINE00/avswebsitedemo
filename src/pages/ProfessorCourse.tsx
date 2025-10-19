@@ -137,10 +137,11 @@ const ProfessorCourse: React.FC = () => {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-            <TabsList className="grid w-full grid-cols-7">
+            <TabsList className="grid w-full grid-cols-8">
               <TabsTrigger value="schedule">Emploi du temps</TabsTrigger>
               <TabsTrigger value="students">Étudiants</TabsTrigger>
               <TabsTrigger value="attendance">Présences</TabsTrigger>
+              <TabsTrigger value="justifications">Justificatifs</TabsTrigger>
               <TabsTrigger value="grades">Notes</TabsTrigger>
               <TabsTrigger value="announcements">Annonces</TabsTrigger>
               <TabsTrigger value="materials">Documents</TabsTrigger>
@@ -160,12 +161,6 @@ const ProfessorCourse: React.FC = () => {
                   </CardContent>
                 </Card>
               )}
-              <div className="mt-6">
-                <TodaysSessions courseId={courseId} />
-              </div>
-              <div className="mt-6">
-                <AbsenceApprovalList />
-              </div>
             </TabsContent>
 
             <TabsContent value="students">
@@ -174,6 +169,10 @@ const ProfessorCourse: React.FC = () => {
 
             <TabsContent value="attendance">
               <AttendanceTab courseId={courseId} sessionId={sessionId || undefined} />
+            </TabsContent>
+
+            <TabsContent value="justifications">
+              <AbsenceApprovalList />
             </TabsContent>
 
             <TabsContent value="grades">

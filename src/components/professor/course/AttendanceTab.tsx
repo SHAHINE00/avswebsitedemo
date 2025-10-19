@@ -12,6 +12,7 @@ import { useProfessorAttendance } from '@/hooks/useProfessorAttendance';
 import { useProfessorStudents } from '@/hooks/useProfessorStudents';
 import { supabase } from '@/integrations/supabase/client';
 import { AttendanceAnalytics } from '@/components/professor/AttendanceAnalytics';
+import { TodaysSessions } from '@/components/professor/TodaysSessions';
 
 interface AttendanceTabProps {
   courseId: string;
@@ -122,6 +123,8 @@ const AttendanceTab: React.FC<AttendanceTabProps> = ({ courseId, sessionId }) =>
 
   return (
     <div className="space-y-4">
+      <TodaysSessions courseId={courseId} />
+      
       <Card>
         <CardHeader>
           <CardTitle>Marquer les présences</CardTitle>
