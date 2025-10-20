@@ -44,7 +44,7 @@ const CommunicationHub: React.FC<CommunicationHubProps> = ({ courseId }) => {
         p_notification_type: 'communication',
         p_priority: priority,
         p_send_email: sendEmail
-      });
+      }) as { data: number | null; error: any };
 
       if (error) throw error;
 

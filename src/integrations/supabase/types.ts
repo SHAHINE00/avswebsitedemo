@@ -3207,6 +3207,19 @@ export type Database = {
         }
         Returns: undefined
       }
+      send_bulk_notification: {
+        Args: {
+          p_course_id?: string
+          p_message: string
+          p_notification_type?: string
+          p_priority?: string
+          p_recipient_type?: string
+          p_send_email?: boolean
+          p_student_id?: string
+          p_title: string
+        }
+        Returns: number
+      }
       simple_reorder_section: {
         Args: { p_new_order: number; p_section_key: string }
         Returns: undefined
