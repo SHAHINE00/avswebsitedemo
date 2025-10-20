@@ -1,107 +1,129 @@
 import React, { useState } from 'react';
-import { useAbsenceJustifications } from '@/hooks/useAbsenceJustifications';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { FileText } from 'lucide-react';
 
 interface AbsenceJustificationDialogProps {
   attendanceId: string;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  attendanceDate: string;
+  onSuccess?: () => void;
 }
-
-const JUSTIFICATION_TYPES = [
-  { value: 'medical', label: 'Raison médicale' },
-  { value: 'family_emergency', label: 'Urgence familiale' },
-  { value: 'official_event', label: 'Événement officiel' },
-  { value: 'other', label: 'Autre' }
-];
 
 export const AbsenceJustificationDialog: React.FC<AbsenceJustificationDialogProps> = ({
   attendanceId,
-  open,
-  onOpenChange
+  attendanceDate,
+  onSuccess
 }) => {
-  const { user } = useAuth();
-  const { createJustification } = useAbsenceJustifications();
-  const [formData, setFormData] = useState({
-    justification_type: 'medical',
-    reason: '',
-    document_url: ''
-  });
+  const [open, setOpen] = useState(false);
+  const [justificationType, setJustificationType] = useState<string>('');
+  const [reason, setReason] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user) return;
-    
-    const success = await createJustification({
-      attendance_id: attendanceId,
-      student_id: user.id,
-      ...formData,
-      document_url: formData.document_url || null
-    });
-    
-    if (success) {
-      onOpenChange(false);
-      setFormData({
-        justification_type: 'medical',
-        reason: '',
-        document_url: ''
+  const handleSubmit = async () => {
+    if (!justificationType || !reason.trim()) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez remplir tous les champs requis",
+        variant: "destructive"
       });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await (supabase.rpc as any)('submit_absence_justification', {
+        p_attendance_id: attendanceId,
+        p_justification_type: justificationType,
+        p_reason: reason
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Justification soumise",
+        description: "Votre justification a été envoyée avec succès"
+      });
+
+      setOpen(false);
+      setJustificationType('');
+      setReason('');
+      onSuccess?.();
+    } catch (error: any) {
+      toast({
+        title: "Erreur",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm">
+          <FileText className="h-4 w-4 mr-2" />
+          Justifier
+        </Button>
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Justifier une absence</DialogTitle>
+          <DialogDescription>
+            Soumettez une justification pour l'absence du {new Date(attendanceDate).toLocaleDateString('fr-FR')}
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label>Type de justificatif</Label>
-            <Select
-              value={formData.justification_type}
-              onValueChange={(value) => setFormData({ ...formData, justification_type: value })}
-            >
-              <SelectTrigger><SelectValue /></SelectTrigger>
+
+        <div className="space-y-4 py-4">
+          <div className="space-y-2">
+            <Label htmlFor="type">Type de justification</Label>
+            <Select value={justificationType} onValueChange={setJustificationType}>
+              <SelectTrigger>
+                <SelectValue placeholder="Sélectionnez un type" />
+              </SelectTrigger>
               <SelectContent>
-                {JUSTIFICATION_TYPES.map(type => (
-                  <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
-                ))}
+                <SelectItem value="medical">Certificat médical</SelectItem>
+                <SelectItem value="family">Raisons familiales</SelectItem>
+                <SelectItem value="administrative">Raisons administratives</SelectItem>
+                <SelectItem value="other">Autre</SelectItem>
               </SelectContent>
             </Select>
           </div>
-          <div>
-            <Label>Raison détaillée</Label>
+
+          <div className="space-y-2">
+            <Label htmlFor="reason">Raison détaillée</Label>
             <Textarea
-              placeholder="Expliquez la raison de votre absence..."
-              value={formData.reason}
-              onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
-              required
+              id="reason"
+              placeholder="Décrivez la raison de votre absence..."
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
               rows={4}
             />
           </div>
-          <div>
-            <Label>Document (URL)</Label>
-            <Input
-              type="url"
-              placeholder="Lien vers le document justificatif (optionnel)"
-              value={formData.document_url}
-              onChange={(e) => setFormData({ ...formData, document_url: e.target.value })}
-            />
-          </div>
-          <div className="flex gap-2">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
-              Annuler
-            </Button>
-            <Button type="submit" className="flex-1">Soumettre</Button>
-          </div>
-        </form>
+        </div>
+
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" onClick={() => setOpen(false)} disabled={loading}>
+            Annuler
+          </Button>
+          <Button onClick={handleSubmit} disabled={loading}>
+            {loading ? 'Envoi...' : 'Soumettre'}
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

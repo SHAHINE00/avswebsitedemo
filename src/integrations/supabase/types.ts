@@ -3067,6 +3067,27 @@ export type Database = {
         Args: { p_end_date?: string; p_start_date?: string }
         Returns: Json
       }
+      get_student_attendance_with_justifications: {
+        Args: {
+          p_course_id?: string
+          p_end_date?: string
+          p_start_date?: string
+        }
+        Returns: {
+          attendance_date: string
+          attendance_id: string
+          course_id: string
+          course_title: string
+          justification_id: string
+          justification_reason: string
+          justification_status: string
+          justification_type: string
+          notes: string
+          reviewed_at: string
+          session_type: string
+          status: string
+        }[]
+      }
       get_student_detail: {
         Args: { p_course_id: string; p_student_id: string }
         Returns: Json
@@ -3223,6 +3244,15 @@ export type Database = {
       simple_reorder_section: {
         Args: { p_new_order: number; p_section_key: string }
         Returns: undefined
+      }
+      submit_absence_justification: {
+        Args: {
+          p_attendance_id: string
+          p_document_url?: string
+          p_justification_type: string
+          p_reason: string
+        }
+        Returns: string
       }
       test_anonymous_access_blocked: {
         Args: Record<PropertyKey, never>
