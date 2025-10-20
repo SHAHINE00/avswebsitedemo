@@ -17,6 +17,9 @@ const NotificationCenter: React.FC = () => {
   const { toast } = useToast();
   const [attendanceData, setAttendanceData] = useState<any[]>([]);
   const [attendanceLoading, setAttendanceLoading] = useState(false);
+  const [justificationDialogOpen, setJustificationDialogOpen] = useState(false);
+  const [selectedAttendanceId, setSelectedAttendanceId] = useState<string | null>(null);
+  const [selectedAttendanceDate, setSelectedAttendanceDate] = useState<string | null>(null);
 
   const handleNotificationClick = (notification: any) => {
     if (!notification.is_read) {
@@ -54,6 +57,7 @@ const NotificationCenter: React.FC = () => {
   }
 
   return (
+    <>
     <Tabs defaultValue="notifications" className="space-y-4">
       <TabsList>
         <TabsTrigger value="notifications">
@@ -200,11 +204,17 @@ const NotificationCenter: React.FC = () => {
                       )}
                     </div>
                     {record.status === 'absent' && !record.justification_id && (
-                      <AbsenceJustificationDialog
-                        attendanceId={record.attendance_id}
-                        attendanceDate={record.attendance_date}
-                        onSuccess={loadAttendanceData}
-                      />
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedAttendanceId(record.attendance_id);
+                          setSelectedAttendanceDate(record.attendance_date);
+                          setJustificationDialogOpen(true);
+                        }}
+                      >
+                        Justifier
+                      </Button>
                     )}
                   </div>
                 ))}
@@ -214,6 +224,23 @@ const NotificationCenter: React.FC = () => {
         </Card>
       </TabsContent>
     </Tabs>
+
+    {selectedAttendanceId && (
+      <AbsenceJustificationDialog
+        attendanceId={selectedAttendanceId}
+        attendanceDate={selectedAttendanceDate || undefined}
+        open={justificationDialogOpen}
+        onOpenChange={(open) => {
+          setJustificationDialogOpen(open);
+          if (!open) {
+            setSelectedAttendanceId(null);
+            setSelectedAttendanceDate(null);
+            loadAttendanceData();
+          }
+        }}
+      />
+    )}
+    </>
   );
 };
 

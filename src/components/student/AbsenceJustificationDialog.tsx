@@ -17,16 +17,19 @@ import { FileText } from 'lucide-react';
 
 interface AbsenceJustificationDialogProps {
   attendanceId: string;
-  attendanceDate: string;
+  attendanceDate?: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
 }
 
 export const AbsenceJustificationDialog: React.FC<AbsenceJustificationDialogProps> = ({
   attendanceId,
   attendanceDate,
+  open,
+  onOpenChange,
   onSuccess
 }) => {
-  const [open, setOpen] = useState(false);
   const [justificationType, setJustificationType] = useState<string>('');
   const [reason, setReason] = useState('');
   const [loading, setLoading] = useState(false);
@@ -57,7 +60,7 @@ export const AbsenceJustificationDialog: React.FC<AbsenceJustificationDialogProp
         description: "Votre justification a été envoyée avec succès"
       });
 
-      setOpen(false);
+      onOpenChange(false);
       setJustificationType('');
       setReason('');
       onSuccess?.();
@@ -73,18 +76,15 @@ export const AbsenceJustificationDialog: React.FC<AbsenceJustificationDialogProp
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <FileText className="h-4 w-4 mr-2" />
-          Justifier
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Justifier une absence</DialogTitle>
           <DialogDescription>
-            Soumettez une justification pour l'absence du {new Date(attendanceDate).toLocaleDateString('fr-FR')}
+            {attendanceDate 
+              ? `Soumettez une justification pour l'absence du ${new Date(attendanceDate).toLocaleDateString('fr-FR')}`
+              : 'Soumettez une justification pour cette absence'
+            }
           </DialogDescription>
         </DialogHeader>
 
@@ -117,7 +117,7 @@ export const AbsenceJustificationDialog: React.FC<AbsenceJustificationDialogProp
         </div>
 
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={() => setOpen(false)} disabled={loading}>
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
             Annuler
           </Button>
           <Button onClick={handleSubmit} disabled={loading}>
