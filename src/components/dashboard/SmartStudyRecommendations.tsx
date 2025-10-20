@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -6,6 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { useStudyAnalytics } from '@/hooks/useStudyAnalytics';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import { Brain, Target, Clock, TrendingUp, BookOpen, Zap, Calendar, ArrowRight } from 'lucide-react';
 
 interface StudyRecommendation {
@@ -28,9 +30,64 @@ interface OptimalStudyTime {
 const SmartStudyRecommendations: React.FC = () => {
   const { user } = useAuth();
   const { studyStats } = useStudyAnalytics();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [recommendations, setRecommendations] = useState<StudyRecommendation[]>([]);
   const [optimalTimes, setOptimalTimes] = useState<OptimalStudyTime[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Handle recommendation button actions
+  const handleRecommendationAction = (rec: StudyRecommendation) => {
+    switch (rec.type) {
+      case 'schedule':
+        setSearchParams({ tab: 'calendar' });
+        toast({
+          title: "Navigation vers le calendrier",
+          description: "Planifiez vos sessions d'étude",
+        });
+        break;
+      
+      case 'streak':
+      case 'content':
+        setSearchParams({ tab: 'courses' });
+        toast({
+          title: "Navigation vers les formations",
+          description: rec.type === 'content' && rec.metadata?.subject 
+            ? `Concentrez-vous sur ${rec.metadata.subject}` 
+            : "Commencez votre session d'étude",
+        });
+        break;
+      
+      case 'performance':
+        toast({
+          title: "Conseil d'optimisation",
+          description: rec.metadata?.recommended 
+            ? `Essayez des sessions de ${rec.metadata.recommended} minutes pour une meilleure rétention.`
+            : rec.description,
+          duration: 5000,
+        });
+        break;
+      
+      case 'review':
+        if (rec.actionUrl) {
+          navigate(rec.actionUrl);
+        } else {
+          setSearchParams({ tab: 'courses' });
+          toast({
+            title: "Temps de révision",
+            description: "Révisez vos leçons complétées pour consolider vos acquis.",
+          });
+        }
+        break;
+      
+      default:
+        toast({
+          title: rec.title,
+          description: rec.description,
+        });
+    }
+  };
 
   // Generate AI-powered study recommendations
   const generateRecommendations = async () => {
@@ -53,6 +110,7 @@ const SmartStudyRecommendations: React.FC = () => {
             description: `Vous n'avez atteint que ${progressPercentage.toFixed(0)}% de votre objectif. Planifiez 2-3 sessions courtes cette semaine.`,
             priority: 'high',
             actionText: 'Planifier maintenant',
+            actionUrl: '/student?tab=calendar',
             metadata: { remainingHours: studyStats.weeklyGoal - currentWeekHours }
           });
         } else if (progressPercentage > 100) {
@@ -63,6 +121,7 @@ const SmartStudyRecommendations: React.FC = () => {
             description: `Excellent ! Vous avez dépassé votre objectif de ${(progressPercentage - 100).toFixed(0)}%. Maintenez ce rythme.`,
             priority: 'low',
             actionText: 'Voir les progrès',
+            actionUrl: '/student?tab=progress',
             metadata: { overagePercentage: progressPercentage - 100 }
           });
         }
@@ -77,6 +136,7 @@ const SmartStudyRecommendations: React.FC = () => {
           description: 'Commencez une nouvelle série en étudiant aujourd\'hui, même 15 minutes suffisent.',
           priority: 'medium',
           actionText: 'Commencer maintenant',
+          actionUrl: '/student?tab=courses',
           metadata: { minimumTime: 15 }
         });
       } else if (studyStats.currentStreak >= 7) {
@@ -87,6 +147,7 @@ const SmartStudyRecommendations: React.FC = () => {
           description: 'Incroyable régularité ! Continuez sur cette lancée pour maximiser votre apprentissage.',
           priority: 'low',
           actionText: 'Continuer',
+          actionUrl: '/student?tab=courses',
           metadata: { currentStreak: studyStats.currentStreak }
         });
       }
@@ -104,6 +165,7 @@ const SmartStudyRecommendations: React.FC = () => {
             description: `${leastStudiedSubject.subject} nécessite plus d'attention. Consacrez-y votre prochaine session.`,
             priority: 'medium',
             actionText: 'Étudier maintenant',
+            actionUrl: '/student?tab=courses',
             metadata: { subject: leastStudiedSubject.subject }
           });
         }
@@ -149,6 +211,7 @@ const SmartStudyRecommendations: React.FC = () => {
             description: `Il y a ${daysSinceCompletion} jours que vous avez terminé "${oldestLesson.course_lessons?.title}". Une révision consoliderait vos acquis.`,
             priority: 'low',
             actionText: 'Réviser',
+            actionUrl: '/student?tab=courses',
             metadata: { lessonId: oldestLesson.lesson_id, daysSince: daysSinceCompletion }
           });
         }
@@ -303,7 +366,7 @@ const SmartStudyRecommendations: React.FC = () => {
                      rec.priority === 'medium' ? 'Important' : 'Conseil'}
                   </Badge>
                 </div>
-                <Button size="sm" className="w-full">
+                <Button size="sm" className="w-full" onClick={() => handleRecommendationAction(rec)}>
                   {rec.actionText}
                   <ArrowRight className="w-3 h-3 ml-2" />
                 </Button>
