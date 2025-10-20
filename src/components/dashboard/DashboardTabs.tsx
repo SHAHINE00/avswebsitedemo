@@ -10,6 +10,7 @@ import EnhancedProgressDashboard from './EnhancedProgressDashboard';
 import PersonalStudyCalendar from './PersonalStudyCalendar';
 import SmartNotificationCenter from '@/components/notifications/SmartNotificationCenter';
 import DigitalCertificateSystem from '@/components/certificates/DigitalCertificateSystem';
+import { MyAttendance } from '@/components/student/MyAttendance';
 import { useStudyAnalytics } from '@/hooks/useStudyAnalytics';
 import type { Notification } from '@/hooks/useNotifications';
 import type { UserAchievement } from '@/hooks/useUserProfile';
@@ -67,6 +68,7 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
         <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
         <TabsTrigger value="progress">Progression</TabsTrigger>
         <TabsTrigger value="calendar">Calendrier</TabsTrigger>
+        <TabsTrigger value="attendance">Assiduité</TabsTrigger>
         <TabsTrigger value="courses">Formations</TabsTrigger>
         <TabsTrigger value="certificates">Certificats</TabsTrigger>
         <TabsTrigger value="gamification">Récompenses</TabsTrigger>
@@ -101,6 +103,10 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
 
       <TabsContent value="calendar" className="space-y-6">
         <PersonalStudyCalendar />
+      </TabsContent>
+
+      <TabsContent value="attendance" className="space-y-6">
+        <MyAttendance />
       </TabsContent>
 
       <TabsContent value="courses" className="space-y-6">
