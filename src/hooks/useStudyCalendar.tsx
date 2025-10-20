@@ -43,7 +43,7 @@ export const useStudyCalendar = () => {
     try {
       const { data: sessions, error } = await supabase
         .from('study_sessions')
-        .select('*')
+        .select('*, courses(title)')
         .eq('user_id', user.id)
         .order('started_at', { ascending: false });
 
@@ -52,10 +52,11 @@ export const useStudyCalendar = () => {
       // Convert backend sessions to frontend format
       const convertedSessions: StudySession[] = (sessions || []).map(session => {
         const metadata = session.metadata as any;
+        const courses = (session as any).courses;
         return {
           id: session.id,
           title: metadata?.custom_title || `Session ${session.session_type}`,
-          course: 'Formation',
+          course: courses?.title || 'Formation',
           date: new Date(session.started_at),
           startTime: new Date(session.started_at).toLocaleTimeString('fr-FR', { 
             hour: '2-digit', 
@@ -95,17 +96,20 @@ export const useStudyCalendar = () => {
       if (error) throw error;
 
       // Convert backend goals to frontend format
-      const convertedGoals: StudyGoal[] = (goals || []).map(goal => ({
-        id: goal.id,
-        title: `Objectif ${goal.goal_type}`,
-        target: goal.target_value,
-        current: goal.current_value,
-        unit: goal.goal_type === 'weekly_hours' || goal.goal_type === 'monthly_hours' ? 'hours' : 'lessons',
-        deadline: new Date(goal.period_end),
-        priority: 'medium' as const, // Will derive from deadline proximity
-        status: goal.status as StudyGoal['status'],
-        goal_type: goal.goal_type
-      }));
+      const convertedGoals: StudyGoal[] = (goals || []).map(goal => {
+        const metadata = (goal as any).metadata;
+        return {
+          id: goal.id,
+          title: metadata?.custom_title || `Objectif ${goal.goal_type}`,
+          target: goal.target_value,
+          current: goal.current_value,
+          unit: goal.goal_type === 'weekly_hours' || goal.goal_type === 'monthly_hours' ? 'hours' : 'lessons',
+          deadline: new Date(goal.period_end),
+          priority: 'medium' as const,
+          status: goal.status as StudyGoal['status'],
+          goal_type: goal.goal_type
+        };
+      });
 
       setStudyGoals(convertedGoals);
     } catch (error) {
@@ -131,10 +135,10 @@ export const useStudyCalendar = () => {
     if (!user) return;
 
     try {
-      // Combine date and time
+      // Combine date and time with proper timezone handling
       const [hours, minutes] = sessionData.startTime.split(':');
       const startDateTime = new Date(sessionData.date);
-      startDateTime.setHours(parseInt(hours), parseInt(minutes));
+      startDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
 
       // Insert directly with planned date/time and custom title
       const { error } = await supabase
@@ -191,7 +195,10 @@ export const useStudyCalendar = () => {
           current_value: 0,
           period_start: new Date().toISOString().split('T')[0],
           period_end: goalData.deadline.toISOString().split('T')[0],
-          status: 'active'
+          status: 'active',
+          metadata: {
+            custom_title: goalData.title
+          }
         });
 
       if (error) throw error;

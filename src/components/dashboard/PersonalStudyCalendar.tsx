@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -53,6 +54,7 @@ interface StudyGoal {
 
 const PersonalStudyCalendar = () => {
   const { toast } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [showSessionDialog, setShowSessionDialog] = useState(false);
   const [showGoalDialog, setShowGoalDialog] = useState(false);
@@ -63,6 +65,7 @@ const PersonalStudyCalendar = () => {
   const [sessionCourseId, setSessionCourseId] = useState('');
   const [sessionTime, setSessionTime] = useState('09:00');
   const [sessionDuration, setSessionDuration] = useState(60);
+  const [sessionType, setSessionType] = useState<'lesson' | 'quiz' | 'review' | 'project'>('lesson');
 
   // Form states for goal
   const [goalTitle, setGoalTitle] = useState('');
@@ -72,6 +75,7 @@ const PersonalStudyCalendar = () => {
 
   // Enrollments for course selection
   const [enrollments, setEnrollments] = useState<any[]>([]);
+  const [enrollmentsLoading, setEnrollmentsLoading] = useState(true);
   
   // Use real data from hooks
   const { 
@@ -79,7 +83,8 @@ const PersonalStudyCalendar = () => {
     studyGoals, 
     loading, 
     createStudySession, 
-    createStudyGoal 
+    createStudyGoal,
+    refreshData
   } = useStudyCalendar();
   
   const { getMyEnrollments } = useStudents();
@@ -87,8 +92,10 @@ const PersonalStudyCalendar = () => {
   // Fetch enrollments on mount
   useEffect(() => {
     const loadEnrollments = async () => {
+      setEnrollmentsLoading(true);
       const data = await getMyEnrollments();
       setEnrollments(data);
+      setEnrollmentsLoading(false);
     };
     loadEnrollments();
   }, []);
@@ -96,6 +103,13 @@ const PersonalStudyCalendar = () => {
   const selectedDateSessions = studySessions.filter(
     session => session.date.toDateString() === selectedDate?.toDateString()
   );
+
+  // Get dates with sessions for visual indicators
+  const datesWithSessions = studySessions.reduce((acc, session) => {
+    const dateStr = new Date(session.date).toDateString();
+    acc[dateStr] = (acc[dateStr] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
 
   const getTypeColor = (type: StudySession['type']) => {
     switch (type) {
@@ -127,11 +141,44 @@ const PersonalStudyCalendar = () => {
   };
 
   const handleCreateSession = async () => {
+    // Date validation - prevent past dates
+    if (selectedDate) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const selected = new Date(selectedDate);
+      selected.setHours(0, 0, 0, 0);
+      
+      if (selected < today) {
+        toast({
+          title: "Erreur",
+          description: "Vous ne pouvez pas planifier une session dans le passé",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Check if datetime is in the past
+      if (sessionTime) {
+        const [hours, minutes] = sessionTime.split(':');
+        const sessionDateTime = new Date(selectedDate);
+        sessionDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+        
+        if (sessionDateTime < new Date()) {
+          toast({
+            title: "Erreur",
+            description: "L'heure sélectionnée est déjà passée",
+            variant: "destructive"
+          });
+          return;
+        }
+      }
+    }
+
     // Validation
-    if (!sessionTitle.trim()) {
+    if (!sessionTitle.trim() || sessionTitle.length > 120) {
       toast({
-        title: "Titre requis",
-        description: "Veuillez saisir un titre pour la session",
+        title: "Erreur",
+        description: "Veuillez entrer un titre valide (max 120 caractères)",
         variant: "destructive"
       });
       return;
@@ -155,10 +202,19 @@ const PersonalStudyCalendar = () => {
       return;
     }
 
-    if (sessionDuration <= 0 || sessionDuration > 480) {
+    if (!sessionTime || !/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/.test(sessionTime)) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez entrer une heure valide (format HH:mm)",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (sessionDuration <= 0 || sessionDuration > 300) {
       toast({
         title: "Durée invalide",
-        description: "La durée doit être entre 1 et 480 minutes",
+        description: "La durée doit être entre 1 et 300 minutes",
         variant: "destructive"
       });
       return;
@@ -172,14 +228,18 @@ const PersonalStudyCalendar = () => {
         date: selectedDate,
         startTime: sessionTime,
         duration: sessionDuration,
-        type: 'lesson'
+        type: sessionType
       });
+      
+      // Refresh data to show new session
+      await refreshData();
       
       // Reset form
       setSessionTitle('');
       setSessionCourseId('');
       setSessionTime('09:00');
       setSessionDuration(60);
+      setSessionType('lesson');
       setShowSessionDialog(false);
     } finally {
       setIsSubmitting(false);
@@ -248,24 +308,38 @@ const PersonalStudyCalendar = () => {
                 </div>
                 <div>
                   <Label htmlFor="session-course">Formation</Label>
-                  <Select value={sessionCourseId} onValueChange={setSessionCourseId}>
-                    <SelectTrigger id="session-course">
-                      <SelectValue placeholder="Sélectionnez une formation" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {enrollments.length === 0 ? (
-                        <SelectItem value="none" disabled>
-                          Aucune formation inscrite
-                        </SelectItem>
-                      ) : (
-                        enrollments.map((enrollment) => (
+                  {enrollmentsLoading ? (
+                    <div className="text-sm text-muted-foreground">Chargement des formations...</div>
+                  ) : enrollments.length === 0 ? (
+                    <div className="rounded-lg border border-dashed p-4 text-center">
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Vous devez d'abord vous inscrire à une formation
+                      </p>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setShowSessionDialog(false);
+                          setSearchParams({ tab: 'courses' });
+                        }}
+                      >
+                        Voir les formations
+                      </Button>
+                    </div>
+                  ) : (
+                    <Select value={sessionCourseId} onValueChange={setSessionCourseId}>
+                      <SelectTrigger id="session-course">
+                        <SelectValue placeholder="Sélectionnez une formation" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {enrollments.map((enrollment) => (
                           <SelectItem key={enrollment.course_id} value={enrollment.course_id}>
                             {enrollment.courses?.title || 'Formation'}
                           </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
-                  </Select>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -282,10 +356,26 @@ const PersonalStudyCalendar = () => {
                     <Input 
                       id="session-duration" 
                       type="number"
+                      min="1"
+                      max="300"
                       value={sessionDuration}
                       onChange={(e) => setSessionDuration(parseInt(e.target.value))}
                     />
                   </div>
+                </div>
+                <div>
+                  <Label htmlFor="session-type">Type de session</Label>
+                  <Select value={sessionType} onValueChange={(value: any) => setSessionType(value)}>
+                    <SelectTrigger id="session-type">
+                      <SelectValue placeholder="Sélectionner un type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="lesson">Cours</SelectItem>
+                      <SelectItem value="quiz">Quiz</SelectItem>
+                      <SelectItem value="review">Révision</SelectItem>
+                      <SelectItem value="project">Projet</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               <DialogFooter>
@@ -294,7 +384,7 @@ const PersonalStudyCalendar = () => {
                 </Button>
                 <Button 
                   onClick={handleCreateSession} 
-                  disabled={!sessionTitle.trim() || !sessionCourseId || isSubmitting}
+                  disabled={!sessionTitle.trim() || !sessionCourseId || isSubmitting || enrollmentsLoading || enrollments.length === 0}
                 >
                   {isSubmitting ? "Création..." : "Créer la Session"}
                 </Button>
@@ -389,6 +479,12 @@ const PersonalStudyCalendar = () => {
               selected={selectedDate}
               onSelect={setSelectedDate}
               className="pointer-events-auto"
+              modifiers={{
+                hasSession: (date) => datesWithSessions[date.toDateString()] > 0
+              }}
+              modifiersClassNames={{
+                hasSession: "relative after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-primary after:rounded-full"
+              }}
             />
           </CardContent>
         </Card>
