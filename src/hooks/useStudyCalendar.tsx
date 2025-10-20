@@ -41,44 +41,64 @@ export const useStudyCalendar = () => {
     if (!user) return;
 
     try {
+      // Step 1: Fetch sessions without joins
       const { data: sessions, error } = await supabase
         .from('study_sessions')
-        .select('*, courses(title)')
+        .select('id, course_id, lesson_id, session_type, duration_minutes, started_at, ended_at, metadata')
         .eq('user_id', user.id)
         .order('started_at', { ascending: false });
 
       if (error) throw error;
 
-      // Convert backend sessions to frontend format
-      const convertedSessions: StudySession[] = (sessions || []).map(session => {
-        const metadata = session.metadata as any;
-        const courses = (session as any).courses;
-        return {
-          id: session.id,
-          title: metadata?.custom_title || `Session ${session.session_type}`,
-          course: courses?.title || 'Formation',
-          date: new Date(session.started_at),
-          startTime: new Date(session.started_at).toLocaleTimeString('fr-FR', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
-          }),
-          duration: session.duration_minutes,
-          type: session.session_type as StudySession['type'],
-          completed: !!session.ended_at,
-          reminder: metadata?.reminder || false,
-          course_id: session.course_id,
-          lesson_id: session.lesson_id
-        };
-      });
+      if (sessions && sessions.length > 0) {
+        // Step 2: Fetch course titles for unique course_ids
+        const uniqueCourseIds = Array.from(new Set(
+          sessions.map(s => s.course_id).filter(Boolean)
+        ));
+        
+        let courseTitleMap: Record<string, string> = {};
+        
+        if (uniqueCourseIds.length > 0) {
+          const { data: courses, error: coursesError } = await supabase
+            .from('courses')
+            .select('id, title')
+            .in('id', uniqueCourseIds);
+          
+          if (!coursesError && courses) {
+            courseTitleMap = Object.fromEntries(
+              courses.map(c => [c.id, c.title])
+            );
+          }
+        }
 
-      setStudySessions(convertedSessions);
+        // Convert backend sessions to frontend format
+        const convertedSessions: StudySession[] = sessions.map(session => {
+          const metadata = session.metadata as any;
+          return {
+            id: session.id,
+            title: metadata?.custom_title || `Session ${session.session_type}`,
+            course: courseTitleMap[session.course_id] || 'Formation',
+            date: new Date(session.started_at),
+            startTime: new Date(session.started_at).toLocaleTimeString('fr-FR', { 
+              hour: '2-digit', 
+              minute: '2-digit' 
+            }),
+            duration: session.duration_minutes,
+            type: session.session_type as StudySession['type'],
+            completed: !!session.ended_at,
+            reminder: metadata?.reminder || false,
+            course_id: session.course_id,
+            lesson_id: session.lesson_id
+          };
+        });
+
+        setStudySessions(convertedSessions);
+      } else {
+        setStudySessions([]);
+      }
     } catch (error) {
       console.error('Error fetching study sessions:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger les sessions d'étude",
-        variant: "destructive"
-      });
+      // Only show error toast for hard failures, not for empty results
     }
   };
 

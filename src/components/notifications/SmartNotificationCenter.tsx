@@ -19,7 +19,6 @@ import {
 } from 'lucide-react';
 import { useNotifications } from '@/hooks/useNotifications';
 import { useNotificationPreferences } from '@/hooks/useNotificationPreferences';
-import { useRealTimeData } from '@/hooks/useRealTimeData';
 
 interface NotificationPreferences {
   courseReminders: boolean;
@@ -58,8 +57,7 @@ const SmartNotificationCenter = () => {
     updateSinglePreference 
   } = useNotificationPreferences();
   
-  // Initialize real-time subscriptions
-  useRealTimeData();
+  // Real-time subscriptions are handled at page level
 
   // Convert regular notifications to smart notifications format
   const [smartNotifications, setSmartNotifications] = useState<SmartNotification[]>([]);

@@ -137,30 +137,31 @@ const Student: React.FC = () => {
     try {
       logInfo('Fetching student dashboard data for user:', user.id);
       
-      // Fetch enrollments
-      const { data: enrollmentData, error: enrollmentError } = await supabase
-        .from('course_enrollments')
-        .select(`
-          *,
-          courses (
-            title,
-            subtitle,
-            duration
-          )
-        `)
-        .eq('user_id', user.id)
-        .order('enrolled_at', { ascending: false });
+      // Fetch enrollments and appointments in parallel
+      const [enrollmentResult, appointmentData] = await Promise.all([
+        supabase
+          .from('course_enrollments')
+          .select(`
+            *,
+            courses (
+              title,
+              subtitle,
+              duration
+            )
+          `)
+          .eq('user_id', user.id)
+          .order('enrolled_at', { ascending: false }),
+        getUserAppointments()
+      ]);
 
-      if (enrollmentError) {
-        logError('Error fetching enrollments:', enrollmentError);
-        throw enrollmentError;
+      if (enrollmentResult.error) {
+        logError('Error fetching enrollments:', enrollmentResult.error);
+        throw enrollmentResult.error;
       }
 
-      logInfo('Enrollments fetched:', enrollmentData);
-      setEnrollments(enrollmentData || []);
+      logInfo('Enrollments fetched:', enrollmentResult.data);
+      setEnrollments(enrollmentResult.data || []);
 
-      // Fetch appointments
-      const appointmentData = await getUserAppointments();
       logInfo('Appointments fetched:', appointmentData);
       setAppointments(appointmentData);
 

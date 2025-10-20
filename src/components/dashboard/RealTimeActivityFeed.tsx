@@ -11,7 +11,7 @@ import {
   FileText,
   Bookmark
 } from 'lucide-react';
-import { useRealTimeData } from '@/hooks/useRealTimeData';
+// Real-time subscriptions handled at page level
 
 interface ActivityItem {
   id: string;
@@ -24,13 +24,9 @@ interface ActivityItem {
 
 const RealTimeActivityFeed: React.FC = () => {
   const [activities, setActivities] = useState<ActivityItem[]>([]);
-  const { setupRealTimeSubscriptions } = useRealTimeData();
 
   useEffect(() => {
-    // Set up real-time subscriptions
-    const channel = setupRealTimeSubscriptions();
-
-    // Listen for various real-time events
+    // Listen for various real-time events (subscriptions handled at page level)
     const handleStudySession = (event: CustomEvent) => {
       const { data } = event.detail;
       addActivity({
@@ -106,7 +102,7 @@ const RealTimeActivityFeed: React.FC = () => {
       window.removeEventListener('bookmarkUpdate', handleBookmark as EventListener);
       window.removeEventListener('certificateUpdate', handleCertificate as EventListener);
     };
-  }, [setupRealTimeSubscriptions]);
+  }, []);
 
   const addActivity = (activity: ActivityItem) => {
     setActivities(prev => [activity, ...prev.slice(0, 9)]); // Keep only last 10 activities

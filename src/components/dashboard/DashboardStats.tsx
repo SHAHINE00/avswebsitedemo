@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { BookOpen, Calendar, CheckCircle, Clock, Flame, Award, Target } from 'lucide-react';
 import { useStudyAnalytics } from '@/hooks/useStudyAnalytics';
-import { useRealTimeData } from '@/hooks/useRealTimeData';
 
 interface Enrollment {
   id: string;
@@ -71,12 +70,8 @@ const DashboardStats = ({ enrollments, appointments }: DashboardStatsProps) => {
     refreshStats = () => {};
   }
   
-  // Initialize real-time data subscriptions with error handling
-  try {
-    useRealTimeData();
-  } catch (error) {
-    console.warn('useRealTimeData failed:', error);
-  }
+  // Real-time subscriptions are handled at page level (Student.tsx)
+  // We only listen to window events here
   
   const completedEnrollments = enrollments.filter(e => e.status === 'completed').length;
   const upcomingAppointments = appointments.filter(apt => apt.status === 'pending' || apt.status === 'confirmed').length;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -181,22 +182,22 @@ const GDPRDashboard: React.FC = () => {
         <CardContent className="space-y-3">
           <div className="grid gap-2">
             <Button variant="ghost" className="justify-start h-auto p-3" asChild>
-              <a href="/privacy-policy" className="flex items-center gap-2">
+              <Link to="/privacy-policy" className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
                 <span>Politique de Confidentialité</span>
-              </a>
+              </Link>
             </Button>
             <Button variant="ghost" className="justify-start h-auto p-3" asChild>
-              <a href="/terms-of-use" className="flex items-center gap-2">
+              <Link to="/terms-of-use" className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
                 <span>Conditions d'Utilisation</span>
-              </a>
+              </Link>
             </Button>
             <Button variant="ghost" className="justify-start h-auto p-3" asChild>
-              <a href="/cookies-policy" className="flex items-center gap-2">
+              <Link to="/cookies-policy" className="flex items-center gap-2">
                 <Cookie className="h-4 w-4" />
                 <span>Politique des Cookies</span>
-              </a>
+              </Link>
             </Button>
           </div>
           

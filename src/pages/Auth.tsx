@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -221,12 +221,12 @@ const Auth = () => {
                    <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <Label htmlFor="password">Mot de passe</Label>
-                      <a 
-                        href="/reset-password" 
+                      <Link 
+                        to="/reset-password" 
                         className="text-xs text-primary hover:underline"
                       >
                         Mot de passe oublié?
-                      </a>
+                      </Link>
                     </div>
                     <Input
                       id="password"
