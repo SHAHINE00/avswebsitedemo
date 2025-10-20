@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -45,6 +46,7 @@ interface Appointment {
 const Student: React.FC = () => {
   const { user, signOut, isAdmin, adminLoading } = useAuth();
   const { toast } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
   
   // Use defensive loading for all hooks
   let getUserAppointments, notifications, unreadCount, markAsRead, achievements, bookmarks, setupRealTimeSubscriptions;
@@ -97,7 +99,7 @@ const Student: React.FC = () => {
   const [appointments, setAppointments] = useSafeState<Appointment[]>([]);
   const [loading, setLoading] = useSafeState(true);
   const [error, setError] = useSafeState<string | null>(null);
-  const [activeTab, setActiveTab] = useSafeState('overview');
+  const activeTab = searchParams.get('tab') || 'overview';
 
   useSafeEffect(() => {
     if (!user) {
@@ -191,7 +193,7 @@ const Student: React.FC = () => {
   };
 
   const handleSettingsClick = () => {
-    setActiveTab('profile');
+    setSearchParams({ tab: 'profile' });
   };
 
   if (!user) {
@@ -250,7 +252,7 @@ const Student: React.FC = () => {
 
           <DashboardTabs
             activeTab={activeTab}
-            onTabChange={setActiveTab}
+            onTabChange={(tab) => setSearchParams({ tab })}
             enrollments={enrollments}
             appointments={appointments}
             notifications={notifications}

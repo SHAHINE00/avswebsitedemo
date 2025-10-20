@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -46,6 +47,7 @@ interface Appointment {
 const Dashboard = () => {
   const { user, signOut, isAdmin, adminLoading } = useAuth();
   const { toast } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { getUserAppointments } = useAppointmentBooking();
   const { notifications, unreadCount, markAsRead } = useNotifications();
   const { achievements } = useUserProfile();
@@ -56,7 +58,7 @@ const Dashboard = () => {
   const [appointments, setAppointments] = useSafeState<Appointment[]>([]);
   const [loading, setLoading] = useSafeState(true);
   const [error, setError] = useSafeState<string | null>(null);
-  const [activeTab, setActiveTab] = useSafeState('overview');
+  const activeTab = searchParams.get('tab') || 'overview';
 
   useSafeEffect(() => {
     if (!user) {
@@ -163,7 +165,7 @@ const Dashboard = () => {
   };
 
   const handleSettingsClick = () => {
-    setActiveTab('profile');
+    setSearchParams({ tab: 'profile' });
   };
 
   if (!user) {
@@ -252,7 +254,7 @@ const Dashboard = () => {
 
           <DashboardTabs
             activeTab={activeTab}
-            onTabChange={setActiveTab}
+            onTabChange={(tab) => setSearchParams({ tab })}
             enrollments={enrollments}
             appointments={appointments}
             notifications={notifications}
