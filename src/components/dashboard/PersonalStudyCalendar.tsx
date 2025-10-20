@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useStudyCalendar } from '@/hooks/useStudyCalendar';
+import { useStudents } from '@/hooks/useStudents';
 import { useToast } from '@/hooks/use-toast';
 import {
   Dialog,
@@ -54,6 +56,7 @@ const PersonalStudyCalendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [showSessionDialog, setShowSessionDialog] = useState(false);
   const [showGoalDialog, setShowGoalDialog] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form states for session
   const [sessionTitle, setSessionTitle] = useState('');
@@ -67,6 +70,9 @@ const PersonalStudyCalendar = () => {
   const [goalType, setGoalType] = useState('weekly_lessons');
   const [goalDeadline, setGoalDeadline] = useState('');
 
+  // Enrollments for course selection
+  const [enrollments, setEnrollments] = useState<any[]>([]);
+  
   // Use real data from hooks
   const { 
     studySessions, 
@@ -75,6 +81,17 @@ const PersonalStudyCalendar = () => {
     createStudySession, 
     createStudyGoal 
   } = useStudyCalendar();
+  
+  const { getMyEnrollments } = useStudents();
+
+  // Fetch enrollments on mount
+  useEffect(() => {
+    const loadEnrollments = async () => {
+      const data = await getMyEnrollments();
+      setEnrollments(data);
+    };
+    loadEnrollments();
+  }, []);
 
   const selectedDateSessions = studySessions.filter(
     session => session.date.toDateString() === selectedDate?.toDateString()
@@ -110,30 +127,63 @@ const PersonalStudyCalendar = () => {
   };
 
   const handleCreateSession = async () => {
-    if (!sessionTitle || !sessionCourseId || !selectedDate) {
+    // Validation
+    if (!sessionTitle.trim()) {
       toast({
-        title: "Champs requis",
-        description: "Veuillez remplir tous les champs obligatoires",
+        title: "Titre requis",
+        description: "Veuillez saisir un titre pour la session",
         variant: "destructive"
       });
       return;
     }
     
-    await createStudySession({
-      title: sessionTitle,
-      course_id: sessionCourseId,
-      date: selectedDate,
-      startTime: sessionTime,
-      duration: sessionDuration,
-      type: 'lesson'
-    });
+    if (!sessionCourseId) {
+      toast({
+        title: "Formation requise",
+        description: "Veuillez sélectionner une formation",
+        variant: "destructive"
+      });
+      return;
+    }
     
-    // Reset form
-    setSessionTitle('');
-    setSessionCourseId('');
-    setSessionTime('09:00');
-    setSessionDuration(60);
-    setShowSessionDialog(false);
+    if (!selectedDate) {
+      toast({
+        title: "Date requise",
+        description: "Veuillez sélectionner une date",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (sessionDuration <= 0 || sessionDuration > 480) {
+      toast({
+        title: "Durée invalide",
+        description: "La durée doit être entre 1 et 480 minutes",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setIsSubmitting(true);
+    try {
+      await createStudySession({
+        title: sessionTitle.trim(),
+        course_id: sessionCourseId,
+        date: selectedDate,
+        startTime: sessionTime,
+        duration: sessionDuration,
+        type: 'lesson'
+      });
+      
+      // Reset form
+      setSessionTitle('');
+      setSessionCourseId('');
+      setSessionTime('09:00');
+      setSessionDuration(60);
+      setShowSessionDialog(false);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCreateGoal = async () => {
@@ -197,16 +247,25 @@ const PersonalStudyCalendar = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="session-course">ID de la Formation</Label>
-                  <Input 
-                    id="session-course" 
-                    placeholder="ID de la formation"
-                    value={sessionCourseId}
-                    onChange={(e) => setSessionCourseId(e.target.value)}
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Utilisez l'ID de votre formation inscrite
-                  </p>
+                  <Label htmlFor="session-course">Formation</Label>
+                  <Select value={sessionCourseId} onValueChange={setSessionCourseId}>
+                    <SelectTrigger id="session-course">
+                      <SelectValue placeholder="Sélectionnez une formation" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {enrollments.length === 0 ? (
+                        <SelectItem value="none" disabled>
+                          Aucune formation inscrite
+                        </SelectItem>
+                      ) : (
+                        enrollments.map((enrollment) => (
+                          <SelectItem key={enrollment.course_id} value={enrollment.course_id}>
+                            {enrollment.courses?.title || 'Formation'}
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -230,11 +289,14 @@ const PersonalStudyCalendar = () => {
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setShowSessionDialog(false)}>
+                <Button variant="outline" onClick={() => setShowSessionDialog(false)} disabled={isSubmitting}>
                   Annuler
                 </Button>
-                <Button onClick={handleCreateSession} disabled={!sessionTitle || !sessionCourseId}>
-                  Créer la Session
+                <Button 
+                  onClick={handleCreateSession} 
+                  disabled={!sessionTitle.trim() || !sessionCourseId || isSubmitting}
+                >
+                  {isSubmitting ? "Création..." : "Créer la Session"}
                 </Button>
               </DialogFooter>
             </DialogContent>

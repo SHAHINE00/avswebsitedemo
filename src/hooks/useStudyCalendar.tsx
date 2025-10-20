@@ -50,22 +50,25 @@ export const useStudyCalendar = () => {
       if (error) throw error;
 
       // Convert backend sessions to frontend format
-      const convertedSessions: StudySession[] = (sessions || []).map(session => ({
-        id: session.id,
-        title: `Session ${session.session_type}`,
-        course: 'Formation',
-        date: new Date(session.started_at),
-        startTime: new Date(session.started_at).toLocaleTimeString('fr-FR', { 
-          hour: '2-digit', 
-          minute: '2-digit' 
-        }),
-        duration: session.duration_minutes,
-        type: session.session_type as StudySession['type'],
-        completed: !!session.ended_at,
-        reminder: false, // Will implement notification system later
-        course_id: session.course_id,
-        lesson_id: session.lesson_id
-      }));
+      const convertedSessions: StudySession[] = (sessions || []).map(session => {
+        const metadata = session.metadata as any;
+        return {
+          id: session.id,
+          title: metadata?.custom_title || `Session ${session.session_type}`,
+          course: 'Formation',
+          date: new Date(session.started_at),
+          startTime: new Date(session.started_at).toLocaleTimeString('fr-FR', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+          }),
+          duration: session.duration_minutes,
+          type: session.session_type as StudySession['type'],
+          completed: !!session.ended_at,
+          reminder: metadata?.reminder || false,
+          course_id: session.course_id,
+          lesson_id: session.lesson_id
+        };
+      });
 
       setStudySessions(convertedSessions);
     } catch (error) {
@@ -133,12 +136,22 @@ export const useStudyCalendar = () => {
       const startDateTime = new Date(sessionData.date);
       startDateTime.setHours(parseInt(hours), parseInt(minutes));
 
-      const { error } = await supabase.rpc('track_study_session', {
-        p_course_id: sessionData.course_id,
-        p_lesson_id: sessionData.lesson_id,
-        p_duration_minutes: sessionData.duration,
-        p_session_type: sessionData.type
-      });
+      // Insert directly with planned date/time and custom title
+      const { error } = await supabase
+        .from('study_sessions')
+        .insert({
+          user_id: user.id,
+          course_id: sessionData.course_id,
+          lesson_id: sessionData.lesson_id,
+          session_type: sessionData.type,
+          duration_minutes: sessionData.duration,
+          started_at: startDateTime.toISOString(),
+          ended_at: null, // null = planned session
+          metadata: {
+            custom_title: sessionData.title,
+            planned: true
+          }
+        });
 
       if (error) throw error;
 
