@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useStudyCalendar } from '@/hooks/useStudyCalendar';
+import { useToast } from '@/hooks/use-toast';
 import {
   Dialog,
   DialogContent,
@@ -49,9 +50,22 @@ interface StudyGoal {
 }
 
 const PersonalStudyCalendar = () => {
+  const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [showSessionDialog, setShowSessionDialog] = useState(false);
   const [showGoalDialog, setShowGoalDialog] = useState(false);
+
+  // Form states for session
+  const [sessionTitle, setSessionTitle] = useState('');
+  const [sessionCourseId, setSessionCourseId] = useState('');
+  const [sessionTime, setSessionTime] = useState('09:00');
+  const [sessionDuration, setSessionDuration] = useState(60);
+
+  // Form states for goal
+  const [goalTitle, setGoalTitle] = useState('');
+  const [goalTarget, setGoalTarget] = useState(10);
+  const [goalType, setGoalType] = useState('weekly_lessons');
+  const [goalDeadline, setGoalDeadline] = useState('');
 
   // Use real data from hooks
   const { 
@@ -95,6 +109,58 @@ const PersonalStudyCalendar = () => {
     }
   };
 
+  const handleCreateSession = async () => {
+    if (!sessionTitle || !sessionCourseId || !selectedDate) {
+      toast({
+        title: "Champs requis",
+        description: "Veuillez remplir tous les champs obligatoires",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    await createStudySession({
+      title: sessionTitle,
+      course_id: sessionCourseId,
+      date: selectedDate,
+      startTime: sessionTime,
+      duration: sessionDuration,
+      type: 'lesson'
+    });
+    
+    // Reset form
+    setSessionTitle('');
+    setSessionCourseId('');
+    setSessionTime('09:00');
+    setSessionDuration(60);
+    setShowSessionDialog(false);
+  };
+
+  const handleCreateGoal = async () => {
+    if (!goalTitle || !goalDeadline) {
+      toast({
+        title: "Champs requis",
+        description: "Veuillez remplir tous les champs obligatoires",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    await createStudyGoal({
+      title: goalTitle,
+      target: goalTarget,
+      goalType: goalType,
+      deadline: new Date(goalDeadline)
+    });
+    
+    // Reset form
+    setGoalTitle('');
+    setGoalTarget(10);
+    setGoalType('weekly_lessons');
+    setGoalDeadline('');
+    setShowGoalDialog(false);
+  };
+
   return (
     <div className="space-y-6">
       {/* Calendar Header */}
@@ -123,25 +189,51 @@ const PersonalStudyCalendar = () => {
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="session-title">Titre</Label>
-                  <Input id="session-title" placeholder="Ex: Chapitre 3 - Variables Python" />
+                  <Input 
+                    id="session-title" 
+                    placeholder="Ex: Chapitre 3 - Variables Python"
+                    value={sessionTitle}
+                    onChange={(e) => setSessionTitle(e.target.value)}
+                  />
                 </div>
                 <div>
-                  <Label htmlFor="session-course">Formation</Label>
-                  <Input id="session-course" placeholder="Ex: Programmation Python" />
+                  <Label htmlFor="session-course">ID de la Formation</Label>
+                  <Input 
+                    id="session-course" 
+                    placeholder="ID de la formation"
+                    value={sessionCourseId}
+                    onChange={(e) => setSessionCourseId(e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Utilisez l'ID de votre formation inscrite
+                  </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="session-time">Heure</Label>
-                    <Input id="session-time" type="time" defaultValue="09:00" />
+                    <Input 
+                      id="session-time" 
+                      type="time"
+                      value={sessionTime}
+                      onChange={(e) => setSessionTime(e.target.value)}
+                    />
                   </div>
                   <div>
                     <Label htmlFor="session-duration">Durée (min)</Label>
-                    <Input id="session-duration" type="number" defaultValue="60" />
+                    <Input 
+                      id="session-duration" 
+                      type="number"
+                      value={sessionDuration}
+                      onChange={(e) => setSessionDuration(parseInt(e.target.value))}
+                    />
                   </div>
                 </div>
               </div>
               <DialogFooter>
-                <Button onClick={() => setShowSessionDialog(false)}>
+                <Button variant="outline" onClick={() => setShowSessionDialog(false)}>
+                  Annuler
+                </Button>
+                <Button onClick={handleCreateSession} disabled={!sessionTitle || !sessionCourseId}>
                   Créer la Session
                 </Button>
               </DialogFooter>
@@ -165,33 +257,53 @@ const PersonalStudyCalendar = () => {
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="goal-title">Titre de l'objectif</Label>
-                  <Input id="goal-title" placeholder="Ex: Terminer le module Machine Learning" />
-                </div>
-                <div>
-                  <Label htmlFor="goal-description">Description</Label>
-                  <Textarea id="goal-description" placeholder="Détails de votre objectif..." />
+                  <Input 
+                    id="goal-title" 
+                    placeholder="Ex: Terminer le module Machine Learning"
+                    value={goalTitle}
+                    onChange={(e) => setGoalTitle(e.target.value)}
+                  />
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
                     <Label htmlFor="goal-target">Cible</Label>
-                    <Input id="goal-target" type="number" defaultValue="10" />
+                    <Input 
+                      id="goal-target" 
+                      type="number"
+                      value={goalTarget}
+                      onChange={(e) => setGoalTarget(parseInt(e.target.value) || 0)}
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="goal-unit">Unité</Label>
-                    <select className="w-full h-10 px-3 border rounded-md">
-                      <option value="lessons">Leçons</option>
-                      <option value="hours">Heures</option>
-                      <option value="courses">Formations</option>
+                    <Label htmlFor="goal-type">Type</Label>
+                    <select 
+                      id="goal-type"
+                      className="w-full h-10 px-3 border rounded-md"
+                      value={goalType}
+                      onChange={(e) => setGoalType(e.target.value)}
+                    >
+                      <option value="weekly_lessons">Leçons hebdomadaires</option>
+                      <option value="weekly_hours">Heures hebdomadaires</option>
+                      <option value="monthly_lessons">Leçons mensuelles</option>
+                      <option value="monthly_hours">Heures mensuelles</option>
                     </select>
                   </div>
                   <div>
                     <Label htmlFor="goal-deadline">Échéance</Label>
-                    <Input id="goal-deadline" type="date" />
+                    <Input 
+                      id="goal-deadline" 
+                      type="date"
+                      value={goalDeadline}
+                      onChange={(e) => setGoalDeadline(e.target.value)}
+                    />
                   </div>
                 </div>
               </div>
               <DialogFooter>
-                <Button onClick={() => setShowGoalDialog(false)}>
+                <Button variant="outline" onClick={() => setShowGoalDialog(false)}>
+                  Annuler
+                </Button>
+                <Button onClick={handleCreateGoal} disabled={!goalTitle || !goalDeadline}>
                   Créer l'Objectif
                 </Button>
               </DialogFooter>
