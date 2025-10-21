@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import SafeRouter from "@/components/ui/SafeRouter";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
@@ -92,6 +93,18 @@ const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   return <>{children}</>;
 };
 
+// Create QueryClient instance outside component to prevent recreation
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 1,
+      gcTime: 15 * 60 * 1000, // 15 minutes (replaces cacheTime)
+    },
+  },
+});
+
 
 const App = () => {
   return (
@@ -122,8 +135,9 @@ const App = () => {
                 </ReactSafetyWrapper>
                 <ReactSafetyWrapper>
                   <SecurityEnhancedWrapper>
-                    <AuthProvider>
-                    <Routes>
+                    <QueryClientProvider client={queryClient}>
+                      <AuthProvider>
+                      <Routes>
                       {/* Critical routes - no lazy loading */}
                       <Route path="/" element={<Index />} />
                       <Route path="/features" element={<Features />} />
@@ -167,10 +181,11 @@ const App = () => {
                       
                       {/* Student routes - protected and lazy loaded */}
                       <Route path="/student" element={<StudentRouteGuard><LazyWrapper><Student /></LazyWrapper></StudentRouteGuard>} />
-                    </Routes>
-                    
-                      <Toaster />
-                    </AuthProvider>
+                      </Routes>
+                      
+                        <Toaster />
+                      </AuthProvider>
+                    </QueryClientProvider>
                   </SecurityEnhancedWrapper>
                 </ReactSafetyWrapper>
               </AnalyticsProvider>

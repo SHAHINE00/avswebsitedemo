@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
@@ -310,7 +311,7 @@ const FAQ = () => {
                 variant="secondary" 
                 className="bg-white text-academy-blue hover:bg-gray-100"
               >
-                <a href="/contact">Nous Contacter</a>
+                <Link to="/contact">Nous Contacter</Link>
               </Button>
               <Button 
                 asChild 

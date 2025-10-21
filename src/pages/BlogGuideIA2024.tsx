@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
@@ -557,7 +558,7 @@ const BlogGuideIA2024 = () => {
                     size="lg"
                     className="bg-white text-academy-blue hover:bg-gray-100"
                   >
-                    <a href="/ai-course">Découvrir la Formation IA</a>
+                    <Link to="/ai-course">Découvrir la Formation IA</Link>
                   </Button>
                   <Button 
                     asChild 
@@ -565,7 +566,7 @@ const BlogGuideIA2024 = () => {
                     variant="outline" 
                     className="border-white text-white hover:bg-white hover:text-academy-blue"
                   >
-                    <a href="/contact">Conseil Gratuit</a>
+                    <Link to="/contact">Conseil Gratuit</Link>
                   </Button>
                 </div>
               </div>

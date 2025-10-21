@@ -4,6 +4,7 @@ import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAppointmentBooking } from '@/hooks/useAppointmentBooking';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -47,6 +48,7 @@ const Student: React.FC = () => {
   const { user, signOut, isAdmin, adminLoading } = useAuth();
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
+  const queryClient = useQueryClient();
   
   // Use defensive loading for all hooks
   let getUserAppointments, notifications, unreadCount, markAsRead, achievements, bookmarks, setupRealTimeSubscriptions;
@@ -95,11 +97,59 @@ const Student: React.FC = () => {
     setupRealTimeSubscriptions = () => null;
   }
   
-  const [enrollments, setEnrollments] = useSafeState<Enrollment[]>([]);
-  const [appointments, setAppointments] = useSafeState<Appointment[]>([]);
-  const [loading, setLoading] = useSafeState(true);
-  const [error, setError] = useSafeState<string | null>(null);
   const activeTab = searchParams.get('tab') || 'overview';
+
+  // Use React Query for enrollments
+  const { data: enrollments = [], isLoading: enrollmentsLoading, error: enrollmentsError } = useQuery({
+    queryKey: ['enrollments', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      
+      logInfo('Fetching student enrollments for user:', user.id);
+      const { data, error } = await supabase
+        .from('course_enrollments')
+        .select(`
+          *,
+          courses (
+            title,
+            subtitle,
+            duration
+          )
+        `)
+        .eq('user_id', user.id)
+        .order('enrolled_at', { ascending: false });
+
+      if (error) {
+        logError('Error fetching enrollments:', error);
+        throw error;
+      }
+
+      logInfo('Enrollments fetched:', data);
+      return data || [];
+    },
+    enabled: !!user,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    placeholderData: (previousData) => previousData, // Keep previous data while refetching
+  });
+
+  // Use React Query for appointments
+  const { data: appointments = [], isLoading: appointmentsLoading } = useQuery({
+    queryKey: ['appointments', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      
+      logInfo('Fetching appointments for user:', user.id);
+      const data = await getUserAppointments();
+      logInfo('Appointments fetched:', data);
+      return data;
+    },
+    enabled: !!user,
+    staleTime: 5 * 60 * 1000,
+    placeholderData: (previousData) => previousData,
+  });
+
+  const loading = enrollmentsLoading || appointmentsLoading;
+  const error = enrollmentsError ? 'Erreur lors du chargement des données' : null;
 
   useSafeEffect(() => {
     if (!user) {
@@ -108,75 +158,31 @@ const Student: React.FC = () => {
       return;
     }
     
-    fetchDashboardData();
-    
     // Set up real-time subscriptions
     const channel = setupRealTimeSubscriptions();
     
-    // Listen for real-time enrollment updates
+    // Listen for real-time enrollment updates and invalidate queries
     const handleEnrollmentUpdate = () => {
-      fetchDashboardData();
+      logInfo('Real-time enrollment update received, invalidating queries');
+      queryClient.invalidateQueries({ queryKey: ['enrollments', user.id] });
+    };
+    
+    const handleAppointmentUpdate = () => {
+      logInfo('Real-time appointment update received, invalidating queries');
+      queryClient.invalidateQueries({ queryKey: ['appointments', user.id] });
     };
     
     window.addEventListener('enrollmentUpdate', handleEnrollmentUpdate);
+    window.addEventListener('appointmentUpdate', handleAppointmentUpdate);
     
     return () => {
       window.removeEventListener('enrollmentUpdate', handleEnrollmentUpdate);
+      window.removeEventListener('appointmentUpdate', handleAppointmentUpdate);
       if (channel) {
         supabase.removeChannel(channel);
       }
     };
-  }, [user, setupRealTimeSubscriptions]);
-
-  const fetchDashboardData = async () => {
-    if (!user) return;
-    
-    setLoading(true);
-    setError(null);
-    
-    try {
-      logInfo('Fetching student dashboard data for user:', user.id);
-      
-      // Fetch enrollments and appointments in parallel
-      const [enrollmentResult, appointmentData] = await Promise.all([
-        supabase
-          .from('course_enrollments')
-          .select(`
-            *,
-            courses (
-              title,
-              subtitle,
-              duration
-            )
-          `)
-          .eq('user_id', user.id)
-          .order('enrolled_at', { ascending: false }),
-        getUserAppointments()
-      ]);
-
-      if (enrollmentResult.error) {
-        logError('Error fetching enrollments:', enrollmentResult.error);
-        throw enrollmentResult.error;
-      }
-
-      logInfo('Enrollments fetched:', enrollmentResult.data);
-      setEnrollments(enrollmentResult.data || []);
-
-      logInfo('Appointments fetched:', appointmentData);
-      setAppointments(appointmentData);
-
-    } catch (error) {
-      logError('Error fetching student dashboard data:', error);
-      setError('Erreur lors du chargement des données');
-      toast({
-        title: "Erreur de chargement",
-        description: "Impossible de charger vos données. Veuillez réessayer.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [user, setupRealTimeSubscriptions, queryClient]);
 
   const handleSignOut = async () => {
     try {
@@ -228,7 +234,10 @@ const Student: React.FC = () => {
         <div className="container mx-auto px-6 py-8">
           <div className="text-center">
             <p className="text-red-600 mb-4">{error}</p>
-            <Button onClick={fetchDashboardData}>Réessayer</Button>
+            <Button onClick={() => {
+              queryClient.invalidateQueries({ queryKey: ['enrollments', user?.id] });
+              queryClient.invalidateQueries({ queryKey: ['appointments', user?.id] });
+            }}>Réessayer</Button>
           </div>
         </div>
         <Footer />

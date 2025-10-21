@@ -15,24 +15,13 @@ export const ReloadPreventionWrapper: React.FC<Props> = ({ children }) => {
       setKey(prev => prev + 1);
     };
 
-    // Prevent unnecessary reloads on tab switches
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (navigationStateManager.preventUnnecessaryReload()) {
-        e.preventDefault();
-        e.returnValue = '';
-        return '';
-      }
-    };
-
     window.addEventListener('forceRemount', handleForceRemount);
-    window.addEventListener('beforeunload', handleBeforeUnload);
 
     // Mark navigation as complete when component mounts
     navigationStateManager.markNavigationComplete();
 
     return () => {
       window.removeEventListener('forceRemount', handleForceRemount);
-      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, []);
 

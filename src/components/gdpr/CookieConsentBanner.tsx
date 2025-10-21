@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -148,13 +149,13 @@ const CookieConsentBanner = () => {
         <div className="mt-3 pt-3 border-t border-gray-700">
           <p className="text-xs text-gray-400 text-center">
             En continuant, vous acceptez notre{' '}
-            <a href="/privacy-policy" className="text-white hover:underline">
+            <Link to="/privacy-policy" className="text-white hover:underline">
               Politique de Confidentialité
-            </a>{' '}
+            </Link>{' '}
             et nos{' '}
-            <a href="/cookies-policy" className="text-white hover:underline">
+            <Link to="/cookies-policy" className="text-white hover:underline">
               Conditions d'Utilisation
-            </a>
+            </Link>
           </p>
         </div>
       </div>

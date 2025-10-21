@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
@@ -667,7 +668,7 @@ const BlogDevenirDeveloppeur = () => {
                     size="lg"
                     className="bg-white text-academy-blue hover:bg-gray-100"
                   >
-                    <a href="/programming-course">Programme Développement</a>
+                    <Link to="/programming-course">Programme Développement</Link>
                   </Button>
                   <Button 
                     asChild 
@@ -675,7 +676,7 @@ const BlogDevenirDeveloppeur = () => {
                     variant="outline" 
                     className="border-white text-white hover:bg-white hover:text-academy-blue"
                   >
-                    <a href="/contact">Conseil Gratuit</a>
+                    <Link to="/contact">Conseil Gratuit</Link>
                   </Button>
                 </div>
               </div>

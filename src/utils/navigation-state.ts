@@ -19,21 +19,10 @@ export class NavigationStateManager {
   private initializeListeners() {
     if (typeof window === 'undefined') return;
 
-    // Track actual navigation vs tab switches
-    window.addEventListener('beforeunload', () => {
-      this.isNavigating = true;
-      sessionStorage.setItem('nav_state', JSON.stringify({
-        wasNavigating: true,
-        lastRoute: window.location.pathname,
-        timestamp: Date.now()
-      }));
-    });
-
     // Track page visibility without triggering reloads
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         this.tabSwitchTime = Date.now();
-        sessionStorage.setItem('tab_hidden_time', this.tabSwitchTime.toString());
       } else {
         const hiddenTime = this.tabSwitchTime ? Date.now() - this.tabSwitchTime : 0;
         console.log(`Tab visible after ${hiddenTime}ms - no reload needed`);
@@ -44,12 +33,6 @@ export class NavigationStateManager {
           this.checkForUpdates();
         }
       }
-    });
-
-    // Handle force remount events
-    window.addEventListener('forceRemount', () => {
-      console.log('Force remount requested - using React state reset');
-      // This will be handled by React components listening for this event
     });
   }
 
@@ -66,35 +49,8 @@ export class NavigationStateManager {
     }
   }
 
-  isTabSwitch(): boolean {
-    if (typeof window === 'undefined') return false;
-    
-    const navState = sessionStorage.getItem('nav_state');
-    if (navState) {
-      try {
-        const parsed = JSON.parse(navState);
-        const timeDiff = Date.now() - parsed.timestamp;
-        // If less than 5 seconds and same route, likely a tab switch
-        return timeDiff < 5000 && parsed.lastRoute === window.location.pathname;
-      } catch (e) {
-        return false;
-      }
-    }
-    return false;
-  }
-
   markNavigationComplete() {
     this.isNavigating = false;
-    sessionStorage.removeItem('nav_state');
-  }
-
-  preventUnnecessaryReload(): boolean {
-    // Check if this is a tab switch rather than navigation
-    if (this.isTabSwitch()) {
-      console.log('Tab switch detected - preventing reload');
-      return true;
-    }
-    return false;
   }
 }
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { logError } from '@/utils/logger';
 import { supabase } from '@/integrations/supabase/client';
@@ -252,25 +252,25 @@ const AdminTest = () => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <Button asChild className="h-auto p-4 flex-col gap-2">
-                    <a href="/admin/courses">
+                    <Link to="/admin/courses">
                       <Database className="w-6 h-6" />
                       <span className="font-medium">Gérer les cours</span>
                       <span className="text-xs opacity-70">Administration des formations</span>
-                    </a>
+                    </Link>
                   </Button>
                   <Button asChild variant="outline" className="h-auto p-4 flex-col gap-2">
-                    <a href="/curriculum">
+                    <Link to="/curriculum">
                       <User className="w-6 h-6" />
                       <span className="font-medium">Formations publiques</span>
                       <span className="text-xs opacity-70">Vue utilisateur</span>
-                    </a>
+                    </Link>
                   </Button>
                   <Button asChild variant="outline" className="h-auto p-4 flex-col gap-2">
-                    <a href="/contact">
+                    <Link to="/contact">
                       <Settings className="w-6 h-6" />
                       <span className="font-medium">Contact</span>
                       <span className="text-xs opacity-70">Formulaire de contact</span>
-                    </a>
+                    </Link>
                   </Button>
                 </div>
               </CardContent>
