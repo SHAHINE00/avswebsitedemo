@@ -35,11 +35,14 @@ export const useBulkEnrollments = () => {
         });
       }
 
-      if (result.failed_count > 0 && result.errors) {
+      if (result.failed_count > 0) {
         logError('Bulk enrollment errors:', result.errors);
+        const errorDetails = result.errors && result.errors.length > 0
+          ? `\n\nDétails: ${result.errors.map(e => e.error).join(', ')}`
+          : '';
         toast({
           title: 'Erreurs détectées',
-          description: `${result.failed_count} inscription(s) ont échoué`,
+          description: `${result.failed_count} inscription(s) ont échoué${errorDetails}`,
           variant: 'destructive',
         });
       }
@@ -79,11 +82,14 @@ export const useBulkEnrollments = () => {
         });
       }
 
-      if (result.failed_count > 0 && result.errors) {
+      if (result.failed_count > 0) {
         logError('Bulk unenrollment errors:', result.errors);
+        const errorDetails = result.errors && result.errors.length > 0
+          ? `\n\nDétails: ${result.errors.map(e => e.error).join(', ')}`
+          : '';
         toast({
           title: 'Erreurs détectées',
-          description: `${result.failed_count} désinscription(s) ont échoué`,
+          description: `${result.failed_count} désinscription(s) ont échoué${errorDetails}`,
           variant: 'destructive',
         });
       }
