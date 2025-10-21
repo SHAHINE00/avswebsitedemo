@@ -112,32 +112,53 @@ const AIChatbot: React.FC = () => {
 
       {/* Chat window */}
       {isOpen && (
-        <Card className="fixed bottom-6 right-6 w-96 h-[32rem] flex flex-col shadow-2xl z-50 animate-in slide-in-from-bottom-5">
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground rounded-t-lg">
-            <div className="flex items-center gap-2">
-              <MessageCircle className="h-5 w-5" />
-              <h3 className="font-semibold">Assistant AVS</h3>
+        <Card className="fixed bottom-6 right-6 w-96 h-[32rem] flex flex-col shadow-2xl z-50 animate-in slide-in-from-bottom-5 overflow-hidden">
+          {/* Header with curved wave */}
+          <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+            <div className="flex items-center justify-between p-4 pb-6">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center ring-2 ring-white/20">
+                  <MessageCircle className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-300">Chat with</p>
+                  <h3 className="font-semibold text-white">Assistant AVS</h3>
+                </div>
+              </div>
+              <Button
+                onClick={() => setIsOpen(false)}
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-white hover:bg-white/10"
+                aria-label="Fermer le chat"
+              >
+                <X className="h-4 w-4" />
+              </Button>
             </div>
-            <Button
-              onClick={() => setIsOpen(false)}
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-primary-foreground hover:bg-primary/80"
-              aria-label="Fermer le chat"
+            <div className="px-4 pb-3">
+              <p className="text-sm text-gray-200">Nous sommes en ligne !</p>
+            </div>
+            {/* Curved wave SVG */}
+            <svg
+              className="absolute bottom-0 left-0 w-full"
+              viewBox="0 0 1440 80"
+              preserveAspectRatio="none"
+              style={{ height: '40px' }}
             >
-              <X className="h-4 w-4" />
-            </Button>
+              <path
+                d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z"
+                fill="hsl(var(--background))"
+              />
+            </svg>
           </div>
 
           {/* Messages */}
-          <ScrollArea className="flex-1 p-4">
+          <ScrollArea className="flex-1 p-4 bg-gray-50 dark:bg-gray-950">
             <div className="space-y-4">
               {messages.length === 0 && (
-                <div className="text-center text-muted-foreground py-8">
-                  <MessageCircle className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                  <p className="text-sm">
-                    Bonjour ! Comment puis-je vous aider aujourd'hui ?
+                <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm">
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    👋 Bonjour ! Je suis l'assistant AVS. Choisissez une option ci-dessous ou écrivez un message pour commencer.
                   </p>
                 </div>
               )}
@@ -153,30 +174,27 @@ const AIChatbot: React.FC = () => {
           </ScrollArea>
 
           {/* Input */}
-          <div className="p-4 border-t">
-            <div className="flex gap-2">
+          <div className="p-4 border-t bg-white dark:bg-gray-900">
+            <div className="flex gap-2 items-end">
               <Textarea
                 ref={textareaRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Posez votre question..."
-                className="min-h-[60px] max-h-[120px] resize-none"
+                placeholder="Écrivez votre message..."
+                className="min-h-[50px] max-h-[120px] resize-none rounded-2xl border-gray-200 dark:border-gray-700"
                 disabled={isLoading}
               />
               <Button
                 onClick={sendMessage}
                 disabled={!input.trim() || isLoading}
                 size="icon"
-                className="h-[60px] w-[60px]"
+                className="h-12 w-12 rounded-full bg-blue-600 hover:bg-blue-700 shrink-0"
                 aria-label="Envoyer le message"
               >
                 <Send className="h-5 w-5" />
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground mt-2 text-center">
-              Appuyez sur Entrée pour envoyer, Shift+Entrée pour une nouvelle ligne
-            </p>
           </div>
         </Card>
       )}
