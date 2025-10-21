@@ -9,11 +9,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { useCourseClasses, CourseClass } from '@/hooks/useCourseClasses';
-import { Loader2, Users, UserMinus, UserPlus } from 'lucide-react';
+import { useAllStudents } from '@/hooks/useAllStudents';
+import { Loader2, Users, UserMinus, UserPlus, UserSearch, AlertCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   AlertDialog,
@@ -55,20 +57,27 @@ export const AssignStudentsToClassDialog: React.FC<AssignStudentsToClassDialogPr
   selectedClass,
 }) => {
   const { assignStudentsToClass, removeStudentFromClass } = useCourseClasses(courseId);
+  const { allStudents, loading: loadingAllStudents, fetchAllStudents, bulkEnrollAndAssign } = useAllStudents();
   const [students, setStudents] = useState<Student[]>([]);
   const [classStudents, setClassStudents] = useState<ClassStudent[]>([]);
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+  const [selectedAllStudents, setSelectedAllStudents] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [fetchingClass, setFetchingClass] = useState(false);
   const [studentToRemove, setStudentToRemove] = useState<ClassStudent | null>(null);
+  const [showBulkConfirmDialog, setShowBulkConfirmDialog] = useState(false);
   const [activeTab, setActiveTab] = useState('current');
 
   useEffect(() => {
     if (open) {
       fetchClassStudents();
       fetchEnrolledStudents();
+      fetchAllStudents(courseId, selectedClass.id);
       setSelectedStudents([]);
+      setSelectedAllStudents([]);
+      setSearchQuery('');
       setActiveTab('current');
     }
   }, [open, courseId, selectedClass.id]);
@@ -172,6 +181,7 @@ export const AssignStudentsToClassDialog: React.FC<AssignStudentsToClassDialogPr
       if (success) {
         await fetchClassStudents();
         await fetchEnrolledStudents();
+        await fetchAllStudents(courseId, selectedClass.id);
       }
     } finally {
       setLoading(false);
@@ -179,8 +189,55 @@ export const AssignStudentsToClassDialog: React.FC<AssignStudentsToClassDialogPr
     }
   };
 
+  const handleToggleAllStudent = (studentId: string) => {
+    setSelectedAllStudents(prev =>
+      prev.includes(studentId)
+        ? prev.filter(id => id !== studentId)
+        : [...prev, studentId]
+    );
+  };
+
+  const handleAddFromAllStudents = async () => {
+    if (selectedAllStudents.length === 0) return;
+
+    const success = await bulkEnrollAndAssign(
+      courseId,
+      selectedClass.id,
+      selectedAllStudents,
+      allStudents
+    );
+
+    if (success) {
+      await fetchClassStudents();
+      await fetchEnrolledStudents();
+      await fetchAllStudents(courseId, selectedClass.id);
+      setSelectedAllStudents([]);
+      setShowBulkConfirmDialog(false);
+    }
+  };
+
+  const filteredAllStudents = allStudents.filter(student => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      student.full_name.toLowerCase().includes(query) ||
+      student.email.toLowerCase().includes(query)
+    );
+  });
+
+  const studentsToEnroll = selectedAllStudents.filter(id => {
+    const student = allStudents.find(s => s.id === id);
+    return student && !student.enrolled_in_course;
+  }).length;
+
+  const studentsToAssign = selectedAllStudents.filter(id => {
+    const student = allStudents.find(s => s.id === id);
+    return student && student.enrolled_in_course && !student.in_current_class;
+  }).length;
+
   const availableSpots = selectedClass.max_students - selectedClass.current_students;
   const isClassFull = availableSpots <= 0;
+  const willExceedCapacity = selectedAllStudents.length > availableSpots;
 
   return (
     <>
@@ -206,14 +263,18 @@ export const AssignStudentsToClassDialog: React.FC<AssignStudentsToClassDialogPr
           </DialogHeader>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="current" className="gap-2">
                 <Users className="w-4 h-4" />
-                Étudiants de la classe ({classStudents.length})
+                Dans la classe ({classStudents.length})
               </TabsTrigger>
               <TabsTrigger value="add" className="gap-2">
                 <UserPlus className="w-4 h-4" />
-                Ajouter des étudiants
+                Depuis le cours
+              </TabsTrigger>
+              <TabsTrigger value="all" className="gap-2">
+                <UserSearch className="w-4 h-4" />
+                Tous les étudiants
               </TabsTrigger>
             </TabsList>
 
@@ -331,6 +392,93 @@ export const AssignStudentsToClassDialog: React.FC<AssignStudentsToClassDialogPr
                 </div>
               </DialogFooter>
             </TabsContent>
+
+            <TabsContent value="all" className="mt-4 space-y-4">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <UserPlus className="w-4 h-4" />
+                  <p>Recherchez et assignez n'importe quel étudiant du système</p>
+                </div>
+                
+                <Input
+                  placeholder="Rechercher par nom ou email..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full"
+                />
+
+                {selectedAllStudents.length > 0 && (
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <span className="text-sm font-medium">
+                      {selectedAllStudents.length} étudiant(s) sélectionné(s)
+                    </span>
+                    <Button
+                      size="sm"
+                      onClick={() => setShowBulkConfirmDialog(true)}
+                      disabled={willExceedCapacity}
+                    >
+                      {willExceedCapacity ? "Capacité dépassée" : "Assigner à la classe"}
+                    </Button>
+                  </div>
+                )}
+
+                {willExceedCapacity && (
+                  <div className="flex items-center gap-2 p-3 bg-destructive/10 text-destructive rounded-lg">
+                    <AlertCircle className="w-4 h-4" />
+                    <span className="text-sm">
+                      La sélection dépasse la capacité disponible ({availableSpots} places restantes)
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <ScrollArea className="h-[400px] pr-4">
+                {loadingAllStudents ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  </div>
+                ) : filteredAllStudents.length === 0 ? (
+                  <p className="text-center text-muted-foreground py-8">
+                    {searchQuery ? "Aucun étudiant trouvé" : "Aucun étudiant disponible"}
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {filteredAllStudents.map((student) => (
+                      <div
+                        key={student.id}
+                        className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50"
+                      >
+                        <div className="flex items-center gap-3 flex-1">
+                          <Checkbox
+                            checked={selectedAllStudents.includes(student.id)}
+                            onCheckedChange={() => handleToggleAllStudent(student.id)}
+                            disabled={student.in_current_class}
+                          />
+                          <div className="flex-1">
+                            <p className="font-medium">{student.full_name}</p>
+                            <p className="text-sm text-muted-foreground">{student.email}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          {student.in_current_class && (
+                            <Badge variant="default">Dans cette classe</Badge>
+                          )}
+                          {!student.in_current_class && student.enrolled_in_course && (
+                            <Badge variant="secondary">Inscrit au cours</Badge>
+                          )}
+                          {!student.enrolled_in_course && (
+                            <Badge variant="outline" className="border-primary text-primary">
+                              <UserPlus className="w-3 h-3 mr-1" />
+                              Sera inscrit
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </ScrollArea>
+            </TabsContent>
           </Tabs>
         </DialogContent>
       </Dialog>
@@ -349,6 +497,44 @@ export const AssignStudentsToClassDialog: React.FC<AssignStudentsToClassDialogPr
             <AlertDialogAction onClick={handleRemoveStudent} disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Retirer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={showBulkConfirmDialog} onOpenChange={setShowBulkConfirmDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmer l'ajout des étudiants</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-3">
+              <div>
+                Vous êtes sur le point d'ajouter <strong>{selectedAllStudents.length} étudiant(s)</strong> à la classe <strong>{selectedClass.class_name}</strong>.
+              </div>
+              
+              {studentsToEnroll > 0 && (
+                <div className="flex items-start gap-2 p-3 bg-primary/10 rounded-lg">
+                  <UserPlus className="w-4 h-4 mt-0.5 text-primary" />
+                  <div className="text-sm">
+                    <strong>{studentsToEnroll} étudiant(s)</strong> seront automatiquement inscrits au cours avant d'être assignés à cette classe.
+                  </div>
+                </div>
+              )}
+              
+              {studentsToAssign > 0 && (
+                <div className="text-sm">
+                  <strong>{studentsToAssign} étudiant(s)</strong> déjà inscrit(s) au cours seront simplement assignés à cette classe.
+                </div>
+              )}
+
+              <div className="text-sm text-muted-foreground">
+                Capacité après ajout: <strong>{selectedClass.current_students + selectedAllStudents.length}/{selectedClass.max_students}</strong>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={handleAddFromAllStudents}>
+              Confirmer
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
