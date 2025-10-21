@@ -3,6 +3,7 @@ import SEOHead from '@/components/SEOHead';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ProfessorDashboard from '@/components/professor/ProfessorDashboard';
+import ErrorBoundary from '@/components/ui/error-boundary';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
 
@@ -12,7 +13,15 @@ const Professor: React.FC = () => {
   if (loading || adminLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div>Chargement...</div>
+        <div className="space-y-4 w-full max-w-4xl px-4">
+          <div className="h-8 w-48 bg-muted animate-pulse rounded" />
+          <div className="grid gap-4 md:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-24 bg-muted animate-pulse rounded-lg" />
+            ))}
+          </div>
+          <div className="h-96 bg-muted animate-pulse rounded-lg" />
+        </div>
       </div>
     );
   }
@@ -25,7 +34,7 @@ const Professor: React.FC = () => {
 
 
   return (
-    <>
+    <ErrorBoundary>
       <SEOHead
         title="Tableau de bord Professeur | Nova Academy"
         description="Gérez vos cours, étudiants, présences et notes"
@@ -43,7 +52,7 @@ const Professor: React.FC = () => {
         </main>
         <Footer />
       </div>
-    </>
+    </ErrorBoundary>
   );
 };
 

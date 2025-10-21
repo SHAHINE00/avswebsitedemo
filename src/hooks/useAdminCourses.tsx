@@ -1,5 +1,6 @@
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -8,59 +9,60 @@ import type { Course } from '@/hooks/useCourses';
 
 export const useAdminCourses = () => {
   const { user } = useAuth();
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const checkAdminStatus = async () => {
-    if (!user) return;
-    
-    try {
+  // Check admin status with React Query
+  const { data: isAdmin = false } = useQuery({
+    queryKey: ['admin-status', user?.id],
+    queryFn: async () => {
+      if (!user) return false;
+      
       const { data, error } = await supabase.rpc('is_admin', {
         _user_id: user.id
       });
 
       if (error) {
         logError('Error checking admin status:', error);
-        return;
+        return false;
       }
 
-      setIsAdmin(data === true);
-    } catch (error) {
-      logError('Error:', error);
-    }
-  };
+      return data === true;
+    },
+    enabled: !!user,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    placeholderData: (previousData) => previousData,
+  });
 
-  const fetchAllCourses = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
+  // Fetch all courses with React Query
+  const { 
+    data: courses = [], 
+    isLoading: loading, 
+    error: queryError 
+  } = useQuery({
+    queryKey: ['admin-courses'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('courses')
         .select('*')
         .order('display_order');
 
       if (error) {
-        setError(error.message);
         toast({
           title: "Erreur",
           description: "Impossible de charger les cours",
           variant: "destructive",
         });
-        return;
+        throw error;
       }
 
-      setCourses(data || []);
-    } catch (error) {
-      logError('Error fetching courses:', error);
-      setError('Erreur lors du chargement des cours');
-    } finally {
-      setLoading(false);
-    }
-  };
+      return data || [];
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    placeholderData: (previousData) => previousData,
+  });
+
+  const error = queryError?.message || null;
 
   const createCourse = async (courseData: any) => {
     try {
@@ -84,7 +86,7 @@ export const useAdminCourses = () => {
         description: "Cours créé avec succès",
       });
 
-      await fetchAllCourses();
+      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
       return data;
     } catch (error) {
       logError('Error creating course:', error);
@@ -113,7 +115,7 @@ export const useAdminCourses = () => {
         description: "Cours mis à jour avec succès",
       });
 
-      await fetchAllCourses();
+      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
     } catch (error) {
       logError('Error updating course:', error);
       throw error;
@@ -143,25 +145,18 @@ export const useAdminCourses = () => {
         description: "Cours supprimé avec succès",
       });
 
-      fetchAllCourses();
+      queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
     } catch (error) {
       logError('Error deleting course:', error);
     }
   };
-
-  useEffect(() => {
-    if (user) {
-      checkAdminStatus();
-      fetchAllCourses();
-    }
-  }, [user]);
 
   return {
     courses,
     loading,
     error,
     isAdmin,
-    refetch: fetchAllCourses,
+    refetch: () => queryClient.invalidateQueries({ queryKey: ['admin-courses'] }),
     createCourse,
     updateCourse,
     deleteCourse

@@ -74,8 +74,13 @@ const Admin = () => {
             
             <div className="mt-8">
               {loading ? (
-                <div className="flex justify-center py-12">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-academy-blue"></div>
+                <div className="space-y-6">
+                  <div className="grid gap-4 md:grid-cols-3">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="h-32 bg-muted animate-pulse rounded-lg" />
+                    ))}
+                  </div>
+                  <div className="h-96 bg-muted animate-pulse rounded-lg" />
                 </div>
               ) : error ? (
                 <div className="text-center py-8">
