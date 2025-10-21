@@ -56,13 +56,13 @@ const NavbarCore = () => {
           </div>
 
           {/* Desktop Navigation - Center */}
-          <div className="hidden lg:flex flex-1 justify-center">
-            <div className="flex items-center space-x-6 xl:space-x-8 2xl:space-x-10">
+          <div className="hidden lg:flex flex-1 justify-center overflow-x-auto">
+            <div className="flex items-center space-x-4 lg:space-x-6 xl:space-x-8 2xl:space-x-10">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`text-sm xl:text-base font-medium transition-colors duration-200 px-2 py-1 rounded-md min-h-[44px] flex items-center ${
+                  className={`text-sm xl:text-base font-medium transition-colors duration-200 px-2 py-1 rounded-md touch-target flex items-center whitespace-nowrap ${
                     isActive(item.href)
                       ? 'text-academy-blue'
                       : 'text-gray-700 hover:text-academy-blue'
@@ -81,7 +81,7 @@ const NavbarCore = () => {
                 <NotificationBell />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                    <Button variant="ghost" size="sm" className="flex items-center gap-2 touch-target">
                       <User className="w-4 h-4" />
                       {user.email?.split('@')[0]}
                     </Button>
@@ -103,10 +103,10 @@ const NavbarCore = () => {
               </>
             ) : (
               <>
-                <Button asChild variant="ghost" size="sm">
+                <Button asChild variant="ghost" size="sm" className="touch-target">
                   <Link to="/auth">Connexion</Link>
                 </Button>
-                <Button asChild size="sm" className="bg-academy-blue hover:bg-academy-purple">
+                <Button asChild size="sm" className="bg-academy-blue hover:bg-academy-purple touch-target">
                   <Link to="/appointment">Prendre RDV</Link>
                 </Button>
               </>
@@ -157,7 +157,7 @@ const NavbarCore = () => {
                 <>
                   <Link
                     to={isAdmin ? "/admin" : isProfessor ? "/professor" : "/student"}
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-academy-blue hover:bg-gray-50"
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-academy-blue hover:bg-gray-50 touch-target"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {isAdmin ? "Admin Dashboard" : isProfessor ? "Tableau de bord Prof" : "Tableau de bord"}
@@ -167,7 +167,7 @@ const NavbarCore = () => {
                       handleSignOut();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-gray-50"
+                    className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-gray-50 touch-target"
                   >
                     Déconnexion
                   </button>
@@ -176,14 +176,14 @@ const NavbarCore = () => {
                 <>
                   <Link
                     to="/auth"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-academy-blue hover:bg-gray-50"
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-academy-blue hover:bg-gray-50 touch-target"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Connexion
                   </Link>
                   <Link
                     to="/appointment"
-                    className="block px-3 py-2 rounded-md text-base font-medium bg-academy-blue text-white hover:bg-academy-purple"
+                    className="block px-3 py-2 rounded-md text-base font-medium bg-academy-blue text-white hover:bg-academy-purple touch-target"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Prendre RDV
