@@ -137,7 +137,7 @@ export const CourseClassManagementDialog: React.FC<CourseClassManagementDialogPr
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="professor">Professeur assigné</Label>
+            <Label htmlFor="professor">Professeur assigné (optionnel)</Label>
             <Select
               value={formData.professor_id}
               onValueChange={(value) =>
@@ -145,10 +145,9 @@ export const CourseClassManagementDialog: React.FC<CourseClassManagementDialogPr
               }
             >
               <SelectTrigger id="professor">
-                <SelectValue placeholder="Sélectionner un professeur" />
+                <SelectValue placeholder="Sélectionner un professeur (optionnel)" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Aucun professeur</SelectItem>
                 {professors
                   .filter((p) => p.status === 'active')
                   .map((prof) => (
@@ -192,7 +191,7 @@ export const CourseClassManagementDialog: React.FC<CourseClassManagementDialogPr
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="semester">Semestre</Label>
+              <Label htmlFor="semester">Semestre (optionnel)</Label>
               <Select
                 value={formData.semester}
                 onValueChange={(value) =>
@@ -200,10 +199,9 @@ export const CourseClassManagementDialog: React.FC<CourseClassManagementDialogPr
                 }
               >
                 <SelectTrigger id="semester">
-                  <SelectValue placeholder="Sélectionner" />
+                  <SelectValue placeholder="Sélectionner un semestre (optionnel)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Aucun</SelectItem>
                   <SelectItem value="Fall">Automne</SelectItem>
                   <SelectItem value="Spring">Printemps</SelectItem>
                   <SelectItem value="Summer">Été</SelectItem>
