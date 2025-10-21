@@ -49,7 +49,7 @@ const NavbarCore = () => {
                <OptimizedImage 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
-                className="h-12 lg:h-14 xl:h-16 2xl:h-18 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
+                className={`h-12 lg:h-14 xl:h-16 2xl:h-18 w-auto object-contain transform hover:scale-105 transition-transform duration-200 ${user ? 'brightness-0' : ''}`}
                 priority={true}
               />
             </Link>
@@ -120,7 +120,7 @@ const NavbarCore = () => {
                <OptimizedImage 
                 src="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" 
                 alt="AVS Innovation Institute" 
-                className="h-12 xs:h-14 sm:h-16 w-auto object-contain transform hover:scale-105 transition-transform duration-200"
+                className={`h-12 xs:h-14 sm:h-16 w-auto object-contain transform hover:scale-105 transition-transform duration-200 ${user ? 'brightness-0' : ''}`}
                 priority={true}
               />
             </Link>
