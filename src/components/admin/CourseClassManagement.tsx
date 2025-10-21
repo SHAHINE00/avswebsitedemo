@@ -15,7 +15,9 @@ import { useCourseClasses, CourseClass } from '@/hooks/useCourseClasses';
 import { useCourses } from '@/hooks/useCourses';
 import { CourseClassManagementDialog } from './CourseClassManagementDialog';
 import { AssignStudentsToClassDialog } from './AssignStudentsToClassDialog';
-import { Plus, Edit, Users, Trash2, BookOpen, Calendar, GraduationCap } from 'lucide-react';
+import { ClassQuickViewPanel } from './ClassQuickViewPanel';
+import { ClassTableRow } from './ClassTableRow';
+import { Plus, BookOpen, GraduationCap } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -44,6 +46,8 @@ export const CourseClassManagement: React.FC = () => {
   const [selectedClass, setSelectedClass] = useState<CourseClass | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [classToDelete, setClassToDelete] = useState<string | null>(null);
+  const [expandedRowId, setExpandedRowId] = useState<string | null>(null);
+  const [quickViewClass, setQuickViewClass] = useState<CourseClass | null>(null);
 
   const handleEdit = (classItem: CourseClass) => {
     setEditingClass(classItem);
@@ -171,19 +175,23 @@ export const CourseClassManagement: React.FC = () => {
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-muted/50">
+                      <TableHead className="w-8"></TableHead>
                       {selectedCourseId === 'all' && <TableHead className="font-semibold">Cours</TableHead>}
                       <TableHead className="font-semibold">Classe</TableHead>
                       <TableHead className="font-semibold">Professeur</TableHead>
                       <TableHead className="font-semibold">Capacité</TableHead>
                       <TableHead className="font-semibold">Période</TableHead>
                       <TableHead className="font-semibold">Statut</TableHead>
+                      <TableHead className="font-semibold">Salle</TableHead>
+                      <TableHead className="font-semibold">Sessions</TableHead>
+                      <TableHead className="font-semibold">Présence</TableHead>
                       <TableHead className="text-right font-semibold">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={selectedCourseId === 'all' ? 7 : 6} className="text-center py-12">
+                        <TableCell colSpan={selectedCourseId === 'all' ? 11 : 10} className="text-center py-12">
                           <div className="flex flex-col items-center gap-2">
                             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
                             <p className="text-sm text-muted-foreground">Chargement des classes...</p>
@@ -192,7 +200,7 @@ export const CourseClassManagement: React.FC = () => {
                       </TableRow>
                     ) : classes.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={selectedCourseId === 'all' ? 7 : 6} className="text-center py-12">
+                        <TableCell colSpan={selectedCourseId === 'all' ? 11 : 10} className="text-center py-12">
                           <div className="flex flex-col items-center gap-3">
                             <GraduationCap className="w-12 h-12 text-muted-foreground/50" />
                             <div className="space-y-1">
@@ -216,111 +224,19 @@ export const CourseClassManagement: React.FC = () => {
                       </TableRow>
                     ) : (
                       classes.map((classItem) => (
-                        <TableRow key={classItem.id} className="hover:bg-muted/30">
-                          {selectedCourseId === 'all' && (
-                            <TableCell>
-                              <Badge variant="outline">{classItem.course_name}</Badge>
-                            </TableCell>
-                          )}
-                          <TableCell>
-                            <div className="space-y-1">
-                              <p className="font-medium">{classItem.class_name}</p>
-                              {classItem.class_code && (
-                                <Badge variant="outline" className="text-xs">
-                                  {classItem.class_code}
-                                </Badge>
-                              )}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              {classItem.professor?.full_name ? (
-                                <>
-                                  <Users className="w-4 h-4 text-muted-foreground" />
-                                  <div>
-                                    <p className="text-sm">{classItem.professor.full_name}</p>
-                                    <p className="text-xs text-muted-foreground">
-                                      {classItem.professor.email}
-                                    </p>
-                                  </div>
-                                </>
-                              ) : (
-                                <span className="text-sm text-muted-foreground italic">
-                                  Non assigné
-                                </span>
-                              )}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <Badge
-                                variant={
-                                  classItem.current_students >= classItem.max_students
-                                    ? 'destructive'
-                                    : classItem.current_students > classItem.max_students * 0.8
-                                    ? 'secondary'
-                                    : 'default'
-                                }
-                              >
-                                {classItem.current_students}/{classItem.max_students}
-                              </Badge>
-                              {classItem.current_students >= classItem.max_students && (
-                                <span className="text-xs text-destructive">Complet</span>
-                              )}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            {classItem.academic_year ? (
-                              <div className="flex items-center gap-2">
-                                <Calendar className="w-4 h-4 text-muted-foreground" />
-                                <div className="text-sm">
-                                  <p>{classItem.academic_year}</p>
-                                  {classItem.semester && (
-                                    <p className="text-xs text-muted-foreground">
-                                      {classItem.semester}
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-                            ) : (
-                              <span className="text-sm text-muted-foreground italic">—</span>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={getStatusBadgeVariant(classItem.status)}>
-                              {getStatusLabel(classItem.status)}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center justify-end gap-1">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleAssignStudents(classItem)}
-                                title="Gérer les étudiants de cette classe"
-                              >
-                                <Users className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleEdit(classItem)}
-                                title="Modifier cette classe"
-                              >
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleDeleteClick(classItem.id)}
-                                title="Supprimer cette classe"
-                                className="text-destructive hover:text-destructive"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
+                        <ClassTableRow
+                          key={classItem.id}
+                          classItem={classItem}
+                          showCourseColumn={selectedCourseId === 'all'}
+                          onEdit={() => handleEdit(classItem)}
+                          onAssignStudents={() => handleAssignStudents(classItem)}
+                          onDelete={() => handleDeleteClick(classItem.id)}
+                          onQuickView={() => setQuickViewClass(classItem)}
+                          getStatusBadgeVariant={getStatusBadgeVariant}
+                          getStatusLabel={getStatusLabel}
+                          isExpanded={expandedRowId === classItem.id}
+                          onToggleExpand={() => setExpandedRowId(expandedRowId === classItem.id ? null : classItem.id)}
+                        />
                       ))
                     )}
                   </TableBody>
@@ -330,6 +246,22 @@ export const CourseClassManagement: React.FC = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Quick View Panel */}
+      {quickViewClass && (
+        <ClassQuickViewPanel
+          classData={quickViewClass}
+          onClose={() => setQuickViewClass(null)}
+          onEdit={() => {
+            setQuickViewClass(null);
+            handleEdit(quickViewClass);
+          }}
+          onAssignStudents={() => {
+            setQuickViewClass(null);
+            handleAssignStudents(quickViewClass);
+          }}
+        />
+      )}
 
       {/* Dialogs rendered regardless of selectedCourse to support "Tous les cours" view */}
       {(dialogOpen && (selectedCourse || editingClass)) && (
