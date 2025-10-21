@@ -105,17 +105,41 @@ export const useClassSchedule = (courseId?: string) => {
         p_start_date: startDate,
         p_end_date: endDate
       });
-      if (error) throw error;
-      const result = data as { sessions_created?: number } | null;
-      toast({ title: "Succès", description: `${result?.sessions_created || 0} séances générées` });
-      return true;
+      
+      if (error) {
+        console.error('Generate sessions error:', error);
+        throw error;
+      }
+      
+      const result = data as { sessions_created?: number; message?: string } | null;
+      
+      toast({ 
+        title: "Succès", 
+        description: result?.message || `${result?.sessions_created || 0} séances créées avec succès`,
+        variant: "default"
+      });
+      
+      return { success: true, data: result };
     } catch (error: any) {
+      console.error('Generate sessions error:', error);
+      
+      // Show specific error message
+      let errorMessage = "Impossible de générer les séances";
+      if (error.message?.includes('Access denied')) {
+        errorMessage = "Accès refusé. Vous n'avez pas la permission de générer des séances pour ce cours.";
+      } else if (error.message?.includes('not found')) {
+        errorMessage = "Horaire introuvable. Veuillez réessayer.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       toast({
         title: "Erreur",
-        description: "Impossible de générer les séances",
+        description: errorMessage,
         variant: "destructive",
       });
-      return false;
+      
+      return { success: false, error: error.message };
     }
   };
 

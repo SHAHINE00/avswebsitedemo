@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, Clock, MapPin, Plus, Trash2 } from 'lucide-react';
+import { Calendar, Clock, MapPin, Plus, Trash2, Loader2 } from 'lucide-react';
 import AllSessionsView from './AllSessionsView';
 
 interface ClassScheduleManagerProps {
@@ -37,6 +37,7 @@ export const ClassScheduleManager: React.FC<ClassScheduleManagerProps> = ({ cour
   const { schedules, loading, fetchSchedules, createSchedule, deleteSchedule, generateSessions } = useClassSchedule(courseId);
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('schedules');
+  const [generatingSessionId, setGeneratingSessionId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     day_of_week: 1,
     start_time: '09:00',
@@ -77,9 +78,20 @@ export const ClassScheduleManager: React.FC<ClassScheduleManagerProps> = ({ cour
   };
 
   const handleGenerateSessions = async (scheduleId: string) => {
-    const startDate = new Date().toISOString().split('T')[0];
-    const endDate = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-    await generateSessions(scheduleId, startDate, endDate);
+    setGeneratingSessionId(scheduleId);
+    try {
+      const startDate = new Date().toISOString().split('T')[0];
+      const endDate = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      
+      const result = await generateSessions(scheduleId, startDate, endDate);
+      
+      if (result.success) {
+        // Switch to "All Sessions" tab to show newly created sessions
+        setActiveTab('all-sessions');
+      }
+    } finally {
+      setGeneratingSessionId(null);
+    }
   };
 
   return (
@@ -174,8 +186,20 @@ export const ClassScheduleManager: React.FC<ClassScheduleManagerProps> = ({ cour
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={() => handleGenerateSessions(schedule.id)}>
-                        Générer séances
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleGenerateSessions(schedule.id)}
+                        disabled={generatingSessionId === schedule.id}
+                      >
+                        {generatingSessionId === schedule.id ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Génération...
+                          </>
+                        ) : (
+                          'Générer séances'
+                        )}
                       </Button>
                       <Button variant="ghost" size="icon" onClick={() => deleteSchedule(schedule.id)}>
                         <Trash2 className="h-4 w-4" />
