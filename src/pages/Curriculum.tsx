@@ -3,6 +3,7 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
+import AIChatbot from '@/components/chatbot/AIChatbot';
 import { pageSEO } from '@/utils/seoData';
 import CurriculumSection from '@/components/CurriculumSection';
 
@@ -26,6 +27,7 @@ const Curriculum = () => {
       </main>
       
       <Footer />
+      <AIChatbot />
     </div>
   );
 };

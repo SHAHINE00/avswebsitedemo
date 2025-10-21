@@ -51,8 +51,14 @@ const AIChatbot: React.FC = () => {
     setIsLoading(true);
 
     try {
+      // Get current session to check if user is authenticated
+      const { data: { session } } = await supabase.auth.getSession();
+
       const { data, error } = await supabase.functions.invoke('ai-chat', {
         body: { message: userMessage.content },
+        headers: session?.access_token 
+          ? { Authorization: `Bearer ${session.access_token}` }
+          : undefined,
       });
 
       if (error) {

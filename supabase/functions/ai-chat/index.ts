@@ -37,8 +37,12 @@ function sanitizeInput(text: string): string {
 
 async function determineUserRole(
   supabaseClient: any,
-  userId: string
-): Promise<'admin' | 'professor' | 'student'> {
+  userId: string | null
+): Promise<'admin' | 'professor' | 'student' | 'visitor'> {
+  if (!userId) {
+    return 'visitor';
+  }
+
   try {
     // Check if admin
     const { data: isAdminData, error: adminError } = await supabaseClient
@@ -63,10 +67,31 @@ async function determineUserRole(
   }
 }
 
-function buildSystemPrompt(role: 'admin' | 'professor' | 'student'): string {
+function buildSystemPrompt(role: 'admin' | 'professor' | 'student' | 'visitor'): string {
   const baseInfo = `Tu es un assistant IA pour AVS Innovation Institute (avs.ma), une plateforme éducative marocaine.`;
 
   const rolePrompts = {
+    visitor: `${baseInfo} Tu aides les visiteurs avec des informations publiques uniquement:
+- Les formations proposées (IA & Data Science, Programmation & Infrastructure, Marketing Digital)
+- Les certifications disponibles (Harvard, MIT, Stanford, Google, Microsoft, IBM)
+- Les conditions d'admission et processus d'inscription
+- Les tarifs et facilités de paiement
+- Les débouchés professionnels et salaires moyens
+- Les informations de contact (email, téléphone, adresse)
+- Les horaires et modalités des formations (présentiel, en ligne, soir, weekend)
+- Les questions fréquentes (FAQ)
+
+STRICTEMENT INTERDIT de partager:
+- Toute information personnelle d'étudiants, professeurs ou administrateurs
+- Données de notes, présences ou performances
+- Informations financières ou de paiement d'utilisateurs
+- Accès aux tableaux de bord ou données privées
+- Calendriers personnels ou emplois du temps individuels
+
+Si l'utilisateur demande des informations privées ou sensibles, suggère-lui de se connecter ou de contacter directement l'administration.
+
+Réponds en français de manière accueillante et informative. Encourage les visiteurs à s'inscrire pour accéder à plus de fonctionnalités.`,
+
     student: `${baseInfo} Tu aides les étudiants avec:
 - Informations sur leurs cours et emploi du temps
 - Leurs notes et présences personnelles
@@ -123,28 +148,22 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
-    // Get authenticated user
+    // Get authenticated user (optional for visitors)
     const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: 'Authentification requise' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    let user = null;
+
+    if (authHeader) {
+      const { data: { user: authUser }, error: authError } = await supabaseClient.auth.getUser(
+        authHeader.replace('Bearer ', '')
       );
+
+      if (!authError && authUser) {
+        user = authUser;
+      }
     }
 
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(
-      authHeader.replace('Bearer ', '')
-    );
-
-    if (authError || !user) {
-      return new Response(
-        JSON.stringify({ error: 'Utilisateur non authentifié' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Check rate limit
-    if (!checkRateLimit(user.id)) {
+    // Check rate limit for authenticated users
+    if (user && !checkRateLimit(user.id)) {
       return new Response(
         JSON.stringify({ error: 'Trop de requêtes. Veuillez patienter une minute.' }),
         { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -170,8 +189,8 @@ serve(async (req) => {
     }
 
     // Determine user role
-    const userRole = await determineUserRole(supabaseClient, user.id);
-    console.log(`User ${user.id} role: ${userRole}`);
+    const userRole = await determineUserRole(supabaseClient, user?.id || null);
+    console.log(`User ${user?.id || 'visitor'} role: ${userRole}`);
 
     // Build system prompt
     const systemPrompt = buildSystemPrompt(userRole);
@@ -211,23 +230,25 @@ serve(async (req) => {
       aiResponse = 'Le chatbot est temporairement indisponible. Veuillez réessayer dans quelques instants.';
     }
 
-    // Log conversation (async, don't block response)
-    const responseTime = Date.now() - startTime;
-    supabaseClient
-      .from('chat_logs')
-      .insert({
-        user_id: user.id,
-        user_role: userRole,
-        user_message: sanitizedMessage,
-        ai_response: aiResponse,
-        metadata: {
-          response_time_ms: responseTime,
-          model: OLLAMA_MODEL,
-        },
-      })
-      .then(({ error }) => {
-        if (error) console.error('Error logging chat:', error);
-      });
+    // Log conversation (async, don't block response) - only for authenticated users
+    if (user) {
+      const responseTime = Date.now() - startTime;
+      supabaseClient
+        .from('chat_logs')
+        .insert({
+          user_id: user.id,
+          user_role: userRole,
+          user_message: sanitizedMessage,
+          ai_response: aiResponse,
+          metadata: {
+            response_time_ms: responseTime,
+            model: OLLAMA_MODEL,
+          },
+        })
+        .then(({ error }) => {
+          if (error) console.error('Error logging chat:', error);
+        });
+    }
 
     // Return response
     return new Response(

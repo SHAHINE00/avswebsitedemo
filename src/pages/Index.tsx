@@ -2,6 +2,7 @@
 import React from 'react';
 import SEOHead from '@/components/SEOHead';
 import DynamicPageRenderer from '@/components/ui/DynamicPageRenderer';
+import AIChatbot from '@/components/chatbot/AIChatbot';
 import { pageSEO, generateFAQJsonLd, generateReviewJsonLd, generateBreadcrumbJsonLd, generateOrganizationJsonLd } from '@/utils/seoData';
 
 const Index = () => {
@@ -116,6 +117,8 @@ const Index = () => {
       
       {/* All homepage sections managed through DynamicPageRenderer */}
       <DynamicPageRenderer pageName="home" />
+      
+      <AIChatbot />
     </div>
   );
 };
