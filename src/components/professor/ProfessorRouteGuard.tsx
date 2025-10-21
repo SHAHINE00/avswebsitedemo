@@ -10,46 +10,10 @@ interface ProfessorRouteGuardProps {
 }
 
 const ProfessorRouteGuard: React.FC<ProfessorRouteGuardProps> = ({ children }) => {
-  const { user, loading: authLoading } = useAuth();
-  const [isProfessor, setIsProfessor] = useState<boolean | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading: authLoading, isProfessor, adminLoading } = useAuth();
 
-  useEffect(() => {
-    const checkProfessorStatus = async () => {
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        // Fetch roles directly from user_roles table
-        const { data: roles, error } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', user.id);
-
-        console.log('🔍 ProfessorRouteGuard roles:', { userId: user.id, roles });
-
-        if (error) {
-          console.error('Error checking professor status:', error);
-          setIsProfessor(false);
-        } else {
-          setIsProfessor(roles?.some(r => r.role === 'professor') || false);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        setIsProfessor(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (!authLoading) {
-      checkProfessorStatus();
-    }
-  }, [user, authLoading]);
-
-  if (authLoading || loading) {
+  // Show loading while checking authentication and roles
+  if (authLoading || adminLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -57,11 +21,13 @@ const ProfessorRouteGuard: React.FC<ProfessorRouteGuardProps> = ({ children }) =
     );
   }
 
+  // Redirect if not authenticated
   if (!user) {
     return <Navigate to="/auth" replace />;
   }
 
-  if (isProfessor === false) {
+  // Show access denied if not a professor
+  if (!isProfessor) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <Card className="max-w-md w-full">

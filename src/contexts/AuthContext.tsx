@@ -131,9 +131,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user ?? null);
         setLoading(false);
         
-        // Check roles when user logs in
+        // Check roles when user logs in (deferred to avoid onAuthStateChange deadlocks)
         if (session?.user) {
-          checkRolesAndProfile(session.user.id);
+          setTimeout(() => checkRolesAndProfile(session.user.id), 0);
         } else {
           setIsAdmin(false);
           setIsProfessor(false);
@@ -150,9 +150,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(session?.user ?? null);
       setLoading(false);
       
-      // Check roles for existing session
+      // Check roles for existing session (deferred to avoid blocking)
       if (session?.user) {
-        checkRolesAndProfile(session.user.id);
+        setTimeout(() => checkRolesAndProfile(session.user.id), 0);
       }
     });
 

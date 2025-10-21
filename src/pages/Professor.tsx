@@ -8,9 +8,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
 
 const Professor: React.FC = () => {
-  const { user, loading, isProfessor, adminLoading } = useAuth();
+  const { user, loading } = useAuth();
 
-  if (loading || adminLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="space-y-4 w-full max-w-4xl px-4">
