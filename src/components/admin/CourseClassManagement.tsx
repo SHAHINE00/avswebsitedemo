@@ -124,7 +124,7 @@ export const CourseClassManagement: React.FC = () => {
                           )}
                         </TableCell>
                         <TableCell>
-                          {classItem.professors?.full_name || 'Non assigné'}
+                          {classItem.professor?.full_name || 'Non assigné'}
                         </TableCell>
                         <TableCell>
                           <Badge variant={classItem.current_students >= classItem.max_students ? 'destructive' : 'default'}>

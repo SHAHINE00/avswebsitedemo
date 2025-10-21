@@ -18,9 +18,8 @@ export interface CourseClass {
   notes?: string;
   created_at: string;
   updated_at: string;
-  // Joined data
-  courses?: { title: string };
-  professors?: { full_name: string; email: string };
+  course?: { title: string };
+  professor?: { full_name: string; email: string };
 }
 
 export const useCourseClasses = (courseId?: string) => {
@@ -35,8 +34,8 @@ export const useCourseClasses = (courseId?: string) => {
         .from('course_classes')
         .select(`
           *,
-          courses(title),
-          professors(full_name, email)
+          course:courses(title),
+          professor:professors(full_name, email)
         `)
         .order('created_at', { ascending: false });
 
