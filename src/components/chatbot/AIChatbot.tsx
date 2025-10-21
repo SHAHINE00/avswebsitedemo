@@ -114,8 +114,8 @@ const AIChatbot: React.FC = () => {
       {isOpen && (
         <Card className="fixed bottom-6 right-6 w-96 h-[32rem] flex flex-col shadow-2xl z-50 animate-in slide-in-from-bottom-5 overflow-hidden">
           {/* Header with curved wave */}
-          <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-            <div className="flex items-center justify-between p-4 pb-6">
+          <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white pb-10">
+            <div className="flex items-center justify-between p-4">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center ring-2 ring-white/20">
                   <MessageCircle className="h-5 w-5" />
@@ -135,7 +135,7 @@ const AIChatbot: React.FC = () => {
                 <X className="h-4 w-4" />
               </Button>
             </div>
-            <div className="px-4 pb-3">
+            <div className="px-4 pb-4 relative z-10">
               <p className="text-sm text-gray-200">Nous sommes en ligne !</p>
             </div>
             {/* Curved wave SVG */}
