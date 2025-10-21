@@ -12,6 +12,10 @@ import { useClassStats } from '@/hooks/useClassStats';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ClassAttendanceTab } from '@/components/class-detail/ClassAttendanceTab';
+import { ClassGradesTab } from '@/components/class-detail/ClassGradesTab';
+import { ClassMaterialsTab } from '@/components/class-detail/ClassMaterialsTab';
+import { ClassSettingsTab } from '@/components/class-detail/ClassSettingsTab';
 
 const ClassDetailPage: React.FC = () => {
   const { classId } = useParams<{ classId: string }>();
@@ -24,6 +28,10 @@ const ClassDetailPage: React.FC = () => {
 
   const classData = classes.find(c => c.id === classId);
   const loading = classLoading || detailsLoading || statsLoading;
+
+  const handleRefresh = () => {
+    window.location.reload();
+  };
 
   if (classLoading) {
     return (
@@ -292,47 +300,19 @@ const ClassDetailPage: React.FC = () => {
           </TabsContent>
 
           <TabsContent value="attendance" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Suivi des présences</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">Fonctionnalité à venir</p>
-              </CardContent>
-            </Card>
+            <ClassAttendanceTab classId={classId!} courseId={classData.course_id} />
           </TabsContent>
 
           <TabsContent value="grades" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Gestion des notes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">Fonctionnalité à venir</p>
-              </CardContent>
-            </Card>
+            <ClassGradesTab classId={classId!} courseId={classData.course_id} />
           </TabsContent>
 
           <TabsContent value="materials" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Matériel pédagogique</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">Fonctionnalité à venir</p>
-              </CardContent>
-            </Card>
+            <ClassMaterialsTab classId={classId!} courseId={classData.course_id} />
           </TabsContent>
 
           <TabsContent value="settings" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Paramètres de la classe</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">Fonctionnalité à venir</p>
-              </CardContent>
-            </Card>
+            <ClassSettingsTab classId={classId!} classData={classData} onUpdate={handleRefresh} />
           </TabsContent>
         </Tabs>
       </div>
