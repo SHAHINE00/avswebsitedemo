@@ -11,13 +11,13 @@ interface StudentDocument {
   file_size: number | null;
   mime_type: string | null;
   is_verified: boolean;
-  verified_at: string | null;
-  verified_by: string | null;
-  admin_notes: string | null;
+  verified_at?: string;
+  verified_by?: string;
+  admin_notes?: string;
   created_at: string;
 }
 
-export const useStudentDocuments = () => {
+export const useStudentDocuments = (contextUserId?: string) => {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
@@ -82,6 +82,15 @@ export const useStudentDocuments = () => {
 
       if (error) throw error;
 
+      // Log the upload
+      await supabase.rpc('log_storage_access', {
+        p_bucket_id: 'student-documents',
+        p_object_path: fileName,
+        p_action: 'upload',
+        p_file_size: file.size,
+        p_metadata: { document_type: documentType }
+      });
+
       toast({
         title: "Succès",
         description: "Document téléchargé avec succès"
@@ -142,7 +151,7 @@ export const useStudentDocuments = () => {
 
       toast({
         title: "Succès",
-        description: "Document vérifié avec succès"
+        description: "Document vérifié"
       });
 
       return true;
@@ -159,59 +168,28 @@ export const useStudentDocuments = () => {
     }
   };
 
-  const downloadDocument = async (documentId: string, fileName: string) => {
+  const downloadDocument = async (documentUrl: string, fileName: string) => {
     try {
-      // Get document details
-      const { data: doc, error: docError } = await supabase
-        .from('student_documents')
-        .select('file_url, user_id')
-        .eq('id', documentId)
-        .single();
-
-      if (docError || !doc) throw docError;
-
-      // Extract file path from URL
-      const urlParts = doc.file_url.split('/student-documents/');
-      if (urlParts.length < 2) throw new Error('Invalid file URL');
-      
-      const filePath = urlParts[1];
-
-      // Download file
-      const { data, error } = await supabase.storage
-        .from('student-documents')
-        .download(filePath);
-
-      if (error) throw error;
-
-      // Create download link
-      const url = URL.createObjectURL(data);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      // Log download
+      // Log the download
       await supabase.rpc('log_storage_access', {
         p_bucket_id: 'student-documents',
-        p_object_path: filePath,
+        p_object_path: documentUrl,
         p_action: 'download',
-        p_metadata: { document_id: documentId }
+        p_metadata: { file_name: fileName }
       });
 
-      toast({
-        title: "Succès",
-        description: "Document téléchargé"
-      });
+      // Trigger browser download
+      const link = document.createElement('a');
+      link.href = documentUrl;
+      link.download = fileName;
+      link.click();
 
       return true;
     } catch (error: any) {
       console.error('Error downloading document:', error);
       toast({
         title: "Erreur",
-        description: error.message || "Erreur lors du téléchargement",
+        description: "Erreur lors du téléchargement",
         variant: "destructive"
       });
       return false;
