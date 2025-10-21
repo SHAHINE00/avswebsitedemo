@@ -8,6 +8,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAppointmentBooking } from '@/hooks/useAppointmentBooking';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import AIChatbot from '@/components/chatbot/AIChatbot';
 import { Button } from '@/components/ui/button';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 import ErrorBoundary from '@/components/ui/error-boundary';
@@ -286,6 +287,7 @@ const Student: React.FC = () => {
         </div>
         
         <Footer />
+        <AIChatbot />
       </div>
     </ErrorBoundary>
   );

@@ -3,6 +3,7 @@ import SEOHead from '@/components/SEOHead';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ProfessorDashboard from '@/components/professor/ProfessorDashboard';
+import AIChatbot from '@/components/chatbot/AIChatbot';
 import ErrorBoundary from '@/components/ui/error-boundary';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
@@ -51,6 +52,7 @@ const Professor: React.FC = () => {
           <ProfessorDashboard />
         </main>
         <Footer />
+        <AIChatbot />
       </div>
     </ErrorBoundary>
   );

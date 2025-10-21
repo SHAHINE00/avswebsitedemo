@@ -6,6 +6,7 @@ import AdminTabsEnhanced from '@/components/admin/AdminTabsEnhanced';
 import CourseFormDialog from '@/components/admin/CourseFormDialog';
 import ErrorBoundary from '@/components/ui/error-boundary';
 import SEOHead from '@/components/SEOHead';
+import AIChatbot from '@/components/chatbot/AIChatbot';
 import { useAdminCourses } from '@/hooks/useAdminCourses';
 import { logInfo, logError } from '@/utils/logger';
 import type { Course } from '@/hooks/useCourses';
@@ -118,6 +119,8 @@ const Admin = () => {
             course={selectedCourse}
             onSuccess={refetch}
           />
+
+          <AIChatbot />
         </div>
       </ErrorBoundary>
     </AdminRouteGuard>
