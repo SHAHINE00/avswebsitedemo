@@ -331,25 +331,24 @@ export const CourseClassManagement: React.FC = () => {
         </CardContent>
       </Card>
 
-      {selectedCourse && (
-        <>
-          <CourseClassManagementDialog
-            open={dialogOpen}
-            onOpenChange={setDialogOpen}
-            courseId={selectedCourse.id}
-            courseName={selectedCourse.title}
-            editClass={editingClass}
-          />
+      {/* Dialogs rendered regardless of selectedCourse to support "Tous les cours" view */}
+      {(dialogOpen && (selectedCourse || editingClass)) && (
+        <CourseClassManagementDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          courseId={(selectedCourse?.id ?? editingClass?.course_id) as string}
+          courseName={(selectedCourse?.title ?? editingClass?.course_name ?? editingClass?.course?.title ?? '') as string}
+          editClass={editingClass}
+        />
+      )}
 
-          {selectedClass && (
-            <AssignStudentsToClassDialog
-              open={assignDialogOpen}
-              onOpenChange={setAssignDialogOpen}
-              courseId={selectedCourse.id}
-              selectedClass={selectedClass}
-            />
-          )}
-        </>
+      {(assignDialogOpen && selectedClass) && (
+        <AssignStudentsToClassDialog
+          open={assignDialogOpen}
+          onOpenChange={setAssignDialogOpen}
+          courseId={(selectedCourse?.id ?? selectedClass.course_id) as string}
+          selectedClass={selectedClass}
+        />
       )}
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
