@@ -6,10 +6,10 @@ export const ENV_CONFIG = {
   isProduction: process.env.NODE_ENV === 'production',
   isDevelopment: process.env.NODE_ENV === 'development',
   
-  // Supabase configuration (using hardcoded values since no env vars in Lovable)
+  // Supabase configuration (uses env vars with fallback)
   supabase: {
-    url: 'https://nkkalmyhxtuisjdjmdew.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ra2FsbXloeHR1aXNqZGptZGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzODgwMTAsImV4cCI6MjA2Njk2NDAxMH0.JRISrJH9AqdbIh_G4wFNHbqK7v-LQJJPsBEnVWOKIWo'
+    url: import.meta.env.VITE_SUPABASE_URL || 'https://nkkalmyhxtuisjdjmdew.supabase.co',
+    anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ra2FsbXloeHR1aXNqZGptZGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzODgwMTAsImV4cCI6MjA2Njk2NDAxMH0.JRISrJH9AqdbIh_G4wFNHbqK7v-LQJJPsBEnVWOKIWo'
   },
   
   // Application configuration
