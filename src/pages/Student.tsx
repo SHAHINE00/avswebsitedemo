@@ -275,6 +275,7 @@ const Student: React.FC = () => {
             activeTab={activeTab}
             onTabChange={(tab) => setSearchParams({ tab })}
             enrollments={enrollments}
+            enrollmentsLoading={enrollmentsLoading}
             appointments={appointments}
             notifications={notifications}
             achievements={achievements}

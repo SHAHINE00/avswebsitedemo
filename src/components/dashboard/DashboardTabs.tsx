@@ -42,6 +42,7 @@ interface DashboardTabsProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
   enrollments: Enrollment[];
+  enrollmentsLoading?: boolean;
   appointments: Appointment[];
   notifications: Notification[];
   achievements: UserAchievement[];
@@ -54,6 +55,7 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
   activeTab,
   onTabChange,
   enrollments,
+  enrollmentsLoading = false,
   appointments,
   notifications,
   achievements,
@@ -102,7 +104,10 @@ const DashboardTabs: React.FC<DashboardTabsProps> = ({
       </TabsContent>
 
       <TabsContent value="calendar" className="space-y-6">
-        <PersonalStudyCalendar />
+        <PersonalStudyCalendar 
+          enrollments={enrollments}
+          enrollmentsLoading={enrollmentsLoading}
+        />
       </TabsContent>
 
       <TabsContent value="attendance" className="space-y-6">

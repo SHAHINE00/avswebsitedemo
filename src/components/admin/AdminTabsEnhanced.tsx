@@ -1,19 +1,22 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { DashboardSkeleton } from '@/components/ui/dashboard-skeleton';
 import DashboardOverview from '@/components/admin/dashboard/DashboardOverview';
 import CourseManagementSection from '@/components/admin/dashboard/CourseManagementSection';
 import UserManagementSection from '@/components/admin/dashboard/UserManagementSection';
-import AnalyticsSection from '@/components/admin/dashboard/AnalyticsSection';
-import SystemMonitoring from '@/components/admin/dashboard/SystemMonitoring';
 import SubscriberManagement from '@/components/admin/dashboard/SubscriberManagement';
 import SectionVisibilityManagement from '@/components/admin/dashboard/SectionVisibilityManagement';
 import SecurityVerification from '@/components/admin/dashboard/SecurityVerification';
 import AppointmentManagement from '@/components/admin/dashboard/AppointmentManagement';
-import StudentCRMDashboardEnhanced from '@/components/admin/dashboard/student-crm/StudentCRMDashboardEnhanced';
 import { SecurityTestSuite } from './SecurityTestSuite';
 import ProfessorManagement from './ProfessorManagement';
 import type { Course } from '@/hooks/useCourses';
+
+// Lazy load heavy components
+const StudentCRMDashboardEnhanced = lazy(() => import('@/components/admin/dashboard/student-crm/StudentCRMDashboardEnhanced'));
+const AnalyticsSection = lazy(() => import('@/components/admin/dashboard/AnalyticsSection'));
+const SystemMonitoring = lazy(() => import('@/components/admin/dashboard/SystemMonitoring'));
 
 interface AdminTabsEnhancedProps {
   courses: Course[];
@@ -58,7 +61,9 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
       </TabsContent>
 
       <TabsContent value="students">
-        <StudentCRMDashboardEnhanced />
+        <Suspense fallback={<DashboardSkeleton />}>
+          <StudentCRMDashboardEnhanced />
+        </Suspense>
       </TabsContent>
 
       <TabsContent value="professors">
@@ -98,11 +103,15 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
       </TabsContent>
 
       <TabsContent value="analytics">
-        <AnalyticsSection />
+        <Suspense fallback={<DashboardSkeleton />}>
+          <AnalyticsSection />
+        </Suspense>
       </TabsContent>
 
       <TabsContent value="system">
-        <SystemMonitoring />
+        <Suspense fallback={<DashboardSkeleton />}>
+          <SystemMonitoring />
+        </Suspense>
       </TabsContent>
     </Tabs>
   );

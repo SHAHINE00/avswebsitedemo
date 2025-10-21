@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -52,7 +52,12 @@ interface StudyGoal {
   priority: 'low' | 'medium' | 'high';
 }
 
-const PersonalStudyCalendar = () => {
+interface PersonalStudyCalendarProps {
+  enrollments: any[];
+  enrollmentsLoading: boolean;
+}
+
+const PersonalStudyCalendar: React.FC<PersonalStudyCalendarProps> = ({ enrollments, enrollmentsLoading }) => {
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -72,10 +77,6 @@ const PersonalStudyCalendar = () => {
   const [goalTarget, setGoalTarget] = useState(10);
   const [goalType, setGoalType] = useState('weekly_lessons');
   const [goalDeadline, setGoalDeadline] = useState('');
-
-  // Enrollments for course selection
-  const [enrollments, setEnrollments] = useState<any[]>([]);
-  const [enrollmentsLoading, setEnrollmentsLoading] = useState(true);
   
   // Use real data from hooks
   const { 
@@ -86,19 +87,6 @@ const PersonalStudyCalendar = () => {
     createStudyGoal,
     refreshData
   } = useStudyCalendar();
-  
-  const { getMyEnrollments } = useStudents();
-
-  // Fetch enrollments on mount
-  useEffect(() => {
-    const loadEnrollments = async () => {
-      setEnrollmentsLoading(true);
-      const data = await getMyEnrollments();
-      setEnrollments(data);
-      setEnrollmentsLoading(false);
-    };
-    loadEnrollments();
-  }, []);
 
   const selectedDateSessions = studySessions.filter(
     session => session.date.toDateString() === selectedDate?.toDateString()
