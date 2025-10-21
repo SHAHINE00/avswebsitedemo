@@ -173,6 +173,33 @@ export const useCourseClasses = (courseId?: string) => {
     }
   };
 
+  const removeStudentFromClass = async (classId: string, studentId: string) => {
+    try {
+      const { error } = await supabase
+        .from('course_enrollments')
+        .update({ class_id: null })
+        .eq('user_id', studentId)
+        .eq('class_id', classId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Succès",
+        description: "Étudiant retiré de la classe",
+      });
+
+      await fetchClasses(courseId);
+      return true;
+    } catch (error: any) {
+      toast({
+        title: "Erreur",
+        description: error.message || "Impossible de retirer l'étudiant",
+        variant: "destructive",
+      });
+      return false;
+    }
+  };
+
   return {
     classes,
     loading,
@@ -181,5 +208,6 @@ export const useCourseClasses = (courseId?: string) => {
     updateClass,
     deleteClass,
     assignStudentsToClass,
+    removeStudentFromClass,
   };
 };
