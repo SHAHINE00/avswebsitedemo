@@ -11,6 +11,7 @@ import SecurityVerification from '@/components/admin/dashboard/SecurityVerificat
 import AppointmentManagement from '@/components/admin/dashboard/AppointmentManagement';
 import { SecurityTestSuite } from './SecurityTestSuite';
 import ProfessorManagement from './ProfessorManagement';
+import { CourseClassManagement } from './CourseClassManagement';
 import type { Course } from '@/hooks/useCourses';
 
 // Lazy load heavy components
@@ -47,6 +48,7 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
         <TabsTrigger value="students" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Étudiants</TabsTrigger>
         <TabsTrigger value="professors" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Professeurs</TabsTrigger>
         <TabsTrigger value="courses" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Cours</TabsTrigger>
+        <TabsTrigger value="classes" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Classes</TabsTrigger>
         <TabsTrigger value="users" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Utilisateurs</TabsTrigger>
         <TabsTrigger value="subscribers" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Abonnements</TabsTrigger>
         <TabsTrigger value="appointments" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Rendez-vous</TabsTrigger>
@@ -77,6 +79,10 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
           onEdit={onEdit}
           onDelete={onDelete}
         />
+      </TabsContent>
+
+      <TabsContent value="classes">
+        <CourseClassManagement />
       </TabsContent>
 
       <TabsContent value="users">
