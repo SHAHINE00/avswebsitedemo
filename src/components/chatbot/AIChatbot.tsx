@@ -4,8 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 import ChatMessage from './ChatMessage';
 import TypingIndicator from './TypingIndicator';
 
@@ -17,12 +19,43 @@ interface Message {
 }
 
 const AIChatbot: React.FC = () => {
+  const { user, isAdmin, isProfessor, isStudent } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const getDisplayRole = () => {
+    if (!user) return 'visitor';
+    if (isAdmin) return 'admin';
+    if (isProfessor) return 'professor';
+    if (isStudent) return 'student';
+    return 'visitor';
+  };
+
+  const getRoleName = (role: string) => {
+    const roleNames = {
+      visitor: 'Visiteur',
+      student: 'Étudiant',
+      professor: 'Professeur',
+      admin: 'Administrateur',
+    };
+    return roleNames[role as keyof typeof roleNames] || 'Visiteur';
+  };
+
+  const getWelcomeMessage = (role: string) => {
+    const messages = {
+      visitor: "👋 Bienvenue sur AVS ! Je peux vous renseigner sur nos formations, certifications, et admissions. Comment puis-je vous aider ?",
+      student: "👋 Bonjour Étudiant ! Je peux vous aider avec vos cours, notes, emploi du temps et toute question concernant votre parcours académique.",
+      professor: "👋 Bonjour Professeur ! Je peux vous assister avec la gestion de vos cours, vos étudiants et les ressources pédagogiques.",
+      admin: "👋 Bonjour Administrateur ! Je suis là pour vous guider dans la gestion de la plateforme, les utilisateurs et les paramètres système.",
+    };
+    return messages[role as keyof typeof messages] || messages.visitor;
+  };
+
+  const displayRole = getDisplayRole();
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -121,7 +154,17 @@ const AIChatbot: React.FC = () => {
                   <MessageCircle className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-300">Chat with</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-xs text-gray-300">Chat with</p>
+                    {user && (
+                      <Badge 
+                        variant="secondary" 
+                        className="text-xs bg-blue-500/20 text-blue-300 border-blue-400/30"
+                      >
+                        {getRoleName(displayRole)}
+                      </Badge>
+                    )}
+                  </div>
                   <h3 className="font-semibold text-white">Assistant AVS</h3>
                 </div>
               </div>
@@ -158,7 +201,7 @@ const AIChatbot: React.FC = () => {
               {messages.length === 0 && (
                 <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm">
                   <p className="text-sm text-gray-700 dark:text-gray-300">
-                    👋 Bonjour ! Je suis l'assistant AVS. Choisissez une option ci-dessous ou écrivez un message pour commencer.
+                    {getWelcomeMessage(displayRole)}
                   </p>
                 </div>
               )}
