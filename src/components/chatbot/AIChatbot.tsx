@@ -130,7 +130,7 @@ const AIChatbot: React.FC = () => {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-[100000]"
+          className="fixed bottom-24 sm:bottom-6 right-4 sm:right-6 h-14 w-14 rounded-full shadow-lg z-[100000]"
           size="icon"
           aria-label="Ouvrir le chat assistant"
         >
@@ -140,7 +140,7 @@ const AIChatbot: React.FC = () => {
 
       {/* Chat window */}
       {isOpen && (
-        <Card className="fixed bottom-6 right-6 w-[min(24rem,calc(100vw-2rem))] sm:w-96 h-[32rem] flex flex-col shadow-2xl z-[100000] animate-in slide-in-from-bottom-5 overflow-hidden">
+        <Card className="fixed bottom-24 sm:bottom-6 right-4 sm:right-6 w-[min(24rem,calc(100vw-1.5rem))] sm:w-96 h-[min(75vh,36rem)] sm:h-[32rem] flex flex-col shadow-2xl z-[100000] animate-in slide-in-from-bottom-5 overflow-hidden">
           {/* Header with curved wave */}
           <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white pb-10">
             <div className="flex items-center justify-between p-4">
