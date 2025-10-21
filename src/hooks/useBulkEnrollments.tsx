@@ -35,14 +35,13 @@ export const useBulkEnrollments = () => {
         });
       }
 
-      if (result.failed_count > 0) {
+      if (result.failed_count > 0 && result.errors && result.errors.length > 0) {
         logError('Bulk enrollment errors:', result.errors);
-        const errorDetails = result.errors && result.errors.length > 0
-          ? `\n\nDétails: ${result.errors.map(e => e.error).join(', ')}`
-          : '';
+        const errorMessages = result.errors.slice(0, 3).map((e: any) => e.error).join('; ');
+        const moreErrors = result.errors.length > 3 ? ` et ${result.errors.length - 3} autre(s)` : '';
         toast({
           title: 'Erreurs détectées',
-          description: `${result.failed_count} inscription(s) ont échoué${errorDetails}`,
+          description: `${result.failed_count} inscription(s) ont échoué: ${errorMessages}${moreErrors}`,
           variant: 'destructive',
         });
       }
@@ -82,14 +81,13 @@ export const useBulkEnrollments = () => {
         });
       }
 
-      if (result.failed_count > 0) {
+      if (result.failed_count > 0 && result.errors && result.errors.length > 0) {
         logError('Bulk unenrollment errors:', result.errors);
-        const errorDetails = result.errors && result.errors.length > 0
-          ? `\n\nDétails: ${result.errors.map(e => e.error).join(', ')}`
-          : '';
+        const errorMessages = result.errors.slice(0, 3).map((e: any) => e.error).join('; ');
+        const moreErrors = result.errors.length > 3 ? ` et ${result.errors.length - 3} autre(s)` : '';
         toast({
           title: 'Erreurs détectées',
-          description: `${result.failed_count} désinscription(s) ont échoué${errorDetails}`,
+          description: `${result.failed_count} désinscription(s) ont échoué: ${errorMessages}${moreErrors}`,
           variant: 'destructive',
         });
       }
