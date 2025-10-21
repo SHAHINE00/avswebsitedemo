@@ -2262,10 +2262,13 @@ export type Database = {
           file_url: string
           id: string
           is_verified: boolean | null
+          is_visible_to_student: boolean | null
           metadata: Json | null
           mime_type: string | null
+          professor_note: string | null
           updated_at: string
           uploaded_by: string | null
+          uploaded_by_role: string | null
           user_id: string
           verified_at: string | null
           verified_by: string | null
@@ -2279,10 +2282,13 @@ export type Database = {
           file_url: string
           id?: string
           is_verified?: boolean | null
+          is_visible_to_student?: boolean | null
           metadata?: Json | null
           mime_type?: string | null
+          professor_note?: string | null
           updated_at?: string
           uploaded_by?: string | null
+          uploaded_by_role?: string | null
           user_id: string
           verified_at?: string | null
           verified_by?: string | null
@@ -2296,10 +2302,13 @@ export type Database = {
           file_url?: string
           id?: string
           is_verified?: boolean | null
+          is_visible_to_student?: boolean | null
           metadata?: Json | null
           mime_type?: string | null
+          professor_note?: string | null
           updated_at?: string
           uploaded_by?: string | null
+          uploaded_by_role?: string | null
           user_id?: string
           verified_at?: string | null
           verified_by?: string | null

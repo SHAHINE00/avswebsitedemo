@@ -15,6 +15,10 @@ interface StudentDocument {
   verified_by?: string;
   admin_notes?: string;
   created_at: string;
+  uploaded_by?: string;
+  uploaded_by_role?: string;
+  professor_note?: string;
+  is_visible_to_student?: boolean;
 }
 
 export const useStudentDocuments = (contextUserId?: string) => {
@@ -220,6 +224,82 @@ export const useStudentDocuments = (contextUserId?: string) => {
     }
   };
 
+  const uploadDocumentAsTeacher = async (
+    studentId: string,
+    file: File,
+    documentType: string,
+    documentName?: string,
+    professorNote?: string
+  ) => {
+    setUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${studentId}/${Date.now()}.${fileExt}`;
+      
+      // Upload to storage
+      const { error: uploadError } = await supabase.storage
+        .from('student-documents')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('student-documents')
+        .getPublicUrl(fileName);
+
+      // Create document record
+      const { data, error } = await supabase
+        .from('student_documents')
+        .insert({
+          user_id: studentId,
+          document_type: documentType,
+          document_name: documentName || file.name,
+          file_url: publicUrl,
+          file_size: file.size,
+          mime_type: file.type,
+          uploaded_by: contextUserId,
+          uploaded_by_role: 'professor',
+          professor_note: professorNote,
+          is_visible_to_student: true
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Log the upload
+      await supabase.rpc('log_storage_access', {
+        p_bucket_id: 'student-documents',
+        p_object_path: fileName,
+        p_action: 'upload',
+        p_file_size: file.size,
+        p_metadata: { 
+          document_type: documentType,
+          uploaded_for_student: studentId,
+          uploaded_by_role: 'professor'
+        }
+      });
+
+      toast({
+        title: "Succès",
+        description: "Document envoyé à l'étudiant avec succès"
+      });
+
+      return data;
+    } catch (error: any) {
+      console.error('Error uploading document as teacher:', error);
+      toast({
+        title: "Erreur",
+        description: error.message || "Erreur lors de l'envoi du document",
+        variant: "destructive"
+      });
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return {
     loading,
     uploading,
@@ -228,6 +308,7 @@ export const useStudentDocuments = (contextUserId?: string) => {
     deleteDocument,
     verifyDocument,
     downloadDocument,
-    bulkDeleteDocuments
+    bulkDeleteDocuments,
+    uploadDocumentAsTeacher
   };
 };

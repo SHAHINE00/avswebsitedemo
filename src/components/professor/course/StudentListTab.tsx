@@ -3,13 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Search, Eye, Calendar, CheckCircle, XCircle, AlertCircle, TrendingUp } from 'lucide-react';
+import { Search, Eye, Calendar, CheckCircle, XCircle, AlertCircle, TrendingUp, Upload } from 'lucide-react';
 import { useProfessorStudents } from '@/hooks/useProfessorStudents';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { StudentDocumentUploader } from '@/components/professor/StudentDocumentUploader';
 
 interface StudentListTabProps {
   courseId: string;
@@ -20,6 +21,7 @@ const StudentListTab: React.FC<StudentListTabProps> = ({ courseId }) => {
   const [search, setSearch] = useState('');
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [uploaderOpen, setUploaderOpen] = useState(false);
 
   useEffect(() => {
     fetchStudents();
@@ -113,7 +115,19 @@ const StudentListTab: React.FC<StudentListTabProps> = ({ courseId }) => {
       <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
         <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Détails de l'étudiant</DialogTitle>
+            <DialogTitle className="flex items-center justify-between">
+              <span>Détails de l'étudiant</span>
+              {selectedStudent && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setUploaderOpen(true)}
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Envoyer un document
+                </Button>
+              )}
+            </DialogTitle>
           </DialogHeader>
           {selectedStudent && (
             <div className="space-y-6">
@@ -316,6 +330,18 @@ const StudentListTab: React.FC<StudentListTabProps> = ({ courseId }) => {
           )}
         </DialogContent>
       </Dialog>
+
+      {selectedStudent && (
+        <StudentDocumentUploader
+          studentId={selectedStudent.profile?.id}
+          studentName={selectedStudent.profile?.full_name || selectedStudent.profile?.email}
+          open={uploaderOpen}
+          onOpenChange={setUploaderOpen}
+          onSuccess={() => {
+            handleViewDetails(selectedStudent.profile?.id);
+          }}
+        />
+      )}
     </>
   );
 };
