@@ -10,6 +10,9 @@ export interface UserEnrollment {
   enrolled_at: string;
   progress_percentage: number;
   status: string;
+  class_id?: string;
+  class_name?: string;
+  class_code?: string;
 }
 
 export interface Course {
@@ -45,12 +48,34 @@ export const useAdminEnrollments = () => {
 
   const getUserEnrollments = async (userId: string): Promise<UserEnrollment[]> => {
     try {
-      const { data, error } = await supabase.rpc('get_user_enrollments_for_admin', {
-        p_user_id: userId
-      });
+      const { data, error } = await supabase
+        .from('course_enrollments')
+        .select(`
+          id,
+          course_id,
+          enrolled_at,
+          progress_percentage,
+          status,
+          class_id,
+          courses!inner(title),
+          course_classes(class_name, class_code)
+        `)
+        .eq('user_id', userId)
+        .order('enrolled_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      
+      return (data || []).map(enrollment => ({
+        enrollment_id: enrollment.id,
+        course_id: enrollment.course_id,
+        course_title: enrollment.courses.title,
+        enrolled_at: enrollment.enrolled_at,
+        progress_percentage: enrollment.progress_percentage || 0,
+        status: enrollment.status,
+        class_id: enrollment.class_id || undefined,
+        class_name: enrollment.course_classes?.class_name || undefined,
+        class_code: enrollment.course_classes?.class_code || undefined,
+      }));
     } catch (error) {
       console.error('Error fetching user enrollments:', error);
       return [];

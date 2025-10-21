@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { BookOpen, Plus, X } from 'lucide-react';
+import { BookOpen, Plus, X, GraduationCap } from 'lucide-react';
 import { useAdminEnrollments } from '@/hooks/useAdminEnrollments';
 
 interface StudentEnrollmentsProps {
@@ -100,9 +100,19 @@ const StudentEnrollments: React.FC<StudentEnrollmentsProps> = ({ userId, detaile
             {enrollments.map((enrollment) => (
               <div key={enrollment.enrollment_id} className="p-4 border rounded-lg space-y-2">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 flex-1">
+                  <div className="flex items-center gap-2 flex-1 flex-wrap">
                     <p className="font-medium">{enrollment.course_title}</p>
                     {getStatusBadge(enrollment.status)}
+                    {enrollment.class_name ? (
+                      <Badge variant="outline" className="bg-primary/5 border-primary/20">
+                        <GraduationCap className="w-3 h-3 mr-1" />
+                        {enrollment.class_name}
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-muted-foreground">
+                        Non assigné
+                      </Badge>
+                    )}
                   </div>
                   <Button
                     variant="ghost"

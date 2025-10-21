@@ -169,11 +169,20 @@ export const UserEnrollmentDialog: React.FC<UserEnrollmentDialogProps> = ({
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
+                          <div className="flex items-center gap-3 mb-2 flex-wrap">
                             <h4 className="font-medium">{enrollment.course_title}</h4>
                             <Badge variant={enrollment.status === 'active' ? 'default' : 'secondary'}>
                               {enrollment.status}
                             </Badge>
+                            {enrollment.class_name ? (
+                              <Badge variant="outline" className="bg-primary/5 border-primary/20">
+                                Classe: {enrollment.class_name}
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="text-muted-foreground">
+                                Non assigné à une classe
+                              </Badge>
+                            )}
                           </div>
                           
                           <div className="flex items-center gap-4 text-sm text-muted-foreground">
