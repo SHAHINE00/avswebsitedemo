@@ -12,7 +12,13 @@ interface StudentRouteGuardProps {
 const StudentRouteGuard: React.FC<StudentRouteGuardProps> = ({ children }) => {
   const { user, loading, isStudent, isAdmin, adminLoading } = useAuth();
 
-  if (loading || adminLoading) {
+  // If user is already confirmed as student, show content immediately
+  if (user && isStudent) {
+    return <>{children}</>;
+  }
+
+  // Show loading only if initial auth is still loading
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Card className="w-96">
@@ -31,8 +37,20 @@ const StudentRouteGuard: React.FC<StudentRouteGuardProps> = ({ children }) => {
     return <Navigate to="/auth" replace />;
   }
 
-  if (isStudent) {
-    return <>{children}</>;
+  // Show loading for admin check only if we don't already know the role
+  if (adminLoading && !isStudent && !isAdmin) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Card className="w-96">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <p>Vérification des accès...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   if (isAdmin) {

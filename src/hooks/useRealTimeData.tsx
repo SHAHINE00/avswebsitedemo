@@ -135,9 +135,12 @@ export const useRealTimeData = () => {
       
       .subscribe((status, err) => {
         if (status === 'SUBSCRIBED') {
-          console.log('Real-time subscriptions established');
+          console.log('✅ Real-time subscriptions established');
         } else if (status === 'CHANNEL_ERROR') {
-          console.warn('Real-time subscription error:', err);
+          console.error('❌ Real-time subscription error:', { status, error: err });
+          // Don't block the app - just log the error
+        } else if (status === 'CLOSED') {
+          console.log('🔌 Real-time subscription closed');
         }
       });
 

@@ -159,6 +159,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Timeout fallback to prevent infinite loading
     const timeout = setTimeout(() => {
       setLoading(false);
+      setAdminLoading(false);
     }, 3000);
 
     return () => {
