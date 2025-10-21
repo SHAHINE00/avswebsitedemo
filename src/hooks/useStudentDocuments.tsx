@@ -11,6 +11,9 @@ interface StudentDocument {
   file_size: number | null;
   mime_type: string | null;
   is_verified: boolean;
+  verified_at: string | null;
+  verified_by: string | null;
+  admin_notes: string | null;
   created_at: string;
 }
 
@@ -127,18 +130,19 @@ export const useStudentDocuments = () => {
     }
   };
 
-  const verifyDocument = async (documentId: string) => {
+  const verifyDocument = async (documentId: string, adminNotes?: string) => {
+    setLoading(true);
     try {
-      const { error } = await supabase
-        .from('student_documents')
-        .update({ is_verified: true })
-        .eq('id', documentId);
+      const { error } = await supabase.rpc('verify_student_document', {
+        p_document_id: documentId,
+        p_admin_notes: adminNotes
+      });
 
       if (error) throw error;
 
       toast({
         title: "Succès",
-        description: "Document vérifié"
+        description: "Document vérifié avec succès"
       });
 
       return true;
@@ -150,6 +154,91 @@ export const useStudentDocuments = () => {
         variant: "destructive"
       });
       return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const downloadDocument = async (documentId: string, fileName: string) => {
+    try {
+      // Get document details
+      const { data: doc, error: docError } = await supabase
+        .from('student_documents')
+        .select('file_url, user_id')
+        .eq('id', documentId)
+        .single();
+
+      if (docError || !doc) throw docError;
+
+      // Extract file path from URL
+      const urlParts = doc.file_url.split('/student-documents/');
+      if (urlParts.length < 2) throw new Error('Invalid file URL');
+      
+      const filePath = urlParts[1];
+
+      // Download file
+      const { data, error } = await supabase.storage
+        .from('student-documents')
+        .download(filePath);
+
+      if (error) throw error;
+
+      // Create download link
+      const url = URL.createObjectURL(data);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      // Log download
+      await supabase.rpc('log_storage_access', {
+        p_bucket_id: 'student-documents',
+        p_object_path: filePath,
+        p_action: 'download',
+        p_metadata: { document_id: documentId }
+      });
+
+      toast({
+        title: "Succès",
+        description: "Document téléchargé"
+      });
+
+      return true;
+    } catch (error: any) {
+      console.error('Error downloading document:', error);
+      toast({
+        title: "Erreur",
+        description: error.message || "Erreur lors du téléchargement",
+        variant: "destructive"
+      });
+      return false;
+    }
+  };
+
+  const bulkDeleteDocuments = async (documentIds: string[]) => {
+    setLoading(true);
+    let successCount = 0;
+    let failCount = 0;
+
+    try {
+      for (const id of documentIds) {
+        const success = await deleteDocument(id);
+        if (success) successCount++;
+        else failCount++;
+      }
+
+      toast({
+        title: successCount > 0 ? "Succès" : "Erreur",
+        description: `${successCount} document(s) supprimé(s)${failCount > 0 ? `, ${failCount} échec(s)` : ''}`,
+        variant: successCount > 0 ? "default" : "destructive"
+      });
+
+      return { successCount, failCount };
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -159,6 +248,8 @@ export const useStudentDocuments = () => {
     getDocuments,
     uploadDocument,
     deleteDocument,
-    verifyDocument
+    verifyDocument,
+    downloadDocument,
+    bulkDeleteDocuments
   };
 };

@@ -25,10 +25,28 @@ Deno.serve(async (req) => {
     const originalUri = req.headers.get('X-Original-URI') || new URL(req.url).pathname;
     console.log('Original URI:', originalUri);
 
-    // Extract path: /files/course-materials/{courseId}/{filename}
-    const pathMatch = originalUri.match(/^\/files\/course-materials\/([^\/]+)\/(.+)$/);
+    // Determine bucket and parse path
+    let bucketName: string;
+    let entityId: string;
+    let filename: string;
+    let storagePath: string;
+
+    // Try course-materials pattern: /files/course-materials/{courseId}/{filename}
+    const courseMaterialsMatch = originalUri.match(/^\/files\/course-materials\/([^\/]+)\/(.+)$/);
+    // Try student-documents pattern: /files/student-documents/{userId}/{filename}
+    const studentDocumentsMatch = originalUri.match(/^\/files\/student-documents\/([^\/]+)\/(.+)$/);
     
-    if (!pathMatch) {
+    if (courseMaterialsMatch) {
+      bucketName = 'course-materials';
+      [, entityId, filename] = courseMaterialsMatch;
+      storagePath = `${entityId}/${filename}`;
+      console.log('Course materials - Course ID:', entityId, 'Filename:', filename);
+    } else if (studentDocumentsMatch) {
+      bucketName = 'student-documents';
+      [, entityId, filename] = studentDocumentsMatch;
+      storagePath = `${entityId}/${filename}`;
+      console.log('Student documents - User ID:', entityId, 'Filename:', filename);
+    } else {
       console.error('Invalid path format:', originalUri);
       return new Response(JSON.stringify({ error: 'Invalid file path' }), {
         status: 400,
@@ -36,66 +54,109 @@ Deno.serve(async (req) => {
       });
     }
 
-    const [, courseId, filename] = pathMatch;
-    const storagePath = `${courseId}/${filename}`;
-    
-    console.log('Course ID:', courseId);
-    console.log('Filename:', filename);
-    console.log('Storage path:', storagePath);
+    // Handle access control based on bucket type
+    if (bucketName === 'course-materials') {
+      // Get file metadata from database to check permissions
+      const { data: material, error: materialError } = await supabaseClient
+        .from('course_materials')
+        .select('is_public, course_id, id, download_count')
+        .eq('file_url', originalUri)
+        .single();
 
-    // Get file metadata from database to check permissions
-    const { data: material, error: materialError } = await supabaseClient
-      .from('course_materials')
-      .select('is_public, course_id')
-      .eq('file_url', originalUri)
-      .single();
+      if (materialError && materialError.code !== 'PGRST116') {
+        console.error('Error fetching material:', materialError);
+      }
 
-    if (materialError && materialError.code !== 'PGRST116') {
-      console.error('Error fetching material:', materialError);
-    }
+      const isPublic = material?.is_public || false;
+      console.log('Is public:', isPublic);
 
-    // Check if file is public
-    const isPublic = material?.is_public || false;
-    
-    console.log('Is public:', isPublic);
+      if (!isPublic) {
+        // File is not public, check if user is authenticated and enrolled
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        
+        if (!user) {
+          console.log('User not authenticated');
+          return new Response(JSON.stringify({ error: 'Authentication required' }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
 
-    if (!isPublic) {
-      // File is not public, check if user is authenticated and enrolled
+        // Check if user is enrolled in the course or is admin
+        const { data: enrollment } = await supabaseClient
+          .from('course_enrollments')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('course_id', entityId)
+          .single();
+
+        const { data: isAdmin } = await supabaseClient
+          .rpc('is_admin', { _user_id: user.id });
+
+        if (!enrollment && !isAdmin) {
+          console.log('User not enrolled and not admin');
+          return new Response(JSON.stringify({ error: 'Access denied' }), {
+            status: 403,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        console.log('Access granted - enrolled or admin');
+      }
+
+      // Track download
+      if (material) {
+        try {
+          await supabaseClient.rpc('increment_material_download', { p_material_id: material.id });
+        } catch (e) {
+          console.error('Error tracking download:', e);
+        }
+      }
+    } else if (bucketName === 'student-documents') {
+      // Always require authentication for student documents
       const { data: { user } } = await supabaseClient.auth.getUser();
       
       if (!user) {
-        console.log('User not authenticated');
+        console.log('User not authenticated for student document');
         return new Response(JSON.stringify({ error: 'Authentication required' }), {
           status: 401,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
 
-      // Check if user is enrolled in the course or is admin
-      const { data: enrollment } = await supabaseClient
-        .from('course_enrollments')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('course_id', courseId)
-        .single();
+      // Check if user can access this student's document
+      const { data: canAccess, error: accessError } = await supabaseClient
+        .rpc('can_access_student_document', { 
+          p_accessor_id: user.id, 
+          p_student_id: entityId 
+        });
 
-      const { data: isAdmin } = await supabaseClient
-        .rpc('is_admin', { _user_id: user.id });
-
-      if (!enrollment && !isAdmin) {
-        console.log('User not enrolled and not admin');
-        return new Response(JSON.stringify({ error: 'Access denied' }), {
+      if (accessError || !canAccess) {
+        console.error('Access denied to student document:', accessError);
+        return new Response(JSON.stringify({ error: 'Access denied - not authorized to view this document' }), {
           status: 403,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
 
-      console.log('Access granted - enrolled or admin');
+      console.log('Access granted to student document');
+
+      // Log the access
+      try {
+        await supabaseClient.rpc('log_storage_access', {
+          p_bucket_id: bucketName,
+          p_object_path: storagePath,
+          p_action: 'download',
+          p_metadata: { student_id: entityId }
+        });
+      } catch (e) {
+        console.error('Error logging access:', e);
+      }
     }
 
     // Fetch file from Supabase Storage
     const { data: fileData, error: fileError } = await supabaseClient.storage
-      .from('course-materials')
+      .from(bucketName)
       .download(storagePath);
 
     if (fileError) {
@@ -104,14 +165,6 @@ Deno.serve(async (req) => {
         status: 404,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
-    }
-
-    // Increment download count
-    if (material) {
-      await supabaseClient
-        .from('course_materials')
-        .update({ download_count: (material as any).download_count + 1 })
-        .eq('file_url', originalUri);
     }
 
     // Determine content type from filename extension
@@ -135,7 +188,7 @@ Deno.serve(async (req) => {
 
     const contentType = contentTypeMap[ext || ''] || 'application/octet-stream';
 
-    console.log('File found, streaming response');
+    console.log('File found from', bucketName, 'streaming response');
 
     // Stream file back with proper headers
     return new Response(fileData, {
