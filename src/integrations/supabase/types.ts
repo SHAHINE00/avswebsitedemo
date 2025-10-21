@@ -2183,6 +2183,45 @@ export type Database = {
           },
         ]
       }
+      storage_access_logs: {
+        Row: {
+          action: string
+          bucket_id: string
+          created_at: string | null
+          file_size: number | null
+          id: string
+          ip_address: unknown | null
+          metadata: Json | null
+          object_path: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          bucket_id: string
+          created_at?: string | null
+          file_size?: number | null
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          object_path: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          bucket_id?: string
+          created_at?: string | null
+          file_size?: number | null
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          object_path?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       student_cohorts: {
         Row: {
           created_at: string | null
@@ -2215,6 +2254,7 @@ export type Database = {
       }
       student_documents: {
         Row: {
+          admin_notes: string | null
           created_at: string
           document_name: string
           document_type: string
@@ -2227,8 +2267,11 @@ export type Database = {
           updated_at: string
           uploaded_by: string | null
           user_id: string
+          verified_at: string | null
+          verified_by: string | null
         }
         Insert: {
+          admin_notes?: string | null
           created_at?: string
           document_name: string
           document_type: string
@@ -2241,8 +2284,11 @@ export type Database = {
           updated_at?: string
           uploaded_by?: string | null
           user_id: string
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Update: {
+          admin_notes?: string | null
           created_at?: string
           document_name?: string
           document_type?: string
@@ -2255,6 +2301,8 @@ export type Database = {
           updated_at?: string
           uploaded_by?: string | null
           user_id?: string
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Relationships: [
           {
@@ -2790,7 +2838,17 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      storage_usage_stats: {
+        Row: {
+          bucket_id: string | null
+          file_count: number | null
+          first_upload: string | null
+          last_upload: string | null
+          total_bytes: number | null
+          total_mb: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       add_course_material: {
@@ -2865,6 +2923,10 @@ export type Database = {
       bulk_unenroll_users: {
         Args: { p_course_id: string; p_user_ids: string[] }
         Returns: Json
+      }
+      can_access_student_document: {
+        Args: { p_accessor_id: string; p_student_id: string }
+        Returns: boolean
       }
       cleanup_security_logs: {
         Args: Record<PropertyKey, never>
@@ -3118,6 +3180,12 @@ export type Database = {
           status: string
         }[]
       }
+      get_student_courses: {
+        Args: { p_student_id: string }
+        Returns: {
+          course_id: string
+        }[]
+      }
       get_student_detail: {
         Args: { p_course_id: string; p_student_id: string }
         Returns: Json
@@ -3194,6 +3262,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_material_download: {
+        Args: { p_material_id: string }
+        Returns: undefined
+      }
       is_admin: {
         Args: { _user_id?: string }
         Returns: boolean
@@ -3210,6 +3282,16 @@ export type Database = {
           p_entity_type: string
         }
         Returns: undefined
+      }
+      log_storage_access: {
+        Args: {
+          p_action: string
+          p_bucket_id: string
+          p_file_size?: number
+          p_metadata?: Json
+          p_object_path: string
+        }
+        Returns: string
       }
       mark_attendance_bulk: {
         Args: {
@@ -3357,6 +3439,10 @@ export type Database = {
           security_level: string
           table_name: string
         }[]
+      }
+      verify_student_document: {
+        Args: { p_admin_notes?: string; p_document_id: string }
+        Returns: undefined
       }
     }
     Enums: {
