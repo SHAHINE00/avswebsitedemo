@@ -513,6 +513,7 @@ export type Database = {
       }
       class_schedules: {
         Row: {
+          class_id: string | null
           course_id: string
           created_at: string
           day_of_week: number
@@ -527,6 +528,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          class_id?: string | null
           course_id: string
           created_at?: string
           day_of_week: number
@@ -541,6 +543,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          class_id?: string | null
           course_id?: string
           created_at?: string
           day_of_week?: number
@@ -555,6 +558,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "class_schedules_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "course_classes"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "class_schedules_course_id_fkey"
             columns: ["course_id"]
@@ -574,6 +584,7 @@ export type Database = {
       class_sessions: {
         Row: {
           attendance_marked: boolean
+          class_id: string | null
           course_id: string
           created_at: string
           end_time: string
@@ -590,6 +601,7 @@ export type Database = {
         }
         Insert: {
           attendance_marked?: boolean
+          class_id?: string | null
           course_id: string
           created_at?: string
           end_time: string
@@ -606,6 +618,7 @@ export type Database = {
         }
         Update: {
           attendance_marked?: boolean
+          class_id?: string | null
           course_id?: string
           created_at?: string
           end_time?: string
@@ -621,6 +634,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "class_sessions_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "course_classes"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "class_sessions_course_id_fkey"
             columns: ["course_id"]
@@ -773,8 +793,78 @@ export type Database = {
         }
         Relationships: []
       }
+      course_classes: {
+        Row: {
+          academic_year: string | null
+          class_code: string | null
+          class_name: string
+          course_id: string
+          created_at: string | null
+          current_students: number | null
+          end_date: string | null
+          id: string
+          max_students: number | null
+          notes: string | null
+          professor_id: string | null
+          semester: string | null
+          start_date: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          academic_year?: string | null
+          class_code?: string | null
+          class_name: string
+          course_id: string
+          created_at?: string | null
+          current_students?: number | null
+          end_date?: string | null
+          id?: string
+          max_students?: number | null
+          notes?: string | null
+          professor_id?: string | null
+          semester?: string | null
+          start_date?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          academic_year?: string | null
+          class_code?: string | null
+          class_name?: string
+          course_id?: string
+          created_at?: string | null
+          current_students?: number | null
+          end_date?: string | null
+          id?: string
+          max_students?: number | null
+          notes?: string | null
+          professor_id?: string | null
+          semester?: string | null
+          start_date?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_classes_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_classes_professor_id_fkey"
+            columns: ["professor_id"]
+            isOneToOne: false
+            referencedRelation: "professors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_enrollments: {
         Row: {
+          class_id: string | null
           completion_date: string | null
           course_id: string
           enrolled_at: string
@@ -785,6 +875,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          class_id?: string | null
           completion_date?: string | null
           course_id: string
           enrolled_at?: string
@@ -795,6 +886,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          class_id?: string | null
           completion_date?: string | null
           course_id?: string
           enrolled_at?: string
@@ -805,6 +897,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "course_enrollments_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "course_classes"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "course_enrollments_course_id_fkey"
             columns: ["course_id"]

@@ -8,6 +8,7 @@ import PendingUsersManagement from '@/components/admin/dashboard/PendingUsersMan
 import AdvancedAnalytics from '@/components/admin/dashboard/AdvancedAnalytics';
 import SystemMonitoring from '@/components/admin/dashboard/SystemMonitoring';
 import BlogManagement from '@/components/blog/BlogManagement';
+import { CourseClassManagement } from '@/components/admin/CourseClassManagement';
 import type { Course } from '@/hooks/useCourses';
 
 interface AdminTabsProps {
@@ -25,9 +26,10 @@ const AdminTabs: React.FC<AdminTabsProps> = ({
 }) => {
   return (
     <Tabs defaultValue="dashboard" className="w-full">
-      <TabsList className="grid w-full grid-cols-7">
+      <TabsList className="grid w-full grid-cols-8">
         <TabsTrigger value="dashboard">Tableau de Bord</TabsTrigger>
         <TabsTrigger value="courses">Gestion des Cours</TabsTrigger>
+        <TabsTrigger value="classes">Gestion des Classes</TabsTrigger>
         <TabsTrigger value="users">Gestion des Utilisateurs</TabsTrigger>
         <TabsTrigger value="pending">Inscriptions</TabsTrigger>
         <TabsTrigger value="content">Gestion de Contenu</TabsTrigger>
@@ -46,6 +48,10 @@ const AdminTabs: React.FC<AdminTabsProps> = ({
           onEdit={onEdit}
           onDelete={onDelete}
         />
+      </TabsContent>
+
+      <TabsContent value="classes">
+        <CourseClassManagement />
       </TabsContent>
 
       <TabsContent value="users">
