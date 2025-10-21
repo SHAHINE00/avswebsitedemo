@@ -134,11 +134,14 @@ export const useClassDetails = (classId?: string) => {
 
     } catch (error: any) {
       console.error('Error fetching class details:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger les détails de la classe",
-        variant: "destructive",
-      });
+      // Only show error for real errors, not empty data
+      if (error?.code !== 'PGRST116') {
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les détails de la classe",
+          variant: "destructive",
+        });
+      }
     } finally {
       setLoading(false);
     }

@@ -91,7 +91,7 @@ export const useClassStats = (classId?: string) => {
         .select('room_location')
         .eq('course_id', classData.course_id)
         .limit(1)
-        .single();
+        .maybeSingle();
 
       // Calculate at-risk students (attendance < 70% or grade < 60%)
       const atRiskStudents = 0; // Simplified for now
