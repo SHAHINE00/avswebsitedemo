@@ -35,9 +35,9 @@ import {
 } from '@/components/ui/alert-dialog';
 
 export const CourseClassManagement: React.FC = () => {
-  const [selectedCourseId, setSelectedCourseId] = useState<string>('');
+  const [selectedCourseId, setSelectedCourseId] = useState<string>('all');
   const { courses } = useCourses();
-  const { classes, loading, deleteClass } = useCourseClasses(selectedCourseId);
+  const { classes, loading, deleteClass } = useCourseClasses(selectedCourseId === 'all' ? undefined : selectedCourseId);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const [editingClass, setEditingClass] = useState<CourseClass | null>(null);
@@ -110,7 +110,7 @@ export const CourseClassManagement: React.FC = () => {
                 Organisez les étudiants en classes/groupes pour chaque cours
               </CardDescription>
             </div>
-            {selectedCourseId && (
+            {selectedCourseId && selectedCourseId !== 'all' && (
               <Button
                 onClick={() => {
                   setEditingClass(null);
@@ -134,6 +134,7 @@ export const CourseClassManagement: React.FC = () => {
               <SelectValue placeholder="Sélectionner un cours pour gérer ses classes" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="all">Tous les cours</SelectItem>
               {courses.map((course) => (
                 <SelectItem key={course.id} value={course.id}>
                   {course.title}
@@ -144,7 +145,7 @@ export const CourseClassManagement: React.FC = () => {
 
           {selectedCourseId && (
             <>
-              {selectedCourse && (
+              {selectedCourse && selectedCourseId !== 'all' && (
                 <div className="flex items-center gap-2 px-4 py-3 bg-muted/50 rounded-lg">
                   <BookOpen className="w-4 h-4 text-primary" />
                   <span className="font-medium">{selectedCourse.title}</span>
@@ -155,11 +156,22 @@ export const CourseClassManagement: React.FC = () => {
                   )}
                 </div>
               )}
+              
+              {selectedCourseId === 'all' && classes.length > 0 && (
+                <div className="flex items-center gap-2 px-4 py-3 bg-muted/50 rounded-lg">
+                  <BookOpen className="w-4 h-4 text-primary" />
+                  <span className="font-medium">Toutes les classes</span>
+                  <Badge variant="secondary" className="ml-auto">
+                    {classes.length} classe{classes.length > 1 ? 's' : ''}
+                  </Badge>
+                </div>
+              )}
 
               <div className="border rounded-lg overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-muted/50">
+                      {selectedCourseId === 'all' && <TableHead className="font-semibold">Cours</TableHead>}
                       <TableHead className="font-semibold">Classe</TableHead>
                       <TableHead className="font-semibold">Professeur</TableHead>
                       <TableHead className="font-semibold">Capacité</TableHead>
@@ -171,7 +183,7 @@ export const CourseClassManagement: React.FC = () => {
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center py-12">
+                        <TableCell colSpan={selectedCourseId === 'all' ? 7 : 6} className="text-center py-12">
                           <div className="flex flex-col items-center gap-2">
                             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
                             <p className="text-sm text-muted-foreground">Chargement des classes...</p>
@@ -180,7 +192,7 @@ export const CourseClassManagement: React.FC = () => {
                       </TableRow>
                     ) : classes.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center py-12">
+                        <TableCell colSpan={selectedCourseId === 'all' ? 7 : 6} className="text-center py-12">
                           <div className="flex flex-col items-center gap-3">
                             <GraduationCap className="w-12 h-12 text-muted-foreground/50" />
                             <div className="space-y-1">
@@ -205,6 +217,11 @@ export const CourseClassManagement: React.FC = () => {
                     ) : (
                       classes.map((classItem) => (
                         <TableRow key={classItem.id} className="hover:bg-muted/30">
+                          {selectedCourseId === 'all' && (
+                            <TableCell>
+                              <Badge variant="outline">{classItem.course_name}</Badge>
+                            </TableCell>
+                          )}
                           <TableCell>
                             <div className="space-y-1">
                               <p className="font-medium">{classItem.class_name}</p>

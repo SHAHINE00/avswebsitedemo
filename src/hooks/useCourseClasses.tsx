@@ -5,6 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 export interface CourseClass {
   id: string;
   course_id: string;
+  course_name?: string;
   class_name: string;
   class_code?: string;
   professor_id?: string;
@@ -46,7 +47,14 @@ export const useCourseClasses = (courseId?: string) => {
       const { data, error } = await query;
 
       if (error) throw error;
-      setClasses((data as any) || []);
+      
+      // Map to include course_name for easier access
+      const mappedData = data?.map((item: any) => ({
+        ...item,
+        course_name: item.course?.title,
+      })) || [];
+      
+      setClasses(mappedData);
     } catch (error: any) {
       toast({
         title: "Erreur",
