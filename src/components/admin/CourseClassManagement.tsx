@@ -297,7 +297,7 @@ export const CourseClassManagement: React.FC = () => {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => handleAssignStudents(classItem)}
-                                title="Assigner des étudiants"
+                                title="Gérer les étudiants de cette classe"
                               >
                                 <Users className="w-4 h-4" />
                               </Button>
@@ -305,7 +305,7 @@ export const CourseClassManagement: React.FC = () => {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => handleEdit(classItem)}
-                                title="Modifier"
+                                title="Modifier cette classe"
                               >
                                 <Edit className="w-4 h-4" />
                               </Button>
@@ -313,7 +313,7 @@ export const CourseClassManagement: React.FC = () => {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => handleDeleteClick(classItem.id)}
-                                title="Supprimer"
+                                title="Supprimer cette classe"
                                 className="text-destructive hover:text-destructive"
                               >
                                 <Trash2 className="w-4 h-4" />
