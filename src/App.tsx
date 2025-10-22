@@ -178,6 +178,7 @@ const App = () => {
                       <Route path="/admin" element={<AdminRouteGuard><LazyWrapper><Admin /></LazyWrapper></AdminRouteGuard>} />
                       <Route path="/admin/courses" element={<AdminRouteGuard><LazyWrapper><AdminCourses /></LazyWrapper></AdminRouteGuard>} />
                       <Route path="/admin/test" element={<AdminRouteGuard><LazyWrapper><AdminTest /></LazyWrapper></AdminRouteGuard>} />
+                      <Route path="/admin/chatbot" element={<AdminRouteGuard><LazyWrapper>{React.createElement(React.lazy(() => import('@/pages/AdminChatbotManagement')))}</LazyWrapper></AdminRouteGuard>} />
                       <Route path="/admin/classes/:classId" element={<AdminRouteGuard><LazyWrapper><ClassDetailPage /></LazyWrapper></AdminRouteGuard>} />
                       
                       {/* Professor routes - protected and lazy loaded */}
