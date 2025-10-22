@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useChatbotAnalytics } from "@/hooks/useChatbotAnalytics";
 import { useChatbotPersistence } from "@/hooks/useChatbotPersistence";
-import { useChatbotLanguage } from "@/hooks/useChatbotLanguage";
+import { useChatbotLanguage, type SupportedLanguage } from "@/hooks/useChatbotLanguage";
 import { useChatbotFileUpload } from "@/hooks/useChatbotFileUpload";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -469,6 +469,12 @@ const AIChatbot = () => {
     }
   };
 
+  const cycleLanguage = () => {
+    const order: SupportedLanguage[] = ['fr', 'en', 'ar'];
+    const idx = order.indexOf(language as SupportedLanguage);
+    const next = order[(idx + 1) % order.length];
+    handleLanguageChange(next);
+  };
   return (
     <div className="fixed bottom-0 right-0 z-[9999]">
       {/* Floating Button */}
@@ -503,7 +509,7 @@ const AIChatbot = () => {
             <div className="flex items-center gap-2">
               {/* Language Selector */}
               <Select value={language} onValueChange={handleLanguageChange}>
-                <SelectTrigger className="w-16 h-8 bg-white/20 border-white/30 text-white text-xs">
+                <SelectTrigger onClick={(e) => { e.preventDefault(); cycleLanguage(); }} title="Changer de langue / Change language" className="w-16 h-8 bg-white/20 border-white/30 text-white text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
