@@ -255,18 +255,41 @@ export default function OllamaChatbot() {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-muted/30">
-        {messages.length === 0 && (
-          <div className="text-center text-muted-foreground py-8">
-            <MessageCircle className="h-12 w-12 mx-auto mb-3 opacity-50" />
-            <p className="text-sm">Bonjour! Comment puis-je vous aider?</p>
+        {messages.length === 0 ? (
+          <div className="text-center space-y-6 py-8 px-4">
+            <div className="text-5xl animate-bounce">👋</div>
+            <div className="space-y-2">
+              <p className="text-lg font-semibold text-foreground">Bonjour! Comment puis-je vous aider?</p>
+              <p className="text-sm text-muted-foreground">Je peux vous renseigner sur:</p>
+            </div>
+            <ul className="space-y-3 text-sm text-left max-w-sm mx-auto">
+              <li className="flex items-start gap-3 p-3 rounded-lg bg-card hover:bg-muted transition-colors border border-border">
+                <span className="text-lg">📚</span>
+                <span>Les formations et cours disponibles</span>
+              </li>
+              <li className="flex items-start gap-3 p-3 rounded-lg bg-card hover:bg-muted transition-colors border border-border">
+                <span className="text-lg">⚙️</span>
+                <span>Les fonctionnalités de la plateforme</span>
+              </li>
+              <li className="flex items-start gap-3 p-3 rounded-lg bg-card hover:bg-muted transition-colors border border-border">
+                <span className="text-lg">✍️</span>
+                <span>Le processus d'inscription</span>
+              </li>
+              <li className="flex items-start gap-3 p-3 rounded-lg bg-card hover:bg-muted transition-colors border border-border">
+                <span className="text-lg">🎓</span>
+                <span>Les certifications disponibles</span>
+              </li>
+            </ul>
           </div>
+        ) : (
+          <>
+            {messages.map((message) => (
+              <ChatMessage key={message.id} message={message} />
+            ))}
+            
+            {isLoading && <TypingIndicator />}
+          </>
         )}
-        
-        {messages.map((message) => (
-          <ChatMessage key={message.id} message={message} />
-        ))}
-        
-        {isLoading && <TypingIndicator />}
         <div ref={messagesEndRef} />
       </div>
 

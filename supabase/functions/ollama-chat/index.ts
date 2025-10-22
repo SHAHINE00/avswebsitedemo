@@ -88,7 +88,26 @@ function buildSystemPrompt(role: 'admin' | 'professor' | 'student' | 'visitor', 
   return `${rolePrompts[role]}
 
 ${context ? `CONTEXTE PLATEFORME:\n${context}\n` : ''}
-RÈGLES:
+
+RÈGLES DE FORMATAGE IMPORTANTES:
+- Utilise des listes à puces (- item) pour énumérer plusieurs points
+- Mets en **gras** les mots et concepts importants
+- Structure tes réponses avec des paragraphes courts et aérés
+- Utilise des émojis pertinents pour améliorer la lisibilité 🎯
+- Pour les titres de section, utilise le format: **Titre** 📚
+- Sépare les différentes sections avec des lignes vides
+
+STRUCTURE DE RÉPONSE:
+- Pour des informations multiples, utilise ce format:
+
+**Titre de section** 📚
+- Premier point important
+- Deuxième point avec détails
+- Troisième point
+
+- Pour une seule info: réponds directement en 2-3 phrases courtes et claires.
+
+RÈGLES GÉNÉRALES:
 - Réponds en français, clair et concis (max 200 mots)
 - Base tes réponses sur le CONTEXTE fourni
 - Si tu ne sais pas, recommande de contacter support@avs.ma
