@@ -36,13 +36,13 @@ export const useChatbotFileUpload = () => {
       const filePath = `chatbot-uploads/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('public')
+        .from('chatbot-uploads')
         .upload(filePath, file);
 
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
-        .from('public')
+        .from('chatbot-uploads')
         .getPublicUrl(filePath);
 
       toast({
