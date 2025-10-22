@@ -116,6 +116,12 @@ const AIChatbot = () => {
     return quickReplies[role as keyof typeof quickReplies] || quickReplies.visitor;
   };
 
+  const getOnlineStatusText = () => {
+    if (language === 'en') return "We're online!";
+    if (language === 'ar') return 'نحن متصلون!';
+    return 'Nous sommes en ligne !';
+  };
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -490,7 +496,7 @@ const AIChatbot = () => {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                   </span>
-                  Nous sommes en ligne !
+                  {getOnlineStatusText()}
                 </p>
               </div>
             </div>
