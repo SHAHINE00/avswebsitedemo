@@ -428,6 +428,41 @@ const AIChatbot = () => {
     handleContactAction(reply);
   };
 
+  const handleLanguageChange = async (newLanguage: string) => {
+    // Validate language
+    if (!['fr', 'ar', 'en'].includes(newLanguage)) return;
+    
+    // Change language in localStorage
+    changeLanguage(newLanguage as 'fr' | 'ar' | 'en');
+    
+    // Create new conversation with new language
+    const convId = await createConversation(newLanguage);
+    if (convId) {
+      setMessages([]);
+      trackChatbotEvent({ 
+        event_type: 'conversation_started', 
+        conversation_id: convId,
+        event_data: { language_changed: true, from: language, to: newLanguage }
+      });
+      
+      // Show toast in the new language
+      const languageNames: Record<string, string> = {
+        fr: 'Français',
+        en: 'English',
+        ar: 'العربية'
+      };
+      
+      toast({
+        title: `🌐 ${newLanguage === 'fr' ? 'Langue changée en' : newLanguage === 'en' ? 'Language changed to' : 'تم تغيير اللغة إلى'} ${languageNames[newLanguage]}`,
+        description: newLanguage === 'fr' 
+          ? 'Nouvelle conversation démarrée' 
+          : newLanguage === 'en' 
+          ? 'New conversation started' 
+          : 'تم بدء محادثة جديدة'
+      });
+    }
+  };
+
   return (
     <div className="fixed bottom-0 right-0 z-[9999]">
       {/* Floating Button */}
@@ -461,7 +496,7 @@ const AIChatbot = () => {
             </div>
             <div className="flex items-center gap-2">
               {/* Language Selector */}
-              <Select value={language} onValueChange={changeLanguage}>
+              <Select value={language} onValueChange={handleLanguageChange}>
                 <SelectTrigger className="w-16 h-8 bg-white/20 border-white/30 text-white text-xs">
                   <SelectValue />
                 </SelectTrigger>
