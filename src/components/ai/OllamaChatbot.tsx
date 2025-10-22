@@ -19,9 +19,20 @@ export default function OllamaChatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  // Generate visitor ID for anonymous users
+  const getVisitorId = () => {
+    let visitorId = localStorage.getItem('visitor_id');
+    if (!visitorId) {
+      visitorId = `visitor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      localStorage.setItem('visitor_id', visitorId);
+    }
+    return visitorId;
+  };
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -32,6 +43,50 @@ export default function OllamaChatbot() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Load session on open
+  useEffect(() => {
+    if (isOpen) {
+      const savedSessionId = localStorage.getItem('chat_session_id');
+      if (savedSessionId) {
+        setSessionId(savedSessionId);
+        loadSessionHistory(savedSessionId);
+      }
+    }
+  }, [isOpen]);
+
+  const loadSessionHistory = async (sessId: string) => {
+    try {
+      const { data } = await supabase
+        .from('chat_messages')
+        .select('id, role, content, created_at')
+        .eq('session_id', sessId)
+        .order('created_at', { ascending: true });
+      
+      if (data) {
+        setMessages(data.map((m: any) => ({
+          id: m.id,
+          role: m.role as 'user' | 'assistant',
+          content: m.content,
+          timestamp: new Date(m.created_at)
+        })));
+      }
+    } catch (error) {
+      console.error('Error loading history:', error);
+    }
+  };
+
+  const clearConversation = async () => {
+    if (sessionId) {
+      await supabase
+        .from('chat_sessions')
+        .update({ ended_at: new Date().toISOString() })
+        .eq('id', sessionId);
+    }
+    localStorage.removeItem('chat_session_id');
+    setSessionId(null);
+    setMessages([]);
+  };
 
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
@@ -68,9 +123,20 @@ export default function OllamaChatbot() {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${session?.access_token || ''}`,
           },
-          body: JSON.stringify({ message: userMessage.content }),
+          body: JSON.stringify({ 
+            message: userMessage.content,
+            sessionId: sessionId,
+            visitorId: getVisitorId()
+          }),
         }
       );
+
+      // Save session ID from response
+      const newSessionId = response.headers.get('X-Session-Id');
+      if (newSessionId && !sessionId) {
+        setSessionId(newSessionId);
+        localStorage.setItem('chat_session_id', newSessionId);
+      }
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
@@ -165,14 +231,26 @@ export default function OllamaChatbot() {
             <p className="text-xs text-white/80">Propulsé par Ollama</p>
           </div>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setIsOpen(false)}
-          className="text-white hover:bg-white/20 h-8 w-8"
-        >
-          <X className="h-5 w-5" />
-        </Button>
+        <div className="flex items-center gap-2">
+          {messages.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearConversation}
+              className="text-white hover:bg-white/20 text-xs h-8"
+            >
+              Nouvelle conversation
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsOpen(false)}
+            className="text-white hover:bg-white/20 h-8 w-8"
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        </div>
       </div>
 
       {/* Messages */}

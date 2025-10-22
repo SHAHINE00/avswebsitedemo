@@ -511,6 +511,71 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          role: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          role: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          role?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_sessions: {
+        Row: {
+          ended_at: string | null
+          id: string
+          last_activity_at: string | null
+          metadata: Json | null
+          started_at: string | null
+          user_id: string | null
+          visitor_id: string | null
+        }
+        Insert: {
+          ended_at?: string | null
+          id?: string
+          last_activity_at?: string | null
+          metadata?: Json | null
+          started_at?: string | null
+          user_id?: string | null
+          visitor_id?: string | null
+        }
+        Update: {
+          ended_at?: string | null
+          id?: string
+          last_activity_at?: string | null
+          metadata?: Json | null
+          started_at?: string | null
+          user_id?: string | null
+          visitor_id?: string | null
+        }
+        Relationships: []
+      }
       class_schedules: {
         Row: {
           class_id: string | null
@@ -1434,6 +1499,45 @@ export type Database = {
           },
         ]
       }
+      knowledge_base: {
+        Row: {
+          category: string
+          content: string
+          created_at: string | null
+          id: string
+          keywords: string[] | null
+          language: string | null
+          priority: number | null
+          role_access: Database["public"]["Enums"]["app_role"][] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          content: string
+          created_at?: string | null
+          id?: string
+          keywords?: string[] | null
+          language?: string | null
+          priority?: number | null
+          role_access?: Database["public"]["Enums"]["app_role"][] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          content?: string
+          created_at?: string | null
+          id?: string
+          keywords?: string[] | null
+          language?: string | null
+          priority?: number | null
+          role_access?: Database["public"]["Enums"]["app_role"][] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       learning_paths: {
         Row: {
           created_at: string
@@ -2299,7 +2403,7 @@ export type Database = {
           created_at: string | null
           file_size: number | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           metadata: Json | null
           object_path: string
           user_agent: string | null
@@ -2311,7 +2415,7 @@ export type Database = {
           created_at?: string | null
           file_size?: number | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           object_path: string
           user_agent?: string | null
@@ -2323,7 +2427,7 @@ export type Database = {
           created_at?: string | null
           file_size?: number | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           object_path?: string
           user_agent?: string | null
@@ -2867,7 +2971,7 @@ export type Database = {
           created_at: string
           details: Json | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           user_agent: string | null
           user_id: string | null
         }
@@ -2876,7 +2980,7 @@ export type Database = {
           created_at?: string
           details?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_agent?: string | null
           user_id?: string | null
         }
@@ -2885,7 +2989,7 @@ export type Database = {
           created_at?: string
           details?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_agent?: string | null
           user_id?: string | null
         }
@@ -2969,9 +3073,9 @@ export type Database = {
       }
     }
     Functions: {
-      add_course_material: {
-        Args:
-          | {
+      add_course_material:
+        | {
+            Args: {
               p_class_id?: string
               p_course_id: string
               p_description?: string
@@ -2982,7 +3086,10 @@ export type Database = {
               p_lesson_id?: string
               p_title: string
             }
-          | {
+            Returns: string
+          }
+        | {
+            Args: {
               p_course_id: string
               p_description?: string
               p_file_size?: number
@@ -2992,8 +3099,8 @@ export type Database = {
               p_lesson_id?: string
               p_title: string
             }
-        Returns: string
-      }
+            Returns: string
+          }
       admin_assign_professor_to_course: {
         Args: { p_course_id: string; p_professor_id: string }
         Returns: string
@@ -3058,14 +3165,9 @@ export type Database = {
         Args: { p_accessor_id: string; p_student_id: string }
         Returns: boolean
       }
-      check_admin_role: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      cleanup_security_logs: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      check_admin_role: { Args: never; Returns: boolean }
+      cleanup_security_logs: { Args: never; Returns: undefined }
+      close_inactive_sessions: { Args: never; Returns: undefined }
       create_bulk_announcements: {
         Args: {
           p_content: string
@@ -3112,20 +3214,14 @@ export type Database = {
         Args: { p_material_id: string }
         Returns: undefined
       }
-      delete_grade_record: {
-        Args: { p_grade_id: string }
-        Returns: undefined
-      }
+      delete_grade_record: { Args: { p_grade_id: string }; Returns: undefined }
       demote_user_to_user: {
         Args: { p_target_user_id: string }
         Returns: undefined
       }
-      enroll_in_course: {
-        Args: { p_course_id: string }
-        Returns: string
-      }
+      enroll_in_course: { Args: { p_course_id: string }; Returns: string }
       final_security_check: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           admin_access: boolean
           anonymous_blocked: boolean
@@ -3138,10 +3234,7 @@ export type Database = {
         Args: { p_certificate_type?: string; p_course_id: string }
         Returns: string
       }
-      generate_invoice_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      generate_invoice_number: { Args: never; Returns: string }
       generate_sessions_from_schedule: {
         Args: {
           p_end_date: string
@@ -3165,7 +3258,7 @@ export type Database = {
         }[]
       }
       get_at_risk_students: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           email: string
           full_name: string
@@ -3234,14 +3327,8 @@ export type Database = {
           total_attendance: number
         }[]
       }
-      get_dashboard_metrics: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
-      get_grade_statistics: {
-        Args: { p_course_id: string }
-        Returns: Json
-      }
+      get_dashboard_metrics: { Args: never; Returns: Json }
+      get_grade_statistics: { Args: { p_course_id: string }; Returns: Json }
       get_performance_trends: {
         Args: { p_course_id: string; p_weeks_back?: number }
         Returns: {
@@ -3267,14 +3354,10 @@ export type Database = {
           title: string
         }[]
       }
-      get_professor_dashboard_stats: {
-        Args: Record<PropertyKey, never> | { _user_id?: string }
-        Returns: Json
-      }
-      get_professor_id: {
-        Args: { _user_id?: string }
-        Returns: string
-      }
+      get_professor_dashboard_stats:
+        | { Args: { _user_id?: string }; Returns: Json }
+        | { Args: never; Returns: Json }
+      get_professor_id: { Args: { _user_id?: string }; Returns: string }
       get_revenue_analytics: {
         Args: { p_end_date?: string; p_start_date?: string }
         Returns: Json
@@ -3333,7 +3416,7 @@ export type Database = {
         Returns: Json
       }
       get_student_segments: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           segment_count: number
           segment_name: string
@@ -3366,14 +3449,8 @@ export type Database = {
           status: string
         }[]
       }
-      get_study_statistics: {
-        Args: { p_user_id?: string }
-        Returns: Json
-      }
-      get_system_health: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
+      get_study_statistics: { Args: { p_user_id?: string }; Returns: Json }
+      get_system_health: { Args: never; Returns: Json }
       get_user_enrollments_for_admin: {
         Args: { p_user_id: string }
         Returns: {
@@ -3385,10 +3462,7 @@ export type Database = {
           status: string
         }[]
       }
-      get_user_statistics: {
-        Args: { p_user_id: string }
-        Returns: Json
-      }
+      get_user_statistics: { Args: { p_user_id: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -3400,14 +3474,8 @@ export type Database = {
         Args: { p_material_id: string }
         Returns: undefined
       }
-      is_admin: {
-        Args: { _user_id?: string }
-        Returns: boolean
-      }
-      is_professor: {
-        Args: { _user_id?: string }
-        Returns: boolean
-      }
+      is_admin: { Args: { _user_id?: string }; Returns: boolean }
+      is_professor: { Args: { _user_id?: string }; Returns: boolean }
       log_admin_activity: {
         Args: {
           p_action: string
@@ -3500,10 +3568,7 @@ export type Database = {
         }
         Returns: string
       }
-      test_anonymous_access_blocked: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
+      test_anonymous_access_blocked: { Args: never; Returns: Json }
       track_analytics: {
         Args: {
           p_date?: string
@@ -3557,7 +3622,7 @@ export type Database = {
         Returns: string
       }
       validate_comprehensive_security: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           issue_type: string
           recommendation: string
@@ -3567,7 +3632,7 @@ export type Database = {
         }[]
       }
       validate_rls_security: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           issues: string[]
           security_level: string
