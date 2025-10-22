@@ -1,3 +1,25 @@
+#!/bin/bash
+
+# Fix Ollama Nginx 403 Forbidden error
+# This script updates the Nginx configuration to allow API requests
+
+set -e
+
+echo "🔧 Fixing Ollama Nginx 403 Forbidden error..."
+
+# Define paths
+NGINX_CONFIG="/etc/nginx/sites-available/ai.avs.ma.conf"
+NGINX_ENABLED="/etc/nginx/sites-enabled/ai.avs.ma.conf"
+BACKUP_CONFIG="/etc/nginx/sites-available/ai.avs.ma.conf.backup-$(date +%Y%m%d-%H%M%S)"
+
+# Step 1: Backup current configuration
+echo "📋 Backing up current Nginx configuration..."
+cp "$NGINX_CONFIG" "$BACKUP_CONFIG"
+echo "✅ Backup saved to: $BACKUP_CONFIG"
+
+# Step 2: Upload and replace the fixed configuration
+echo "📤 Updating Nginx configuration..."
+cat > "$NGINX_CONFIG" << 'EOF'
 # Rate limiting zone definition
 limit_req_zone $binary_remote_addr zone=ollama_limit:10m rate=10r/m;
 
@@ -32,8 +54,14 @@ server {
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
 
-    # Block sensitive files
+    # Block sensitive files at server level
     location ~ /\.(ht|git|env) {
+        deny all;
+        return 404;
+    }
+
+    # Block common attack patterns at server level
+    location ~ (\.sql|wp-admin|phpmyadmin) {
         deny all;
         return 404;
     }
@@ -88,3 +116,46 @@ server {
     access_log /var/log/nginx/ollama-ai.access.log;
     error_log /var/log/nginx/ollama-ai.error.log;
 }
+EOF
+
+# Step 3: Ensure symlink exists
+echo "📋 Ensuring Nginx site is enabled..."
+ln -sf "$NGINX_CONFIG" "$NGINX_ENABLED"
+
+# Step 4: Test Nginx configuration
+echo "🧪 Testing Nginx configuration..."
+if ! nginx -t; then
+    echo "❌ Nginx configuration test failed! Restoring backup..."
+    cp "$BACKUP_CONFIG" "$NGINX_CONFIG"
+    nginx -t
+    exit 1
+fi
+
+# Step 5: Reload Nginx
+echo "🔄 Reloading Nginx..."
+systemctl reload nginx
+
+# Step 6: Wait a moment for Nginx to reload
+sleep 2
+
+# Step 7: Test the endpoints
+echo ""
+echo "🧪 Testing endpoints..."
+echo "📋 Testing /api/version:"
+curl -s https://ai.avs.ma/api/version || echo "❌ Failed"
+
+echo ""
+echo "📋 Testing /api/chat with simple request:"
+curl -s -X POST https://ai.avs.ma/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"model": "llama3.2:1b", "messages": [{"role": "user", "content": "Hi"}], "stream": false}' \
+  | head -c 200 || echo "❌ Failed"
+
+echo ""
+echo ""
+echo "✅ Nginx configuration fix completed!"
+echo "🌐 Ollama API should now be accessible at https://ai.avs.ma/api/"
+echo ""
+echo "📋 If you still see issues, check the logs:"
+echo "   sudo tail -20 /var/log/nginx/ollama-ai.error.log"
+echo "   sudo tail -20 /var/log/nginx/ollama-ai.access.log"
