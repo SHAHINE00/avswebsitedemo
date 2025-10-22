@@ -398,9 +398,29 @@ const AIChatbot = () => {
       return;
     }
     
-    if (action.includes("💬") && action.includes("WhatsApp")) {
-      const whatsappMsg = encodeURIComponent("Bonjour, je souhaite obtenir plus d'informations sur AVS.");
-      window.open(`https://wa.me/212662632953?text=${whatsappMsg}`, '_blank');
+    if (action.toLowerCase().includes("whatsapp")) {
+      const number = "212662632953"; // country code + number, digits only
+      const msg = "Bonjour, je souhaite obtenir plus d'informations sur AVS.";
+      const whatsappUrl = `https://wa.me/${number}?text=${encodeURIComponent(msg.slice(0, 500))}`;
+
+      try {
+        // Navigate in the same tab for better reliability (avoids pop-up blockers)
+        window.location.href = whatsappUrl;
+      } catch {
+        // Fallback: simulate a trusted anchor click
+        const a = document.createElement('a');
+        a.href = whatsappUrl;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
+
+      toast({
+        title: "💬 WhatsApp",
+        description: "Ouverture de WhatsApp... Numéro: +212 6 62 63 29 53"
+      });
       return;
     }
     
