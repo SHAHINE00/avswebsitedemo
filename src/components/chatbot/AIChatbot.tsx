@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send } from 'lucide-react';
+import { MessageCircle, X, Send, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -53,6 +53,36 @@ const AIChatbot: React.FC = () => {
       admin: "👋 Bonjour Administrateur ! Je suis là pour vous guider dans la gestion de la plateforme, les utilisateurs et les paramètres système.",
     };
     return messages[role as keyof typeof messages] || messages.visitor;
+  };
+
+  const getQuickReplies = (role: string) => {
+    const quickReplies = {
+      visitor: [
+        "📚 Quelles sont les formations disponibles ?",
+        "💰 Informations sur les frais de scolarité",
+        "📝 Comment s'inscrire ?",
+        "🎓 Programmes de certification"
+      ],
+      student: [
+        "📅 Mon emploi du temps",
+        "📊 Consulter mes notes",
+        "📚 Ressources de cours",
+        "💬 Contacter un professeur"
+      ],
+      professor: [
+        "👥 Gérer mes classes",
+        "📝 Créer une évaluation",
+        "📊 Statistiques des étudiants",
+        "📚 Ressources pédagogiques"
+      ],
+      admin: [
+        "👥 Gérer les utilisateurs",
+        "📊 Tableau de bord",
+        "⚙️ Paramètres système",
+        "📈 Rapports d'activité"
+      ]
+    };
+    return quickReplies[role as keyof typeof quickReplies] || quickReplies.visitor;
   };
 
   const displayRole = getDisplayRole();
@@ -170,13 +200,14 @@ const AIChatbot: React.FC = () => {
     }
   };
 
-  const sendMessage = async () => {
-    if (!input.trim() || isLoading) return;
+  const sendMessage = async (messageText?: string) => {
+    const textToSend = messageText || input.trim();
+    if (!textToSend || isLoading) return;
 
     const userMessage: Message = {
       id: crypto.randomUUID(),
       role: 'user',
-      content: input.trim(),
+      content: textToSend,
       timestamp: new Date(),
     };
 
@@ -185,6 +216,10 @@ const AIChatbot: React.FC = () => {
     setIsLoading(true);
 
     await streamChat(userMessage);
+  };
+
+  const handleQuickReply = (reply: string) => {
+    sendMessage(reply);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -264,11 +299,33 @@ const AIChatbot: React.FC = () => {
           <ScrollArea className="flex-1 p-4 bg-gray-50 dark:bg-gray-950">
             <div className="space-y-4">
               {messages.length === 0 && (
-                <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm">
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
-                    {getWelcomeMessage(displayRole)}
-                  </p>
-                </div>
+                <>
+                  <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm">
+                    <p className="text-sm text-gray-700 dark:text-gray-300">
+                      {getWelcomeMessage(displayRole)}
+                    </p>
+                  </div>
+                  
+                  {/* Quick Reply Suggestions */}
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 px-2">
+                      <Sparkles className="h-4 w-4 text-muted-foreground" />
+                      <p className="text-xs text-muted-foreground font-medium">Suggestions rapides</p>
+                    </div>
+                    <div className="grid grid-cols-1 gap-2">
+                      {getQuickReplies(displayRole).map((reply, idx) => (
+                        <Button
+                          key={idx}
+                          onClick={() => handleQuickReply(reply)}
+                          variant="outline"
+                          className="justify-start text-left h-auto py-3 px-4 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 border-gray-200 dark:border-gray-700 text-sm font-normal text-gray-700 dark:text-gray-300"
+                        >
+                          {reply}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </>
               )}
 
               {messages.map((message) => (
@@ -294,7 +351,7 @@ const AIChatbot: React.FC = () => {
                 disabled={isLoading}
               />
               <Button
-                onClick={sendMessage}
+                onClick={() => sendMessage()}
                 disabled={!input.trim() || isLoading}
                 size="icon"
                 className="h-12 w-12 rounded-full bg-blue-600 hover:bg-blue-700 shrink-0"
