@@ -191,6 +191,7 @@ const AIChatbot = () => {
 
   const streamChat = async (userMsg: Message) => {
     const CHAT_URL = 'https://nkkalmyhxtuisjdjmdew.supabase.co/functions/v1/ollama-chat';
+    const startTime = Date.now();
     
     try {
       setIsLoading(true);
@@ -208,6 +209,17 @@ const AIChatbot = () => {
 
       if (!resp.ok) {
         const errorData = await resp.json().catch(() => ({ error: 'Unknown error' }));
+        
+        // Track error
+        trackChatbotEvent({
+          event_type: 'error',
+          conversation_id: currentConversationId || undefined,
+          event_data: {
+            error_code: resp.status,
+            error_message: errorData.message || errorData.error,
+            request_id: errorData.requestId
+          }
+        });
         
         if (resp.status === 429) {
           toast({
@@ -254,11 +266,34 @@ const AIChatbot = () => {
           content: assistantContent,
           timestamp: new Date()
         });
+        
+        // Track performance
+        const responseTime = Date.now() - startTime;
+        trackChatbotEvent({
+          event_type: 'response_received',
+          conversation_id: currentConversationId,
+          event_data: {
+            response_time_ms: responseTime,
+            response_length: assistantContent.length
+          }
+        });
       }
 
       setIsLoading(false);
     } catch (err) {
+      const errorTime = Date.now() - startTime;
       console.error('Chat error:', err);
+      
+      // Track connection error
+      trackChatbotEvent({
+        event_type: 'connection_error',
+        conversation_id: currentConversationId || undefined,
+        event_data: {
+          error: err instanceof Error ? err.message : 'Unknown error',
+          duration_ms: errorTime
+        }
+      });
+      
       toast({
         title: "Erreur",
         description: "Erreur de connexion au service AI",

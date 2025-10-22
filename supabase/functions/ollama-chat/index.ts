@@ -178,11 +178,16 @@ ${historyLength > 0 ? `HISTORIQUE: ${historyLength} messages dans cette conversa
 }
 
 serve(async (req) => {
+  const requestStartTime = Date.now();
+  const requestId = crypto.randomUUID();
+  
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    console.log(`[${requestId}] 🚀 Chat request started`);
+    
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -191,12 +196,17 @@ serve(async (req) => {
     let userId: string | null = null;
 
     if (authHeader) {
-      const { data: { user } } = await supabase.auth.getUser(authHeader.replace('Bearer ', ''));
-      userId = user?.id || null;
+      try {
+        const { data: { user } } = await supabase.auth.getUser(authHeader.replace('Bearer ', ''));
+        userId = user?.id || null;
+      } catch (authError) {
+        console.error(`[${requestId}] ⚠️ Auth error:`, authError);
+      }
     }
 
     const rateLimitKey = userId || req.headers.get('x-forwarded-for') || 'anonymous';
     if (!checkRateLimit(rateLimitKey)) {
+      console.warn(`[${requestId}] ⛔ Rate limit exceeded for ${rateLimitKey}`);
       return new Response(
         JSON.stringify({ error: 'Trop de requêtes. Veuillez patienter une minute.' }),
         { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -205,8 +215,10 @@ serve(async (req) => {
 
     const { message, sessionId, visitorId } = await req.json();
     const sanitizedMessage = sanitizeInput(message);
+    console.log(`[${requestId}] 📝 Message length: ${sanitizedMessage.length}, User: ${userId || 'anonymous'}`);
 
     if (!sanitizedMessage) {
+      console.error(`[${requestId}] ❌ Invalid message received`);
       return new Response(
         JSON.stringify({ error: 'Message invalide' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -215,6 +227,7 @@ serve(async (req) => {
 
     // Pre-filter off-topic queries
     if (isOffTopicQuery(sanitizedMessage)) {
+      console.log(`[${requestId}] 🚫 Off-topic query detected`);
       const offTopicResponse = `Désolé, je suis l'assistant AVS.ma et je ne peux répondre qu'aux questions concernant notre plateforme éducative. 📚
 
 Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifiantes**, ou l'**utilisation de la plateforme**, je suis là pour vous aider!
@@ -242,6 +255,9 @@ Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifia
         { conversation_id: currentConversationId, role: 'assistant', content: offTopicResponse }
       ]);
 
+      const responseTime = Date.now() - requestStartTime;
+      console.log(`[${requestId}] ✅ Off-topic response sent in ${responseTime}ms`);
+      
       return new Response(JSON.stringify({ message: offTopicResponse, sessionId: currentConversationId }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
@@ -249,6 +265,7 @@ Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifia
 
     const t0 = Date.now();
     const userRole = await determineUserRole(supabase, userId);
+    console.log(`[${requestId}] 👤 User role: ${userRole}`);
     
     // Get or create conversation
     let currentConversationId = sessionId;
@@ -276,9 +293,11 @@ Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifia
       .limit(10);
     
     const conversationHistory = (history || []).reverse();
+    console.log(`[${requestId}] 📚 History loaded: ${conversationHistory.length} messages`);
     
     // Get relevant context from knowledge base
     const context = await getRelevantContext(supabase, sanitizedMessage, userRole);
+    console.log(`[${requestId}] 🔍 Context length: ${context.length} chars`);
     
     const systemPrompt = buildSystemPrompt(userRole, context, conversationHistory.length);
 
@@ -289,6 +308,8 @@ Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifia
       content: sanitizedMessage
     });
     
+    console.log(`[${requestId}] 🤖 Calling Ollama API...`);
+    const ollamaStartTime = Date.now();
     const ollamaResponse = await fetch('https://ai.avs.ma/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -310,7 +331,18 @@ Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifia
 
     if (!ollamaResponse.ok) {
       const errorText = await ollamaResponse.text().catch(() => 'Unknown error');
-      console.error(`❌ Ollama gateway error: ${ollamaResponse.status} - ${errorText}`);
+      console.error(`[${requestId}] ❌ Ollama gateway error: ${ollamaResponse.status} - ${errorText}`);
+      
+      // Track error in analytics
+      await supabase.from('chatbot_analytics').insert({
+        conversation_id: currentConversationId,
+        event_type: 'error',
+        event_data: { 
+          error: 'OLLAMA_ERROR',
+          status: ollamaResponse.status,
+          message: errorText.substring(0, 200)
+        }
+      }).catch(err => console.error(`[${requestId}] Failed to log error:`, err));
       
       if (ollamaResponse.status === 429) {
         return new Response(
@@ -332,7 +364,8 @@ Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifia
       );
     }
 
-    console.log(`✅ Streaming started in ${Date.now() - t0}ms`);
+    const ollamaResponseTime = Date.now() - ollamaStartTime;
+    console.log(`[${requestId}] ✅ Ollama responded in ${ollamaResponseTime}ms, starting stream...`);
 
     // Stream response and collect for saving
     const reader = ollamaResponse.body?.getReader();
@@ -372,10 +405,25 @@ Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifia
               role: 'assistant',
               content: fullResponse
             });
+            
+            // Track performance metrics
+            const totalTime = Date.now() - requestStartTime;
+            console.log(`[${requestId}] ✅ Complete response in ${totalTime}ms (${fullResponse.length} chars)`);
+            
+            await supabase.from('chatbot_analytics').insert({
+              conversation_id: currentConversationId,
+              event_type: 'response_completed',
+              event_data: {
+                response_time_ms: totalTime,
+                response_length: fullResponse.length,
+                user_role: userRole
+              }
+            }).catch(err => console.error(`[${requestId}] Failed to log analytics:`, err));
           }
           
           controller.close();
         } catch (err) {
+          console.error(`[${requestId}] ❌ Stream error:`, err);
           controller.error(err);
         }
       }
@@ -392,9 +440,32 @@ Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifia
     });
 
   } catch (error) {
-    console.error('Error in ollama-chat:', error);
+    const errorTime = Date.now() - requestStartTime;
+    console.error(`[${requestId}] ❌ Fatal error after ${errorTime}ms:`, error);
+    
+    // Attempt to log critical error to database
+    try {
+      const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+      const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+      const supabase = createClient(supabaseUrl, supabaseKey);
+      
+      await supabase.from('chatbot_analytics').insert({
+        event_type: 'critical_error',
+        event_data: {
+          error: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack?.substring(0, 500) : undefined,
+          duration_ms: errorTime
+        }
+      });
+    } catch (logError) {
+      console.error(`[${requestId}] Failed to log critical error:`, logError);
+    }
+    
     return new Response(
-      JSON.stringify({ error: 'Service temporairement indisponible' }),
+      JSON.stringify({ 
+        error: 'Service temporairement indisponible',
+        requestId: requestId 
+      }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

@@ -8,7 +8,10 @@ export type ChatbotEventType =
   | 'quick_reply_clicked'
   | 'contact_action'
   | 'conversation_started'
-  | 'file_uploaded';
+  | 'file_uploaded'
+  | 'error'
+  | 'response_received'
+  | 'connection_error';
 
 export interface ChatbotAnalyticsData {
   event_type: ChatbotEventType;
