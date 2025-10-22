@@ -1,16 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Sparkles, Download, FileText } from 'lucide-react';
+import { MessageCircle, X, Send, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
@@ -228,68 +222,6 @@ const AIChatbot: React.FC = () => {
     sendMessage(reply);
   };
 
-  const exportConversation = async (format: 'json' | 'txt') => {
-    if (messages.length === 0) {
-      toast.error('Aucune conversation à exporter');
-      return;
-    }
-
-    const timestamp = new Date().toISOString().split('T')[0];
-    let content: string;
-    let mimeType: string;
-    let filename: string;
-
-    if (format === 'json') {
-      content = JSON.stringify(messages, null, 2);
-      mimeType = 'application/json';
-      filename = `conversation-avs-${timestamp}.json`;
-    } else {
-      content = messages.map(msg => {
-        const time = new Date(msg.timestamp).toLocaleTimeString('fr-FR');
-        const role = msg.role === 'user' ? 'Vous' : 'Assistant AVS';
-        return `[${time}] ${role}:\n${msg.content}\n`;
-      }).join('\n');
-      mimeType = 'text/plain';
-      filename = `conversation-avs-${timestamp}.txt`;
-    }
-
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-
-    try {
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', filename);
-      link.setAttribute('rel', 'noopener');
-      link.setAttribute('target', '_blank');
-      // Some browsers require the link to be in the DOM
-      document.body.appendChild(link);
-      link.click();
-      // Delay revocation to ensure download starts
-      setTimeout(() => {
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      }, 1200);
-      toast.success('Conversation exportée avec succès');
-    } catch (err) {
-      console.error('Export failed, trying fallback:', err);
-      try {
-        // Fallback: open in a new tab
-        window.open(url, '_blank', 'noopener,noreferrer');
-        setTimeout(() => URL.revokeObjectURL(url), 2000);
-        toast.success('Aperçu de la conversation ouvert dans un nouvel onglet');
-      } catch (err2) {
-        console.error('Fallback failed:', err2);
-        // Last resort: copy to clipboard (TXT only)
-        if (format === 'txt' && navigator.clipboard?.writeText) {
-          await navigator.clipboard.writeText(content);
-          toast.success('Conversation copiée dans le presse-papiers');
-        } else {
-          toast.error("Export impossible dans cet environnement");
-        }
-      }
-    }
-  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -338,30 +270,6 @@ const AIChatbot: React.FC = () => {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                {messages.length > 0 && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-white hover:bg-white/10"
-                        aria-label="Exporter la conversation"
-                      >
-                        <Download className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem onSelect={(e) => { e.preventDefault(); exportConversation('txt'); }}>
-                        <FileText className="h-4 w-4 mr-2" />
-                        Exporter en TXT
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onSelect={(e) => { e.preventDefault(); exportConversation('json'); }}>
-                        <FileText className="h-4 w-4 mr-2" />
-                        Exporter en JSON
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )}
                 <Button
                   onClick={() => setIsOpen(false)}
                   variant="ghost"
