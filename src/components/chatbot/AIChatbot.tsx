@@ -247,7 +247,7 @@ const AIChatbot: React.FC = () => {
 
       {/* Chat window */}
       {isOpen && (
-        <Card className="fixed z-[100000] overflow-hidden flex flex-col min-h-0 inset-0 rounded-none sm:inset-auto sm:bottom-4 sm:right-4 md:bottom-6 md:right-6 w-full h-[100dvh] sm:w-[min(92vw,26rem)] md:w-[min(88vw,28rem)] lg:w-[min(32rem,26vw)] sm:h-[min(85dvh,640px)] shadow-2xl animate-in slide-in-from-bottom-8 sm:slide-in-from-bottom-5 duration-300 bg-card">
+        <Card className="fixed z-[100000] overflow-hidden flex flex-col min-h-0 inset-0 rounded-none sm:inset-auto sm:bottom-4 sm:right-4 md:bottom-6 md:right-6 w-full h-[100dvh] sm:w-[min(90vw,24rem)] md:w-96 lg:w-[400px] sm:h-[min(85dvh,640px)] shadow-2xl animate-in slide-in-from-bottom-8 sm:slide-in-from-bottom-5 duration-300 bg-card">
           {/* Header with curved wave */}
           <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white pb-6 sm:pb-10 landscape:pb-4 safe-top">
             <div className="flex items-center justify-between p-3 sm:p-4 landscape:p-2">
