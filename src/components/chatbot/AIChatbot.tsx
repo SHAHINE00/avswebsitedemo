@@ -84,8 +84,8 @@ const AIChatbot: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('ai-chat', {
-        body: { message: userMessage.content },
+    const { data, error } = await supabase.functions.invoke('ollama-chat', {
+      body: { message: userMessage.content },
       });
 
       if (error) {
