@@ -40,7 +40,7 @@ const Professor: React.FC = () => {
         title="Tableau de bord Professeur | Nova Academy"
         description="Gérez vos cours, étudiants, présences et notes"
       />
-      <div className="flex flex-col bg-background pt-16 sm:pt-20 lg:pt-24">
+      <div className="flex flex-col bg-background pt-16 xs:pt-18 sm:pt-20 lg:pt-22 xl:pt-24">
         <Navbar />
         <main className="container mx-auto px-4 py-8 pb-24">
           <div className="mb-6">

@@ -178,7 +178,7 @@ const Dashboard = () => {
 
   if (loading || adminLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 pt-16 xs:pt-18 sm:pt-20 lg:pt-22 xl:pt-24">
         <SEOHead {...utilityPagesSEO.dashboard} />
         <Navbar />
         <div className="container mx-auto px-6 py-8">
@@ -196,7 +196,7 @@ const Dashboard = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 pt-16 xs:pt-18 sm:pt-20 lg:pt-22 xl:pt-24">
         <SEOHead {...utilityPagesSEO.dashboard} />
         <Navbar />
         <div className="container mx-auto px-6 py-8">
@@ -216,7 +216,7 @@ const Dashboard = () => {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 pt-16 xs:pt-18 sm:pt-20 lg:pt-22 xl:pt-24">
         <SEOHead {...utilityPagesSEO.dashboard} />
         <Navbar />
         
