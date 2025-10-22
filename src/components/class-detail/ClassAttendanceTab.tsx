@@ -38,47 +38,59 @@ export const ClassAttendanceTab: React.FC<ClassAttendanceTabProps> = ({ classId,
   const fetchAttendanceData = async (selectedDate?: Date) => {
     setLoading(true);
     try {
-      let query = supabase
+      // First, get attendance records
+      let attendanceQuery = supabase
         .from('attendance')
-        .select(`
-          id,
-          student_id,
-          attendance_date,
-          status,
-          session_id,
-          profiles:student_id (
-            full_name,
-            email
-          ),
-          class_sessions:session_id (
-            start_time,
-            end_time
-          )
-        `)
+        .select('*')
         .eq('course_id', courseId)
         .order('attendance_date', { ascending: false });
 
       if (selectedDate) {
         const dateStr = format(selectedDate, 'yyyy-MM-dd');
-        query = query.eq('attendance_date', dateStr);
+        attendanceQuery = attendanceQuery.eq('attendance_date', dateStr);
       }
 
-      const { data, error } = await query;
+      const { data: attendanceData, error: attendanceError } = await attendanceQuery;
 
-      if (error) throw error;
+      if (attendanceError) throw attendanceError;
 
-      const formattedData: AttendanceRecord[] = (data || []).map((record: any) => ({
-        id: record.id,
-        student_id: record.student_id,
-        student_name: record.profiles?.full_name || 'Sans nom',
-        student_email: record.profiles?.email || '',
-        attendance_date: record.attendance_date,
-        status: record.status,
-        session_id: record.session_id,
-        session_time: record.class_sessions ? 
-          `${record.class_sessions.start_time} - ${record.class_sessions.end_time}` : 
-          'Non défini'
-      }));
+      // Get unique student IDs and session IDs
+      const studentIds = [...new Set(attendanceData?.map(a => a.student_id) || [])];
+      const sessionIds = [...new Set(attendanceData?.map(a => a.session_id).filter(Boolean) || [])];
+
+      // Fetch profiles
+      const { data: profilesData } = await supabase
+        .from('profiles')
+        .select('id, full_name, email')
+        .in('id', studentIds);
+
+      // Fetch sessions
+      const { data: sessionsData } = await supabase
+        .from('class_sessions')
+        .select('id, start_time, end_time')
+        .in('id', sessionIds);
+
+      // Create lookup maps
+      const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || []);
+      const sessionsMap = new Map(sessionsData?.map(s => [s.id, s]) || []);
+
+      const formattedData: AttendanceRecord[] = (attendanceData || []).map((record: any) => {
+        const profile = profilesMap.get(record.student_id);
+        const session = sessionsMap.get(record.session_id);
+        
+        return {
+          id: record.id,
+          student_id: record.student_id,
+          student_name: profile?.full_name || 'Sans nom',
+          student_email: profile?.email || '',
+          attendance_date: record.attendance_date,
+          status: record.status,
+          session_id: record.session_id,
+          session_time: session ? 
+            `${session.start_time} - ${session.end_time}` : 
+            'Non défini'
+        };
+      });
 
       setAttendance(formattedData);
     } catch (error: any) {

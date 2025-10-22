@@ -36,38 +36,43 @@ export const ClassGradesTab: React.FC<ClassGradesTabProps> = ({ classId, courseI
   const fetchGrades = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      // First, get grades
+      const { data: gradesData, error: gradesError } = await supabase
         .from('grades')
-        .select(`
-          id,
-          student_id,
-          assignment_name,
-          grade,
-          max_grade,
-          comment,
-          graded_at,
-          profiles:student_id (
-            full_name,
-            email
-          )
-        `)
+        .select('*')
         .eq('course_id', courseId)
         .order('graded_at', { ascending: false });
 
-      if (error) throw error;
+      if (gradesError) throw gradesError;
 
-      const formattedData: GradeRecord[] = (data || []).map((record: any) => ({
-        id: record.id,
-        student_id: record.student_id,
-        student_name: record.profiles?.full_name || 'Sans nom',
-        student_email: record.profiles?.email || '',
-        assignment_name: record.assignment_name,
-        grade: record.grade,
-        max_grade: record.max_grade,
-        percentage: (record.grade / record.max_grade) * 100,
-        comment: record.comment,
-        graded_at: record.graded_at
-      }));
+      // Get unique student IDs
+      const studentIds = [...new Set(gradesData?.map(g => g.student_id) || [])];
+
+      // Fetch profiles
+      const { data: profilesData } = await supabase
+        .from('profiles')
+        .select('id, full_name, email')
+        .in('id', studentIds);
+
+      // Create lookup map
+      const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || []);
+
+      const formattedData: GradeRecord[] = (gradesData || []).map((record: any) => {
+        const profile = profilesMap.get(record.student_id);
+        
+        return {
+          id: record.id,
+          student_id: record.student_id,
+          student_name: profile?.full_name || 'Sans nom',
+          student_email: profile?.email || '',
+          assignment_name: record.assignment_name,
+          grade: record.grade,
+          max_grade: record.max_grade,
+          percentage: (record.grade / record.max_grade) * 100,
+          comment: record.comment,
+          graded_at: record.graded_at
+        };
+      });
 
       setGrades(formattedData);
     } catch (error: any) {
