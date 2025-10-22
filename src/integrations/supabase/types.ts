@@ -968,6 +968,7 @@ export type Database = {
       }
       course_materials: {
         Row: {
+          class_id: string | null
           course_id: string
           created_at: string
           description: string | null
@@ -981,6 +982,7 @@ export type Database = {
           title: string
         }
         Insert: {
+          class_id?: string | null
           course_id: string
           created_at?: string
           description?: string | null
@@ -994,6 +996,7 @@ export type Database = {
           title: string
         }
         Update: {
+          class_id?: string | null
           course_id?: string
           created_at?: string
           description?: string | null
@@ -1007,6 +1010,13 @@ export type Database = {
           title?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "course_materials_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "course_classes"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "course_materials_course_id_fkey"
             columns: ["course_id"]
@@ -2960,16 +2970,28 @@ export type Database = {
     }
     Functions: {
       add_course_material: {
-        Args: {
-          p_course_id: string
-          p_description?: string
-          p_file_size?: number
-          p_file_type: string
-          p_file_url: string
-          p_is_public?: boolean
-          p_lesson_id?: string
-          p_title: string
-        }
+        Args:
+          | {
+              p_class_id?: string
+              p_course_id: string
+              p_description?: string
+              p_file_size?: number
+              p_file_type: string
+              p_file_url: string
+              p_is_public?: boolean
+              p_lesson_id?: string
+              p_title: string
+            }
+          | {
+              p_course_id: string
+              p_description?: string
+              p_file_size?: number
+              p_file_type: string
+              p_file_url: string
+              p_is_public?: boolean
+              p_lesson_id?: string
+              p_title: string
+            }
         Returns: string
       }
       admin_assign_professor_to_course: {

@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { ClassMaterialUploader } from '@/components/professor/ClassMaterialUploader';
 
 interface Material {
   id: string;
@@ -20,6 +21,7 @@ interface Material {
   is_public: boolean;
   download_count: number;
   created_at: string;
+  class_id: string | null;
 }
 
 interface ClassMaterialsTabProps {
@@ -39,6 +41,7 @@ export const ClassMaterialsTab: React.FC<ClassMaterialsTabProps> = ({ classId, c
         .from('course_materials')
         .select('*')
         .eq('course_id', courseId)
+        .or(`class_id.eq.${classId},class_id.is.null`)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -144,11 +147,18 @@ export const ClassMaterialsTab: React.FC<ClassMaterialsTabProps> = ({ classId, c
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Matériel pédagogique</CardTitle>
-          <CardDescription>
-            Documents, ressources et supports de cours disponibles
-          </CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Matériel pédagogique</CardTitle>
+            <CardDescription>
+              Documents, ressources et supports de cours disponibles
+            </CardDescription>
+          </div>
+          <ClassMaterialUploader 
+            courseId={courseId} 
+            classId={classId} 
+            onSuccess={fetchMaterials}
+          />
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -174,8 +184,19 @@ export const ClassMaterialsTab: React.FC<ClassMaterialsTabProps> = ({ classId, c
                     <TableCell>
                       <div className="flex items-center gap-3">
                         {getFileIcon(material.file_type)}
-                        <div>
-                          <div className="font-medium">{material.title}</div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <div className="font-medium">{material.title}</div>
+                            {material.class_id ? (
+                              <Badge variant="default" className="text-xs">
+                                Classe
+                              </Badge>
+                            ) : (
+                              <Badge variant="secondary" className="text-xs">
+                                Cours
+                              </Badge>
+                            )}
+                          </div>
                           {material.description && (
                             <div className="text-xs text-muted-foreground line-clamp-1">
                               {material.description}

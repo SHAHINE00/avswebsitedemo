@@ -13,9 +13,10 @@ export interface CourseMaterial {
   is_public: boolean;
   download_count: number;
   created_at: string;
+  class_id: string | null;
 }
 
-export const useProfessorMaterials = (courseId: string) => {
+export const useProfessorMaterials = (courseId: string, classId?: string) => {
   const [materials, setMaterials] = useState<CourseMaterial[]>([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -25,12 +26,38 @@ export const useProfessorMaterials = (courseId: string) => {
     
     setLoading(true);
     try {
-      const { data, error } = await supabase.rpc('get_professor_course_materials', {
-        p_course_id: courseId
-      });
+      let query = supabase
+        .from('course_materials')
+        .select('id, course_id, class_id, lesson_id, title, description, file_url, file_type, file_size, is_public, download_count, created_at')
+        .eq('course_id', courseId);
+
+      // If classId provided, show both class-specific and course-wide materials
+      if (classId) {
+        query = query.or(`class_id.eq.${classId},class_id.is.null`);
+      } else {
+        // If no classId, only show course-wide materials
+        query = query.is('class_id', null);
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) throw error;
-      setMaterials(data || []);
+
+      const mappedMaterials = (data || []).map(m => ({
+        material_id: m.id,
+        lesson_id: m.lesson_id,
+        title: m.title,
+        description: m.description,
+        file_url: m.file_url,
+        file_type: m.file_type,
+        file_size: m.file_size,
+        is_public: m.is_public,
+        download_count: m.download_count,
+        created_at: m.created_at,
+        class_id: m.class_id,
+      }));
+
+      setMaterials(mappedMaterials);
     } catch (error: any) {
       console.error('Error fetching materials:', error);
       toast({
@@ -48,7 +75,8 @@ export const useProfessorMaterials = (courseId: string) => {
     title: string,
     description?: string,
     lessonId?: string,
-    isPublic: boolean = false
+    isPublic: boolean = false,
+    materialClassId?: string
   ) => {
     try {
       // Upload file to storage
@@ -74,7 +102,8 @@ export const useProfessorMaterials = (courseId: string) => {
         p_lesson_id: lessonId || null,
         p_description: description || null,
         p_file_size: file.size,
-        p_is_public: isPublic
+        p_is_public: isPublic,
+        p_class_id: materialClassId || classId || null
       });
 
       if (dbError) throw dbError;
