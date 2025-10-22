@@ -58,6 +58,7 @@ const Dashboard = () => {
   const [appointments, setAppointments] = useSafeState<Appointment[]>([]);
   const [loading, setLoading] = useSafeState(true);
   const [error, setError] = useSafeState<string | null>(null);
+  const [userProfile, setUserProfile] = useSafeState<{ full_name: string | null; email: string | null } | null>(null);
   const activeTab = searchParams.get('tab') || 'overview';
 
   useSafeEffect(() => {
@@ -135,6 +136,17 @@ const Dashboard = () => {
       const appointmentData = await getUserAppointments();
       logInfo('Appointments fetched:', appointmentData);
       setAppointments(appointmentData);
+
+      // Fetch user profile
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('full_name, email')
+        .eq('id', user.id)
+        .single();
+
+      if (!profileError && profileData) {
+        setUserProfile(profileData);
+      }
 
     } catch (error) {
       logError('Error fetching dashboard data:', error);
@@ -245,7 +257,7 @@ const Dashboard = () => {
           )}
           
           <DashboardHeader
-            userEmail={user.email || ''}
+            userName={userProfile?.full_name || user.email || 'Utilisateur'}
             onSettingsClick={handleSettingsClick}
             onSignOut={handleSignOut}
           />

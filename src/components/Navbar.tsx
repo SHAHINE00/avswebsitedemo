@@ -6,7 +6,8 @@ import { Button } from './ui/button';
 import NotificationBell from './user/NotificationBell';
 import OptimizedImage from '@/components/OptimizedImage';
 import SafeComponentWrapper from '@/components/ui/SafeComponentWrapper';
-import { useSafeState, useSafeLocation, useSafeAuth } from '@/hooks/useSafeHooks';
+import { useSafeState, useSafeLocation, useSafeAuth, useSafeEffect } from '@/hooks/useSafeHooks';
+import { supabase } from '@/integrations/supabase/client';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,8 +18,33 @@ import {
 
 const NavbarCore = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useSafeState(false);
+  const [userName, setUserName] = useSafeState<string | null>(null);
   const location = useSafeLocation();
   const { user, isAdmin, isProfessor = false, isStudent, signOut } = useSafeAuth();
+
+  // Fetch user's full name from profiles
+  useSafeEffect(() => {
+    const fetchUserName = async () => {
+      if (!user?.id) {
+        setUserName(null);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', user.id)
+        .single();
+
+      if (!error && data?.full_name) {
+        setUserName(data.full_name);
+      } else {
+        setUserName(user.email?.split('@')[0] || null);
+      }
+    };
+
+    fetchUserName();
+  }, [user]);
 
   const navigation = [
     { name: 'Accueil', href: '/' },
@@ -83,7 +109,7 @@ const NavbarCore = () => {
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="flex items-center gap-2 touch-target">
                       <User className="w-4 h-4" />
-                      {user.email?.split('@')[0]}
+                      {userName || user.email?.split('@')[0]}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" sideOffset={8} className="w-56">

@@ -149,6 +149,29 @@ const Student: React.FC = () => {
     placeholderData: (previousData) => previousData,
   });
 
+  // Fetch user profile for name
+  const { data: userProfile } = useQuery({
+    queryKey: ['userProfile', user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('full_name, email')
+        .eq('id', user.id)
+        .single();
+
+      if (error) {
+        logError('Error fetching user profile:', error);
+        return null;
+      }
+
+      return data;
+    },
+    enabled: !!user,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
+
   const loading = enrollmentsLoading || appointmentsLoading;
   const error = enrollmentsError ? 'Erreur lors du chargement des données' : null;
 
@@ -265,7 +288,7 @@ const Student: React.FC = () => {
         
         <div className="container mx-auto px-6 py-8">
           <DashboardHeader
-            userEmail={user.email || ''}
+            userName={userProfile?.full_name || user.email || 'Utilisateur'}
             onSettingsClick={handleSettingsClick}
             onSignOut={handleSignOut}
           />

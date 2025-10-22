@@ -3,13 +3,13 @@ import { Button } from '@/components/ui/button';
 import { Settings, LogOut } from 'lucide-react';
 
 interface DashboardHeaderProps {
-  userEmail: string;
+  userName: string;
   onSettingsClick: () => void;
   onSignOut: () => void;
 }
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({
-  userEmail,
+  userName,
   onSettingsClick,
   onSignOut
 }) => {
@@ -20,7 +20,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           Tableau de bord
         </h1>
         <p className="text-gray-600">
-          Bienvenue, {userEmail}
+          Bienvenue, {userName}
         </p>
       </div>
       <div className="flex gap-2">
