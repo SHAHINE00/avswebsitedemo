@@ -4,11 +4,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { FileText, Download, Search, Filter, Calendar, User, FileUp } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { FileText, Download, Search, Filter, Calendar, User, FileUp, Eye, FileArchive, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { useToast } from '@/hooks/use-toast';
+import JSZip from 'jszip';
 
 interface DocumentActivity {
   id: string;
@@ -21,6 +23,7 @@ interface DocumentActivity {
   file_size: number;
   created_at: string;
   note: string;
+  file_url: string;
 }
 
 export const DocumentActivityTracker: React.FC = () => {
@@ -30,6 +33,9 @@ export const DocumentActivityTracker: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<string>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
+  const [selectedDocs, setSelectedDocs] = useState<Set<string>>(new Set());
+  const [downloading, setDownloading] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState({ current: 0, total: 0 });
   const { toast } = useToast();
 
   useEffect(() => {
@@ -55,6 +61,7 @@ export const DocumentActivityTracker: React.FC = () => {
           uploaded_by_role,
           user_id,
           file_size,
+          file_url,
           created_at,
           professor_note,
           admin_notes,
@@ -77,7 +84,8 @@ export const DocumentActivityTracker: React.FC = () => {
         recipient_email: doc.profiles?.email || '',
         file_size: doc.file_size || 0,
         created_at: doc.created_at,
-        note: doc.professor_note || doc.admin_notes || ''
+        note: doc.professor_note || doc.admin_notes || '',
+        file_url: doc.file_url || ''
       }));
 
       setActivities(formattedActivities);
@@ -170,6 +178,166 @@ export const DocumentActivityTracker: React.FC = () => {
     return labels[type] || type;
   };
 
+  const toggleSelection = (docId: string) => {
+    setSelectedDocs(prev => {
+      const next = new Set(prev);
+      if (next.has(docId)) {
+        next.delete(docId);
+      } else {
+        next.add(docId);
+      }
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedDocs.size === filteredActivities.length) {
+      setSelectedDocs(new Set());
+    } else {
+      setSelectedDocs(new Set(filteredActivities.map(a => a.id)));
+    }
+  };
+
+  const downloadSingleDocument = async (fileUrl: string, fileName: string, docId: string) => {
+    try {
+      const response = await fetch(fileUrl);
+      if (!response.ok) throw new Error('Failed to fetch file');
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      link.click();
+      window.URL.revokeObjectURL(url);
+
+      // Log admin activity
+      await supabase.from('admin_activity_logs').insert({
+        admin_id: (await supabase.auth.getUser()).data.user?.id,
+        action: 'document_download',
+        entity_type: 'student_document',
+        entity_id: docId,
+        details: { file_name: fileName }
+      });
+
+      toast({
+        title: "Téléchargement réussi",
+        description: `${fileName} téléchargé`
+      });
+    } catch (error) {
+      console.error('Error downloading document:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de télécharger le document",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const downloadMultipleDocuments = async (documents: DocumentActivity[]) => {
+    if (documents.length === 0) {
+      toast({
+        title: "Aucun document",
+        description: "Veuillez sélectionner au moins un document",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (documents.length > 50) {
+      toast({
+        title: "Trop de documents",
+        description: "Veuillez sélectionner maximum 50 documents à la fois",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const totalSize = documents.reduce((sum, doc) => sum + doc.file_size, 0);
+    if (totalSize > 100 * 1024 * 1024) { // 100MB
+      const confirmDownload = window.confirm(
+        `La taille totale est de ${(totalSize / (1024 * 1024)).toFixed(2)} MB. Continuer?`
+      );
+      if (!confirmDownload) return;
+    }
+
+    setDownloading(true);
+    setDownloadProgress({ current: 0, total: documents.length });
+
+    try {
+      const zip = new JSZip();
+      const folderName = `documents-export-${format(new Date(), 'yyyy-MM-dd-HHmm')}`;
+      const folder = zip.folder(folderName);
+
+      for (let i = 0; i < documents.length; i++) {
+        const doc = documents[i];
+        setDownloadProgress({ current: i + 1, total: documents.length });
+
+        try {
+          const response = await fetch(doc.file_url);
+          if (!response.ok) {
+            console.error(`Failed to fetch ${doc.document_name}`);
+            continue;
+          }
+
+          const blob = await response.blob();
+          const dateStr = format(new Date(doc.created_at), 'yyyy-MM-dd');
+          const sanitizedSender = doc.uploaded_by_name.replace(/[^a-z0-9]/gi, '-');
+          const fileExtension = doc.document_name.split('.').pop();
+          const fileName = `${dateStr}_${sanitizedSender}_${doc.document_name}`;
+          
+          folder?.file(fileName, blob);
+        } catch (error) {
+          console.error(`Error processing ${doc.document_name}:`, error);
+        }
+      }
+
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      const url = window.URL.createObjectURL(zipBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${folderName}.zip`;
+      link.click();
+      window.URL.revokeObjectURL(url);
+
+      // Log admin activity
+      const userId = (await supabase.auth.getUser()).data.user?.id;
+      await supabase.from('admin_activity_logs').insert({
+        admin_id: userId,
+        action: 'bulk_document_download',
+        entity_type: 'student_document',
+        entity_id: null,
+        details: { document_count: documents.length }
+      });
+
+      toast({
+        title: "Téléchargement réussi",
+        description: `${documents.length} documents téléchargés`
+      });
+
+      setSelectedDocs(new Set());
+    } catch (error) {
+      console.error('Error creating ZIP:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de créer l'archive ZIP",
+        variant: "destructive"
+      });
+    } finally {
+      setDownloading(false);
+      setDownloadProgress({ current: 0, total: 0 });
+    }
+  };
+
+  const downloadSelected = () => {
+    const selectedDocuments = filteredActivities.filter(doc => selectedDocs.has(doc.id));
+    downloadMultipleDocuments(selectedDocuments);
+  };
+
+  const downloadAllFiltered = () => {
+    downloadMultipleDocuments(filteredActivities.slice(0, 50));
+  };
+
   if (loading) {
     return (
       <Card>
@@ -196,10 +364,43 @@ export const DocumentActivityTracker: React.FC = () => {
                 Historique complet de tous les documents envoyés aux étudiants
               </CardDescription>
             </div>
-            <Button onClick={exportToCSV} variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" />
-              Exporter
-            </Button>
+            <div className="flex gap-2">
+              {selectedDocs.size > 0 && (
+                <Button 
+                  onClick={downloadSelected} 
+                  variant="default" 
+                  size="sm"
+                  disabled={downloading}
+                >
+                  {downloading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      {downloadProgress.current}/{downloadProgress.total}
+                    </>
+                  ) : (
+                    <>
+                      <FileArchive className="h-4 w-4 mr-2" />
+                      Télécharger ({selectedDocs.size})
+                    </>
+                  )}
+                </Button>
+              )}
+              <Button onClick={exportToCSV} variant="outline" size="sm">
+                <Download className="h-4 w-4 mr-2" />
+                Exporter CSV
+              </Button>
+              {filteredActivities.length > 0 && (
+                <Button 
+                  onClick={downloadAllFiltered} 
+                  variant="outline" 
+                  size="sm"
+                  disabled={downloading}
+                >
+                  <FileArchive className="h-4 w-4 mr-2" />
+                  ZIP Filtrés
+                </Button>
+              )}
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -280,6 +481,12 @@ export const DocumentActivityTracker: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12">
+                    <Checkbox
+                      checked={filteredActivities.length > 0 && selectedDocs.size === filteredActivities.length}
+                      onCheckedChange={toggleSelectAll}
+                    />
+                  </TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Document</TableHead>
                   <TableHead>Type</TableHead>
@@ -287,18 +494,25 @@ export const DocumentActivityTracker: React.FC = () => {
                   <TableHead>Rôle</TableHead>
                   <TableHead>Destinataire</TableHead>
                   <TableHead>Taille</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredActivities.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                    <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
                       Aucune activité trouvée
                     </TableCell>
                   </TableRow>
                 ) : (
                   filteredActivities.slice(0, 100).map((activity) => (
                     <TableRow key={activity.id}>
+                      <TableCell>
+                        <Checkbox
+                          checked={selectedDocs.has(activity.id)}
+                          onCheckedChange={() => toggleSelection(activity.id)}
+                        />
+                      </TableCell>
                       <TableCell className="text-sm">
                         {format(new Date(activity.created_at), 'dd/MM/yyyy HH:mm', { locale: fr })}
                       </TableCell>
@@ -322,6 +536,26 @@ export const DocumentActivityTracker: React.FC = () => {
                       </TableCell>
                       <TableCell className="text-sm">
                         {(activity.file_size / 1024).toFixed(2)} KB
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-1 justify-end">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => window.open(activity.file_url, '_blank')}
+                            title="Voir"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => downloadSingleDocument(activity.file_url, activity.document_name, activity.id)}
+                            title="Télécharger"
+                          >
+                            <Download className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))
