@@ -1,10 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Sparkles } from 'lucide-react';
+import { MessageCircle, X, Send, Sparkles, Download, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
@@ -222,6 +228,44 @@ const AIChatbot: React.FC = () => {
     sendMessage(reply);
   };
 
+  const exportConversation = (format: 'json' | 'txt') => {
+    if (messages.length === 0) {
+      toast.error('Aucune conversation à exporter');
+      return;
+    }
+
+    const timestamp = new Date().toISOString().split('T')[0];
+    let content: string;
+    let mimeType: string;
+    let filename: string;
+
+    if (format === 'json') {
+      content = JSON.stringify(messages, null, 2);
+      mimeType = 'application/json';
+      filename = `conversation-avs-${timestamp}.json`;
+    } else {
+      content = messages.map(msg => {
+        const time = new Date(msg.timestamp).toLocaleTimeString('fr-FR');
+        const role = msg.role === 'user' ? 'Vous' : 'Assistant AVS';
+        return `[${time}] ${role}:\n${msg.content}\n`;
+      }).join('\n');
+      mimeType = 'text/plain';
+      filename = `conversation-avs-${timestamp}.txt`;
+    }
+
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast.success('Conversation exportée avec succès');
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -268,15 +312,41 @@ const AIChatbot: React.FC = () => {
                   <h3 className="font-semibold text-white">Assistant AVS</h3>
                 </div>
               </div>
-              <Button
-                onClick={() => setIsOpen(false)}
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-white hover:bg-white/10"
-                aria-label="Fermer le chat"
-              >
-                <X className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center gap-2">
+                {messages.length > 0 && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-white hover:bg-white/10"
+                        aria-label="Exporter la conversation"
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem onClick={() => exportConversation('txt')}>
+                        <FileText className="h-4 w-4 mr-2" />
+                        Exporter en TXT
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => exportConversation('json')}>
+                        <FileText className="h-4 w-4 mr-2" />
+                        Exporter en JSON
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+                <Button
+                  onClick={() => setIsOpen(false)}
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-white hover:bg-white/10"
+                  aria-label="Fermer le chat"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
             <div className="px-4 pb-4 relative z-10">
               <p className="text-sm text-gray-200">Nous sommes en ligne !</p>
