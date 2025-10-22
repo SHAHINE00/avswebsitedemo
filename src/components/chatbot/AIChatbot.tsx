@@ -70,9 +70,9 @@ const AIChatbot = () => {
     const role = getDisplayRole();
     const messages = {
       visitor: t.welcome,
-      student: "👋 Bonjour Étudiant ! Je peux vous aider avec vos cours, notes, emploi du temps et toute question concernant votre parcours académique.",
-      professor: "👋 Bonjour Professeur ! Je peux vous assister avec la gestion de vos cours, vos étudiants et les ressources pédagogiques.",
-      admin: "👋 Bonjour Administrateur ! Je suis là pour vous guider dans la gestion de la plateforme, les utilisateurs et les paramètres système.",
+      student: t.welcomeStudent,
+      professor: t.welcomeProfessor,
+      admin: t.welcomeAdmin,
     };
     return messages[role as keyof typeof messages] || t.welcome;
   };
@@ -89,28 +89,28 @@ const AIChatbot = () => {
         t.quickReplies.email
       ],
       student: [
-        "📅 Mon emploi du temps",
-        "📊 Consulter mes notes",
-        "📚 Ressources de cours",
-        "💬 Contacter un professeur",
+        t.quickReplies.studentSchedule,
+        t.quickReplies.studentGrades,
+        t.quickReplies.studentResources,
+        t.quickReplies.studentContact,
         t.quickReplies.phone,
-        "👤 Parler à un agent"
+        t.quickReplies.studentAgent
       ],
       professor: [
-        "👥 Gérer mes classes",
-        "📝 Créer une évaluation",
-        "📊 Statistiques des étudiants",
-        "📚 Ressources pédagogiques",
+        t.quickReplies.profClasses,
+        t.quickReplies.profEvaluation,
+        t.quickReplies.profStats,
+        t.quickReplies.profResources,
         t.quickReplies.phone,
-        "💬 Support technique"
+        t.quickReplies.profSupport
       ],
       admin: [
-        "👥 Gérer les utilisateurs",
-        "📊 Tableau de bord",
-        "⚙️ Paramètres système",
-        "📈 Rapports d'activité",
+        t.quickReplies.adminUsers,
+        t.quickReplies.adminDashboard,
+        t.quickReplies.adminSettings,
+        t.quickReplies.adminReports,
         t.quickReplies.phone,
-        "💬 Assistance"
+        t.quickReplies.adminAssistance
       ]
     };
     return quickReplies[role as keyof typeof quickReplies] || quickReplies.visitor;
