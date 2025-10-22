@@ -348,7 +348,11 @@ export default function OllamaChatbot() {
         ) : (
           <>
             {messages.map((message) => (
-              <ChatMessage key={message.id} message={message} />
+              <ChatMessage 
+                key={message.id} 
+                message={message} 
+                conversationId={sessionId || ''} 
+              />
             ))}
             
             {isLoading && <TypingIndicator />}

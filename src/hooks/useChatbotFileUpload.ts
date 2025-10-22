@@ -45,12 +45,15 @@ export const useChatbotFileUpload = () => {
         .from('chatbot-uploads')
         .getPublicUrl(filePath);
 
+      const fileType = file.type.includes('image') ? 'image' : 'PDF';
+      const fileMessage = `J'ai envoyé un fichier ${fileType}: ${file.name}\nURL: ${publicUrl}`;
+
       toast({
         title: "Fichier envoyé",
         description: "Votre fichier a été envoyé avec succès"
       });
 
-      return publicUrl;
+      return fileMessage;
     } catch (error) {
       console.error('Error uploading file:', error);
       toast({

@@ -167,12 +167,12 @@ const AIChatbot = () => {
     const file = event.target.files?.[0];
     if (!file || !currentConversationId) return;
 
-    const fileUrl = await uploadFile(file);
-    if (fileUrl) {
+    const fileMessageContent = await uploadFile(file);
+    if (fileMessageContent) {
       const fileMessage: Message = {
         id: crypto.randomUUID(),
         role: 'user',
-        content: `[Fichier envoyé: ${file.name}]\n${fileUrl}`,
+        content: fileMessageContent,
         timestamp: new Date()
       };
       
@@ -201,8 +201,9 @@ const AIChatbot = () => {
           'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({ 
-          messages: [{ role: 'user', content: userMsg.content }],
-          language 
+          messages: messages.map(m => ({ role: m.role, content: m.content })),
+          language,
+          conversationId: currentConversationId
         }),
       });
 
@@ -411,8 +412,12 @@ const AIChatbot = () => {
               <MessageSquare className="w-6 h-6 text-white" />
               <div>
                 <h3 className="font-semibold text-white">Assistant AVS</h3>
-                <p className="text-xs text-white/80">
-                  {getRoleName()} - En ligne
+                <p className="text-xs text-white/80 flex items-center gap-1.5">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                  </span>
+                  Nous sommes en ligne !
                 </p>
               </div>
             </div>
@@ -527,7 +532,11 @@ const AIChatbot = () => {
                   )}
 
                   {messages.map((message) => (
-                    <ChatMessage key={message.id} message={message} />
+                    <ChatMessage 
+                      key={message.id} 
+                      message={message} 
+                      conversationId={currentConversationId || ''} 
+                    />
                   ))}
 
                   {isLoading && <TypingIndicator />}

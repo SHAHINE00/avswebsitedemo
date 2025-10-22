@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Bot, ThumbsUp, ThumbsDown, Copy, Check } from 'lucide-react';
+import { Bot, Copy, Check } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
+import MessageFeedback from './MessageFeedback';
 
 interface Message {
   id: string;
@@ -14,26 +14,12 @@ interface Message {
 
 interface ChatMessageProps {
   message: Message;
+  conversationId: string;
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
+const ChatMessage: React.FC<ChatMessageProps> = ({ message, conversationId }) => {
   const isUser = message.role === 'user';
-  const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
-
-  const handleFeedback = async (type: 'up' | 'down') => {
-    setFeedback(type);
-    
-    // TODO: Uncomment after chat_feedback migration is run
-    // try {
-    //   await supabase.from('chat_feedback').insert({
-    //     message_id: message.id,
-    //     feedback_type: type,
-    //   });
-    // } catch (error) {
-    //   console.error('Failed to save feedback:', error);
-    // }
-  };
 
   const copyCode = async (code: string) => {
     await navigator.clipboard.writeText(code);
@@ -133,34 +119,12 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           </time>
         </div>
 
-        {/* Feedback buttons for assistant messages */}
+        {/* Feedback for assistant messages */}
         {!isUser && (
-          <div className="flex gap-2 mt-3 pt-2 border-t border-border">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn(
-                "h-7 px-2 text-xs",
-                feedback === 'up' && "bg-green-100 dark:bg-green-900/20"
-              )}
-              onClick={() => handleFeedback('up')}
-            >
-              <ThumbsUp className="h-3 w-3 mr-1" />
-              Utile
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn(
-                "h-7 px-2 text-xs",
-                feedback === 'down' && "bg-red-100 dark:bg-red-900/20"
-              )}
-              onClick={() => handleFeedback('down')}
-            >
-              <ThumbsDown className="h-3 w-3 mr-1" />
-              Pas utile
-            </Button>
-          </div>
+          <MessageFeedback 
+            messageId={message.id} 
+            conversationId={conversationId} 
+          />
         )}
       </div>
     </div>
