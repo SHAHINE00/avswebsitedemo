@@ -236,9 +236,10 @@ const AIChatbot: React.FC = () => {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-24 sm:bottom-6 right-4 sm:right-6 h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg z-[100000] touch-manipulation active:scale-95 transition-transform"
+          className="fixed right-4 sm:right-6 h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg z-[100000] touch-manipulation active:scale-95 transition-transform"
           size="icon"
           aria-label="Ouvrir le chat assistant"
+          style={{ bottom: 'max(env(safe-area-inset-bottom, 0px), 6rem)' }}
         >
           <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" />
         </Button>
@@ -246,7 +247,7 @@ const AIChatbot: React.FC = () => {
 
       {/* Chat window */}
       {isOpen && (
-        <Card className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 sm:w-96 sm:h-[32rem] flex flex-col shadow-2xl z-[100000] animate-in slide-in-from-bottom-8 sm:slide-in-from-bottom-5 duration-300 overflow-hidden sm:rounded-lg landscape:h-screen">
+        <Card className="fixed z-[100000] overflow-hidden flex flex-col min-h-0 inset-0 rounded-none sm:inset-auto sm:bottom-4 sm:right-4 md:bottom-6 md:right-6 w-full h-[100dvh] sm:w-[min(92vw,26rem)] md:w-[min(88vw,28rem)] lg:w-[min(32rem,26vw)] sm:h-[min(85dvh,640px)] shadow-2xl animate-in slide-in-from-bottom-8 sm:slide-in-from-bottom-5 duration-300 bg-card">
           {/* Header with curved wave */}
           <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white pb-6 sm:pb-10 landscape:pb-4 safe-top">
             <div className="flex items-center justify-between p-3 sm:p-4 landscape:p-2">
@@ -299,7 +300,7 @@ const AIChatbot: React.FC = () => {
           </div>
 
           {/* Messages */}
-          <ScrollArea className="flex-1 p-3 sm:p-4 landscape:p-2 bg-gray-50 dark:bg-gray-950 safe-bottom">
+          <ScrollArea className="flex-1 min-h-0 p-3 sm:p-4 landscape:p-2 bg-gray-50 dark:bg-gray-950 safe-bottom overscroll-contain">
             <div className="space-y-3 sm:space-y-4">
               {messages.length === 0 && (
                 <>
@@ -342,7 +343,7 @@ const AIChatbot: React.FC = () => {
           </ScrollArea>
 
           {/* Input */}
-          <div className="p-3 sm:p-4 landscape:p-2 border-t bg-white dark:bg-gray-900 safe-bottom">
+          <div className="sticky bottom-0 left-0 right-0 p-3 sm:p-4 landscape:p-2 border-t bg-white dark:bg-gray-900 safe-bottom">
             <div className="flex gap-2 items-end">
               <Textarea
                 ref={textareaRef}

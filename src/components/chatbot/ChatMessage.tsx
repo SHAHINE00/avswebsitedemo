@@ -52,7 +52,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
       {/* Message bubble */}
       <div
-        className={`max-w-[85%] rounded-2xl p-5 shadow-md transition-all ${
+        className={`max-w-[90%] sm:max-w-[85%] rounded-2xl p-5 shadow-md transition-all ${
           isUser
             ? 'bg-gradient-to-br from-primary to-primary/90 text-primary-foreground'
             : 'bg-card text-card-foreground border border-border'
