@@ -34,11 +34,14 @@ async function determineUserRole(supabaseClient: any, userId: string | null): Pr
   if (!userId) return 'visitor';
   
   try {
-    const { data: isAdminData } = await supabaseClient.rpc('is_admin', { _user_id: userId });
-    if (isAdminData) return 'admin';
+    // Parallelize role checks for faster response
+    const [adminRes, profRes] = await Promise.all([
+      supabaseClient.rpc('is_admin', { _user_id: userId }),
+      supabaseClient.rpc('is_professor', { _user_id: userId })
+    ]);
     
-    const { data: isProfData } = await supabaseClient.rpc('is_professor', { _user_id: userId });
-    if (isProfData) return 'professor';
+    if (adminRes?.data) return 'admin';
+    if (profRes?.data) return 'professor';
     
     return 'student';
   } catch (error) {
@@ -120,21 +123,51 @@ serve(async (req) => {
       );
     }
 
+    const t0 = Date.now();
     const userRole = await determineUserRole(supabase, userId);
     const systemPrompt = buildSystemPrompt(userRole);
 
-    const ollamaResponse = await fetch('https://ai.avs.ma/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'mistral:latest',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: sanitizedMessage }
-        ],
-        stream: false
-      })
-    });
+    // Add 20s timeout to prevent hanging on cold starts
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 20000);
+
+    let ollamaResponse;
+    try {
+      ollamaResponse = await fetch('https://ai.avs.ma/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          model: 'mistral:latest',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: sanitizedMessage }
+          ],
+          stream: false,
+          keep_alive: '30m',
+          options: {
+            num_predict: 256,
+            temperature: 0.3
+          }
+        })
+      });
+      clearTimeout(timeoutId);
+    } catch (fetchError: any) {
+      clearTimeout(timeoutId);
+      
+      if (fetchError.name === 'AbortError') {
+        console.log('⏱️ Request timeout after 20s (model cold start)');
+        return new Response(
+          JSON.stringify({ 
+            error: 'TIMEOUT', 
+            message: 'Le modèle se réveille, réessayez dans quelques secondes.' 
+          }),
+          { status: 504, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      throw fetchError;
+    }
 
     if (!ollamaResponse.ok) {
       const errorText = await ollamaResponse.text().catch(() => 'Unknown error');
@@ -162,6 +195,9 @@ serve(async (req) => {
 
     const data = await ollamaResponse.json();
     const assistantMessage = data.message?.content || 'Désolé, je n\'ai pas pu générer une réponse.';
+    
+    const t1 = Date.now();
+    console.log(`✅ Response generated in ${t1 - t0}ms`);
 
     if (userId) {
       await supabase.from('chat_logs').insert({

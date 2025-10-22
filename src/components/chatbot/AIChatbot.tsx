@@ -83,16 +83,27 @@ const AIChatbot: React.FC = () => {
     setInput('');
     setIsLoading(true);
 
+    // Client-side soft timeout: show loading message after 10s
+    const softTimeoutId = setTimeout(() => {
+      toast.message('⏳ Le modèle est en train de se charger (première requête après inactivité)…', {
+        duration: 5000,
+      });
+    }, 10000);
+
     try {
       const { data, error } = await supabase.functions.invoke('ollama-chat', {
         body: { message: userMessage.content },
       });
 
+      clearTimeout(softTimeoutId);
+
       if (error) {
         console.error('Chat error:', error);
         
-        // Handle specific error types
-        if (error.message?.includes('RATE_LIMIT') || error.message?.includes('429')) {
+        // Handle specific error types with clear messages
+        if (error.message?.includes('TIMEOUT') || error.message?.includes('504')) {
+          toast.error('⏱️ Le modèle se réveille. Réessayez dans quelques secondes.');
+        } else if (error.message?.includes('RATE_LIMIT') || error.message?.includes('429')) {
           toast.error('⏳ Trop de requêtes. Veuillez patienter quelques instants.');
         } else if (error.message?.includes('PAYMENT_REQUIRED') || error.message?.includes('402')) {
           toast.error('💳 Crédits insuffisants. Contactez l\'administrateur.');
@@ -115,6 +126,7 @@ const AIChatbot: React.FC = () => {
 
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (err) {
+      clearTimeout(softTimeoutId);
       console.error('Unexpected error:', err);
       toast.error('❌ Une erreur inattendue est survenue.');
       setMessages((prev) => prev.filter((m) => m.id !== userMessage.id));
