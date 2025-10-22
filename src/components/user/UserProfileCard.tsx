@@ -8,7 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useUserProfile } from '@/hooks/useUserProfile';
 
 const UserProfileCard = () => {
-  const { user } = useAuth();
+  const { user, isStudent, isAdmin, isProfessor } = useAuth();
   const { achievements, statistics } = useUserProfile();
 
   if (!user || !statistics) {
@@ -17,6 +17,11 @@ const UserProfileCard = () => {
 
   const initials = user.email?.charAt(0).toUpperCase() || 'U';
   const recentAchievements = achievements.slice(0, 3);
+  
+  const profileLabel = isStudent ? "Profil Étudiant" : 
+                       isAdmin ? "Profil Administrateur" : 
+                       isProfessor ? "Profil Professeur" :
+                       "Profil Utilisateur";
 
   return (
     <Card>
@@ -30,7 +35,7 @@ const UserProfileCard = () => {
           <div className="flex-1">
             <CardTitle className="flex items-center gap-2">
               <User className="h-5 w-5" />
-              Profil Utilisateur
+              {profileLabel}
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
               {user.email}
