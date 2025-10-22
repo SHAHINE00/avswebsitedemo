@@ -326,11 +326,11 @@ const AIChatbot: React.FC = () => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem onClick={() => exportConversation('txt')}>
+                      <DropdownMenuItem onSelect={(e) => { e.preventDefault(); exportConversation('txt'); }}>
                         <FileText className="h-4 w-4 mr-2" />
                         Exporter en TXT
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => exportConversation('json')}>
+                      <DropdownMenuItem onSelect={(e) => { e.preventDefault(); exportConversation('json'); }}>
                         <FileText className="h-4 w-4 mr-2" />
                         Exporter en JSON
                       </DropdownMenuItem>
