@@ -468,13 +468,6 @@ const AIChatbot = () => {
       });
     }
   };
-
-  const cycleLanguage = () => {
-    const order: SupportedLanguage[] = ['fr', 'en', 'ar'];
-    const idx = order.indexOf(language as SupportedLanguage);
-    const next = order[(idx + 1) % order.length];
-    handleLanguageChange(next);
-  };
   return (
     <div className="fixed bottom-0 right-0 z-[9999]">
       {/* Floating Button */}
@@ -509,10 +502,10 @@ const AIChatbot = () => {
             <div className="flex items-center gap-2">
               {/* Language Selector */}
               <Select value={language} onValueChange={handleLanguageChange}>
-                <SelectTrigger onClick={(e) => { e.preventDefault(); cycleLanguage(); }} title="Changer de langue / Change language" className="w-16 h-8 bg-white/20 border-white/30 text-white text-xs">
+                <SelectTrigger title="Changer de langue / Change language" className="w-16 h-8 bg-white/20 border-white/30 text-white text-xs">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="z-[10000] bg-background text-foreground border border-border shadow-lg">
                   <SelectItem value="fr">🇫🇷 FR</SelectItem>
                   <SelectItem value="ar">🇲🇦 AR</SelectItem>
                   <SelectItem value="en">🇬🇧 EN</SelectItem>
