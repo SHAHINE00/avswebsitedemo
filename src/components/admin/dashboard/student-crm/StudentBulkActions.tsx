@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Mail, BookOpen, Tag, Download, Archive, FileText, X } from "lucide-react";
+import { Mail, BookOpen, Tag, Download, Archive, FileText, X, FileUp } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 interface StudentBulkActionsProps {
@@ -11,6 +11,7 @@ interface StudentBulkActionsProps {
   onBulkExport: () => void;
   onBulkArchive: () => void;
   onGenerateReport: () => void;
+  onBulkDocument?: () => void;
 }
 
 export const StudentBulkActions = ({
@@ -21,7 +22,8 @@ export const StudentBulkActions = ({
   onBulkTag,
   onBulkExport,
   onBulkArchive,
-  onGenerateReport
+  onGenerateReport,
+  onBulkDocument
 }: StudentBulkActionsProps) => {
   if (selectedCount === 0) return null;
 
@@ -50,6 +52,12 @@ export const StudentBulkActions = ({
             <Tag className="h-4 w-4" />
             Ajouter Tag
           </Button>
+          {onBulkDocument && (
+            <Button variant="outline" size="sm" onClick={onBulkDocument} className="gap-2">
+              <FileUp className="h-4 w-4" />
+              Envoyer Document
+            </Button>
+          )}
           <Button variant="outline" size="sm" onClick={onBulkExport} className="gap-2">
             <Download className="h-4 w-4" />
             Exporter

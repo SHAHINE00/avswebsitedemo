@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Search, Eye, Calendar, CheckCircle, XCircle, AlertCircle, TrendingUp, Upload } from 'lucide-react';
+import { Search, Eye, Calendar, CheckCircle, XCircle, AlertCircle, TrendingUp, Upload, FileUp } from 'lucide-react';
 import { useProfessorStudents } from '@/hooks/useProfessorStudents';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +11,8 @@ import { Progress } from '@/components/ui/progress';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { StudentDocumentUploader } from '@/components/professor/StudentDocumentUploader';
+import { BulkDocumentUploader } from '@/components/shared/BulkDocumentUploader';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface StudentListTabProps {
   courseId: string;
@@ -22,6 +24,8 @@ const StudentListTab: React.FC<StudentListTabProps> = ({ courseId }) => {
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [detailOpen, setDetailOpen] = useState(false);
   const [uploaderOpen, setUploaderOpen] = useState(false);
+  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+  const [bulkUploaderOpen, setBulkUploaderOpen] = useState(false);
 
   useEffect(() => {
     fetchStudents();
@@ -40,12 +44,47 @@ const StudentListTab: React.FC<StudentListTabProps> = ({ courseId }) => {
     }
   };
 
+  const handleSelectStudent = (studentId: string) => {
+    setSelectedStudents(prev =>
+      prev.includes(studentId)
+        ? prev.filter(id => id !== studentId)
+        : [...prev, studentId]
+    );
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    setSelectedStudents(checked ? filteredStudents.map(s => s.student_id) : []);
+  };
+
+  const getSelectedStudentNames = () => {
+    return filteredStudents
+      .filter(s => selectedStudents.includes(s.student_id))
+      .map(s => s.full_name);
+  };
+
   if (loading) {
     return <div>Chargement...</div>;
   }
 
   return (
     <>
+      {selectedStudents.length > 0 && (
+        <div className="mb-4 flex items-center justify-between p-3 bg-muted rounded-lg">
+          <span className="text-sm font-medium">
+            {selectedStudents.length} étudiant(s) sélectionné(s)
+          </span>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => setSelectedStudents([])}>
+              Désélectionner
+            </Button>
+            <Button variant="default" size="sm" onClick={() => setBulkUploaderOpen(true)}>
+              <FileUp className="w-4 h-4 mr-1" />
+              Envoyer un document
+            </Button>
+          </div>
+        </div>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle>Liste des étudiants</CardTitle>
@@ -68,6 +107,12 @@ const StudentListTab: React.FC<StudentListTabProps> = ({ courseId }) => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12">
+                    <Checkbox
+                      checked={selectedStudents.length === filteredStudents.length && filteredStudents.length > 0}
+                      onCheckedChange={handleSelectAll}
+                    />
+                  </TableHead>
                   <TableHead>Nom</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Progrès</TableHead>
@@ -80,6 +125,12 @@ const StudentListTab: React.FC<StudentListTabProps> = ({ courseId }) => {
               <TableBody>
                 {filteredStudents.map((student) => (
                   <TableRow key={student.student_id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedStudents.includes(student.student_id)}
+                        onCheckedChange={() => handleSelectStudent(student.student_id)}
+                      />
+                    </TableCell>
                     <TableCell className="font-medium">{student.full_name}</TableCell>
                     <TableCell>{student.email}</TableCell>
                     <TableCell>{student.progress_percentage}%</TableCell>
@@ -342,6 +393,18 @@ const StudentListTab: React.FC<StudentListTabProps> = ({ courseId }) => {
           }}
         />
       )}
+
+      <BulkDocumentUploader
+        studentIds={selectedStudents}
+        studentNames={getSelectedStudentNames()}
+        open={bulkUploaderOpen}
+        onOpenChange={setBulkUploaderOpen}
+        onSuccess={() => {
+          setSelectedStudents([]);
+          fetchStudents();
+        }}
+        role="professor"
+      />
     </>
   );
 };

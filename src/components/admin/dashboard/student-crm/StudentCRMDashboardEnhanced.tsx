@@ -22,6 +22,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ResetPasswordDialog } from '../user-management/ResetPasswordDialog';
+import { BulkDocumentUploader } from '@/components/shared/BulkDocumentUploader';
 
 interface Student {
   id: string;
@@ -85,6 +86,7 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
   const [bulkTagDialogOpen, setBulkTagDialogOpen] = useState(false);
   const [bulkEmailDialogOpen, setBulkEmailDialogOpen] = useState(false);
   const [bulkArchiveDialogOpen, setBulkArchiveDialogOpen] = useState(false);
+  const [bulkDocumentDialogOpen, setBulkDocumentDialogOpen] = useState(false);
 
   // Bulk tag state
   const [bulkTagName, setBulkTagName] = useState('');
@@ -282,6 +284,12 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
 
   const handleSelectAll = (selected: boolean) => {
     setSelectedStudents(selected ? filteredStudents.map(s => s.id) : []);
+  };
+
+  const getSelectedStudentNames = () => {
+    return filteredStudents
+      .filter(s => selectedStudents.includes(s.id))
+      .map(s => s.full_name);
   };
 
   const openStudent = (student: Student, tab: 'overview' | 'enrollments' | 'finances' | 'documents' | 'timeline' | 'notes' | 'certificates' | 'communication') => {
@@ -657,6 +665,7 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
         onBulkExport={() => setExportDialogOpen(true)}
         onBulkArchive={() => setBulkArchiveDialogOpen(true)}
         onGenerateReport={handleGenerateReport}
+        onBulkDocument={() => setBulkDocumentDialogOpen(true)}
       />
 
       {/* Student List */}
@@ -879,6 +888,19 @@ const StudentCRMDashboardEnhanced: React.FC = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Bulk Document Upload Dialog */}
+      <BulkDocumentUploader
+        studentIds={selectedStudents}
+        studentNames={getSelectedStudentNames()}
+        open={bulkDocumentDialogOpen}
+        onOpenChange={setBulkDocumentDialogOpen}
+        onSuccess={() => {
+          setSelectedStudents([]);
+          fetchStudents();
+        }}
+        role="admin"
+      />
     </div>
   );
 };
