@@ -23,6 +23,7 @@ import LoadingSpinner from "@/components/ui/loading-spinner";
 import { ReloadPreventionWrapper } from "@/components/ui/reload-prevention-wrapper";
 import { SecurityEnhancedWrapper } from "@/components/security/SecurityEnhancedWrapper";
 import { logWarn } from "@/utils/logger";
+import AIChatbot from "@/components/chatbot/AIChatbot";
 
 
 // Critical pages (loaded immediately for better performance)
@@ -187,6 +188,7 @@ const App = () => {
                       <Route path="/student" element={<StudentRouteGuard><LazyWrapper><Student /></LazyWrapper></StudentRouteGuard>} />
                       </Routes>
                       
+                        <AIChatbot />
                         <Toaster />
                       </AuthProvider>
                     </QueryClientProvider>

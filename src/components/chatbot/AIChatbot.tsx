@@ -61,25 +61,33 @@ const AIChatbot: React.FC = () => {
         "📚 Quelles sont les formations disponibles ?",
         "💰 Informations sur les frais de scolarité",
         "📝 Comment s'inscrire ?",
-        "🎓 Programmes de certification"
+        "📞 Appeler AVS",
+        "💬 Contacter via WhatsApp",
+        "📧 Envoyer un email"
       ],
       student: [
         "📅 Mon emploi du temps",
         "📊 Consulter mes notes",
         "📚 Ressources de cours",
-        "💬 Contacter un professeur"
+        "💬 Contacter un professeur",
+        "📞 Appeler l'administration",
+        "👤 Parler à un agent"
       ],
       professor: [
         "👥 Gérer mes classes",
         "📝 Créer une évaluation",
         "📊 Statistiques des étudiants",
-        "📚 Ressources pédagogiques"
+        "📚 Ressources pédagogiques",
+        "📞 Contacter l'administration",
+        "💬 Support technique"
       ],
       admin: [
         "👥 Gérer les utilisateurs",
         "📊 Tableau de bord",
         "⚙️ Paramètres système",
-        "📈 Rapports d'activité"
+        "📈 Rapports d'activité",
+        "📞 Support technique",
+        "💬 Assistance"
       ]
     };
     return quickReplies[role as keyof typeof quickReplies] || quickReplies.visitor;
@@ -218,8 +226,45 @@ const AIChatbot: React.FC = () => {
     await streamChat(userMessage);
   };
 
+  const handleContactAction = (action: string) => {
+    switch(action) {
+      case "📞 Appeler AVS":
+      case "📞 Appeler l'administration":
+      case "📞 Support technique":
+        window.location.href = "tel:+212524311982";
+        toast.success("📞 Numéro: +212 5 24 31 19 82");
+        break;
+        
+      case "💬 Contacter via WhatsApp":
+      case "💬 Support technique":
+        const whatsappMsg = encodeURIComponent("Bonjour, je souhaite obtenir plus d'informations sur AVS.");
+        window.open(`https://wa.me/212662632953?text=${whatsappMsg}`, '_blank');
+        break;
+        
+      case "📧 Envoyer un email":
+        sendMessage("Je voudrais envoyer un email. Voici les contacts disponibles:\n\n" +
+          "📩 Informations générales: info@avs.ma\n" +
+          "📩 Admissions: admissions@avs.ma\n" +
+          "📩 Carrières: careers@avs.ma\n" +
+          "📩 Partenariats: partnerships@avs.ma");
+        break;
+        
+      case "👤 Parler à un agent":
+      case "💬 Assistance":
+        sendMessage("Pour parler avec un agent en direct:\n\n" +
+          "📞 Téléphone: +212 5 24 31 19 82\n" +
+          "💬 WhatsApp: +212 6 62 63 29 53\n" +
+          "📧 Email: info@avs.ma\n\n" +
+          "Nos horaires: Lun-Ven 9h-18h");
+        break;
+        
+      default:
+        sendMessage(action);
+    }
+  };
+
   const handleQuickReply = (reply: string) => {
-    sendMessage(reply);
+    handleContactAction(reply);
   };
 
 
