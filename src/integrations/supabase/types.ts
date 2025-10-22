@@ -3058,6 +3058,10 @@ export type Database = {
         Args: { p_accessor_id: string; p_student_id: string }
         Returns: boolean
       }
+      check_admin_role: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       cleanup_security_logs: {
         Args: Record<PropertyKey, never>
         Returns: undefined
