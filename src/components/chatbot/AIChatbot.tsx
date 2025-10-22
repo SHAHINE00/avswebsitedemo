@@ -228,7 +228,7 @@ const AIChatbot: React.FC = () => {
     sendMessage(reply);
   };
 
-  const exportConversation = (format: 'json' | 'txt') => {
+  const exportConversation = async (format: 'json' | 'txt') => {
     if (messages.length === 0) {
       toast.error('Aucune conversation à exporter');
       return;
@@ -255,15 +255,40 @@ const AIChatbot: React.FC = () => {
 
     const blob = new Blob([content], { type: mimeType });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
 
-    toast.success('Conversation exportée avec succès');
+    try {
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      link.setAttribute('rel', 'noopener');
+      link.setAttribute('target', '_blank');
+      // Some browsers require the link to be in the DOM
+      document.body.appendChild(link);
+      link.click();
+      // Delay revocation to ensure download starts
+      setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }, 1200);
+      toast.success('Conversation exportée avec succès');
+    } catch (err) {
+      console.error('Export failed, trying fallback:', err);
+      try {
+        // Fallback: open in a new tab
+        window.open(url, '_blank', 'noopener,noreferrer');
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        toast.success('Aperçu de la conversation ouvert dans un nouvel onglet');
+      } catch (err2) {
+        console.error('Fallback failed:', err2);
+        // Last resort: copy to clipboard (TXT only)
+        if (format === 'txt' && navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(content);
+          toast.success('Conversation copiée dans le presse-papiers');
+        } else {
+          toast.error("Export impossible dans cet environnement");
+        }
+      }
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
