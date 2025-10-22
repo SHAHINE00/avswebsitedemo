@@ -29,7 +29,7 @@ chown -R appuser:appuser $APP_DIR
 
 # Pull latest code and build as appuser
 echo "📥 Pulling latest code and building..."
-sudo -u appuser bash -c "
+sudo -u appuser bash -lc "
     cd $APP_DIR
     git fetch origin && git reset --hard origin/main
     
@@ -42,7 +42,8 @@ sudo -u appuser bash -c "
     npm ci
     
     export NODE_ENV=production
-    npm run build
+    export PATH=\"\$PATH:$APP_DIR/node_modules/.bin\"
+    npx vite build
 "
 
 # Set correct permissions for dist
