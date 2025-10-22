@@ -21,7 +21,7 @@ const StandardPageLayout: React.FC<StandardPageLayoutProps> = ({
       <div className={`${className} flex flex-col`}>
         {showNavbar && <Navbar />}
         
-        <main className="flex-grow">
+        <main className={`flex-grow ${showNavbar ? 'pt-16 xs:pt-18 sm:pt-20 lg:pt-22 xl:pt-24' : ''}`}>
           {children}
         </main>
         
