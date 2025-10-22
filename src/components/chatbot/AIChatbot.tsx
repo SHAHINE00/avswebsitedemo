@@ -69,6 +69,107 @@ const AIChatbot: React.FC = () => {
     }
   }, [isOpen]);
 
+  const streamChat = async (userMsg: Message) => {
+    const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+    
+    try {
+      const resp = await fetch(CHAT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ 
+          messages: [{ role: 'user', content: userMsg.content }] 
+        }),
+      });
+
+      if (!resp.ok) {
+        const errorData = await resp.json().catch(() => ({}));
+        
+        if (resp.status === 429) {
+          toast.error('⏳ Trop de requêtes. Veuillez patienter quelques instants.');
+        } else if (resp.status === 402) {
+          toast.error('💳 Crédits insuffisants. Contactez l\'administrateur.');
+        } else {
+          toast.error('🔧 Service AI temporairement indisponible.');
+        }
+        
+        setMessages((prev) => prev.filter((m) => m.id !== userMsg.id));
+        setIsLoading(false);
+        return;
+      }
+
+      if (!resp.body) {
+        throw new Error('No response body');
+      }
+
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let textBuffer = '';
+      let streamDone = false;
+      let assistantContent = '';
+      const assistantId = crypto.randomUUID();
+
+      while (!streamDone) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        textBuffer += decoder.decode(value, { stream: true });
+
+        let newlineIndex: number;
+        while ((newlineIndex = textBuffer.indexOf('\n')) !== -1) {
+          let line = textBuffer.slice(0, newlineIndex);
+          textBuffer = textBuffer.slice(newlineIndex + 1);
+
+          if (line.endsWith('\r')) line = line.slice(0, -1);
+          if (line.startsWith(':') || line.trim() === '') continue;
+          if (!line.startsWith('data: ')) continue;
+
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === '[DONE]') {
+            streamDone = true;
+            break;
+          }
+
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = parsed.choices?.[0]?.delta?.content as string | undefined;
+            
+            if (content) {
+              assistantContent += content;
+              
+              setMessages((prev) => {
+                const lastMsg = prev[prev.length - 1];
+                if (lastMsg?.role === 'assistant' && lastMsg.id === assistantId) {
+                  return prev.map((m) => 
+                    m.id === assistantId ? { ...m, content: assistantContent } : m
+                  );
+                }
+                return [...prev, {
+                  id: assistantId,
+                  role: 'assistant' as const,
+                  content: assistantContent,
+                  timestamp: new Date(),
+                }];
+              });
+            }
+          } catch {
+            textBuffer = line + '\n' + textBuffer;
+            break;
+          }
+        }
+      }
+
+      setIsLoading(false);
+    } catch (err) {
+      console.error('Streaming error:', err);
+      toast.error('❌ Erreur de connexion au service AI.');
+      setMessages((prev) => prev.filter((m) => m.id !== userMsg.id));
+      setIsLoading(false);
+    }
+  };
+
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
 
@@ -83,56 +184,7 @@ const AIChatbot: React.FC = () => {
     setInput('');
     setIsLoading(true);
 
-    // Client-side soft timeout: show loading message after 10s
-    const softTimeoutId = setTimeout(() => {
-      toast.message('⏳ Le modèle est en train de se charger (première requête après inactivité)…', {
-        duration: 5000,
-      });
-    }, 10000);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('ollama-chat', {
-        body: { message: userMessage.content },
-      });
-
-      clearTimeout(softTimeoutId);
-
-      if (error) {
-        console.error('Chat error:', error);
-        
-        // Handle specific error types with clear messages
-        if (error.message?.includes('TIMEOUT') || error.message?.includes('504')) {
-          toast.error('⏱️ Le modèle se réveille. Réessayez dans quelques secondes.');
-        } else if (error.message?.includes('RATE_LIMIT') || error.message?.includes('429')) {
-          toast.error('⏳ Trop de requêtes. Veuillez patienter quelques instants.');
-        } else if (error.message?.includes('PAYMENT_REQUIRED') || error.message?.includes('402')) {
-          toast.error('💳 Crédits insuffisants. Contactez l\'administrateur.');
-        } else if (error.message?.includes('GATEWAY_ERROR') || error.message?.includes('503')) {
-          toast.error('🔧 Service AI temporairement indisponible. Réessayez dans un instant.');
-        } else {
-          toast.error('❌ Connexion impossible. Vérifiez votre réseau.');
-        }
-        
-        setMessages((prev) => prev.filter((m) => m.id !== userMessage.id));
-        return;
-      }
-
-      const assistantMessage: Message = {
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: data.message || data.response || 'Aucune réponse reçue.',
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, assistantMessage]);
-    } catch (err) {
-      clearTimeout(softTimeoutId);
-      console.error('Unexpected error:', err);
-      toast.error('❌ Une erreur inattendue est survenue.');
-      setMessages((prev) => prev.filter((m) => m.id !== userMessage.id));
-    } finally {
-      setIsLoading(false);
-    }
+    await streamChat(userMessage);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
