@@ -31,6 +31,7 @@ export interface CourseMaterial {
   download_count: number;
   is_public: boolean;
   created_at: string;
+  class_id: string | null;
 }
 
 export interface CourseAnnouncement {
@@ -90,11 +91,30 @@ export const useCourseContent = () => {
 
   const fetchMaterials = async (courseId: string) => {
     try {
-      const { data, error } = await supabase
+      if (!user) return;
+
+      // Get student's class enrollment
+      const { data: enrollment } = await supabase
+        .from('course_enrollments')
+        .select('class_id')
+        .eq('user_id', user.id)
+        .eq('course_id', courseId)
+        .maybeSingle();
+
+      let query = supabase
         .from('course_materials')
         .select('*')
-        .eq('course_id', courseId)
-        .order('created_at', { ascending: false });
+        .eq('course_id', courseId);
+
+      // Filter by class: show class-specific + course-wide materials
+      if (enrollment?.class_id) {
+        query = query.or(`class_id.eq.${enrollment.class_id},class_id.is.null`);
+      } else {
+        // No class assignment: only show course-wide materials
+        query = query.is('class_id', null);
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) throw error;
       setMaterials(data || []);

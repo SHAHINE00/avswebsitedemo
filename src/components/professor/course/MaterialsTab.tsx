@@ -5,8 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import { Plus, Trash2, Download, FileText } from 'lucide-react';
 import { useProfessorMaterials } from '@/hooks/useProfessorMaterials';
+import { useCourseClasses } from '@/hooks/useCourseClasses';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 
@@ -16,16 +19,19 @@ interface MaterialsTabProps {
 
 const MaterialsTab: React.FC<MaterialsTabProps> = ({ courseId }) => {
   const { materials, loading, fetchMaterials, uploadMaterial, deleteMaterial } = useProfessorMaterials(courseId);
+  const { classes, fetchClasses } = useCourseClasses();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    isPublic: false
+    isPublic: false,
+    classId: 'all'
   });
 
   useEffect(() => {
     fetchMaterials();
+    fetchClasses(courseId);
   }, [courseId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -37,7 +43,8 @@ const MaterialsTab: React.FC<MaterialsTabProps> = ({ courseId }) => {
       formData.title,
       formData.description,
       undefined,
-      formData.isPublic
+      formData.isPublic,
+      formData.classId === 'all' ? undefined : formData.classId
     );
     
     if (success) {
@@ -46,7 +53,8 @@ const MaterialsTab: React.FC<MaterialsTabProps> = ({ courseId }) => {
       setFormData({
         title: '',
         description: '',
-        isPublic: false
+        isPublic: false,
+        classId: 'all'
       });
     }
   };
@@ -106,6 +114,22 @@ const MaterialsTab: React.FC<MaterialsTabProps> = ({ courseId }) => {
                   required
                 />
               </div>
+              <div>
+                <Label>Partager avec</Label>
+                <Select value={formData.classId} onValueChange={(value) => setFormData({ ...formData, classId: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sélectionner..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tout le cours</SelectItem>
+                    {classes.map((cls) => (
+                      <SelectItem key={cls.id} value={cls.id}>
+                        {cls.class_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="public">Document public</Label>
                 <Switch
@@ -133,6 +157,7 @@ const MaterialsTab: React.FC<MaterialsTabProps> = ({ courseId }) => {
                 <TableHead>Titre</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Taille</TableHead>
+                <TableHead>Portée</TableHead>
                 <TableHead>Visibilité</TableHead>
                 <TableHead>Téléchargements</TableHead>
                 <TableHead>Date</TableHead>
@@ -150,6 +175,15 @@ const MaterialsTab: React.FC<MaterialsTabProps> = ({ courseId }) => {
                   </TableCell>
                   <TableCell>{material.file_type.split('/')[1]?.toUpperCase() || 'File'}</TableCell>
                   <TableCell>{formatFileSize(material.file_size)}</TableCell>
+                  <TableCell>
+                    {material.class_id ? (
+                      <Badge variant="secondary">
+                        {classes.find(c => c.id === material.class_id)?.class_name || 'Classe'}
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline">Cours complet</Badge>
+                    )}
+                  </TableCell>
                   <TableCell>{material.is_public ? 'Public' : 'Privé'}</TableCell>
                   <TableCell>{material.download_count}</TableCell>
                   <TableCell>{new Date(material.created_at).toLocaleDateString()}</TableCell>
