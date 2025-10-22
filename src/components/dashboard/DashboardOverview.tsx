@@ -88,47 +88,6 @@ const DashboardOverview = ({ enrollments, appointments }: DashboardOverviewProps
             )}
           </CardContent>
         </Card>
-
-        {/* Upcoming Appointments */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Prochains rendez-vous</CardTitle>
-            <CardDescription>
-              Vos consultations programmées
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {appointments.filter(a => a.status !== 'cancelled').length === 0 ? (
-              <div className="text-center py-6">
-                <Calendar className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                <p className="text-gray-500 mb-3">
-                  Aucun rendez-vous programmé.
-                </p>
-                <Button size="sm" asChild>
-                  <Link to="/appointment">Prendre rendez-vous</Link>
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {appointments.filter(a => a.status !== 'cancelled').slice(0, 3).map((appointment) => (
-                  <div key={appointment.id} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div>
-                      <p className="font-medium">{appointment.subject}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {new Date(appointment.appointment_date).toLocaleDateString()} à {appointment.appointment_time}
-                      </p>
-                    </div>
-                    <Badge variant={
-                      appointment.status === 'confirmed' ? 'default' : 'secondary'
-                    }>
-                      {appointment.status === 'confirmed' ? 'Confirmé' : 'En attente'}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
       </div>
 
       {/* Profile Sidebar */}
