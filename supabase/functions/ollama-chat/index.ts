@@ -127,7 +127,7 @@ serve(async (req) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'llama3.2',
+        model: 'mistral:latest',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: sanitizedMessage }
@@ -169,7 +169,7 @@ serve(async (req) => {
         user_role: userRole,
         user_message: sanitizedMessage,
         assistant_message: assistantMessage,
-        model_used: 'llama3.2',
+        model_used: 'mistral:latest',
         tokens_used: (sanitizedMessage.length + assistantMessage.length) / 4
       });
     }
