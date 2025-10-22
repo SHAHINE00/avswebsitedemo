@@ -47,33 +47,81 @@ export default function OllamaChatbot() {
     setInput('');
     setIsLoading(true);
 
+    const assistantMessageId = crypto.randomUUID();
+    const assistantMessage: Message = {
+      id: assistantMessageId,
+      role: 'assistant',
+      content: '',
+      timestamp: new Date(),
+    };
+
+    setMessages(prev => [...prev, assistantMessage]);
+
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
-      const { data, error } = await supabase.functions.invoke('ollama-chat', {
-        body: { message: userMessage.content },
-        headers: session?.access_token ? {
-          Authorization: `Bearer ${session.access_token}`
-        } : {}
-      });
+      const response = await fetch(
+        'https://nkkalmyhxtuisjdjmdew.supabase.co/functions/v1/ollama-chat',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token || ''}`,
+          },
+          body: JSON.stringify({ message: userMessage.content }),
+        }
+      );
 
-      if (error) throw error;
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
 
-      const assistantMessage: Message = {
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: data.message,
-        timestamp: new Date(),
-      };
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
 
-      setMessages(prev => [...prev, assistantMessage]);
+      if (!reader) throw new Error('No response stream');
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (!line.trim() || !line.startsWith('data: ')) continue;
+          
+          try {
+            const jsonStr = line.replace(/^data: /, '');
+            const data = JSON.parse(jsonStr);
+            
+            if (data.message?.content) {
+              setMessages(prev =>
+                prev.map(msg =>
+                  msg.id === assistantMessageId
+                    ? { ...msg, content: msg.content + data.message.content }
+                    : msg
+                )
+              );
+            }
+          } catch (parseError) {
+            console.error('Parse error:', parseError);
+          }
+        }
+      }
     } catch (error: any) {
       console.error('Error sending message:', error);
       
       let errorMessage = 'Désolé, une erreur est survenue.';
       if (error.message?.includes('429')) {
         errorMessage = 'Trop de requêtes. Veuillez patienter.';
+      } else if (error.message?.includes('408')) {
+        errorMessage = 'Délai dépassé. Réessayez dans quelques secondes.';
       }
+      
+      setMessages(prev => prev.filter(msg => msg.id !== assistantMessageId));
       
       toast({
         title: 'Erreur',

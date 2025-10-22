@@ -51,37 +51,11 @@ async function determineUserRole(supabaseClient: any, userId: string | null): Pr
 }
 
 function buildSystemPrompt(role: 'admin' | 'professor' | 'student' | 'visitor'): string {
-  const basePrompt = `Tu es un assistant virtuel intelligent pour AVS.ma, une plateforme éducative marocaine. 
-Tu réponds en français de manière professionnelle, claire et concise.`;
-
   const rolePrompts = {
-    admin: `${basePrompt}
-Tu assistes un administrateur. Tu peux répondre aux questions sur:
-- Gestion des utilisateurs et des cours
-- Statistiques et analyses de la plateforme
-- Configuration système et sécurité
-- Opérations administratives`,
-    
-    professor: `${basePrompt}
-Tu assistes un professeur. Tu peux aider avec:
-- Gestion de cours et de contenus
-- Suivi des étudiants et présences
-- Création d'évaluations et de notes
-- Organisation des sessions de cours`,
-    
-    student: `${basePrompt}
-Tu assistes un étudiant. Tu peux aider avec:
-- Questions sur les cours et le contenu
-- Suivi de progression et calendrier
-- Informations sur les certifications
-- Questions générales sur la plateforme`,
-    
-    visitor: `${basePrompt}
-Tu assistes un visiteur. Tu peux fournir:
-- Informations générales sur AVS.ma
-- Description des cours disponibles
-- Procédure d'inscription
-- Informations de contact`
+    admin: "Assistant AVS.ma pour administrateurs. Réponses claires et concises en français.",
+    professor: "Assistant AVS.ma pour professeurs. Aide à la gestion des cours et étudiants.",
+    student: "Assistant AVS.ma pour étudiants. Aide à l'apprentissage et aux questions sur les cours.",
+    visitor: "Assistant AVS.ma. Informations sur la plateforme éducative marocaine."
   };
 
   return rolePrompts[role];
@@ -127,51 +101,27 @@ serve(async (req) => {
     const userRole = await determineUserRole(supabase, userId);
     const systemPrompt = buildSystemPrompt(userRole);
 
-    // Add 20s timeout to prevent hanging on cold starts
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 20000);
-
-    let ollamaResponse;
-    try {
-      ollamaResponse = await fetch('https://ai.avs.ma/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: controller.signal,
-        body: JSON.stringify({
-          model: 'mistral:latest',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: sanitizedMessage }
-          ],
-          stream: false,
-          keep_alive: '30m',
-          options: {
-            num_predict: 256,
-            temperature: 0.3
-          }
-        })
-      });
-      clearTimeout(timeoutId);
-    } catch (fetchError: any) {
-      clearTimeout(timeoutId);
-      
-      if (fetchError.name === 'AbortError') {
-        console.log('⏱️ Request timeout after 20s (model cold start)');
-        return new Response(
-          JSON.stringify({ 
-            error: 'TIMEOUT', 
-            message: 'Le modèle se réveille, réessayez dans quelques secondes.' 
-          }),
-          { status: 504, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-      
-      throw fetchError;
-    }
+    const ollamaResponse = await fetch('https://ai.avs.ma/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'mistral:latest',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: sanitizedMessage }
+        ],
+        stream: true,
+        options: {
+          num_predict: 256,
+          temperature: 0.3,
+          top_p: 0.9
+        }
+      })
+    });
 
     if (!ollamaResponse.ok) {
       const errorText = await ollamaResponse.text().catch(() => 'Unknown error');
-      console.error(`Ollama gateway error: ${ollamaResponse.status} - ${errorText}`);
+      console.error(`❌ Ollama gateway error: ${ollamaResponse.status} - ${errorText}`);
       
       if (ollamaResponse.status === 429) {
         return new Response(
@@ -193,27 +143,17 @@ serve(async (req) => {
       );
     }
 
-    const data = await ollamaResponse.json();
-    const assistantMessage = data.message?.content || 'Désolé, je n\'ai pas pu générer une réponse.';
-    
-    const t1 = Date.now();
-    console.log(`✅ Response generated in ${t1 - t0}ms`);
+    console.log(`✅ Streaming started in ${Date.now() - t0}ms`);
 
-    if (userId) {
-      await supabase.from('chat_logs').insert({
-        user_id: userId,
-        user_role: userRole,
-        user_message: sanitizedMessage,
-        assistant_message: assistantMessage,
-        model_used: 'mistral:latest',
-        tokens_used: (sanitizedMessage.length + assistantMessage.length) / 4
-      });
-    }
-
-    return new Response(
-      JSON.stringify({ message: assistantMessage }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    // Stream response back to client
+    return new Response(ollamaResponse.body, {
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive'
+      }
+    });
 
   } catch (error) {
     console.error('Error in ollama-chat:', error);
