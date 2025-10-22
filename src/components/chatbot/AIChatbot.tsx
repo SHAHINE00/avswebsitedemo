@@ -236,27 +236,27 @@ const AIChatbot: React.FC = () => {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-24 sm:bottom-6 right-4 sm:right-6 h-14 w-14 rounded-full shadow-lg z-[100000]"
+          className="fixed bottom-24 sm:bottom-6 right-4 sm:right-6 h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg z-[100000] touch-manipulation active:scale-95 transition-transform"
           size="icon"
           aria-label="Ouvrir le chat assistant"
         >
-          <MessageCircle className="h-6 w-6" />
+          <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" />
         </Button>
       )}
 
       {/* Chat window */}
       {isOpen && (
-        <Card className="fixed bottom-24 sm:bottom-6 right-4 sm:right-6 w-[min(24rem,calc(100vw-1.5rem))] sm:w-96 h-[min(75vh,36rem)] sm:h-[32rem] flex flex-col shadow-2xl z-[100000] animate-in slide-in-from-bottom-5 overflow-hidden">
+        <Card className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 sm:w-96 sm:h-[32rem] flex flex-col shadow-2xl z-[100000] animate-in slide-in-from-bottom-8 sm:slide-in-from-bottom-5 duration-300 overflow-hidden sm:rounded-lg landscape:h-screen">
           {/* Header with curved wave */}
-          <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white pb-10">
-            <div className="flex items-center justify-between p-4">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center ring-2 ring-white/20">
-                  <MessageCircle className="h-5 w-5" />
+          <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white pb-6 sm:pb-10 landscape:pb-4 safe-top">
+            <div className="flex items-center justify-between p-3 sm:p-4 landscape:p-2">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center ring-2 ring-white/20">
+                  <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <p className="text-xs text-gray-300">Chat with</p>
+                    <p className="text-xs text-gray-300 hidden xs:inline">Chat with</p>
                     {user && (
                       <Badge 
                         variant="secondary" 
@@ -266,7 +266,7 @@ const AIChatbot: React.FC = () => {
                       </Badge>
                     )}
                   </div>
-                  <h3 className="font-semibold text-white">Assistant AVS</h3>
+                  <h3 className="font-semibold text-sm sm:text-base text-white">Assistant AVS</h3>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -274,15 +274,15 @@ const AIChatbot: React.FC = () => {
                   onClick={() => setIsOpen(false)}
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-white hover:bg-white/10"
+                  className="h-9 w-9 sm:h-8 sm:w-8 text-white hover:bg-white/10 touch-manipulation active:scale-95 transition-transform"
                   aria-label="Fermer le chat"
                 >
-                  <X className="h-4 w-4" />
+                  <X className="h-5 w-5 sm:h-4 sm:w-4" />
                 </Button>
               </div>
             </div>
-            <div className="px-4 pb-4 relative z-10">
-              <p className="text-sm text-gray-200">Nous sommes en ligne !</p>
+            <div className="px-3 sm:px-4 pb-2 sm:pb-4 landscape:pb-1 relative z-10">
+              <p className="text-xs sm:text-sm text-gray-200">Nous sommes en ligne !</p>
             </div>
             {/* Curved wave SVG */}
             <svg
@@ -299,8 +299,8 @@ const AIChatbot: React.FC = () => {
           </div>
 
           {/* Messages */}
-          <ScrollArea className="flex-1 p-4 bg-gray-50 dark:bg-gray-950">
-            <div className="space-y-4">
+          <ScrollArea className="flex-1 p-3 sm:p-4 landscape:p-2 bg-gray-50 dark:bg-gray-950 safe-bottom">
+            <div className="space-y-3 sm:space-y-4">
               {messages.length === 0 && (
                 <>
                   <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm">
@@ -312,18 +312,18 @@ const AIChatbot: React.FC = () => {
                   {/* Quick Reply Suggestions */}
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 px-2">
-                      <Sparkles className="h-4 w-4 text-muted-foreground" />
+                      <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
                       <p className="text-xs text-muted-foreground font-medium">Suggestions rapides</p>
                     </div>
-                    <div className="grid grid-cols-1 gap-2">
+                    <div className="grid grid-cols-1 xs:grid-cols-2 gap-2">
                       {getQuickReplies(displayRole).map((reply, idx) => (
                         <Button
                           key={idx}
                           onClick={() => handleQuickReply(reply)}
                           variant="outline"
-                          className="justify-start text-left h-auto py-3 px-4 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 border-gray-200 dark:border-gray-700 text-sm font-normal text-gray-700 dark:text-gray-300"
+                          className="justify-start text-left h-auto py-2.5 sm:py-3 px-3 sm:px-4 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 border-gray-200 dark:border-gray-700 text-xs sm:text-sm font-normal text-gray-700 dark:text-gray-300 touch-manipulation active:scale-[0.98] transition-transform"
                         >
-                          {reply}
+                          <span className="truncate">{reply}</span>
                         </Button>
                       ))}
                     </div>
@@ -342,7 +342,7 @@ const AIChatbot: React.FC = () => {
           </ScrollArea>
 
           {/* Input */}
-          <div className="p-4 border-t bg-white dark:bg-gray-900">
+          <div className="p-3 sm:p-4 landscape:p-2 border-t bg-white dark:bg-gray-900 safe-bottom">
             <div className="flex gap-2 items-end">
               <Textarea
                 ref={textareaRef}
@@ -350,17 +350,18 @@ const AIChatbot: React.FC = () => {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Écrivez votre message..."
-                className="min-h-[50px] max-h-[120px] resize-none rounded-2xl border-gray-200 dark:border-gray-700"
+                className="min-h-[40px] sm:min-h-[50px] landscape:min-h-[36px] max-h-[100px] sm:max-h-[120px] resize-none rounded-2xl border-gray-200 dark:border-gray-700 text-sm sm:text-base touch-manipulation"
                 disabled={isLoading}
+                style={{ fontSize: '16px' }}
               />
               <Button
                 onClick={() => sendMessage()}
                 disabled={!input.trim() || isLoading}
                 size="icon"
-                className="h-12 w-12 rounded-full bg-blue-600 hover:bg-blue-700 shrink-0"
+                className="h-10 w-10 sm:h-12 sm:w-12 landscape:h-9 landscape:w-9 rounded-full bg-blue-600 hover:bg-blue-700 shrink-0 touch-manipulation active:scale-95 transition-transform"
                 aria-label="Envoyer le message"
               >
-                <Send className="h-5 w-5" />
+                <Send className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </div>
           </div>
