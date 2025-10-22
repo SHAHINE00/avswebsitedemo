@@ -37,6 +37,38 @@ function extractKeywords(text: string): string[] {
     .slice(0, 10);
 }
 
+function isOffTopicQuery(message: string): boolean {
+  const offTopicKeywords = [
+    // Travel & Tourism
+    'hôtel', 'hotel', 'restaurant', 'voyage', 'tourisme', 'marrakech', 'casablanca', 'rabat',
+    'réservation', 'booking', 'vol', 'avion', 'train', 'taxi',
+    
+    // Weather & News
+    'météo', 'weather', 'actualité', 'news', 'sport', 'football', 'match',
+    
+    // Food & Health
+    'recette', 'cuisine', 'santé', 'médecin', 'maladie', 'pharmacie',
+    
+    // Entertainment
+    'film', 'série', 'musique', 'jeu', 'game', 'concert',
+    
+    // Shopping & Services
+    'shopping', 'magasin', 'boutique', 'prix', 'acheter',
+    
+    // General knowledge unrelated to education
+    'capitale', 'président', 'roi'
+  ];
+  
+  const lowerMessage = message.toLowerCase();
+  const hasOffTopicKeyword = offTopicKeywords.some(kw => lowerMessage.includes(kw));
+  
+  // Check if message mentions AVS, education, or platform terms
+  const hasEducationContext = /\b(avs|cours|formation|étudiant|professeur|certificat|inscription|plateforme|éducation|apprendre|enseigner|leçon|module|quiz|examen)\b/i.test(message);
+  
+  // If has off-topic keyword AND no education context, likely off-topic
+  return hasOffTopicKeyword && !hasEducationContext;
+}
+
 async function getRelevantContext(supabaseClient: any, userMessage: string, userRole: string): Promise<string> {
   try {
     const keywords = extractKeywords(userMessage);
@@ -87,6 +119,35 @@ function buildSystemPrompt(role: 'admin' | 'professor' | 'student' | 'visitor', 
 
   return `${rolePrompts[role]}
 
+⛔ RÈGLE CRITIQUE - DOMAINE STRICTEMENT LIMITÉ:
+Tu es UNIQUEMENT un assistant pour la plateforme AVS.ma (African Virtual School).
+AVS.ma est une plateforme éducative marocaine spécialisée dans l'IA, Tech, et formations professionnelles.
+
+TU NE DOIS RÉPONDRE QU'AUX QUESTIONS SUR:
+✅ Les cours et formations disponibles sur AVS.ma (IA, Data Science, Cybersécurité, etc.)
+✅ Les inscriptions, certifications, et progression des étudiants
+✅ Les fonctionnalités de la plateforme (création de cours, gestion, tableau de bord)
+✅ Les informations pratiques (tarifs, contact, support technique AVS.ma)
+✅ L'utilisation de la plateforme selon le rôle (admin/professeur/étudiant)
+
+❌ REFUSE POLIMENT TOUTE QUESTION HORS SUJET:
+- Hôtels, restaurants, voyage → Refuse poliment
+- Météo, actualités, sport → Refuse poliment
+- Santé, cuisine, divertissement → Refuse poliment
+- Shopping, services généraux → Refuse poliment
+- Questions générales sans lien avec éducation/plateforme → Redirige vers AVS.ma
+
+RÉPONSE TYPE POUR QUESTIONS HORS SUJET:
+"Désolé, je suis l'assistant AVS.ma et je ne peux répondre qu'aux questions concernant notre plateforme éducative. 📚
+
+Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifiantes**, ou l'**utilisation de la plateforme**, je suis là pour vous aider!
+
+**Puis-je vous renseigner sur:**
+- Les formations disponibles
+- Le processus d'inscription
+- Les fonctionnalités de la plateforme
+- Votre progression ou vos cours"
+
 ${context ? `CONTEXTE PLATEFORME:\n${context}\n` : ''}
 
 RÈGLES DE FORMATAGE IMPORTANTES:
@@ -111,7 +172,7 @@ RÈGLES GÉNÉRALES:
 - Réponds en français, clair et concis (max 200 mots)
 - Base tes réponses sur le CONTEXTE fourni
 - Si tu ne sais pas, recommande de contacter support@avs.ma
-- Reste dans le domaine AVS.ma (éducation IA/Tech au Maroc)
+- Reste strictement dans le domaine AVS.ma (plateforme éducative IA/Tech au Maroc)
 
 ${historyLength > 0 ? `HISTORIQUE: ${historyLength} messages dans cette conversation` : ''}`;
 }
@@ -150,6 +211,40 @@ serve(async (req) => {
         JSON.stringify({ error: 'Message invalide' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
+    }
+
+    // Pre-filter off-topic queries
+    if (isOffTopicQuery(sanitizedMessage)) {
+      const offTopicResponse = `Désolé, je suis l'assistant AVS.ma et je ne peux répondre qu'aux questions concernant notre plateforme éducative. 📚
+
+Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifiantes**, ou l'**utilisation de la plateforme**, je suis là pour vous aider!
+
+**Puis-je vous renseigner sur:**
+- Les formations disponibles
+- Le processus d'inscription
+- Les fonctionnalités de la plateforme
+- Votre progression ou vos cours`;
+
+      // Get or create session for saving messages
+      let currentSessionId = sessionId;
+      if (!currentSessionId) {
+        const { data: newSession } = await supabase
+          .from('chat_sessions')
+          .insert({ user_id: userId, visitor_id: visitorId })
+          .select()
+          .single();
+        currentSessionId = newSession?.id;
+      }
+
+      // Save both messages
+      await supabase.from('chat_messages').insert([
+        { session_id: currentSessionId, role: 'user', content: sanitizedMessage },
+        { session_id: currentSessionId, role: 'assistant', content: offTopicResponse }
+      ]);
+
+      return new Response(JSON.stringify({ message: offTopicResponse, sessionId: currentSessionId }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
 
     const t0 = Date.now();

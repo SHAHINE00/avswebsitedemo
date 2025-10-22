@@ -280,6 +280,11 @@ export default function OllamaChatbot() {
                 <span>Les certifications disponibles</span>
               </li>
             </ul>
+            <div className="mt-6 pt-4 border-t border-border max-w-sm mx-auto">
+              <p className="text-xs text-muted-foreground">
+                💡 <strong>Note:</strong> Je suis spécialisé dans AVS.ma uniquement. Je ne peux pas aider avec des questions sur les hôtels, restaurants, météo, etc.
+              </p>
+            </div>
           </div>
         ) : (
           <>
