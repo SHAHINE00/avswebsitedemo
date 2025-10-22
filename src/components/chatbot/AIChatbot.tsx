@@ -84,18 +84,24 @@ const AIChatbot: React.FC = () => {
     setIsLoading(true);
 
     try {
-    const { data, error } = await supabase.functions.invoke('ollama-chat', {
-      body: { message: userMessage.content },
+      const { data, error } = await supabase.functions.invoke('ollama-chat', {
+        body: { message: userMessage.content },
       });
 
       if (error) {
-        console.error('Chat error details:', error);
-        if (error.message?.includes('rate limit')) {
-          toast.error('Trop de messages envoyés. Veuillez patienter.');
+        console.error('Chat error:', error);
+        
+        // Handle specific error types
+        if (error.message?.includes('RATE_LIMIT') || error.message?.includes('429')) {
+          toast.error('⏳ Trop de requêtes. Veuillez patienter quelques instants.');
+        } else if (error.message?.includes('PAYMENT_REQUIRED') || error.message?.includes('402')) {
+          toast.error('💳 Crédits insuffisants. Contactez l\'administrateur.');
+        } else if (error.message?.includes('GATEWAY_ERROR') || error.message?.includes('503')) {
+          toast.error('🔧 Service AI temporairement indisponible. Réessayez dans un instant.');
         } else {
-          toast.error('Erreur de connexion. Veuillez réessayer.');
+          toast.error('❌ Connexion impossible. Vérifiez votre réseau.');
         }
-        // Remove user message on error
+        
         setMessages((prev) => prev.filter((m) => m.id !== userMessage.id));
         return;
       }
@@ -103,14 +109,14 @@ const AIChatbot: React.FC = () => {
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: data.response,
+        content: data.message || data.response || 'Aucune réponse reçue.',
         timestamp: new Date(),
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (err) {
-      console.error('Chat error:', err);
-      toast.error('Une erreur est survenue.');
+      console.error('Unexpected error:', err);
+      toast.error('❌ Une erreur inattendue est survenue.');
       setMessages((prev) => prev.filter((m) => m.id !== userMessage.id));
     } finally {
       setIsLoading(false);

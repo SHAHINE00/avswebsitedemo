@@ -137,7 +137,27 @@ serve(async (req) => {
     });
 
     if (!ollamaResponse.ok) {
-      throw new Error(`Ollama error: ${ollamaResponse.status}`);
+      const errorText = await ollamaResponse.text().catch(() => 'Unknown error');
+      console.error(`Ollama gateway error: ${ollamaResponse.status} - ${errorText}`);
+      
+      if (ollamaResponse.status === 429) {
+        return new Response(
+          JSON.stringify({ error: 'RATE_LIMIT', message: 'Trop de requêtes. Veuillez réessayer dans quelques instants.' }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      if (ollamaResponse.status === 402) {
+        return new Response(
+          JSON.stringify({ error: 'PAYMENT_REQUIRED', message: 'Crédits insuffisants. Contactez l\'administrateur.' }),
+          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      return new Response(
+        JSON.stringify({ error: 'GATEWAY_ERROR', message: 'Service AI temporairement indisponible.' }),
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const data = await ollamaResponse.json();
