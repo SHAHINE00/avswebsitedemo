@@ -483,7 +483,7 @@ const AIChatbot = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-4 sm:right-6 w-full sm:w-[450px] h-[650px] max-h-[85vh] bg-background border rounded-lg shadow-2xl flex flex-col z-[9999] mx-4 sm:mx-0">
+        <div className="fixed bottom-24 left-4 right-4 sm:right-6 sm:left-auto w-auto sm:w-[450px] h-[80vh] sm:h-[650px] max-h-[90vh] bg-background border rounded-lg shadow-2xl flex flex-col z-[9999]">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-academy-blue to-academy-purple">
             <div className="flex items-center gap-3">
@@ -502,13 +502,13 @@ const AIChatbot = () => {
             <div className="flex items-center gap-2">
               {/* Language Selector */}
               <Select value={language} onValueChange={handleLanguageChange}>
-                <SelectTrigger title="Changer de langue / Change language" className="w-16 h-8 bg-white/20 border-white/30 text-white text-xs">
+                <SelectTrigger title="Changer de langue / Change language" className="w-24 h-10 sm:w-28 sm:h-12 bg-white/20 border-white/30 text-white text-xl sm:text-2xl leading-none">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="z-[10000] bg-background text-foreground border border-border shadow-lg">
-                  <SelectItem value="fr" className="text-lg">🇫🇷 FR</SelectItem>
-                  <SelectItem value="ar" className="text-lg">🇲🇦 AR</SelectItem>
-                  <SelectItem value="en" className="text-lg">🇬🇧 EN</SelectItem>
+                  <SelectItem value="fr" className="text-2xl leading-none">🇫🇷 FR</SelectItem>
+                  <SelectItem value="ar" className="text-2xl leading-none">🇲🇦 AR</SelectItem>
+                  <SelectItem value="en" className="text-2xl leading-none">🇬🇧 EN</SelectItem>
                 </SelectContent>
               </Select>
 
