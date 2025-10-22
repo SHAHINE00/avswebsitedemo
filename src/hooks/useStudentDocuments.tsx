@@ -268,6 +268,39 @@ export const useStudentDocuments = (contextUserId?: string) => {
 
       if (error) throw error;
 
+      // Create notification for student
+      try {
+        await supabase.rpc('create_notification', {
+          p_user_id: studentId,
+          p_title: 'Nouveau document de votre professeur',
+          p_message: `Vous avez reçu un nouveau document: ${documentName || file.name}`,
+          p_type: 'document',
+          p_action_url: '/student?tab=documents'
+        });
+      } catch (notifError) {
+        console.error('Error creating notification:', notifError);
+        // Don't fail the operation if notification fails
+      }
+
+      // Log admin activity for tracking
+      try {
+        await supabase.rpc('log_admin_activity', {
+          p_action: 'professor_document_upload',
+          p_entity_type: 'student_documents',
+          p_entity_id: data.id,
+          p_details: {
+            document_type: documentType,
+            document_name: documentName || file.name,
+            student_id: studentId,
+            file_size: file.size,
+            professor_note: professorNote
+          }
+        });
+      } catch (logError) {
+        console.error('Error logging activity:', logError);
+        // Don't fail the operation if logging fails
+      }
+
       // Log the upload
       await supabase.rpc('log_storage_access', {
         p_bucket_id: 'student-documents',

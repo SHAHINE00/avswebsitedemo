@@ -12,6 +12,7 @@ import AppointmentManagement from '@/components/admin/dashboard/AppointmentManag
 import { SecurityTestSuite } from './SecurityTestSuite';
 import ProfessorManagement from './ProfessorManagement';
 import { CourseClassManagement } from './CourseClassManagement';
+import { DocumentActivityTracker } from '@/components/admin/dashboard/DocumentActivityTracker';
 import type { Course } from '@/hooks/useCourses';
 
 // Lazy load heavy components
@@ -50,6 +51,7 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
         <TabsTrigger value="courses" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Cours</TabsTrigger>
         <TabsTrigger value="classes" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Classes</TabsTrigger>
         <TabsTrigger value="users" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Utilisateurs</TabsTrigger>
+        <TabsTrigger value="documents" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Documents</TabsTrigger>
         <TabsTrigger value="subscribers" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Abonnements</TabsTrigger>
         <TabsTrigger value="appointments" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Rendez-vous</TabsTrigger>
         <TabsTrigger value="sections" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Visibilité</TabsTrigger>
@@ -87,6 +89,10 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
 
       <TabsContent value="users">
         <UserManagementSection />
+      </TabsContent>
+
+      <TabsContent value="documents">
+        <DocumentActivityTracker />
       </TabsContent>
 
       <TabsContent value="subscribers">

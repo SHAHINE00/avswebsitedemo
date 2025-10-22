@@ -82,6 +82,8 @@ export const useBulkDocumentUpload = (uploaderId?: string) => {
       });
 
       // Step 2: Create individual records for each student
+      const successfulStudents: string[] = [];
+      
       for (let i = 0; i < studentIds.length; i++) {
         const studentId = studentIds[i];
         setProgress({ current: i + 1, total: studentIds.length });
@@ -109,10 +111,60 @@ export const useBulkDocumentUpload = (uploaderId?: string) => {
             errors.push({ studentId, error: error.message });
           } else {
             successCount++;
+            successfulStudents.push(studentId);
           }
         } catch (error: any) {
           failCount++;
           errors.push({ studentId, error: error.message || 'Erreur inconnue' });
+        }
+      }
+
+      // Step 3: Create notifications for all successful recipients
+      if (successfulStudents.length > 0) {
+        try {
+          const notificationTitle = uploaderRole === 'professor' 
+            ? 'Nouveau document de votre professeur'
+            : 'Nouveau document administratif';
+          
+          const notificationMessage = `Vous avez reçu un nouveau document: ${documentName}`;
+          
+          await Promise.all(
+            successfulStudents.map(studentId =>
+              supabase.rpc('create_notification', {
+                p_user_id: studentId,
+                p_title: notificationTitle,
+                p_message: notificationMessage,
+                p_type: 'document',
+                p_action_url: '/student?tab=documents'
+              })
+            )
+          );
+        } catch (notifError) {
+          console.error('Error creating notifications:', notifError);
+          // Don't fail the operation if notifications fail
+        }
+      }
+
+      // Step 4: Log admin activity for tracking
+      if (successCount > 0) {
+        try {
+          await supabase.rpc('log_admin_activity', {
+            p_action: 'bulk_document_upload',
+            p_entity_type: 'student_documents',
+            p_entity_id: null,
+            p_details: {
+              document_type: documentType,
+              document_name: documentName,
+              file_url: publicUrl,
+              uploaded_by_role: uploaderRole,
+              student_count: successCount,
+              file_size: file.size,
+              successful_students: successfulStudents
+            }
+          });
+        } catch (logError) {
+          console.error('Error logging activity:', logError);
+          // Don't fail the operation if logging fails
         }
       }
 
