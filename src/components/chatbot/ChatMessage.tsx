@@ -24,14 +24,15 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const handleFeedback = async (type: 'up' | 'down') => {
     setFeedback(type);
     
-    try {
-      await supabase.from('chat_feedback').insert({
-        message_id: message.id,
-        feedback_type: type,
-      });
-    } catch (error) {
-      console.error('Failed to save feedback:', error);
-    }
+    // TODO: Uncomment after chat_feedback migration is run
+    // try {
+    //   await supabase.from('chat_feedback').insert({
+    //     message_id: message.id,
+    //     feedback_type: type,
+    //   });
+    // } catch (error) {
+    //   console.error('Failed to save feedback:', error);
+    // }
   };
 
   const copyCode = async (code: string) => {
