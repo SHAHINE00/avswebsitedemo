@@ -506,9 +506,9 @@ const AIChatbot = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="z-[10000] bg-background text-foreground border border-border shadow-lg">
-                  <SelectItem value="fr">🇫🇷 FR</SelectItem>
-                  <SelectItem value="ar">🇲🇦 AR</SelectItem>
-                  <SelectItem value="en">🇬🇧 EN</SelectItem>
+                  <SelectItem value="fr" className="text-lg">🇫🇷 FR</SelectItem>
+                  <SelectItem value="ar" className="text-lg">🇲🇦 AR</SelectItem>
+                  <SelectItem value="en" className="text-lg">🇬🇧 EN</SelectItem>
                 </SelectContent>
               </Select>
 
