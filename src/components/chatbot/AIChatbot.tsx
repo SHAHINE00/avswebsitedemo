@@ -190,7 +190,7 @@ const AIChatbot = () => {
   };
 
   const streamChat = async (userMsg: Message) => {
-    const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+    const CHAT_URL = 'https://nkkalmyhxtuisjdjmdew.supabase.co/functions/v1/ollama-chat';
     
     try {
       setIsLoading(true);
@@ -198,32 +198,33 @@ const AIChatbot = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({ 
-          messages: messages.map(m => ({ role: m.role, content: m.content })),
-          language,
-          conversationId: currentConversationId
+          message: userMsg.content,
+          sessionId: currentConversationId,
+          visitorId: currentConversationId
         }),
       });
 
       if (!resp.ok) {
+        const errorData = await resp.json().catch(() => ({ error: 'Unknown error' }));
+        
         if (resp.status === 429) {
           toast({
             title: "Trop de requêtes",
-            description: "Veuillez patienter quelques instants",
+            description: errorData.message || "Veuillez patienter quelques instants",
             variant: "destructive"
           });
         } else if (resp.status === 402) {
           toast({
             title: "Crédits insuffisants",
-            description: "Contactez l'administrateur",
+            description: errorData.message || "Contactez l'administrateur",
             variant: "destructive"
           });
         } else {
           toast({
             title: "Erreur",
-            description: "Service AI temporairement indisponible",
+            description: errorData.message || "Service AI temporairement indisponible",
             variant: "destructive"
           });
         }
@@ -231,64 +232,19 @@ const AIChatbot = () => {
         return;
       }
 
-      if (!resp.body) throw new Error('No response body');
-
-      const reader = resp.body.getReader();
-      const decoder = new TextDecoder();
-      let textBuffer = '';
-      let streamDone = false;
-      let assistantContent = '';
+      // Handle JSON response from ollama-chat
+      const responseData = await resp.json();
       const assistantId = crypto.randomUUID();
+      const assistantContent = responseData.message;
 
-      while (!streamDone) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        
-        textBuffer += decoder.decode(value, { stream: true });
 
-        let newlineIndex: number;
-        while ((newlineIndex = textBuffer.indexOf('\n')) !== -1) {
-          let line = textBuffer.slice(0, newlineIndex);
-          textBuffer = textBuffer.slice(newlineIndex + 1);
-
-          if (line.endsWith('\r')) line = line.slice(0, -1);
-          if (line.startsWith(':') || line.trim() === '') continue;
-          if (!line.startsWith('data: ')) continue;
-
-          const jsonStr = line.slice(6).trim();
-          if (jsonStr === '[DONE]') {
-            streamDone = true;
-            break;
-          }
-
-          try {
-            const parsed = JSON.parse(jsonStr);
-            const content = parsed.choices?.[0]?.delta?.content as string | undefined;
-            
-            if (content) {
-              assistantContent += content;
-              
-              setMessages((prev) => {
-                const lastMsg = prev[prev.length - 1];
-                if (lastMsg?.role === 'assistant' && lastMsg.id === assistantId) {
-                  return prev.map((m) => 
-                    m.id === assistantId ? { ...m, content: assistantContent } : m
-                  );
-                }
-                return [...prev, {
-                  id: assistantId,
-                  role: 'assistant' as const,
-                  content: assistantContent,
-                  timestamp: new Date(),
-                }];
-              });
-            }
-          } catch {
-            textBuffer = line + '\n' + textBuffer;
-            break;
-          }
-        }
-      }
+      // Add assistant message to UI
+      setMessages((prev) => [...prev, {
+        id: assistantId,
+        role: 'assistant' as const,
+        content: assistantContent,
+        timestamp: new Date(),
+      }]);
 
       // Save assistant message
       if (currentConversationId && assistantContent) {
@@ -302,7 +258,7 @@ const AIChatbot = () => {
 
       setIsLoading(false);
     } catch (err) {
-      console.error('Streaming error:', err);
+      console.error('Chat error:', err);
       toast({
         title: "Erreur",
         description: "Erreur de connexion au service AI",

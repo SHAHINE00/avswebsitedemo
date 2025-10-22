@@ -225,24 +225,24 @@ Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifia
 - Les fonctionnalités de la plateforme
 - Votre progression ou vos cours`;
 
-      // Get or create session for saving messages
-      let currentSessionId = sessionId;
-      if (!currentSessionId) {
-        const { data: newSession } = await supabase
-          .from('chat_sessions')
-          .insert({ user_id: userId, visitor_id: visitorId })
+      // Get or create conversation for saving messages
+      let currentConversationId = sessionId;
+      if (!currentConversationId) {
+        const { data: newConversation } = await supabase
+          .from('chatbot_conversations')
+          .insert({ user_id: userId })
           .select()
           .single();
-        currentSessionId = newSession?.id;
+        currentConversationId = newConversation?.id;
       }
 
       // Save both messages
-      await supabase.from('chat_messages').insert([
-        { session_id: currentSessionId, role: 'user', content: sanitizedMessage },
-        { session_id: currentSessionId, role: 'assistant', content: offTopicResponse }
+      await supabase.from('chatbot_messages').insert([
+        { conversation_id: currentConversationId, role: 'user', content: sanitizedMessage },
+        { conversation_id: currentConversationId, role: 'assistant', content: offTopicResponse }
       ]);
 
-      return new Response(JSON.stringify({ message: offTopicResponse, sessionId: currentSessionId }), {
+      return new Response(JSON.stringify({ message: offTopicResponse, sessionId: currentConversationId }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
@@ -250,28 +250,28 @@ Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifia
     const t0 = Date.now();
     const userRole = await determineUserRole(supabase, userId);
     
-    // Get or create session
-    let currentSessionId = sessionId;
-    if (!currentSessionId) {
-      const { data: newSession } = await supabase
-        .from('chat_sessions')
-        .insert({ user_id: userId, visitor_id: visitorId })
+    // Get or create conversation
+    let currentConversationId = sessionId;
+    if (!currentConversationId) {
+      const { data: newConversation } = await supabase
+        .from('chatbot_conversations')
+        .insert({ user_id: userId })
         .select()
         .single();
-      currentSessionId = newSession?.id;
+      currentConversationId = newConversation?.id;
     } else {
       // Update last activity
       await supabase
-        .from('chat_sessions')
-        .update({ last_activity_at: new Date().toISOString() })
-        .eq('id', currentSessionId);
+        .from('chatbot_conversations')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', currentConversationId);
     }
     
     // Get conversation history (last 10 messages)
     const { data: history } = await supabase
-      .from('chat_messages')
+      .from('chatbot_messages')
       .select('role, content')
-      .eq('session_id', currentSessionId)
+      .eq('conversation_id', currentConversationId)
       .order('created_at', { ascending: false })
       .limit(10);
     
@@ -283,8 +283,8 @@ Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifia
     const systemPrompt = buildSystemPrompt(userRole, context, conversationHistory.length);
 
     // Save user message
-    await supabase.from('chat_messages').insert({
-      session_id: currentSessionId,
+    await supabase.from('chatbot_messages').insert({
+      conversation_id: currentConversationId,
       role: 'user',
       content: sanitizedMessage
     });
@@ -366,9 +366,9 @@ Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifia
           }
           
           // Save assistant message
-          if (fullResponse && currentSessionId) {
-            await supabase.from('chat_messages').insert({
-              session_id: currentSessionId,
+          if (fullResponse && currentConversationId) {
+            await supabase.from('chatbot_messages').insert({
+              conversation_id: currentConversationId,
               role: 'assistant',
               content: fullResponse
             });
@@ -387,7 +387,7 @@ Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifia
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
-        'X-Session-Id': currentSessionId || ''
+        'X-Session-Id': currentConversationId || ''
       }
     });
 
