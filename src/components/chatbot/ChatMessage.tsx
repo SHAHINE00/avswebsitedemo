@@ -1,6 +1,9 @@
-import React from 'react';
-import { Bot } from 'lucide-react';
+import React, { useState } from 'react';
+import { Bot, ThumbsUp, ThumbsDown, Copy, Check } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
+import { cn } from '@/lib/utils';
 
 interface Message {
   id: string;
@@ -15,6 +18,27 @@ interface ChatMessageProps {
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const isUser = message.role === 'user';
+  const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+
+  const handleFeedback = async (type: 'up' | 'down') => {
+    setFeedback(type);
+    
+    try {
+      await supabase.from('chat_feedback').insert({
+        message_id: message.id,
+        feedback_type: type,
+      });
+    } catch (error) {
+      console.error('Failed to save feedback:', error);
+    }
+  };
+
+  const copyCode = async (code: string) => {
+    await navigator.clipboard.writeText(code);
+    setCopiedCode(code);
+    setTimeout(() => setCopiedCode(null), 2000);
+  };
 
   return (
     <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
@@ -59,11 +83,30 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
                   {children}
                 </code>
               ),
-              pre: ({ children }) => (
-                <pre className="bg-muted p-3 rounded-lg mt-2 overflow-x-auto text-xs">
-                  {children}
-                </pre>
-              ),
+              pre: ({ children }) => {
+                const code = children?.toString() || '';
+                const isCopied = copiedCode === code;
+                
+                return (
+                  <div className="relative group">
+                    <pre className="bg-muted p-3 rounded-lg mt-2 overflow-x-auto text-xs">
+                      {children}
+                    </pre>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="absolute top-2 right-2 h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => copyCode(code)}
+                    >
+                      {isCopied ? (
+                        <Check className="h-3 w-3 text-green-600" />
+                      ) : (
+                        <Copy className="h-3 w-3" />
+                      )}
+                    </Button>
+                  </div>
+                );
+              },
               h3: ({ children }) => (
                 <h3 className="font-semibold text-base mt-3 mb-2">{children}</h3>
               ),
@@ -74,7 +117,50 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           >
             {message.content}
           </ReactMarkdown>
+          
+          {/* Timestamp */}
+          <time className={cn(
+            "text-xs block mt-2",
+            isUser 
+              ? "text-primary-foreground/70" 
+              : "text-muted-foreground"
+          )}>
+            {new Date(message.timestamp).toLocaleTimeString('fr-FR', {
+              hour: '2-digit',
+              minute: '2-digit'
+            })}
+          </time>
         </div>
+
+        {/* Feedback buttons for assistant messages */}
+        {!isUser && (
+          <div className="flex gap-2 mt-3 pt-2 border-t border-border">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={cn(
+                "h-7 px-2 text-xs",
+                feedback === 'up' && "bg-green-100 dark:bg-green-900/20"
+              )}
+              onClick={() => handleFeedback('up')}
+            >
+              <ThumbsUp className="h-3 w-3 mr-1" />
+              Utile
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={cn(
+                "h-7 px-2 text-xs",
+                feedback === 'down' && "bg-red-100 dark:bg-red-900/20"
+              )}
+              onClick={() => handleFeedback('down')}
+            >
+              <ThumbsDown className="h-3 w-3 mr-1" />
+              Pas utile
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

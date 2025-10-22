@@ -40,6 +40,20 @@ export default function OllamaChatbot() {
     }
   }, [isOpen]);
 
+  // Escape key handler
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+    
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isOpen]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -138,8 +152,33 @@ export default function OllamaChatbot() {
         localStorage.setItem('chat_session_id', newSessionId);
       }
 
+      // Handle error responses before streaming
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+        const errorData = await response.json().catch(() => null);
+        
+        if (response.status === 429) {
+          toast({
+            title: "Limite de requêtes atteinte",
+            description: "Trop de messages envoyés. Veuillez patienter quelques instants.",
+            variant: "destructive",
+          });
+        } else if (response.status === 402) {
+          toast({
+            title: "Crédit insuffisant",
+            description: "Le service nécessite des crédits supplémentaires. Contactez l'administrateur.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Erreur de connexion",
+            description: errorData?.error || "Impossible de contacter le serveur.",
+            variant: "destructive",
+          });
+        }
+        
+        setMessages(prev => prev.slice(0, -1));
+        setIsLoading(false);
+        return;
       }
 
       const reader = response.body?.getReader();
@@ -162,6 +201,26 @@ export default function OllamaChatbot() {
           try {
             const jsonStr = line.replace(/^data: /, '');
             const data = JSON.parse(jsonStr);
+            
+            // Check if this is an error response
+            if (data.error) {
+              console.error('Stream error:', data.error);
+              toast({
+                title: "Erreur",
+                description: data.error,
+                variant: "destructive",
+              });
+              
+              setMessages(prev => {
+                const last = prev[prev.length - 1];
+                if (last?.role === 'assistant' && !last.content.trim()) {
+                  return prev.slice(0, -1);
+                }
+                return prev;
+              });
+              
+              break;
+            }
             
             if (data.message?.content) {
               setMessages(prev =>

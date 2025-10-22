@@ -5,8 +5,8 @@ const TypingIndicator: React.FC = () => {
   return (
     <div className="flex gap-3">
       {/* Avatar */}
-      <div className="flex-shrink-0 h-8 w-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center ring-2 ring-gray-200 dark:ring-gray-700">
-        <Bot className="h-4 w-4 text-white" />
+      <div className="flex-shrink-0 h-9 w-9 rounded-full bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center ring-2 ring-primary/20 dark:ring-primary/30">
+        <Bot className="h-5 w-5 text-white" />
       </div>
 
       {/* Typing animation */}
