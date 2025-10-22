@@ -22,6 +22,15 @@ export const useBulkDocumentUpload = (uploaderId?: string) => {
     note: string,
     uploaderRole: 'professor' | 'admin'
   ): Promise<BulkDocumentResult> => {
+    if (!uploaderId) {
+      toast({
+        title: "Erreur",
+        description: "Utilisateur non authentifié",
+        variant: "destructive"
+      });
+      return { successCount: 0, failCount: studentIds.length, skippedCount: 0 };
+    }
+
     setLoading(true);
     setProgress({ current: 0, total: studentIds.length });
 

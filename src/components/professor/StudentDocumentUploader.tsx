@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Upload, Loader2 } from 'lucide-react';
 import { useStudentDocuments } from '@/hooks/useStudentDocuments';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface StudentDocumentUploaderProps {
   studentId: string;
@@ -23,7 +24,8 @@ export const StudentDocumentUploader: React.FC<StudentDocumentUploaderProps> = (
   onOpenChange,
   onSuccess
 }) => {
-  const { uploadDocumentAsTeacher, uploading } = useStudentDocuments();
+  const { user } = useAuth();
+  const { uploadDocumentAsTeacher, uploading } = useStudentDocuments(user?.id);
   const [file, setFile] = useState<File | null>(null);
   const [documentType, setDocumentType] = useState<string>('certificate');
   const [documentName, setDocumentName] = useState<string>('');

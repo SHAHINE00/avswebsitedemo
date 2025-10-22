@@ -231,6 +231,15 @@ export const useStudentDocuments = (contextUserId?: string) => {
     documentName?: string,
     professorNote?: string
   ) => {
+    if (!contextUserId) {
+      toast({
+        title: "Erreur",
+        description: "Utilisateur non authentifié",
+        variant: "destructive"
+      });
+      return null;
+    }
+
     setUploading(true);
     try {
       const fileExt = file.name.split('.').pop();
