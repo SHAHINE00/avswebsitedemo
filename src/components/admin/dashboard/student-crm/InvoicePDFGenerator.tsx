@@ -151,10 +151,9 @@ export const generateInvoicePDF = (invoice: InvoicePDFGeneratorProps['invoice'],
     doc.text(`${student.postal_code || ''} ${student.city || ''}`, 19, studentY);
   }
   
-  if (student.country && student.country !== 'Morocco' && student.country !== 'Maroc') {
+    // Always display country, default to MAROC if not specified
     studentY += 5;
-    doc.text(student.country, 19, studentY);
-  }
+    doc.text(student.country || 'MAROC', 19, studentY);
   
   // Items table - Modern design
   const tableStartY = 140;

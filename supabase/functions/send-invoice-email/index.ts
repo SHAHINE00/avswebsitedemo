@@ -86,7 +86,7 @@ serve(async (req) => {
               ${student.phone ? `<strong style="color: #94a3b8;">Téléphone:</strong> <span style="color: white;">${student.phone}</span><br>` : ''}
               ${student.address ? `<strong style="color: #94a3b8;">Adresse:</strong> <span style="color: white;">${student.address}</span><br>` : ''}
               ${student.city || student.postal_code ? `<strong style="color: #94a3b8;">Ville:</strong> <span style="color: white;">${student.postal_code || ''} ${student.city || ''}</span><br>` : ''}
-              ${student.country ? `<strong style="color: #94a3b8;">Pays:</strong> <span style="color: white;">${student.country}</span>` : ''}
+              <strong style="color: #94a3b8;">Pays:</strong> <span style="color: white;">${student.country || 'MAROC'}</span>
             </p>
           </div>
           
