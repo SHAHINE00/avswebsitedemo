@@ -34,33 +34,33 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Features from "./pages/Features";
 
-// Lazy load secondary pages
-const Curriculum = React.lazy(() => import("./pages/Curriculum"));
-const AICourse = React.lazy(() => import("./pages/AICourse"));
-const ProgrammingCourse = React.lazy(() => import("./pages/ProgrammingCourse"));
-const CybersecurityCourse = React.lazy(() => import("./pages/CybersecurityCourse"));
-const GenericCourse = React.lazy(() => import("./pages/GenericCourse"));
-const CourseDetailPage = React.lazy(() => import("./components/course-detail/CourseDetailPage"));
-const CoursePlayer = React.lazy(() => import("./pages/CoursePlayer"));
-const Instructors = React.lazy(() => import("./pages/Instructors"));
-const Testimonials = React.lazy(() => import("./pages/Testimonials"));
-const Register = React.lazy(() => import("./pages/Register"));
-const ResetPassword = React.lazy(() => import("./pages/ResetPassword"));
-const About = React.lazy(() => import("./pages/About"));
-const FAQ = React.lazy(() => import("./pages/FAQ"));
-const Careers = React.lazy(() => import("./pages/Careers"));
-const Contact = React.lazy(() => import("./pages/Contact"));
-const Appointment = React.lazy(() => import("./pages/Appointment"));
-const PrivacyPolicy = React.lazy(() => import("./pages/PrivacyPolicy"));
-const TermsOfUse = React.lazy(() => import("./pages/TermsOfUse"));
-const CookiesPolicy = React.lazy(() => import("./pages/CookiesPolicy"));
-const Auth = React.lazy(() => import("./pages/Auth"));
-const Dashboard = React.lazy(() => import("./pages/Dashboard"));
-const Blog = React.lazy(() => import("./pages/Blog"));
-const BlogPost = React.lazy(() => import("./pages/BlogPost"));
-const BlogGuideIA2024 = React.lazy(() => import("./pages/BlogGuideIA2024"));
-const BlogDevenirDeveloppeur = React.lazy(() => import("./pages/BlogDevenirDeveloppeur"));
-const AVSInstitute = React.lazy(() => import("./pages/AVSInstitute"));
+// Lazy load ALL secondary pages for optimal performance
+const Curriculum = lazyWithRetry(() => import("./pages/Curriculum"));
+const AICourse = lazyWithRetry(() => import("./pages/AICourse"));
+const ProgrammingCourse = lazyWithRetry(() => import("./pages/ProgrammingCourse"));
+const CybersecurityCourse = lazyWithRetry(() => import("./pages/CybersecurityCourse"));
+const GenericCourse = lazyWithRetry(() => import("./pages/GenericCourse"));
+const CourseDetailPage = lazyWithRetry(() => import("./components/course-detail/CourseDetailPage"));
+const CoursePlayer = lazyWithRetry(() => import("./pages/CoursePlayer"));
+const Instructors = lazyWithRetry(() => import("./pages/Instructors"));
+const Testimonials = lazyWithRetry(() => import("./pages/Testimonials"));
+const Register = lazyWithRetry(() => import("./pages/Register"));
+const ResetPassword = lazyWithRetry(() => import("./pages/ResetPassword"));
+const About = lazyWithRetry(() => import("./pages/About"));
+const FAQ = lazyWithRetry(() => import("./pages/FAQ"));
+const Careers = lazyWithRetry(() => import("./pages/Careers"));
+const Contact = lazyWithRetry(() => import("./pages/Contact"));
+const Appointment = lazyWithRetry(() => import("./pages/Appointment"));
+const PrivacyPolicy = lazyWithRetry(() => import("./pages/PrivacyPolicy"));
+const TermsOfUse = lazyWithRetry(() => import("./pages/TermsOfUse"));
+const CookiesPolicy = lazyWithRetry(() => import("./pages/CookiesPolicy"));
+const Auth = lazyWithRetry(() => import("./pages/Auth"));
+const Dashboard = lazyWithRetry(() => import("./pages/Dashboard"));
+const Blog = lazyWithRetry(() => import("./pages/Blog"));
+const BlogPost = lazyWithRetry(() => import("./pages/BlogPost"));
+const BlogGuideIA2024 = lazyWithRetry(() => import("./pages/BlogGuideIA2024"));
+const BlogDevenirDeveloppeur = lazyWithRetry(() => import("./pages/BlogDevenirDeveloppeur"));
+const AVSInstitute = lazyWithRetry(() => import("./pages/AVSInstitute"));
 
 // Admin pages (heavy components - lazy load with retry)
 const AdminCourses = lazyWithRetry(() => import("./pages/AdminCourses"));
@@ -68,12 +68,10 @@ const AdminTest = lazyWithRetry(() => import("./pages/AdminTest"));
 const Admin = lazyWithRetry(() => import("./pages/Admin"));
 const ClassDetailPage = lazyWithRetry(() => import("./pages/ClassDetailPage"));
 
-// Professor pages
-const Professor = React.lazy(() => import("./pages/Professor"));
-const ProfessorCourse = React.lazy(() => import("./pages/ProfessorCourse"));
-
-// Student pages
-const Student = React.lazy(() => import("./pages/Student"));
+// Professor and Student pages with retry logic
+const Professor = lazyWithRetry(() => import("./pages/Professor"));
+const ProfessorCourse = lazyWithRetry(() => import("./pages/ProfessorCourse"));
+const Student = lazyWithRetry(() => import("./pages/Student"));
 
 // Optimized lazy wrapper component
 const LazyWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -113,14 +111,17 @@ const ChatbotWrapper: React.FC = () => {
   );
 };
 
-// Create QueryClient instance outside component to prevent recreation
+// Create QueryClient instance with aggressive caching for performance
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 10 * 60 * 1000, // 10 minutes - data stays fresh longer
+      gcTime: 30 * 60 * 1000, // 30 minutes - keep in cache longer
       retry: 1,
-      gcTime: 15 * 60 * 1000, // 15 minutes (replaces cacheTime)
+    },
+    mutations: {
+      retry: 1,
     },
   },
 });

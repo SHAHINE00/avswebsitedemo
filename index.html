@@ -40,8 +40,10 @@
     <!-- WordPress/Elementor Export Support -->
     <meta name="wp-export" content="For WordPress integration instructions, visit /elementor-export" />
     
-    <!-- Resource Hints for Performance -->
+    <!-- Resource Hints for Performance - CRITICAL -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <!-- Critical CSS inline to eliminate render blocking -->
@@ -229,9 +231,11 @@
       }
     </style>
     
-    <!-- Preload Critical Assets -->
+    <!-- Preload Critical Assets for faster loading -->
     <link rel="preload" href="/lovable-uploads/b53d5fbe-9869-4eff-8493-4d7c4ff0be2d.png" as="image" type="image/png">
     <link rel="modulepreload" href="/src/main.tsx">
+    <link rel="modulepreload" href="/src/App.tsx">
+    <link rel="modulepreload" href="/src/pages/Index.tsx">
     
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>

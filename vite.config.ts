@@ -25,47 +25,63 @@ export default defineConfig(({ mode }) => {
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: false,
-    target: ['es2015', 'safari11', 'chrome58', 'firefox57'],
-    cssTarget: ['chrome58', 'safari11', 'firefox57'],
+    target: 'es2015',
+    cssTarget: 'chrome58',
     cssCodeSplit: true,
     assetsInlineLimit: 4096,
     // Optimized chunk size for faster loading
-    chunkSizeWarningLimit: 400,
+    chunkSizeWarningLimit: 1000,
     // Performance optimizations
     rollupOptions: {
       output: {
         manualChunks: {
+          // Core React chunks (largest vendors)
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'query-vendor': ['@tanstack/react-query'],
+          'supabase-vendor': ['@supabase/supabase-js'],
+          
           // UI Library chunks
-          'vendor-ui-core': [
+          'ui-core': [
             '@radix-ui/react-dialog',
             '@radix-ui/react-dropdown-menu',
             '@radix-ui/react-tabs',
-            '@radix-ui/react-toast'
+            '@radix-ui/react-toast',
+            '@radix-ui/react-alert-dialog'
           ],
-          'vendor-ui-forms': [
+          'ui-forms': [
             '@radix-ui/react-checkbox',
             '@radix-ui/react-radio-group',
             '@radix-ui/react-select',
-            '@radix-ui/react-switch'
+            '@radix-ui/react-switch',
+            '@radix-ui/react-label'
           ],
-          'vendor-icons': ['lucide-react'],
+          'ui-navigation': [
+            '@radix-ui/react-navigation-menu',
+            '@radix-ui/react-accordion',
+            '@radix-ui/react-collapsible'
+          ],
           
           // Form handling
-          'vendor-forms': [
+          'forms-vendor': [
             'react-hook-form',
             '@hookform/resolvers',
             'zod'
           ],
           
           // Utility chunks
-          'vendor-utils': [
+          'utils-vendor': [
             'clsx',
             'class-variance-authority',
-            'tailwind-merge'
+            'tailwind-merge',
+            'date-fns'
           ],
-          'vendor-supabase': ['@supabase/supabase-js'],
-          'vendor-charts': ['recharts']
-        }
+          'charts-vendor': ['recharts'],
+          'icons-vendor': ['lucide-react']
+        },
+        // Optimize output file names
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
       }
     },
     // Production optimizations
@@ -75,39 +91,34 @@ export default defineConfig(({ mode }) => {
         compress: {
           drop_console: true,
           drop_debugger: true,
-          pure_funcs: ['console.log', 'console.warn', 'console.info', 'console.debug', 'logInfo', 'logWarn', 'logDebug'],
-          passes: 3,
-          unsafe_arrows: true,
-          unsafe_comps: true,
+          pure_funcs: ['console.log', 'console.warn', 'console.info', 'logInfo', 'logWarn'],
+          passes: 2,
           dead_code: true,
           unused: true
         },
         mangle: {
-          safari10: true,
-          toplevel: true
+          safari10: true
         },
         format: {
           comments: false
         }
       },
-      // Additional production optimizations
       reportCompressedSize: false,
-      chunkSizeWarningLimit: 300
+      chunkSizeWarningLimit: 800
     })
   },
   
-  // Performance optimizations - CRITICAL: Ensure React singleton
+  // Performance optimizations - preload critical dependencies
   optimizeDeps: {
     include: [
       'react',
       'react-dom',
       'react-router-dom',
       '@tanstack/react-query',
-      '@supabase/supabase-js'
+      '@supabase/supabase-js',
+      'lucide-react'
     ],
-    exclude: ['@vite/client', '@vite/env'],
-    // Force pre-bundling of React to prevent HMR issues
-    force: true
+    exclude: ['@vite/client', '@vite/env', '@tanstack/react-query-devtools']
   },
   
   // CRITICAL FIX: Ensure single React instance and HMR stability  
