@@ -21,8 +21,7 @@ export const RoleRouter: React.FC<{ children: React.ReactNode }> = ({ children }
       // Check if user is on an entry point that needs role-based redirect
       const isEntryPoint = 
         location.pathname === '/auth' || 
-        location.pathname === '/' ||
-        location.pathname === '/dashboard';
+        location.pathname === '/';
 
       // We'll check after fetching roles if user should be redirected
 
