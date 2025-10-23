@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSafeState, useSafeEffect } from '@/utils/safeHooks';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -52,6 +52,16 @@ const AdminRouteGuard: React.FC<AdminRouteGuardProps> = ({ children }) => {
       checkAdminStatus();
     }
   }, [user, authLoading, navigate]);
+
+  // Preload Admin page module once admin status is confirmed
+  useEffect(() => {
+    if (isAdmin === true) {
+      // Prefetch the Admin module to avoid lazy loading delays
+      import('@/pages/Admin').catch(() => {
+        // Silent fail - module will be loaded on demand if prefetch fails
+      });
+    }
+  }, [isAdmin]);
 
   // Show loading while checking authentication and admin status
   if (authLoading || loading) {

@@ -24,6 +24,7 @@ import { ReloadPreventionWrapper } from "@/components/ui/reload-prevention-wrapp
 import { SecurityEnhancedWrapper } from "@/components/security/SecurityEnhancedWrapper";
 import { logWarn } from "@/utils/logger";
 import AIChatbot from "@/components/chatbot/AIChatbot";
+import { lazyWithRetry } from "@/utils/lazyWithRetry";
 
 
 // Critical pages (loaded immediately for better performance)
@@ -59,11 +60,11 @@ const BlogGuideIA2024 = React.lazy(() => import("./pages/BlogGuideIA2024"));
 const BlogDevenirDeveloppeur = React.lazy(() => import("./pages/BlogDevenirDeveloppeur"));
 const AVSInstitute = React.lazy(() => import("./pages/AVSInstitute"));
 
-// Admin pages (heavy components - lazy load)
-const AdminCourses = React.lazy(() => import("./pages/AdminCourses"));
-const AdminTest = React.lazy(() => import("./pages/AdminTest"));
-const Admin = React.lazy(() => import("./pages/Admin"));
-const ClassDetailPage = React.lazy(() => import("./pages/ClassDetailPage"));
+// Admin pages (heavy components - lazy load with retry)
+const AdminCourses = lazyWithRetry(() => import("./pages/AdminCourses"));
+const AdminTest = lazyWithRetry(() => import("./pages/AdminTest"));
+const Admin = lazyWithRetry(() => import("./pages/Admin"));
+const ClassDetailPage = lazyWithRetry(() => import("./pages/ClassDetailPage"));
 
 // Professor pages
 const Professor = React.lazy(() => import("./pages/Professor"));
@@ -178,7 +179,7 @@ const App = () => {
                       <Route path="/admin" element={<AdminRouteGuard><LazyWrapper><Admin /></LazyWrapper></AdminRouteGuard>} />
                       <Route path="/admin/courses" element={<AdminRouteGuard><LazyWrapper><AdminCourses /></LazyWrapper></AdminRouteGuard>} />
                       <Route path="/admin/test" element={<AdminRouteGuard><LazyWrapper><AdminTest /></LazyWrapper></AdminRouteGuard>} />
-                      <Route path="/admin/chatbot" element={<AdminRouteGuard><LazyWrapper>{React.createElement(React.lazy(() => import('@/pages/AdminChatbotManagement')))}</LazyWrapper></AdminRouteGuard>} />
+                      <Route path="/admin/chatbot" element={<AdminRouteGuard><LazyWrapper>{React.createElement(lazyWithRetry(() => import('@/pages/AdminChatbotManagement')))}</LazyWrapper></AdminRouteGuard>} />
                       <Route path="/admin/classes/:classId" element={<AdminRouteGuard><LazyWrapper><ClassDetailPage /></LazyWrapper></AdminRouteGuard>} />
                       
                       {/* Professor routes - protected and lazy loaded */}
