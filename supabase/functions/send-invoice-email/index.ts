@@ -45,79 +45,119 @@ serve(async (req) => {
     console.log('Sending invoice email:', { invoice_number: invoice.invoice_number, email: student.email });
 
     // Prepare email content
-    const emailSubject = `Facture ${invoice.invoice_number} - AVS Institute`;
+    const emailSubject = `Facture ${invoice.invoice_number} - AVS Innovation Institut`;
     const emailBody = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <div style="background: linear-gradient(135deg, #3B82F6, #8B5CF6); padding: 30px; text-align: center;">
-          <h1 style="color: white; margin: 0;">AVS INSTITUTE</h1>
-          <p style="color: white; margin: 10px 0 0 0;">Centre de Formation Professionnelle</p>
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #f8fafc;">
+        <!-- Modern Tech Header -->
+        <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0ea5e9 100%); padding: 40px 30px; text-align: center; position: relative; overflow: hidden;">
+          <!-- Decorative circuit pattern -->
+          <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #0ea5e9, #8b5cf6, #06b6d4);"></div>
+          
+          <h1 style="color: white; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: 1px;">AVS INNOVATION INSTITUT</h1>
+          <p style="color: #06b6d4; margin: 12px 0 0 0; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 2px;">Institut d'Innovation et de Formation Technologique</p>
+          <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <p style="color: #94a3b8; margin: 0; font-size: 12px;">Avenue Allal El Fassi – Alpha 2000, Marrakech – MAROC</p>
+            <p style="color: #94a3b8; margin: 5px 0 0 0; font-size: 12px;">Email: info@avs.ma | Web: www.avs.ma</p>
+          </div>
         </div>
         
-        <div style="padding: 30px; background: #f9fafb;">
-          <h2 style="color: #1f2937; margin-top: 0;">Bonjour ${student.full_name || 'Cher étudiant'},</h2>
+        <div style="padding: 40px 30px; background: white;">
+          <!-- Invoice Title -->
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h2 style="color: #0ea5e9; margin: 0; font-size: 28px; font-weight: 700;">FACTURE</h2>
+            <div style="width: 100px; height: 3px; background: linear-gradient(90deg, #8b5cf6, #0ea5e9); margin: 10px auto;"></div>
+          </div>
           
-          <p style="color: #4b5563; line-height: 1.6;">
-            Veuillez trouver ci-joint votre facture <strong>${invoice.invoice_number}</strong> 
-            d'un montant de <strong>${invoice.total_amount.toFixed(2)} MAD</strong>.
+          <p style="color: #1e293b; line-height: 1.8; font-size: 15px;">
+            Bonjour <strong style="color: #0ea5e9;">${student.full_name || 'Cher étudiant'}</strong>,
           </p>
           
-          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0;">
-            <h3 style="margin: 0 0 15px 0; color: #1f2937; font-size: 16px;">Informations client</h3>
-            <p style="margin: 0; color: #4b5563; line-height: 1.8;">
-              <strong>Nom:</strong> ${student.full_name || 'N/A'}<br>
-              <strong>Email:</strong> ${student.email}<br>
-              ${student.phone ? `<strong>Téléphone:</strong> ${student.phone}<br>` : ''}
-              ${student.address ? `<strong>Adresse:</strong> ${student.address}<br>` : ''}
-              ${student.city || student.postal_code ? `<strong>Ville:</strong> ${student.postal_code || ''} ${student.city || ''}<br>` : ''}
-              ${student.country ? `<strong>Pays:</strong> ${student.country}` : ''}
+          <p style="color: #475569; line-height: 1.8; font-size: 14px;">
+            Veuillez trouver ci-joint votre facture <strong style="color: #0ea5e9;">${invoice.invoice_number}</strong> 
+            d'un montant de <strong style="color: #0ea5e9; font-size: 16px;">${invoice.total_amount.toFixed(2)} MAD</strong>.
+          </p>
+          
+          <!-- Client Info Card -->
+          <div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 12px; padding: 25px; margin: 25px 0; border-left: 4px solid #8b5cf6;">
+            <h3 style="margin: 0 0 18px 0; color: #06b6d4; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Informations Client</h3>
+            <p style="margin: 0; color: #cbd5e1; line-height: 2; font-size: 14px;">
+              <strong style="color: #94a3b8;">Nom:</strong> <span style="color: white;">${student.full_name || 'N/A'}</span><br>
+              <strong style="color: #94a3b8;">Email:</strong> <span style="color: white;">${student.email}</span><br>
+              ${student.phone ? `<strong style="color: #94a3b8;">Téléphone:</strong> <span style="color: white;">${student.phone}</span><br>` : ''}
+              ${student.address ? `<strong style="color: #94a3b8;">Adresse:</strong> <span style="color: white;">${student.address}</span><br>` : ''}
+              ${student.city || student.postal_code ? `<strong style="color: #94a3b8;">Ville:</strong> <span style="color: white;">${student.postal_code || ''} ${student.city || ''}</span><br>` : ''}
+              ${student.country ? `<strong style="color: #94a3b8;">Pays:</strong> <span style="color: white;">${student.country}</span>` : ''}
             </p>
           </div>
           
-          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0;">
+          <!-- Invoice Details Card -->
+          <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 25px; margin: 25px 0; border-top: 4px solid #0ea5e9;">
             <table style="width: 100%; border-collapse: collapse;">
               <tr>
-                <td style="padding: 8px 0; color: #6b7280;">Numéro de facture:</td>
-                <td style="padding: 8px 0; text-align: right; font-weight: bold;">${invoice.invoice_number}</td>
+                <td style="padding: 12px 0; color: #64748b; font-size: 13px; font-weight: 500;">Numéro de facture:</td>
+                <td style="padding: 12px 0; text-align: right; font-weight: 700; color: #1e293b; font-family: 'Courier New', monospace;">${invoice.invoice_number}</td>
               </tr>
-              <tr>
-                <td style="padding: 8px 0; color: #6b7280;">Date:</td>
-                <td style="padding: 8px 0; text-align: right;">${new Date(invoice.invoice_date).toLocaleDateString('fr-FR')}</td>
+              <tr style="border-top: 1px solid #e2e8f0;">
+                <td style="padding: 12px 0; color: #64748b; font-size: 13px; font-weight: 500;">Date:</td>
+                <td style="padding: 12px 0; text-align: right; color: #1e293b;">${new Date(invoice.invoice_date).toLocaleDateString('fr-FR')}</td>
               </tr>
-              <tr>
-                <td style="padding: 8px 0; color: #6b7280;">Montant HT:</td>
-                <td style="padding: 8px 0; text-align: right;">${invoice.amount.toFixed(2)} MAD</td>
+              <tr style="border-top: 1px solid #e2e8f0;">
+                <td style="padding: 12px 0; color: #64748b; font-size: 13px; font-weight: 500;">Montant HT:</td>
+                <td style="padding: 12px 0; text-align: right; color: #1e293b; font-weight: 600;">${invoice.amount.toFixed(2)} MAD</td>
               </tr>
               ${invoice.tax_amount > 0 ? `
-              <tr>
-                <td style="padding: 8px 0; color: #6b7280;">TVA:</td>
-                <td style="padding: 8px 0; text-align: right;">${invoice.tax_amount.toFixed(2)} MAD</td>
+              <tr style="border-top: 1px solid #e2e8f0;">
+                <td style="padding: 12px 0; color: #64748b; font-size: 13px; font-weight: 500;">TVA (20%):</td>
+                <td style="padding: 12px 0; text-align: right; color: #1e293b; font-weight: 600;">${invoice.tax_amount.toFixed(2)} MAD</td>
               </tr>
               ` : ''}
-              <tr style="border-top: 2px solid #3B82F6;">
-                <td style="padding: 12px 0; font-weight: bold; color: #1f2937;">Total:</td>
-                <td style="padding: 12px 0; text-align: right; font-weight: bold; color: #3B82F6; font-size: 18px;">${invoice.total_amount.toFixed(2)} MAD</td>
+              <tr style="border-top: 3px solid #0ea5e9; background: linear-gradient(135deg, #0f172a, #1e293b);">
+                <td style="padding: 18px 12px; font-weight: 700; color: #06b6d4; font-size: 15px; border-radius: 8px 0 0 8px;">TOTAL:</td>
+                <td style="padding: 18px 12px; text-align: right; font-weight: 700; color: #0ea5e9; font-size: 20px; border-radius: 0 8px 8px 0;">${invoice.total_amount.toFixed(2)} MAD</td>
               </tr>
             </table>
           </div>
           
-          <p style="color: #4b5563; line-height: 1.6;">
+          <!-- Payment Info -->
+          <div style="background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 20px; margin: 25px 0;">
+            <p style="color: #92400e; margin: 0; font-size: 13px; line-height: 1.8;">
+              <strong style="font-size: 14px;">💳 Informations de paiement:</strong><br>
+              Virement bancaire, espèces ou carte acceptés<br>
+              <strong>RIB:</strong> 007 810 0001172000012345 67<br>
+              <strong>IBAN:</strong> MA64 007 810 0001172000012345 67
+            </p>
+          </div>
+          
+          <p style="color: #475569; line-height: 1.8; font-size: 14px; margin-top: 30px;">
             Pour toute question concernant cette facture, n'hésitez pas à nous contacter.
           </p>
           
-          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
-            <p style="color: #6b7280; font-size: 14px; margin: 5px 0; line-height: 1.6;">
-              <strong>AVS Institute</strong><br>
+          <!-- Legal Info -->
+          <div style="margin-top: 30px; padding: 20px; background: #f1f5f9; border-radius: 8px;">
+            <p style="color: #64748b; font-size: 11px; margin: 0; line-height: 1.6;">
+              <strong style="color: #334155;">Informations légales:</strong><br>
+              ICE: 002876419000039 | RC: 145892 | IF: 40254941 | CNSS: 8514623
+            </p>
+          </div>
+          
+          <div style="margin-top: 25px; padding-top: 25px; border-top: 2px solid #e2e8f0;">
+            <p style="color: #64748b; font-size: 12px; margin: 0; line-height: 1.8;">
+              <strong style="color: #0f172a;">AVS INNOVATION INSTITUT</strong><br>
               Avenue Allal El Fassi – Alpha 2000<br>
               Marrakech – MAROC<br>
-              Email: info@avs.ma<br>
+              Email: info@avs.ma | Web: www.avs.ma<br>
               Tél: +212 6 62 63 29 53 / +212 5 24 31 19 82
             </p>
           </div>
         </div>
         
-        <div style="background: #1f2937; padding: 20px; text-align: center;">
-          <p style="color: #9ca3af; margin: 0; font-size: 12px;">
-            © ${new Date().getFullYear()} AVS Institute. Tous droits réservés.
+        <!-- Modern Footer -->
+        <div style="background: linear-gradient(135deg, #0f172a, #1e293b); padding: 25px; text-align: center; border-top: 3px solid #8b5cf6;">
+          <p style="color: #cbd5e1; margin: 0 0 8px 0; font-size: 13px;">
+            Merci pour votre confiance et votre engagement dans votre formation technologique.
+          </p>
+          <p style="color: #64748b; margin: 0; font-size: 11px;">
+            © ${new Date().getFullYear()} AVS Innovation Institut. Tous droits réservés.
           </p>
         </div>
       </div>
