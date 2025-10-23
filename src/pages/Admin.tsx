@@ -4,7 +4,6 @@ import AdminRouteGuard from '@/components/admin/AdminRouteGuard';
 import AdminHeader from '@/components/admin/AdminHeader';
 import AdminTabsEnhanced from '@/components/admin/AdminTabsEnhanced';
 import CourseFormDialog from '@/components/admin/CourseFormDialog';
-import ErrorBoundary from '@/components/ui/error-boundary';
 import SEOHead from '@/components/SEOHead';
 import AIChatbot from '@/components/chatbot/AIChatbot';
 import { useAdminCourses } from '@/hooks/useAdminCourses';
@@ -57,8 +56,7 @@ const Admin = () => {
 
   return (
     <AdminRouteGuard>
-      <ErrorBoundary>
-        <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background">
           <SEOHead 
             title="Administration - Nova Academy"
             description="Tableau de bord administrateur pour Nova Academy"
@@ -122,7 +120,6 @@ const Admin = () => {
 
           <AIChatbot />
         </div>
-      </ErrorBoundary>
     </AdminRouteGuard>
   );
 };

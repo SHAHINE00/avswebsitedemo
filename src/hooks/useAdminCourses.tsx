@@ -18,20 +18,26 @@ export const useAdminCourses = () => {
     queryFn: async () => {
       if (!user) return false;
       
-      const { data, error } = await supabase.rpc('is_admin', {
-        _user_id: user.id
-      });
+      try {
+        const { data, error } = await supabase.rpc('is_admin', {
+          _user_id: user.id
+        });
 
-      if (error) {
-        logError('Error checking admin status:', error);
+        if (error) {
+          logError('Error checking admin status:', error);
+          return false;
+        }
+
+        return data === true;
+      } catch (error) {
+        logError('Exception checking admin status:', error);
         return false;
       }
-
-      return data === true;
     },
     enabled: !!user,
     staleTime: 10 * 60 * 1000, // 10 minutes
     placeholderData: (previousData) => previousData,
+    retry: 2,
   });
 
   // Fetch all courses with React Query
@@ -42,24 +48,30 @@ export const useAdminCourses = () => {
   } = useQuery({
     queryKey: ['admin-courses'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('courses')
-        .select('*')
-        .order('display_order');
+      try {
+        const { data, error } = await supabase
+          .from('courses')
+          .select('*')
+          .order('display_order');
 
-      if (error) {
-        toast({
-          title: "Erreur",
-          description: "Impossible de charger les cours",
-          variant: "destructive",
-        });
+        if (error) {
+          toast({
+            title: "Erreur",
+            description: "Impossible de charger les cours",
+            variant: "destructive",
+          });
+          throw error;
+        }
+
+        return data || [];
+      } catch (error) {
+        logError('Exception fetching courses:', error);
         throw error;
       }
-
-      return data || [];
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     placeholderData: (previousData) => previousData,
+    retry: 2,
   });
 
   const error = queryError?.message || null;
