@@ -1,7 +1,8 @@
 
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DashboardSkeleton } from '@/components/ui/dashboard-skeleton';
+import ErrorBoundary from '@/components/ui/error-boundary';
 import DashboardOverview from '@/components/admin/dashboard/DashboardOverview';
 import CourseManagementSection from '@/components/admin/dashboard/CourseManagementSection';
 import UserManagementSection from '@/components/admin/dashboard/UserManagementSection';
@@ -14,11 +15,12 @@ import ProfessorManagement from './ProfessorManagement';
 import { CourseClassManagement } from './CourseClassManagement';
 import { DocumentActivityTracker } from '@/components/admin/dashboard/DocumentActivityTracker';
 import type { Course } from '@/hooks/useCourses';
+import { lazyWithRetry } from '@/utils/lazyWithRetry';
 
-// Lazy load heavy components
-const StudentCRMDashboardEnhanced = lazy(() => import('@/components/admin/dashboard/student-crm/StudentCRMDashboardEnhanced'));
-const AnalyticsSection = lazy(() => import('@/components/admin/dashboard/AnalyticsSection'));
-const SystemMonitoring = lazy(() => import('@/components/admin/dashboard/SystemMonitoring'));
+// Lazy load heavy components with retry logic
+const StudentCRMDashboardEnhanced = lazyWithRetry(() => import('@/components/admin/dashboard/student-crm/StudentCRMDashboardEnhanced'));
+const AnalyticsSection = lazyWithRetry(() => import('@/components/admin/dashboard/AnalyticsSection'));
+const SystemMonitoring = lazyWithRetry(() => import('@/components/admin/dashboard/SystemMonitoring'));
 
 interface AdminTabsEnhancedProps {
   courses: Course[];
@@ -33,10 +35,21 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
   onEdit,
   onDelete
 }) => {
+  const heavyTabs = new Set(['students', 'analytics', 'system']);
+  
   const [activeTab, setActiveTab] = useState<string>(() => {
     const saved = sessionStorage.getItem('admin_active_tab');
-    return saved || 'dashboard';
+    // Prevent heavy tabs from loading by default
+    return (saved && !heavyTabs.has(saved)) ? saved : 'dashboard';
   });
+
+  // Safety migration for previously saved heavy tabs
+  useEffect(() => {
+    const saved = sessionStorage.getItem('admin_active_tab');
+    if (saved && heavyTabs.has(saved)) {
+      sessionStorage.setItem('admin_active_tab', 'dashboard');
+    }
+  }, []);
 
   useEffect(() => {
     sessionStorage.setItem('admin_active_tab', activeTab);
@@ -65,9 +78,11 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
       </TabsContent>
 
       <TabsContent value="students">
-        <Suspense fallback={<DashboardSkeleton />}>
-          <StudentCRMDashboardEnhanced />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<DashboardSkeleton />}>
+            <StudentCRMDashboardEnhanced />
+          </Suspense>
+        </ErrorBoundary>
       </TabsContent>
 
       <TabsContent value="professors">
@@ -115,15 +130,19 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
       </TabsContent>
 
       <TabsContent value="analytics">
-        <Suspense fallback={<DashboardSkeleton />}>
-          <AnalyticsSection />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<DashboardSkeleton />}>
+            <AnalyticsSection />
+          </Suspense>
+        </ErrorBoundary>
       </TabsContent>
 
       <TabsContent value="system">
-        <Suspense fallback={<DashboardSkeleton />}>
-          <SystemMonitoring />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<DashboardSkeleton />}>
+            <SystemMonitoring />
+          </Suspense>
+        </ErrorBoundary>
       </TabsContent>
     </Tabs>
   );

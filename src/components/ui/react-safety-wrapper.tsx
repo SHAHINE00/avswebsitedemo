@@ -21,7 +21,12 @@ class ReactSafetyWrapper extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('React Safety Wrapper caught an error:', error, errorInfo);
+    console.error('React Safety Wrapper caught an error:', {
+      message: error.message,
+      stack: error.stack,
+      componentStack: errorInfo.componentStack,
+      route: window.location.pathname
+    });
     // Avoid automatic retries to prevent render loops
   }
 

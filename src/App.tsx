@@ -23,8 +23,10 @@ import LoadingSpinner from "@/components/ui/loading-spinner";
 import { ReloadPreventionWrapper } from "@/components/ui/reload-prevention-wrapper";
 import { SecurityEnhancedWrapper } from "@/components/security/SecurityEnhancedWrapper";
 import { logWarn } from "@/utils/logger";
-import AIChatbot from "@/components/chatbot/AIChatbot";
 import { lazyWithRetry } from "@/utils/lazyWithRetry";
+
+// Lazy load chatbot to improve admin page performance
+const AIChatbot = React.lazy(() => import("@/components/chatbot/AIChatbot"));
 
 
 // Critical pages (loaded immediately for better performance)
@@ -97,6 +99,20 @@ const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   return <>{children}</>;
 };
 
+// Chatbot wrapper - skip rendering on admin routes for performance
+const ChatbotWrapper: React.FC = () => {
+  const location = window.location.pathname;
+  const isAdminRoute = location.startsWith('/admin');
+  
+  if (isAdminRoute) return null;
+  
+  return (
+    <React.Suspense fallback={null}>
+      <AIChatbot />
+    </React.Suspense>
+  );
+};
+
 // Create QueryClient instance outside component to prevent recreation
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -122,27 +138,16 @@ const App = () => {
           <SafeRouter>
             <ReactSafetyWrapper>
               <AnalyticsProvider>
-                <ReactSafetyWrapper>
-                  <ScrollToTop />
-                </ReactSafetyWrapper>
-                <ReactSafetyWrapper>
-                  <UTMTracker />
-                </ReactSafetyWrapper>
-                <ReactSafetyWrapper>
-                  <SEOAnalytics />
-                </ReactSafetyWrapper>
-                <ReactSafetyWrapper>
-                  <StructuredData type="website" />
-                </ReactSafetyWrapper>
-                <ReactSafetyWrapper>
-                  <CookieConsentBanner />
-                </ReactSafetyWrapper>
-                <ReactSafetyWrapper>
-                  <SecurityEnhancedWrapper>
-                    <QueryClientProvider client={queryClient}>
-                      {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
-                      <AuthProvider>
-                      <Routes>
+                <ScrollToTop />
+                <UTMTracker />
+                <SEOAnalytics />
+                <StructuredData type="website" />
+                <CookieConsentBanner />
+                <SecurityEnhancedWrapper>
+                  <QueryClientProvider client={queryClient}>
+                    {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+                    <AuthProvider>
+                    <Routes>
                       {/* Critical routes - no lazy loading */}
                       <Route path="/" element={<Index />} />
                       <Route path="/features" element={<Features />} />
@@ -188,14 +193,13 @@ const App = () => {
                       
                       {/* Student routes - protected and lazy loaded */}
                       <Route path="/student" element={<StudentRouteGuard><LazyWrapper><Student /></LazyWrapper></StudentRouteGuard>} />
-                      </Routes>
-                      
-                        <AIChatbot />
-                        <Toaster />
-                      </AuthProvider>
-                    </QueryClientProvider>
-                  </SecurityEnhancedWrapper>
-                </ReactSafetyWrapper>
+                    </Routes>
+                    
+                    <ChatbotWrapper />
+                    <Toaster />
+                    </AuthProvider>
+                  </QueryClientProvider>
+                </SecurityEnhancedWrapper>
               </AnalyticsProvider>
             </ReactSafetyWrapper>
           </SafeRouter>

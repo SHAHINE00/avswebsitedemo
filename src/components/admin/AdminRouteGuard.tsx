@@ -53,13 +53,26 @@ const AdminRouteGuard: React.FC<AdminRouteGuardProps> = ({ children }) => {
     }
   }, [user, authLoading, navigate]);
 
-  // Preload Admin page module once admin status is confirmed
+  // Preload Admin module and heavy components when isAdmin is confirmed (performance optimization)
   useEffect(() => {
-    if (isAdmin === true) {
-      // Prefetch the Admin module to avoid lazy loading delays
-      import('@/pages/Admin').catch(() => {
-        // Silent fail - module will be loaded on demand if prefetch fails
-      });
+    if (isAdmin) {
+      import('@/pages/Admin').catch(() => {});
+      
+      // Prefetch heavy modules on idle to reduce tab-switching delay
+      if (typeof requestIdleCallback !== 'undefined') {
+        requestIdleCallback(() => {
+          import('@/components/admin/dashboard/student-crm/StudentCRMDashboardEnhanced').catch(() => {});
+          import('@/components/admin/dashboard/AnalyticsSection').catch(() => {});
+          import('@/components/admin/dashboard/SystemMonitoring').catch(() => {});
+        });
+      } else {
+        // Fallback for browsers without requestIdleCallback
+        setTimeout(() => {
+          import('@/components/admin/dashboard/student-crm/StudentCRMDashboardEnhanced').catch(() => {});
+          import('@/components/admin/dashboard/AnalyticsSection').catch(() => {});
+          import('@/components/admin/dashboard/SystemMonitoring').catch(() => {});
+        }, 1000);
+      }
     }
   }, [isAdmin]);
 
