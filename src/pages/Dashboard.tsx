@@ -45,7 +45,7 @@ interface Appointment {
 }
 
 const Dashboard = () => {
-  const { user, signOut, isAdmin, adminLoading } = useAuth();
+  const { user, signOut, isAdmin, isStudent, adminLoading } = useAuth();
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const { getUserAppointments } = useAppointmentBooking();
@@ -88,18 +88,18 @@ const Dashboard = () => {
     };
   }, [user, setupRealTimeSubscriptions]);
 
-  // Redirect admin users to admin dashboard (unless viewing profile intentionally)
+  // Redirect admin-only users to admin dashboard (allow multi-role admins to view student section)
   useSafeEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const isProfileView = urlParams.get('profile') === 'true';
     
-    if (user && !loading && isAdmin && !adminLoading && !isProfileView) {
-      logInfo('Redirecting admin user to admin dashboard');
+    if (user && !loading && isAdmin && !isStudent && !adminLoading && !isProfileView) {
+      logInfo('Redirecting admin-only user to admin dashboard');
       window.history.pushState({}, '', '/admin');
       window.dispatchEvent(new PopStateEvent('popstate'));
       return;
     }
-  }, [user, loading, isAdmin, adminLoading]);
+  }, [user, loading, isAdmin, isStudent, adminLoading]);
 
   const fetchDashboardData = async () => {
     if (!user) return;

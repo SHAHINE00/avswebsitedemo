@@ -53,7 +53,8 @@ const StudentRouteGuard: React.FC<StudentRouteGuardProps> = ({ children }) => {
     );
   }
 
-  if (isAdmin) {
+  // Allow admins with student role to access student section
+  if (isAdmin && !isStudent) {
     return <Navigate to="/admin" replace />;
   }
 
