@@ -88,21 +88,29 @@ export const CommunicationCenter = ({ selectedStudents = [] }: CommunicationCent
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div>
+          <div className="space-y-2">
             <Label>Template Email</Label>
             <div className="flex gap-2">
-              <Select value={selectedTemplate} onValueChange={handleTemplateSelect}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Sélectionner un template" />
-                </SelectTrigger>
-                <SelectContent>
-                  {templates.map((template) => (
-                    <SelectItem key={template.id} value={template.id}>
-                      {template.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex-1">
+                <Select value={selectedTemplate} onValueChange={handleTemplateSelect}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Sélectionner un template" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border shadow-lg z-50">
+                    {templates.length === 0 ? (
+                      <div className="px-2 py-6 text-center text-sm text-muted-foreground">
+                        Aucun template disponible
+                      </div>
+                    ) : (
+                      templates.map((template) => (
+                        <SelectItem key={template.id} value={template.id}>
+                          {template.name}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
               <Button
                 variant="outline"
                 size="icon"
