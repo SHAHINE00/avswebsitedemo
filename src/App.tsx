@@ -97,13 +97,8 @@ const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   return <>{children}</>;
 };
 
-// Chatbot wrapper - skip rendering on admin routes for performance
+// Chatbot wrapper - render on all routes
 const ChatbotWrapper: React.FC = () => {
-  const location = window.location.pathname;
-  const isAdminRoute = location.startsWith('/admin');
-  
-  if (isAdminRoute) return null;
-  
   return (
     <React.Suspense fallback={null}>
       <AIChatbot />
