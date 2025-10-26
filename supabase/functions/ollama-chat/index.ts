@@ -169,7 +169,7 @@ serve(async (req) => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              model: 'mistral:7b-instruct-q4_K_M',
+              model: 'qwen2.5:1.5b',
               messages: [{ role: 'system', content: 'ping' }, { role: 'user', content: 'ok' }],
               stream: false,
               keep_alive: '10m',
@@ -328,9 +328,9 @@ For any information about our **AI and Tech courses**, our **certification progr
     });
     
     console.log(`[${requestId}] 🤖 Calling Ollama API...`);
-    const numPredict = sanitizedMessage.length <= 40 ? 48 : 80; // Aggressive limits for speed
+    const numPredict = sanitizedMessage.length <= 40 ? 64 : 100; // Optimized for Qwen 2.5 1.5B
     console.log(`[${requestId}] 🔧 num_predict: ${numPredict}`);
-    const selectedModel = model || 'mistral:7b-instruct-q4_K_M'; // Switch to Mistral
+    const selectedModel = model || 'qwen2.5:1.5b'; // CPU-optimized model
     const ollamaStartTime = Date.now();
     console.log(`[${requestId}] ⏱️ Pre-AI overhead: ${ollamaStartTime - requestStartTime}ms`);
     const ollamaResponse = await fetch('https://ai.avs.ma/api/chat', {
@@ -357,7 +357,7 @@ For any information about our **AI and Tech courses**, our **certification progr
           repeat_penalty: 1.1, // Prevent loops
           num_ctx: 2048, // Reduce context window from default 4096
           f16_kv: true, // Use FP16 for key/value cache (faster)
-          num_thread: 8 // Adjust based on VPS CPU cores
+          num_thread: 4 // CPU-safe for typical VPS (2-4 cores)
         }
       })
     });
