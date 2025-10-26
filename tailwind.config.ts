@@ -130,12 +130,22 @@ export default {
 				'float': {
 					'0%, 100%': { transform: 'translateY(0)' },
 					'50%': { transform: 'translateY(-10px)' }
+				},
+				'scroll-rtl': {
+					'0%': { transform: 'translateX(0)' },
+					'100%': { transform: 'translateX(-50%)' }
+				},
+				'scroll-ltr': {
+					'0%': { transform: 'translateX(-50%)' },
+					'100%': { transform: 'translateX(0)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'float': 'float 5s ease-in-out infinite'
+				'float': 'float 5s ease-in-out infinite',
+				'scroll-rtl': 'scroll-rtl 40s linear infinite',
+				'scroll-ltr': 'scroll-ltr 40s linear infinite'
 			},
 			fontFamily: {
 				sans: ['Source Sans Pro', 'sans-serif'],

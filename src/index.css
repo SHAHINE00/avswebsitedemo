@@ -616,3 +616,12 @@
 .font-source-sans {
   font-family: 'Source Sans Pro', sans-serif;
 }
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(to right, hsl(var(--academy-blue)), hsl(var(--academy-purple)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
