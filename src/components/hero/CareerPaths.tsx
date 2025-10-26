@@ -6,7 +6,7 @@ import { Brain, Code, Megaphone, TrendingUp, ArrowRight } from 'lucide-react';
 
 const CareerPaths: React.FC = () => {
   return (
-    <section className="career-opportunities py-8 sm:py-12 lg:py-16 bg-gradient-to-b from-white to-academy-gray/30">
+    <section className="career-opportunities py-6 sm:py-8 lg:py-10 bg-gradient-to-b from-white to-academy-gray/30">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
@@ -37,7 +37,6 @@ const CareerPaths: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
             {/* AI & Data Science Career */}
             <div className="group relative bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-academy-blue/10 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <div className="absolute top-3 sm:top-4 right-3 sm:right-4 w-2 h-2 bg-academy-blue rounded-full animate-pulse"></div>
               <div className="flex items-center mb-3 sm:mb-4">
                 <div className="bg-academy-blue/10 p-1.5 sm:p-2 rounded-lg mr-2 sm:mr-3">
                   <Brain className="w-4 sm:w-5 h-4 sm:h-5 text-academy-blue" />
@@ -74,7 +73,6 @@ const CareerPaths: React.FC = () => {
             
             {/* Programming & Infrastructure Career */}
             <div className="group relative bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg border border-academy-purple/10 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <div className="absolute top-3 sm:top-4 right-3 sm:right-4 w-2 h-2 bg-academy-purple rounded-full animate-pulse"></div>
               <div className="flex items-center mb-3 sm:mb-4">
                 <div className="bg-academy-purple/10 p-1.5 sm:p-2 rounded-lg mr-2 sm:mr-3">
                   <Code className="w-4 sm:w-5 h-4 sm:h-5 text-academy-purple" />
@@ -111,7 +109,6 @@ const CareerPaths: React.FC = () => {
 
             {/* Marketing Digital & Créatif */}
             <div className="group relative bg-gradient-to-br from-academy-lightblue to-academy-blue rounded-xl sm:rounded-2xl p-4 sm:p-6 text-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300 sm:col-span-2 lg:col-span-1">
-              <div className="absolute top-3 sm:top-4 right-3 sm:right-4 w-2 h-2 bg-white rounded-full animate-pulse"></div>
               <div className="flex items-center mb-3 sm:mb-4">
                 <div className="bg-white/20 p-1.5 sm:p-2 rounded-lg mr-2 sm:mr-3">
                   <Megaphone className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
