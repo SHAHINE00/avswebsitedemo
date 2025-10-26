@@ -117,6 +117,76 @@ function buildSystemPrompt(role: 'admin' | 'professor' | 'student' | 'visitor', 
     visitor: "Tu es l'assistant AVS.ma. Tu informes sur les programmes et processus d'inscription."
   };
 
+  const adminTabsContext = `
+📊 ONGLETS DASHBOARD ADMIN (13 au total):
+1. **Vue d'ensemble** - Statistiques globales (étudiants, cours, revenus), graphiques de croissance
+2. **Étudiants** - CRM complet : segments, communication, timeline, analytics à risque
+3. **Professeurs** - Gestion professeurs, spécialisations, assignments aux cours
+4. **Cours** - Catalogue, création, modification, visibilité, prix
+5. **Classes** - Groupes d'étudiants, horaires, salles, assignments
+6. **Utilisateurs** - Rôles, permissions, approbations pending
+7. **Documents** - Upload, organisation, partage de supports de cours
+8. **Abonnements** - Newsletter subscribers, exports CSV
+9. **Rendez-vous** - Calendrier, gestion demandes RDV
+10. **Visibilité** - Show/hide sections site web, personnalisation
+11. **Sécurité** - RLS policies, audit logs, monitoring
+12. **Analytics** - Traffic, engagement, conversion, performance
+13. **Système** - Edge functions health, DB monitoring`;
+
+  const studentTabsContext = `
+🎓 ONGLETS DASHBOARD ÉTUDIANT (10 au total):
+1. **Vue d'ensemble** - Dashboard personnel, stats progression, rappels
+2. **Progression** - Pourcentage complétion, modules terminés, analytics
+3. **Mes Cours** - Liste cours actifs/terminés, accès contenus, notes
+4. **Calendrier** - Sessions à venir, examens, deadlines, synchro Google
+5. **Assiduité** - Taux présence, absences justifiées, upload justificatifs
+6. **Certificats** - Téléchargement diplômes, codes vérification, partage LinkedIn
+7. **Récompenses** - Badges, achievements, XP, leaderboard
+8. **Notifications** - Alertes notes, messages profs, rappels, préférences
+9. **Profil** - Photo, coordonnées, password, préférences langue
+10. **Confidentialité** - Export données RGPD, consentements, suppression compte`;
+
+  const professorWorkflowsContext = `
+👨‍🏫 WORKFLOWS PROFESSEUR:
+- **Dashboard** : Stats cours, étudiants, assiduité, prochaines sessions
+- **Page Cours (/professor/course/{id})** : 
+  • Liste étudiants inscrits
+  • Marquer présences/absences (onglet Présence)
+  • Entrer notes et commentaires (onglet Notes)
+  • Publier annonces en masse (onglet Communication)
+  • Upload supports de cours (onglet Matériels)
+  • Calendrier des sessions, analytics classe
+- **Actions communes** :
+  • Envoyer emails groupés à tous les étudiants d'un cours
+  • Export Excel des notes et assiduité
+  • Alertes automatiques étudiants à risque (<75% présence)`;
+
+  const commonTaskWorkflows = {
+    admin: `
+📋 TÂCHES COURANTES ADMIN:
+• **Créer une classe** : Admin → Classes → Nouvelle Classe → Assigner professeur → Ajouter étudiants
+• **Envoyer email groupé** : Admin → Étudiants → Communication Center → Sélectionner segment → Composer
+• **Voir analytics revenus** : Admin → Étudiants → CRM Analytics → Onglet Revenus
+• **Créer un professeur** : Admin → Professeurs → Nouveau Professeur → Remplir infos → Assigner cours
+• **Gérer visibilité site** : Admin → Visibilité → Toggle sections homepage`,
+    
+    professor: `
+📋 TÂCHES COURANTES PROFESSEUR:
+• **Marquer présences** : Cours → Onglet Présence → Cocher présents/absents → Sauvegarder
+• **Entrer notes** : Cours → Onglet Notes → Sélectionner étudiant → Note/Max/Commentaire
+• **Envoyer annonce** : Cours → Communication → Rédiger message → Envoyer à tous
+• **Upload support** : Cours → Matériels → Upload fichier → Titre/Description → Publier
+• **Voir étudiants à risque** : Cours → Analytics → Section "À risque"`,
+    
+    student: `
+📋 TÂCHES COURANTES ÉTUDIANT:
+• **Voir ma progression** : Dashboard → Onglet Progression ou cartes Vue d'ensemble
+• **Télécharger certificat** : Dashboard → Onglet Certificats → Sélectionner → Télécharger PDF
+• **Justifier absence** : Dashboard → Onglet Assiduité → Trouver absence → Upload justificatif
+• **M'inscrire à un cours** : Catalogue (/curriculum) → Choisir cours → Bouton S'inscrire
+• **Voir mes notes** : Dashboard → Mes Cours → Sélectionner cours → Section Notes`
+  };
+
   const navigationPaths = {
     admin: `
 NAVIGATION ADMIN:
@@ -133,21 +203,42 @@ NAVIGATION ADMIN:
 - 📄 Documents: /admin (onglet Documents)
 - 📅 Rendez-vous: /admin (onglet Rendez-vous)
 - 📈 Analytics: /admin (onglet Analytics)
-- 🔒 Sécurité: /admin (onglet Sécurité)`,
+- 🔒 Sécurité: /admin (onglet Sécurité)
+- 🗂️ Abonnements: /admin (onglet Abonnements)
+- 👁️ Visibilité: /admin (onglet Visibilité)
+- ⚙️ Système: /admin (onglet Système)
+${adminTabsContext}
+${commonTaskWorkflows.admin}`,
+    
     professor: `
 NAVIGATION PROFESSEUR:
 - 📚 Dashboard: /professor
 - ➕ Créer un cours: Dashboard → Créer un nouveau cours
 - 👥 Voir les étudiants: Sélectionner un cours → Onglet Étudiants
-- 📝 Gérer les notes: Cours → Onglet Notes`,
+- 📝 Gérer les notes: Cours → Onglet Notes
+- ✅ Marquer présences: Cours → Onglet Présence
+- 📢 Annonces: Cours → Onglet Communication
+- 📎 Supports: Cours → Onglet Matériels
+${professorWorkflowsContext}
+${commonTaskWorkflows.professor}`,
+    
     student: `
 NAVIGATION ÉTUDIANT:
 - 🏠 Mon Dashboard: /student ou /dashboard
 - 📚 Mes cours: Dashboard → Onglet "Mes Cours"
-- 📊 Ma progression: Dashboard → Vue d'ensemble (cartes de progression)
-- 📅 Mes rendez-vous: Dashboard → Onglet "Rendez-vous"
+- 📊 Ma progression: Dashboard → Onglet "Progression"
+- 📅 Mon calendrier: Dashboard → Onglet "Calendrier"
+- ✅ Mon assiduité: Dashboard → Onglet "Assiduité"
+- 🎓 Mes certificats: Dashboard → Onglet "Certificats"
+- 🏆 Mes récompenses: Dashboard → Onglet "Récompenses"
+- 🔔 Notifications: Dashboard → Onglet "Notifications"
+- 👤 Mon profil: Dashboard → Onglet "Profil"
+- 🔒 Confidentialité: Dashboard → Onglet "Confidentialité"
 - 🗂️ Catalogue des cours: /curriculum
-- ✍️ S'inscrire à un cours: /curriculum → Choisir un cours → Bouton "S'inscrire"`,
+- ✍️ S'inscrire à un cours: /curriculum → Choisir un cours → Bouton "S'inscrire"
+${studentTabsContext}
+${commonTaskWorkflows.student}`,
+    
     visitor: `
 NAVIGATION VISITEUR:
 - 📚 Catalogue des formations: /curriculum
@@ -156,7 +247,11 @@ NAVIGATION VISITEUR:
 - 📅 Prendre rendez-vous: /appointment
 - 💬 Témoignages: /testimonials
 - 📝 Blog (ressources): /blog
-- 🔐 S'inscrire/Se connecter: /auth`
+- 🔐 S'inscrire/Se connecter: /auth
+- 🎯 Fonctionnalités plateforme: /features
+- 👨‍🏫 Nos instructeurs: /instructors
+- ❓ FAQ: /faq
+- 💼 Carrières: /careers`
   };
 
   return `${rolePrompts[role]}
