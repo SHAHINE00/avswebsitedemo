@@ -35,6 +35,26 @@ interface LanguageStrings {
     adminReports: string;
     adminAssistance: string;
   };
+  quickActionButtons: {
+    catalogue: string;
+    about: string;
+    appointment: string;
+    contact: string;
+    dashboard: string;
+    myProgress: string;
+    myCertificates: string;
+    myAttendance: string;
+    profDashboard: string;
+    myCourses: string;
+    announcements: string;
+    grades: string;
+    attendance: string;
+    overview: string;
+    crmStudents: string;
+    communication: string;
+    manageCourses: string;
+    analytics: string;
+  };
 }
 
 const translations: Record<SupportedLanguage, LanguageStrings> = {
@@ -70,6 +90,26 @@ const translations: Record<SupportedLanguage, LanguageStrings> = {
       adminSettings: "⚙️ Paramètres système",
       adminReports: "📈 Rapports d'activité",
       adminAssistance: "💬 Assistance"
+    },
+    quickActionButtons: {
+      catalogue: '📚 Catalogue',
+      about: 'ℹ️ À Propos',
+      appointment: '📅 Prendre RDV',
+      contact: '📞 Contact',
+      dashboard: '📊 Mon Dashboard',
+      myProgress: '📈 Ma Progression',
+      myCertificates: '🎓 Mes Certificats',
+      myAttendance: '✅ Mon Assiduité',
+      profDashboard: '📊 Dashboard',
+      myCourses: '📚 Mes Cours',
+      announcements: '📢 Annonces',
+      grades: '✏️ Notes',
+      attendance: '✅ Présences',
+      overview: '📊 Vue d\'ensemble',
+      crmStudents: '👥 CRM Étudiants',
+      communication: '✉️ Communication',
+      manageCourses: '📚 Gérer Cours',
+      analytics: '📈 Analytics'
     }
   },
   ar: {
@@ -104,6 +144,26 @@ const translations: Record<SupportedLanguage, LanguageStrings> = {
       adminSettings: "⚙️ إعدادات النظام",
       adminReports: "📈 تقارير النشاط",
       adminAssistance: "💬 المساعدة"
+    },
+    quickActionButtons: {
+      catalogue: '📚 الكتالوج',
+      about: 'ℹ️ معلومات عنا',
+      appointment: '📅 حجز موعد',
+      contact: '📞 اتصل بنا',
+      dashboard: '📊 لوحتي',
+      myProgress: '📈 تقدمي',
+      myCertificates: '🎓 شهاداتي',
+      myAttendance: '✅ حضوري',
+      profDashboard: '📊 لوحة التحكم',
+      myCourses: '📚 دوراتي',
+      announcements: '📢 الإعلانات',
+      grades: '✏️ الدرجات',
+      attendance: '✅ الحضور',
+      overview: '📊 نظرة عامة',
+      crmStudents: '👥 إدارة الطلاب',
+      communication: '✉️ التواصل',
+      manageCourses: '📚 إدارة الدورات',
+      analytics: '📈 التحليلات'
     }
   },
   en: {
@@ -138,6 +198,26 @@ const translations: Record<SupportedLanguage, LanguageStrings> = {
       adminSettings: "⚙️ System settings",
       adminReports: "📈 Activity reports",
       adminAssistance: "💬 Assistance"
+    },
+    quickActionButtons: {
+      catalogue: '📚 Catalogue',
+      about: 'ℹ️ About Us',
+      appointment: '📅 Book Appointment',
+      contact: '📞 Contact',
+      dashboard: '📊 My Dashboard',
+      myProgress: '📈 My Progress',
+      myCertificates: '🎓 My Certificates',
+      myAttendance: '✅ My Attendance',
+      profDashboard: '📊 Dashboard',
+      myCourses: '📚 My Courses',
+      announcements: '📢 Announcements',
+      grades: '✏️ Grades',
+      attendance: '✅ Attendance',
+      overview: '📊 Overview',
+      crmStudents: '👥 Student CRM',
+      communication: '✉️ Communication',
+      manageCourses: '📚 Manage Courses',
+      analytics: '📈 Analytics'
     }
   }
 };
