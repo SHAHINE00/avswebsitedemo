@@ -205,23 +205,30 @@ const AIChatbot = () => {
     try {
       setIsLoading(true);
       
-      // Convert messages to API format
-      const apiMessages = messages.map(msg => ({
-        role: msg.role,
-        content: msg.content
-      }));
-      apiMessages.push({ role: userMsg.role, content: userMsg.content });
+      // Get session for proper auth
+      const { data: { session } } = await supabase.auth.getSession();
+      const visitorId = !session?.user ? (localStorage.getItem('visitor_id') || crypto.randomUUID()) : null;
+      
+      if (!session?.user && visitorId) {
+        localStorage.setItem('visitor_id', visitorId);
+      }
+      
+      // Build headers with proper auth
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      
+      if (session?.access_token) {
+        headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
       
       const resp = await fetch(CHAT_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
+        headers,
         body: JSON.stringify({ 
-          messages: apiMessages,
-          language: language,
-          conversationId: currentConversationId
+          message: userMsg.content,
+          sessionId: currentConversationId,
+          visitorId: visitorId
         }),
       });
 
@@ -374,7 +381,21 @@ const AIChatbot = () => {
 
   const sendMessage = async (messageText?: string) => {
     const textToSend = messageText || input.trim();
-    if (!textToSend || isLoading || !currentConversationId) return;
+    if (!textToSend || isLoading) return;
+
+    // Ensure conversation exists
+    let convId = currentConversationId;
+    if (!convId) {
+      convId = await createConversation(language);
+      if (!convId) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de créer une conversation",
+          variant: "destructive"
+        });
+        return;
+      }
+    }
 
     const userMessage: Message = {
       id: crypto.randomUUID(),
@@ -387,12 +408,12 @@ const AIChatbot = () => {
     setInput("");
     
     // Save to database
-    await saveMessage(currentConversationId, userMessage);
+    await saveMessage(convId, userMessage);
     
     // Track analytics
     trackChatbotEvent({
       event_type: 'message_sent',
-      conversation_id: currentConversationId,
+      conversation_id: convId,
       event_data: { messageLength: textToSend.length }
     });
     
