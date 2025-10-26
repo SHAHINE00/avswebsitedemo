@@ -199,7 +199,7 @@ const AIChatbot = () => {
   };
 
   const streamChat = async (userMsg: Message) => {
-    const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+    const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ollama-chat`;
     const startTime = Date.now();
     
     try {
