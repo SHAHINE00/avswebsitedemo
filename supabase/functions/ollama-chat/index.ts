@@ -293,14 +293,12 @@ NAVIGATION VISITEUR:
   };
 
   return `${rolePrompts[language][role]}${languageInstructions[language]}
-
-${navigationPaths[role]}
-
-CAPACITÉ DE NAVIGATION:
-Quand un utilisateur demande à accéder à une fonctionnalité, guide-le avec:
-1. Le chemin exact (ex: "Admin → Étudiants → Communication Center")
-2. L'URL si applicable (ex: "/admin puis onglet Étudiants")
-3. Des instructions claires étape par étape
+  
+  CAPACITÉ DE NAVIGATION:
+  Quand un utilisateur demande à accéder à une fonctionnalité, guide-le avec:
+  1. Le chemin exact (ex: "Admin → Étudiants → Communication Center")
+  2. L'URL si applicable (ex: "/admin puis onglet Étudiants")
+  3. Des instructions claires étape par étape
 
 EXEMPLES DE NAVIGATION:
 - "Comment voir mes cours?" → "Allez sur votre Dashboard étudiant: /student puis onglet 'Mes Cours'"
@@ -508,6 +506,7 @@ For any information about our **AI and Tech courses**, our **certification progr
     console.log(`[${requestId}] 🔍 Context length: ${context.length} chars`);
     
     const systemPrompt = buildSystemPrompt(userRole, context, conversationHistory.length, language as 'fr' | 'ar' | 'en');
+    console.log(`[${requestId}] 📝 System prompt length: ${systemPrompt.length} chars`);
 
     // Save user message
     await supabase.from('chatbot_messages').insert({
@@ -534,7 +533,7 @@ For any information about our **AI and Tech courses**, our **certification progr
         stream: true,
         keep_alive: '10m',
         options: {
-          num_predict: 160,
+          num_predict: 100,
           temperature: 0.3,
           top_p: 0.9
         }
