@@ -73,18 +73,19 @@ function isOffTopicQuery(message: string): boolean {
 
 async function getRelevantContext(supabaseClient: any, userMessage: string, userRole: string): Promise<string> {
   try {
-    const keywords = extractKeywords(userMessage);
+    const keywords = extractKeywords(userMessage).slice(0, 5); // Reduce from 10 to 5
     
-    const { data: docs } = await supabaseClient
+    const { data: doc } = await supabaseClient
       .from('knowledge_base')
-      .select('title, content')
+      .select('content') // Only content, not title
       .or(`keywords.cs.{${keywords.join(',')}}${userRole !== 'visitor' ? `,role_access.is.null,role_access.cs.{${userRole}}` : ',role_access.is.null'}`)
       .order('priority', { ascending: false })
-      .limit(2);
+      .limit(1) // Reduce from 2 to 1
+      .maybeSingle();
     
-    if (!docs || docs.length === 0) return '';
+    if (!doc) return '';
     
-    return docs.map((d: any) => `[${d.title}]\n${d.content}`).join('\n\n');
+    return doc.content?.substring(0, 400) || ''; // Max 400 chars
   } catch (error) {
     console.error('Error fetching context:', error);
     return '';
@@ -112,246 +113,39 @@ async function determineUserRole(supabaseClient: any, userId: string | null): Pr
 }
 
 function buildSystemPrompt(role: 'admin' | 'professor' | 'student' | 'visitor', context: string, historyLength: number, language: 'fr' | 'ar' | 'en' = 'fr'): string {
-  const rolePrompts = {
+  const prompts = {
     fr: {
-      admin: "Tu es l'assistant AVS.ma pour administrateurs. Tu aides avec la gestion de la plateforme.",
-      professor: "Tu es l'assistant AVS.ma pour professeurs. Tu aides avec la création de cours et gestion étudiants.",
-      student: "Tu es l'assistant AVS.ma pour étudiants. Tu aides avec les inscriptions et progression des cours.",
-      visitor: "Tu es l'assistant AVS.ma. Tu informes sur les programmes et processus d'inscription."
+      admin: "Assistant AVS.ma pour admins. Aide à la gestion plateforme.",
+      professor: "Assistant AVS.ma pour profs. Aide création cours & gestion étudiants.",
+      student: "Assistant AVS.ma pour étudiants. Aide inscriptions & progression.",
+      visitor: "Assistant AVS.ma. Informe sur formations & inscription."
     },
     en: {
-      admin: "You are the AVS.ma assistant for administrators. You help with platform management.",
-      professor: "You are the AVS.ma assistant for professors. You help with course creation and student management.",
-      student: "You are the AVS.ma assistant for students. You help with enrollment and course progression.",
-      visitor: "You are the AVS.ma assistant. You inform about programs and enrollment process."
+      admin: "AVS.ma assistant for admins. Help with platform management.",
+      professor: "AVS.ma assistant for professors. Help with courses & students.",
+      student: "AVS.ma assistant for students. Help with enrollment & progress.",
+      visitor: "AVS.ma assistant. Info about programs & enrollment."
     },
     ar: {
-      admin: "أنت مساعد AVS.ma للمسؤولين. تساعد في إدارة المنصة.",
-      professor: "أنت مساعد AVS.ma للأساتذة. تساعد في إنشاء الدورات وإدارة الطلاب.",
-      student: "أنت مساعد AVS.ma للطلاب. تساعد في التسجيل وتقدم الدورات.",
-      visitor: "أنت مساعد AVS.ma. تقدم معلومات حول البرامج وعملية التسجيل."
+      admin: "مساعد AVS.ma للمسؤولين. مساعدة في إدارة المنصة.",
+      professor: "مساعد AVS.ma للأساتذة. مساعدة في الدورات والطلاب.",
+      student: "مساعد AVS.ma للطلاب. مساعدة في التسجيل والتقدم.",
+      visitor: "مساعد AVS.ma. معلومات عن البرامج والتسجيل."
     }
   };
 
-  const languageInstructions = {
-    fr: "\n\n⚠️ CRITIQUE: Tu dois TOUJOURS répondre en français, même si la question est posée dans une autre langue.",
-    en: "\n\n⚠️ CRITICAL: You must ALWAYS respond in English, even if the question is asked in another language.",
-    ar: "\n\n⚠️ هام: يجب عليك الرد دائمًا باللغة العربية، حتى لو تم طرح السؤال بلغة أخرى."
+  const rules = {
+    fr: "Réponds en français, concis (max 150 mots). Si hors-sujet éducation/AVS.ma, refuse poliment.",
+    en: "Respond in English, concise (max 150 words). If off-topic education/AVS.ma, politely refuse.",
+    ar: "أجب بالعربية، موجز (150 كلمة كحد أقصى). إذا خارج الموضوع، ارفض بأدب."
   };
 
-  const generalRules = {
-    fr: `RÈGLES GÉNÉRALES:
-- Réponds en français, clair et concis (max 200 mots)
-- Base tes réponses sur le CONTEXTE fourni
-- Si tu ne sais pas, recommande de contacter support@avs.ma
-- Reste strictement dans le domaine AVS.ma (plateforme éducative IA/Tech au Maroc)`,
-    en: `GENERAL RULES:
-- Respond in English, clear and concise (max 200 words)
-- Base your answers on the provided CONTEXT
-- If you don't know, recommend contacting support@avs.ma
-- Stay strictly within AVS.ma domain (AI/Tech educational platform in Morocco)`,
-    ar: `القواعد العامة:
-- أجب باللغة العربية، بشكل واضح وموجز (الحد الأقصى 200 كلمة)
-- اعتمد على السياق المقدم في إجاباتك
-- إذا كنت لا تعرف، أوصِ بالاتصال support@avs.ma
-- ابقَ ضمن نطاق AVS.ma بدقة (منصة تعليمية للذكاء الاصطناعي والتكنولوجيا في المغرب)`
-  };
+  return `${prompts[language][role]}
 
-  const adminTabsContext = `
-📊 ONGLETS DASHBOARD ADMIN (13 au total):
-1. **Vue d'ensemble** - Statistiques globales (étudiants, cours, revenus), graphiques de croissance
-2. **Étudiants** - CRM complet : segments, communication, timeline, analytics à risque
-3. **Professeurs** - Gestion professeurs, spécialisations, assignments aux cours
-4. **Cours** - Catalogue, création, modification, visibilité, prix
-5. **Classes** - Groupes d'étudiants, horaires, salles, assignments
-6. **Utilisateurs** - Rôles, permissions, approbations pending
-7. **Documents** - Upload, organisation, partage de supports de cours
-8. **Abonnements** - Newsletter subscribers, exports CSV
-9. **Rendez-vous** - Calendrier, gestion demandes RDV
-10. **Visibilité** - Show/hide sections site web, personnalisation
-11. **Sécurité** - RLS policies, audit logs, monitoring
-12. **Analytics** - Traffic, engagement, conversion, performance
-13. **Système** - Edge functions health, DB monitoring`;
+${rules[language]}
 
-  const studentTabsContext = `
-🎓 ONGLETS DASHBOARD ÉTUDIANT (10 au total):
-1. **Vue d'ensemble** - Dashboard personnel, stats progression, rappels
-2. **Progression** - Pourcentage complétion, modules terminés, analytics
-3. **Mes Cours** - Liste cours actifs/terminés, accès contenus, notes
-4. **Calendrier** - Sessions à venir, examens, deadlines, synchro Google
-5. **Assiduité** - Taux présence, absences justifiées, upload justificatifs
-6. **Certificats** - Téléchargement diplômes, codes vérification, partage LinkedIn
-7. **Récompenses** - Badges, achievements, XP, leaderboard
-8. **Notifications** - Alertes notes, messages profs, rappels, préférences
-9. **Profil** - Photo, coordonnées, password, préférences langue
-10. **Confidentialité** - Export données RGPD, consentements, suppression compte`;
-
-  const professorWorkflowsContext = `
-👨‍🏫 WORKFLOWS PROFESSEUR:
-- **Dashboard** : Stats cours, étudiants, assiduité, prochaines sessions
-- **Page Cours (/professor/course/{id})** : 
-  • Liste étudiants inscrits
-  • Marquer présences/absences (onglet Présence)
-  • Entrer notes et commentaires (onglet Notes)
-  • Publier annonces en masse (onglet Communication)
-  • Upload supports de cours (onglet Matériels)
-  • Calendrier des sessions, analytics classe
-- **Actions communes** :
-  • Envoyer emails groupés à tous les étudiants d'un cours
-  • Export Excel des notes et assiduité
-  • Alertes automatiques étudiants à risque (<75% présence)`;
-
-  const commonTaskWorkflows = {
-    admin: `
-📋 TÂCHES COURANTES ADMIN:
-• **Créer une classe** : Admin → Classes → Nouvelle Classe → Assigner professeur → Ajouter étudiants
-• **Envoyer email groupé** : Admin → Étudiants → Communication Center → Sélectionner segment → Composer
-• **Voir analytics revenus** : Admin → Étudiants → CRM Analytics → Onglet Revenus
-• **Créer un professeur** : Admin → Professeurs → Nouveau Professeur → Remplir infos → Assigner cours
-• **Gérer visibilité site** : Admin → Visibilité → Toggle sections homepage`,
-    
-    professor: `
-📋 TÂCHES COURANTES PROFESSEUR:
-• **Marquer présences** : Cours → Onglet Présence → Cocher présents/absents → Sauvegarder
-• **Entrer notes** : Cours → Onglet Notes → Sélectionner étudiant → Note/Max/Commentaire
-• **Envoyer annonce** : Cours → Communication → Rédiger message → Envoyer à tous
-• **Upload support** : Cours → Matériels → Upload fichier → Titre/Description → Publier
-• **Voir étudiants à risque** : Cours → Analytics → Section "À risque"`,
-    
-    student: `
-📋 TÂCHES COURANTES ÉTUDIANT:
-• **Voir ma progression** : Dashboard → Onglet Progression ou cartes Vue d'ensemble
-• **Télécharger certificat** : Dashboard → Onglet Certificats → Sélectionner → Télécharger PDF
-• **Justifier absence** : Dashboard → Onglet Assiduité → Trouver absence → Upload justificatif
-• **M'inscrire à un cours** : Catalogue (/curriculum) → Choisir cours → Bouton S'inscrire
-• **Voir mes notes** : Dashboard → Mes Cours → Sélectionner cours → Section Notes`
-  };
-
-  const navigationPaths = {
-    admin: `
-NAVIGATION ADMIN:
-- 📊 Dashboard général: /admin (onglet Vue d'ensemble)
-- 👥 Gestion étudiants (CRM): /admin (onglet Étudiants)
-  • Student CRM Dashboard - Statistiques, segments, à risque
-  • Communication Center - Envoyer emails, créer templates
-  • Timeline étudiants - Historique complet
-  • Actions en masse - Inscription, emails groupés
-- 👨‍🏫 Gestion professeurs: /admin (onglet Professeurs)
-- 📚 Gestion cours: /admin (onglet Cours)
-- 🏫 Classes: /admin (onglet Classes)
-- 👤 Utilisateurs: /admin (onglet Utilisateurs)
-- 📄 Documents: /admin (onglet Documents)
-- 📅 Rendez-vous: /admin (onglet Rendez-vous)
-- 📈 Analytics: /admin (onglet Analytics)
-- 🔒 Sécurité: /admin (onglet Sécurité)
-- 🗂️ Abonnements: /admin (onglet Abonnements)
-- 👁️ Visibilité: /admin (onglet Visibilité)
-- ⚙️ Système: /admin (onglet Système)
-${adminTabsContext}
-${commonTaskWorkflows.admin}`,
-    
-    professor: `
-NAVIGATION PROFESSEUR:
-- 📚 Dashboard: /professor
-- ➕ Créer un cours: Dashboard → Créer un nouveau cours
-- 👥 Voir les étudiants: Sélectionner un cours → Onglet Étudiants
-- 📝 Gérer les notes: Cours → Onglet Notes
-- ✅ Marquer présences: Cours → Onglet Présence
-- 📢 Annonces: Cours → Onglet Communication
-- 📎 Supports: Cours → Onglet Matériels
-${professorWorkflowsContext}
-${commonTaskWorkflows.professor}`,
-    
-    student: `
-NAVIGATION ÉTUDIANT:
-- 🏠 Mon Dashboard: /student ou /dashboard
-- 📚 Mes cours: Dashboard → Onglet "Mes Cours"
-- 📊 Ma progression: Dashboard → Onglet "Progression"
-- 📅 Mon calendrier: Dashboard → Onglet "Calendrier"
-- ✅ Mon assiduité: Dashboard → Onglet "Assiduité"
-- 🎓 Mes certificats: Dashboard → Onglet "Certificats"
-- 🏆 Mes récompenses: Dashboard → Onglet "Récompenses"
-- 🔔 Notifications: Dashboard → Onglet "Notifications"
-- 👤 Mon profil: Dashboard → Onglet "Profil"
-- 🔒 Confidentialité: Dashboard → Onglet "Confidentialité"
-- 🗂️ Catalogue des cours: /curriculum
-- ✍️ S'inscrire à un cours: /curriculum → Choisir un cours → Bouton "S'inscrire"
-${studentTabsContext}
-${commonTaskWorkflows.student}`,
-    
-    visitor: `
-NAVIGATION VISITEUR:
-- 📚 Catalogue des formations: /curriculum
-- ℹ️ À propos d'AVS.ma: /about
-- 📞 Contacter l'école: /contact
-- 📅 Prendre rendez-vous: /appointment
-- 💬 Témoignages: /testimonials
-- 📝 Blog (ressources): /blog
-- 🔐 S'inscrire/Se connecter: /auth
-- 🎯 Fonctionnalités plateforme: /features
-- 👨‍🏫 Nos instructeurs: /instructors
-- ❓ FAQ: /faq
-- 💼 Carrières: /careers`
-  };
-
-  return `${rolePrompts[language][role]}${languageInstructions[language]}
-  
-  NAVIGATION:
-  Réponds avec un chemin court (ex: "Admin → Étudiants → Communication Center") et une URL si utile (ex: "/admin").
-
-
-⛔ RÈGLE CRITIQUE - DOMAINE STRICTEMENT LIMITÉ:
-Tu es UNIQUEMENT un assistant pour la plateforme AVS.ma (African Virtual School).
-AVS.ma est une plateforme éducative marocaine spécialisée dans l'IA, Tech, et formations professionnelles.
-
-TU NE DOIS RÉPONDRE QU'AUX QUESTIONS SUR:
-✅ Les cours et formations disponibles sur AVS.ma (IA, Data Science, Cybersécurité, etc.)
-✅ Les inscriptions, certifications, et progression des étudiants
-✅ Les fonctionnalités de la plateforme (création de cours, gestion, tableau de bord)
-✅ Les informations pratiques (tarifs, contact, support technique AVS.ma)
-✅ L'utilisation de la plateforme selon le rôle (admin/professeur/étudiant)
-
-❌ REFUSE POLIMENT TOUTE QUESTION HORS SUJET:
-- Hôtels, restaurants, voyage → Refuse poliment
-- Météo, actualités, sport → Refuse poliment
-- Santé, cuisine, divertissement → Refuse poliment
-- Shopping, services généraux → Refuse poliment
-- Questions générales sans lien avec éducation/plateforme → Redirige vers AVS.ma
-
-RÉPONSE TYPE POUR QUESTIONS HORS SUJET:
-"Désolé, je suis l'assistant AVS.ma et je ne peux répondre qu'aux questions concernant notre plateforme éducative. 📚
-
-Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifiantes**, ou l'**utilisation de la plateforme**, je suis là pour vous aider!
-
-**Puis-je vous renseigner sur:**
-- Les formations disponibles
-- Le processus d'inscription
-- Les fonctionnalités de la plateforme
-- Votre progression ou vos cours"
-
-${context ? `CONTEXTE PLATEFORME:\n${context}\n` : ''}
-
-RÈGLES DE FORMATAGE IMPORTANTES:
-- Utilise des listes à puces (- item) pour énumérer plusieurs points
-- Mets en **gras** les mots et concepts importants
-- Structure tes réponses avec des paragraphes courts et aérés
-- Utilise des émojis pertinents pour améliorer la lisibilité 🎯
-- Pour les titres de section, utilise le format: **Titre** 📚
-- Sépare les différentes sections avec des lignes vides
-
-STRUCTURE DE RÉPONSE:
-- Pour des informations multiples, utilise ce format:
-
-**Titre de section** 📚
-- Premier point important
-- Deuxième point avec détails
-- Troisième point
-
-- Pour une seule info: réponds directement en 2-3 phrases courtes et claires.
-
-${generalRules[language]}
-
-${historyLength > 0 ? `HISTORIQUE: ${historyLength} messages dans cette conversation` : ''}`;
+${context ? `CONTEXTE:\n${context}\n` : ''}
+${historyLength > 0 ? `${historyLength} msg précédents` : ''}`;
 }
 
 serve(async (req) => {
@@ -375,7 +169,7 @@ serve(async (req) => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              model: 'qwen2.5:1.5b',
+              model: 'mistral:7b-instruct-q4_K_M',
               messages: [{ role: 'system', content: 'ping' }, { role: 'user', content: 'ok' }],
               stream: false,
               keep_alive: '10m',
@@ -512,7 +306,7 @@ For any information about our **AI and Tech courses**, our **certification progr
       .select('role, content')
       .eq('conversation_id', currentConversationId)
       .order('created_at', { ascending: false })
-      .limit(6);
+      .limit(4); // Reduce from 6 to 4
     
     const userRole = await rolePromise;
     console.log(`[${requestId}] 👤 User role: ${userRole}`);
@@ -534,9 +328,9 @@ For any information about our **AI and Tech courses**, our **certification progr
     });
     
     console.log(`[${requestId}] 🤖 Calling Ollama API...`);
-    const numPredict = sanitizedMessage.length <= 60 ? 64 : 100;
+    const numPredict = sanitizedMessage.length <= 40 ? 48 : 80; // Aggressive limits for speed
     console.log(`[${requestId}] 🔧 num_predict: ${numPredict}`);
-    const selectedModel = model || 'qwen2.5:1.5b';
+    const selectedModel = model || 'mistral:7b-instruct-q4_K_M'; // Switch to Mistral
     const ollamaStartTime = Date.now();
     console.log(`[${requestId}] ⏱️ Pre-AI overhead: ${ollamaStartTime - requestStartTime}ms`);
     const ollamaResponse = await fetch('https://ai.avs.ma/api/chat', {
@@ -553,12 +347,17 @@ For any information about our **AI and Tech courses**, our **certification progr
           { role: 'user', content: sanitizedMessage }
         ],
         stream: true,
-        keep_alive: '10m',
-        stop: ["\n\n\n"],
+        keep_alive: -1, // Never unload model
+        stop: ["</s>", "\n\n\n", "Contact:", "support@avs.ma"], // Smart stops
         options: {
           num_predict: numPredict,
-          temperature: 0.3,
-          top_p: 0.9
+          temperature: 0.2, // More deterministic = faster
+          top_p: 0.85, // Slightly lower = faster sampling
+          top_k: 40, // Add for speed
+          repeat_penalty: 1.1, // Prevent loops
+          num_ctx: 2048, // Reduce context window from default 4096
+          f16_kv: true, // Use FP16 for key/value cache (faster)
+          num_thread: 8 // Adjust based on VPS CPU cores
         }
       })
     });
