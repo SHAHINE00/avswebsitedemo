@@ -43,7 +43,7 @@ const FeaturesSection: React.FC = () => {
             <GraduationCap className="w-8 h-8 text-academy-blue" />
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-academy-blue to-academy-purple bg-clip-text text-transparent">
-            Pourquoi choisir AVS Innovation Institute ?
+            Pourquoi choisir AVS Innovation Institut ?
           </h2>
           <p className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
             Leader de la formation professionnelle au Maroc, nous formons les talents de demain avec des programmes innovants, 
