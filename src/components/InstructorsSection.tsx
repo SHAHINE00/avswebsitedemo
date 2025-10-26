@@ -40,7 +40,7 @@ const InstructorsSection: React.FC = () => {
     <section id="instructors" className="py-8 sm:py-12 lg:py-16 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Apprenez auprès d'experts</h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 gradient-text">Apprenez auprès d'experts</h2>
           <p className="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto px-4">
             Nos formateurs cumulent des décennies d'expérience dans les entreprises et instituts de recherche leaders en AI.
           </p>
