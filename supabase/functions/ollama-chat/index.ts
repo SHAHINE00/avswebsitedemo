@@ -508,7 +508,7 @@ For any information about our **AI and Tech courses**, our **certification progr
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'mistral:latest',
+        model: 'qwen2.5:1.5b',  // Much faster than mistral, optimized for chat
         messages: [
           { role: 'system', content: systemPrompt },
           ...conversationHistory,
