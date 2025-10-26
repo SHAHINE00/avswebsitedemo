@@ -561,9 +561,11 @@ For any information about our **AI and Tech courses**, our **certification progr
     const ollamaResponseTime = Date.now() - ollamaStartTime;
     console.log(`[${requestId}] ✅ Ollama responded in ${ollamaResponseTime}ms, starting stream...`);
 
-    // Stream response and collect for saving
+    // Stream response: convert Ollama JSON lines to OpenAI-style SSE
     const reader = ollamaResponse.body?.getReader();
+    const decoder = new TextDecoder();
     const encoder = new TextEncoder();
+    let buffer = '';
     let fullResponse = '';
     
     const stream = new ReadableStream({
@@ -573,23 +575,43 @@ For any information about our **AI and Tech courses**, our **certification progr
             const { done, value } = await reader!.read();
             if (done) break;
             
-            // Collect response text
-            const text = new TextDecoder().decode(value);
-            const lines = text.split('\n').filter(line => line.trim());
-            for (const line of lines) {
-              if (line.startsWith('data: ')) {
-                const jsonStr = line.slice(6);
-                if (jsonStr !== '[DONE]') {
-                  try {
-                    const parsed = JSON.parse(jsonStr);
-                    const content = parsed.choices?.[0]?.delta?.content;
-                    if (content) fullResponse += content;
-                  } catch {}
+            buffer += decoder.decode(value, { stream: true });
+            
+            // Process complete JSON lines
+            let newlineIndex;
+            while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
+              let line = buffer.slice(0, newlineIndex);
+              buffer = buffer.slice(newlineIndex + 1);
+              
+              line = line.trim();
+              if (!line) continue;
+              
+              // Some gateways may prefix with "data:", strip it
+              if (line.startsWith('data:')) line = line.slice(5).trim();
+              
+              try {
+                const json = JSON.parse(line);
+                
+                // Ollama signals completion with done: true
+                if (json.done) {
+                  controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+                  break;
                 }
+                
+                // Extract content from Ollama's format: {message: {content: "..."}}
+                const chunk = json.message?.content || '';
+                if (chunk) {
+                  fullResponse += chunk;
+                  // Convert to OpenAI SSE format
+                  const payload = { choices: [{ delta: { content: chunk } }] };
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
+                }
+              } catch (parseError) {
+                // Incomplete JSON, put line back and wait for more data
+                buffer = line + '\n' + buffer;
+                break;
               }
             }
-            
-            controller.enqueue(value);
           }
           
           // Save assistant message
