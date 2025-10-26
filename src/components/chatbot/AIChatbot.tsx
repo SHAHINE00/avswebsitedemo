@@ -686,7 +686,7 @@ const AIChatbot = () => {
                       </div>
                       
                       {/* Quick Action Buttons */}
-                      <QuickActionButtons userRole={getDisplayRole()} />
+                      <QuickActionButtons key={language} userRole={getDisplayRole()} />
                       
                       {/* Quick Replies */}
                       <div className="grid grid-cols-2 gap-2 mt-2">
