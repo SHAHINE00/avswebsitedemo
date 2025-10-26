@@ -67,9 +67,8 @@ export const QuickActionButtons: React.FC<QuickActionButtonsProps> = ({ userRole
           variant="outline"
           size="sm"
           onClick={() => navigate(action.path)}
-          className="text-xs h-8 px-3 gap-1.5 hover:bg-primary/10"
+          className="text-xs h-8 px-3 hover:bg-primary/10 cursor-pointer"
         >
-          {action.icon}
           {action.label}
         </Button>
       ))}
