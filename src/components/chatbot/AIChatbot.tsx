@@ -6,6 +6,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ChatMessage from "./ChatMessage";
 import TypingIndicator from "./TypingIndicator";
+import { NavigationButtons, parseNavigationActions } from "./NavigationButtons";
+import { QuickActionButtons } from "./QuickActionButtons";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useChatbotAnalytics } from "@/hooks/useChatbotAnalytics";
@@ -19,6 +21,7 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  navigationActions?: Array<{ label: string; path: string }>;
 }
 
 const AIChatbot = () => {
@@ -313,6 +316,18 @@ const AIChatbot = () => {
         }
       }
 
+      // Parse navigation actions from assistant response
+      const navigationActions = parseNavigationActions(assistantContent);
+      
+      // Update message with navigation actions
+      if (navigationActions.length > 0) {
+        setMessages((prev) => 
+          prev.map((m) => 
+            m.id === assistantId ? { ...m, navigationActions } : m
+          )
+        );
+      }
+
       // Save assistant message
       if (currentConversationId && assistantContent) {
         await saveMessage(currentConversationId, {
@@ -328,7 +343,8 @@ const AIChatbot = () => {
           conversation_id: currentConversationId,
           event_data: {
             response_time_ms: responseTime,
-            response_length: assistantContent.length
+            response_length: assistantContent.length,
+            has_navigation: navigationActions.length > 0
           }
         });
       }
@@ -612,8 +628,11 @@ const AIChatbot = () => {
                         <p className="text-sm">{getWelcomeMessage()}</p>
                       </div>
                       
+                      {/* Quick Action Buttons */}
+                      <QuickActionButtons userRole={getDisplayRole()} />
+                      
                       {/* Quick Replies */}
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-2 gap-2 mt-2">
                         {getQuickReplies().map((reply, idx) => (
                           <Button
                             key={idx}
@@ -630,11 +649,15 @@ const AIChatbot = () => {
                   )}
 
                   {messages.map((message) => (
-                    <ChatMessage 
-                      key={message.id} 
-                      message={message} 
-                      conversationId={currentConversationId || ''} 
-                    />
+                    <div key={message.id}>
+                      <ChatMessage 
+                        message={message} 
+                        conversationId={currentConversationId || ''} 
+                      />
+                      {message.role === 'assistant' && message.navigationActions && message.navigationActions.length > 0 && (
+                        <NavigationButtons actions={message.navigationActions} />
+                      )}
+                    </div>
                   ))}
 
                   {isLoading && <TypingIndicator />}
