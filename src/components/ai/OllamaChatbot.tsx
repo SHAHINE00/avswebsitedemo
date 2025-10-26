@@ -6,12 +6,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import ChatMessage from '@/components/chatbot/ChatMessage';
 import TypingIndicator from '@/components/chatbot/TypingIndicator';
+import { NavigationButtons, parseNavigationActions } from '@/components/chatbot/NavigationButtons';
 
 interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  navigationActions?: Array<{ label: string; path: string }>;
 }
 
 export default function OllamaChatbot() {
@@ -224,11 +226,15 @@ export default function OllamaChatbot() {
             
             if (data.message?.content) {
               setMessages(prev =>
-                prev.map(msg =>
-                  msg.id === assistantMessageId
-                    ? { ...msg, content: msg.content + data.message.content }
-                    : msg
-                )
+                prev.map(msg => {
+                  if (msg.id === assistantMessageId) {
+                    const updatedContent = msg.content + data.message.content;
+                    // Parse navigation actions from complete message
+                    const navigationActions = parseNavigationActions(updatedContent);
+                    return { ...msg, content: updatedContent, navigationActions };
+                  }
+                  return msg;
+                })
               );
             }
           } catch (parseError) {
@@ -348,11 +354,15 @@ export default function OllamaChatbot() {
         ) : (
           <>
             {messages.map((message) => (
-              <ChatMessage 
-                key={message.id} 
-                message={message} 
-                conversationId={sessionId || ''} 
-              />
+              <div key={message.id}>
+                <ChatMessage 
+                  message={message} 
+                  conversationId={sessionId || ''} 
+                />
+                {message.role === 'assistant' && message.navigationActions && message.navigationActions.length > 0 && (
+                  <NavigationButtons actions={message.navigationActions} />
+                )}
+              </div>
             ))}
             
             {isLoading && <TypingIndicator />}

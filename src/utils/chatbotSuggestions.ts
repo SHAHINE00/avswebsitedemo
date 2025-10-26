@@ -101,22 +101,22 @@ export const getInitialSuggestions = (userRole: string = 'visitor'): string[] =>
     visitor: [
       'Quelles formations proposez-vous ?',
       'Comment puis-je m\'inscrire ?',
-      'Quels sont les frais de scolarité ?'
+      'Voir le catalogue des cours'
     ],
     student: [
-      'Mon emploi du temps',
-      'Consulter mes notes',
-      'Ressources de cours'
+      'Voir mes cours',
+      'Comment m\'inscrire à un cours ?',
+      'Suivre ma progression'
     ],
     professor: [
-      'Mes classes',
-      'Créer une évaluation',
-      'Statistiques des étudiants'
+      'Voir mes cours',
+      'Comment créer un cours ?',
+      'Où gérer les notes ?'
     ],
     admin: [
-      'Tableau de bord',
-      'Gérer les utilisateurs',
-      'Paramètres système'
+      'Comment accéder au CRM Étudiants ?',
+      'Envoyer un email aux étudiants',
+      'Créer un nouveau professeur'
     ]
   };
 
