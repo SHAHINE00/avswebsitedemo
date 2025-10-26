@@ -23,6 +23,8 @@ function checkRateLimit(userId: string): boolean {
   return true;
 }
 
+let lastWarmAt = 0;
+
 function sanitizeInput(text: string): string {
   return text
     .replace(/<[^>]*>/g, '')
@@ -294,16 +296,9 @@ NAVIGATION VISITEUR:
 
   return `${rolePrompts[language][role]}${languageInstructions[language]}
   
-  CAPACITÉ DE NAVIGATION:
-  Quand un utilisateur demande à accéder à une fonctionnalité, guide-le avec:
-  1. Le chemin exact (ex: "Admin → Étudiants → Communication Center")
-  2. L'URL si applicable (ex: "/admin puis onglet Étudiants")
-  3. Des instructions claires étape par étape
+  NAVIGATION:
+  Réponds avec un chemin court (ex: "Admin → Étudiants → Communication Center") et une URL si utile (ex: "/admin").
 
-EXEMPLES DE NAVIGATION:
-- "Comment voir mes cours?" → "Allez sur votre Dashboard étudiant: /student puis onglet 'Mes Cours'"
-- "Où créer un professeur?" → "Admin → Professeurs → Nouveau Professeur"
-- "Comment envoyer un email aux étudiants?" → "Admin → Étudiants → Communication Center"
 
 ⛔ RÈGLE CRITIQUE - DOMAINE STRICTEMENT LIMITÉ:
 Tu es UNIQUEMENT un assistant pour la plateforme AVS.ma (African Virtual School).
@@ -369,6 +364,27 @@ serve(async (req) => {
 
   try {
     console.log(`[${requestId}] 🚀 Chat request started`);
+
+    // Background prewarm if idle >8m
+    if (Date.now() - lastWarmAt > 8 * 60 * 1000) {
+      lastWarmAt = Date.now();
+      console.log(`[${requestId}] 🔥 Prewarming model in background`);
+      (async () => {
+        try {
+          await fetch('https://ai.avs.ma/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: 'qwen2.5:1.5b',
+              messages: [{ role: 'system', content: 'ping' }, { role: 'user', content: 'ok' }],
+              stream: false,
+              keep_alive: '10m',
+              options: { num_predict: 1 }
+            })
+          });
+        } catch (_) {}
+      })();
+    }
     
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY')!;
@@ -395,7 +411,7 @@ serve(async (req) => {
       );
     }
 
-    const { message, sessionId, visitorId, language = 'fr' } = await req.json();
+    const { message, sessionId, visitorId, language = 'fr', model } = await req.json();
     const sanitizedMessage = sanitizeInput(message);
     console.log(`[${requestId}] 📝 Message length: ${sanitizedMessage.length}, User: ${userId || 'anonymous'}, Language: ${language}`);
 
@@ -469,10 +485,10 @@ For any information about our **AI and Tech courses**, our **certification progr
     }
 
     const t0 = Date.now();
-    const userRole = await determineUserRole(supabase, userId);
-    console.log(`[${requestId}] 👤 User role: ${userRole}`);
+    const rolePromise = determineUserRole(supabase, userId);
     console.log(`[${requestId}] 🌍 Using language: ${language}`);
     
+    let updateActivityPromise: Promise<any> | undefined;
     // Get or create conversation
     let currentConversationId = sessionId;
     if (!currentConversationId) {
@@ -483,40 +499,46 @@ For any information about our **AI and Tech courses**, our **certification progr
         .single();
       currentConversationId = newConversation?.id;
     } else {
-      // Update last activity
-      await supabase
+      // Update last activity (background)
+      updateActivityPromise = supabase
         .from('chatbot_conversations')
         .update({ updated_at: new Date().toISOString() })
         .eq('id', currentConversationId);
     }
     
-    // Get conversation history (last 10 messages)
-    const { data: history } = await supabase
+    // Fetch history in parallel while resolving role and context
+    const historyPromise = supabase
       .from('chatbot_messages')
       .select('role, content')
       .eq('conversation_id', currentConversationId)
       .order('created_at', { ascending: false })
-      .limit(10);
+      .limit(6);
+    
+    const userRole = await rolePromise;
+    console.log(`[${requestId}] 👤 User role: ${userRole}`);
+    
+    const contextPromise = getRelevantContext(supabase, sanitizedMessage, userRole);
+    const [{ data: history }, context] = await Promise.all([historyPromise, contextPromise]);
     
     const conversationHistory = (history || []).reverse();
     console.log(`[${requestId}] 📚 History loaded: ${conversationHistory.length} messages`);
-    
-    // Get relevant context from knowledge base
-    const context = await getRelevantContext(supabase, sanitizedMessage, userRole);
     console.log(`[${requestId}] 🔍 Context length: ${context.length} chars`);
     
     const systemPrompt = buildSystemPrompt(userRole, context, conversationHistory.length, language as 'fr' | 'ar' | 'en');
     console.log(`[${requestId}] 📝 System prompt length: ${systemPrompt.length} chars`);
 
-    // Save user message
-    await supabase.from('chatbot_messages').insert({
+    const persistUserPromise = supabase.from('chatbot_messages').insert({
       conversation_id: currentConversationId,
       role: 'user',
       content: sanitizedMessage
     });
     
     console.log(`[${requestId}] 🤖 Calling Ollama API...`);
+    const numPredict = sanitizedMessage.length <= 60 ? 64 : 100;
+    console.log(`[${requestId}] 🔧 num_predict: ${numPredict}`);
+    const selectedModel = model || 'qwen2.5:1.5b';
     const ollamaStartTime = Date.now();
+    console.log(`[${requestId}] ⏱️ Pre-AI overhead: ${ollamaStartTime - requestStartTime}ms`);
     const ollamaResponse = await fetch('https://ai.avs.ma/api/chat', {
       method: 'POST',
       headers: { 
@@ -524,7 +546,7 @@ For any information about our **AI and Tech courses**, our **certification progr
         'Accept': 'text/event-stream'
       },
       body: JSON.stringify({
-        model: 'qwen2.5:1.5b',
+        model: selectedModel,
         messages: [
           { role: 'system', content: systemPrompt },
           ...conversationHistory,
@@ -532,8 +554,9 @@ For any information about our **AI and Tech courses**, our **certification progr
         ],
         stream: true,
         keep_alive: '10m',
+        stop: ["\n\n\n"],
         options: {
-          num_predict: 100,
+          num_predict: numPredict,
           temperature: 0.3,
           top_p: 0.9
         }
@@ -665,6 +688,9 @@ For any information about our **AI and Tech courses**, our **certification progr
               }
             });
             if (analyticsError) console.error(`[${requestId}] Failed to log analytics:`, analyticsError);
+
+            // Ensure background operations are settled
+            await Promise.allSettled([persistUserPromise, updateActivityPromise].filter(Boolean));
           }
           
           controller.close();
