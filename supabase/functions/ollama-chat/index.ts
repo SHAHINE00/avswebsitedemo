@@ -137,6 +137,24 @@ function buildSystemPrompt(role: 'admin' | 'professor' | 'student' | 'visitor', 
     ar: "\n\n⚠️ هام: يجب عليك الرد دائمًا باللغة العربية، حتى لو تم طرح السؤال بلغة أخرى."
   };
 
+  const generalRules = {
+    fr: `RÈGLES GÉNÉRALES:
+- Réponds en français, clair et concis (max 200 mots)
+- Base tes réponses sur le CONTEXTE fourni
+- Si tu ne sais pas, recommande de contacter support@avs.ma
+- Reste strictement dans le domaine AVS.ma (plateforme éducative IA/Tech au Maroc)`,
+    en: `GENERAL RULES:
+- Respond in English, clear and concise (max 200 words)
+- Base your answers on the provided CONTEXT
+- If you don't know, recommend contacting support@avs.ma
+- Stay strictly within AVS.ma domain (AI/Tech educational platform in Morocco)`,
+    ar: `القواعد العامة:
+- أجب باللغة العربية، بشكل واضح وموجز (الحد الأقصى 200 كلمة)
+- اعتمد على السياق المقدم في إجاباتك
+- إذا كنت لا تعرف، أوصِ بالاتصال support@avs.ma
+- ابقَ ضمن نطاق AVS.ma بدقة (منصة تعليمية للذكاء الاصطناعي والتكنولوجيا في المغرب)`
+  };
+
   const adminTabsContext = `
 📊 ONGLETS DASHBOARD ADMIN (13 au total):
 1. **Vue d'ensemble** - Statistiques globales (étudiants, cours, revenus), graphiques de croissance
@@ -338,11 +356,7 @@ STRUCTURE DE RÉPONSE:
 
 - Pour une seule info: réponds directement en 2-3 phrases courtes et claires.
 
-RÈGLES GÉNÉRALES:
-- Réponds en français, clair et concis (max 200 mots)
-- Base tes réponses sur le CONTEXTE fourni
-- Si tu ne sais pas, recommande de contacter support@avs.ma
-- Reste strictement dans le domaine AVS.ma (plateforme éducative IA/Tech au Maroc)
+${generalRules[language]}
 
 ${historyLength > 0 ? `HISTORIQUE: ${historyLength} messages dans cette conversation` : ''}`;
 }
