@@ -10,6 +10,7 @@ interface LanguageStrings {
   placeholder: string;
   send: string;
   newChat: string;
+  uploadingFile: string;
   quickReplies: {
     courses: string;
     fees: string;
@@ -45,6 +46,7 @@ const translations: Record<SupportedLanguage, LanguageStrings> = {
     placeholder: "Posez votre question...",
     send: "Envoyer",
     newChat: "Nouvelle conversation",
+    uploadingFile: "Envoi du fichier...",
     quickReplies: {
       courses: "📚 Formations disponibles",
       fees: "💰 Frais de scolarité",
@@ -78,6 +80,7 @@ const translations: Record<SupportedLanguage, LanguageStrings> = {
     placeholder: "اكتب سؤالك...",
     send: "إرسال",
     newChat: "محادثة جديدة",
+    uploadingFile: "جاري تحميل الملف...",
     quickReplies: {
       courses: "📚 الدورات المتاحة",
       fees: "💰 الرسوم الدراسية",
@@ -111,6 +114,7 @@ const translations: Record<SupportedLanguage, LanguageStrings> = {
     placeholder: "Ask your question...",
     send: "Send",
     newChat: "New conversation",
+    uploadingFile: "Uploading file...",
     quickReplies: {
       courses: "📚 Available courses",
       fees: "💰 Tuition fees",

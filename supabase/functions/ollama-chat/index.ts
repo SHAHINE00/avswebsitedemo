@@ -109,12 +109,32 @@ async function determineUserRole(supabaseClient: any, userId: string | null): Pr
   }
 }
 
-function buildSystemPrompt(role: 'admin' | 'professor' | 'student' | 'visitor', context: string, historyLength: number): string {
+function buildSystemPrompt(role: 'admin' | 'professor' | 'student' | 'visitor', context: string, historyLength: number, language: 'fr' | 'ar' | 'en' = 'fr'): string {
   const rolePrompts = {
-    admin: "Tu es l'assistant AVS.ma pour administrateurs. Tu aides avec la gestion de la plateforme.",
-    professor: "Tu es l'assistant AVS.ma pour professeurs. Tu aides avec la création de cours et gestion étudiants.",
-    student: "Tu es l'assistant AVS.ma pour étudiants. Tu aides avec les inscriptions et progression des cours.",
-    visitor: "Tu es l'assistant AVS.ma. Tu informes sur les programmes et processus d'inscription."
+    fr: {
+      admin: "Tu es l'assistant AVS.ma pour administrateurs. Tu aides avec la gestion de la plateforme.",
+      professor: "Tu es l'assistant AVS.ma pour professeurs. Tu aides avec la création de cours et gestion étudiants.",
+      student: "Tu es l'assistant AVS.ma pour étudiants. Tu aides avec les inscriptions et progression des cours.",
+      visitor: "Tu es l'assistant AVS.ma. Tu informes sur les programmes et processus d'inscription."
+    },
+    en: {
+      admin: "You are the AVS.ma assistant for administrators. You help with platform management.",
+      professor: "You are the AVS.ma assistant for professors. You help with course creation and student management.",
+      student: "You are the AVS.ma assistant for students. You help with enrollment and course progression.",
+      visitor: "You are the AVS.ma assistant. You inform about programs and enrollment process."
+    },
+    ar: {
+      admin: "أنت مساعد AVS.ma للمسؤولين. تساعد في إدارة المنصة.",
+      professor: "أنت مساعد AVS.ma للأساتذة. تساعد في إنشاء الدورات وإدارة الطلاب.",
+      student: "أنت مساعد AVS.ma للطلاب. تساعد في التسجيل وتقدم الدورات.",
+      visitor: "أنت مساعد AVS.ma. تقدم معلومات حول البرامج وعملية التسجيل."
+    }
+  };
+
+  const languageInstructions = {
+    fr: "\n\n⚠️ CRITIQUE: Tu dois TOUJOURS répondre en français, même si la question est posée dans une autre langue.",
+    en: "\n\n⚠️ CRITICAL: You must ALWAYS respond in English, even if the question is asked in another language.",
+    ar: "\n\n⚠️ هام: يجب عليك الرد دائمًا باللغة العربية، حتى لو تم طرح السؤال بلغة أخرى."
   };
 
   const adminTabsContext = `
@@ -254,7 +274,7 @@ NAVIGATION VISITEUR:
 - 💼 Carrières: /careers`
   };
 
-  return `${rolePrompts[role]}
+  return `${rolePrompts[language][role]}${languageInstructions[language]}
 
 ${navigationPaths[role]}
 
@@ -363,9 +383,9 @@ serve(async (req) => {
       );
     }
 
-    const { message, sessionId, visitorId } = await req.json();
+    const { message, sessionId, visitorId, language = 'fr' } = await req.json();
     const sanitizedMessage = sanitizeInput(message);
-    console.log(`[${requestId}] 📝 Message length: ${sanitizedMessage.length}, User: ${userId || 'anonymous'}`);
+    console.log(`[${requestId}] 📝 Message length: ${sanitizedMessage.length}, User: ${userId || 'anonymous'}, Language: ${language}`);
 
     if (!sanitizedMessage) {
       console.error(`[${requestId}] ❌ Invalid message received`);
@@ -378,7 +398,9 @@ serve(async (req) => {
     // Pre-filter off-topic queries
     if (isOffTopicQuery(sanitizedMessage)) {
       console.log(`[${requestId}] 🚫 Off-topic query detected`);
-      const offTopicResponse = `Désolé, je suis l'assistant AVS.ma et je ne peux répondre qu'aux questions concernant notre plateforme éducative. 📚
+      
+      const offTopicResponses = {
+        fr: `Désolé, je suis l'assistant AVS.ma et je ne peux répondre qu'aux questions concernant notre plateforme éducative. 📚
 
 Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifiantes**, ou l'**utilisation de la plateforme**, je suis là pour vous aider!
 
@@ -386,7 +408,28 @@ Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifia
 - Les formations disponibles
 - Le processus d'inscription
 - Les fonctionnalités de la plateforme
-- Votre progression ou vos cours`;
+- Votre progression ou vos cours`,
+        en: `Sorry, I am the AVS.ma assistant and can only answer questions about our educational platform. 📚
+
+For any information about our **AI and Tech courses**, our **certification programs**, or **platform usage**, I'm here to help!
+
+**Can I help you with:**
+- Available courses
+- Enrollment process
+- Platform features
+- Your progress or courses`,
+        ar: `عذرًا، أنا مساعد AVS.ma ولا يمكنني الإجابة إلا على الأسئلة المتعلقة بمنصتنا التعليمية. 📚
+
+لأي معلومات حول **دورات الذكاء الاصطناعي والتقنية**، أو **برامج الشهادات**، أو **استخدام المنصة**، أنا هنا للمساعدة!
+
+**هل يمكنني مساعدتك في:**
+- الدورات المتاحة
+- عملية التسجيل
+- ميزات المنصة
+- تقدمك أو دوراتك`
+      };
+      
+      const offTopicResponse = offTopicResponses[language as 'fr' | 'ar' | 'en'] || offTopicResponses.fr;
 
       // Get or create conversation for saving messages
       let currentConversationId = sessionId;
@@ -416,6 +459,7 @@ Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifia
     const t0 = Date.now();
     const userRole = await determineUserRole(supabase, userId);
     console.log(`[${requestId}] 👤 User role: ${userRole}`);
+    console.log(`[${requestId}] 🌍 Using language: ${language}`);
     
     // Get or create conversation
     let currentConversationId = sessionId;
@@ -449,7 +493,7 @@ Pour toute information sur nos **cours d'IA et Tech**, nos **formations certifia
     const context = await getRelevantContext(supabase, sanitizedMessage, userRole);
     console.log(`[${requestId}] 🔍 Context length: ${context.length} chars`);
     
-    const systemPrompt = buildSystemPrompt(userRole, context, conversationHistory.length);
+    const systemPrompt = buildSystemPrompt(userRole, context, conversationHistory.length, language as 'fr' | 'ar' | 'en');
 
     // Save user message
     await supabase.from('chatbot_messages').insert({

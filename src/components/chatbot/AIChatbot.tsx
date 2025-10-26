@@ -228,41 +228,65 @@ const AIChatbot = () => {
         body: JSON.stringify({ 
           message: userMsg.content,
           sessionId: currentConversationId,
-          visitorId: visitorId
+          visitorId: visitorId,
+          language: language
         }),
       });
 
       if (!resp.ok) {
         const errorData = await resp.json().catch(() => ({ error: 'Unknown error' }));
-        
-        trackChatbotEvent({
-          event_type: 'error',
-          conversation_id: currentConversationId || undefined,
-          event_data: {
-            error_code: resp.status,
-            error_message: errorData.message || errorData.error
+      const getErrorMessage = (type: 'rate_limit' | 'payment' | 'general') => {
+        const errors = {
+          rate_limit: {
+            fr: { title: "Trop de requêtes", desc: "Veuillez patienter quelques instants" },
+            en: { title: "Too many requests", desc: "Please wait a few moments" },
+            ar: { title: "طلبات كثيرة جدًا", desc: "يرجى الانتظار لحظات قليلة" }
+          },
+          payment: {
+            fr: { title: "Crédits insuffisants", desc: "Contactez l'administrateur" },
+            en: { title: "Insufficient credits", desc: "Contact the administrator" },
+            ar: { title: "رصيد غير كافٍ", desc: "اتصل بالمسؤول" }
+          },
+          general: {
+            fr: { title: "Erreur", desc: "Service AI temporairement indisponible" },
+            en: { title: "Error", desc: "AI service temporarily unavailable" },
+            ar: { title: "خطأ", desc: "خدمة الذكاء الاصطناعي غير متاحة مؤقتًا" }
           }
-        });
-        
-        if (resp.status === 429) {
-          toast({
-            title: "Trop de requêtes",
-            description: errorData.message || "Veuillez patienter quelques instants",
-            variant: "destructive"
-          });
-        } else if (resp.status === 402) {
-          toast({
-            title: "Crédits insuffisants",
-            description: errorData.message || "Contactez l'administrateur",
-            variant: "destructive"
-          });
-        } else {
-          toast({
-            title: "Erreur",
-            description: errorData.message || "Service AI temporairement indisponible",
-            variant: "destructive"
-          });
+        };
+        return errors[type][language];
+      };
+      
+      trackChatbotEvent({
+        event_type: 'error',
+        conversation_id: currentConversationId || undefined,
+        event_data: {
+          error_code: resp.status,
+          error_message: errorData.message || errorData.error
         }
+      });
+      
+      if (resp.status === 429) {
+        const msg = getErrorMessage('rate_limit');
+        toast({
+          title: msg.title,
+          description: errorData.message || msg.desc,
+          variant: "destructive"
+        });
+      } else if (resp.status === 402) {
+        const msg = getErrorMessage('payment');
+        toast({
+          title: msg.title,
+          description: errorData.message || msg.desc,
+          variant: "destructive"
+        });
+      } else {
+        const msg = getErrorMessage('general');
+        toast({
+          title: msg.title,
+          description: errorData.message || msg.desc,
+          variant: "destructive"
+        });
+      }
         setIsLoading(false);
         return;
       }
@@ -370,9 +394,15 @@ const AIChatbot = () => {
         }
       });
       
+      const connectionErrors = {
+        fr: { title: "Erreur", desc: "Erreur de connexion au service AI" },
+        en: { title: "Error", desc: "AI service connection error" },
+        ar: { title: "خطأ", desc: "خطأ في الاتصال بخدمة الذكاء الاصطناعي" }
+      };
+      const msg = connectionErrors[language];
       toast({
-        title: "Erreur",
-        description: "Erreur de connexion au service AI",
+        title: msg.title,
+        description: msg.desc,
         variant: "destructive"
       });
       setIsLoading(false);
@@ -388,9 +418,15 @@ const AIChatbot = () => {
     if (!convId) {
       convId = await createConversation(language);
       if (!convId) {
+        const convErrors = {
+          fr: { title: "Erreur", desc: "Impossible de créer une conversation" },
+          en: { title: "Error", desc: "Unable to create conversation" },
+          ar: { title: "خطأ", desc: "تعذر إنشاء المحادثة" }
+        };
+        const msg = convErrors[language];
         toast({
-          title: "Erreur",
-          description: "Impossible de créer une conversation",
+          title: msg.title,
+          description: msg.desc,
           variant: "destructive"
         });
         return;
@@ -734,7 +770,7 @@ const AIChatbot = () => {
                 </div>
                 {uploading && (
                   <p className="text-xs text-muted-foreground mt-2">
-                    Envoi du fichier...
+                    {t.uploadingFile}
                   </p>
                 )}
               </div>
