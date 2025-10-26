@@ -506,17 +506,21 @@ For any information about our **AI and Tech courses**, our **certification progr
     const ollamaStartTime = Date.now();
     const ollamaResponse = await fetch('https://ai.avs.ma/api/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'text/event-stream'
+      },
       body: JSON.stringify({
-        model: 'qwen2.5:1.5b',  // Much faster than mistral, optimized for chat
+        model: 'qwen2.5:1.5b',
         messages: [
           { role: 'system', content: systemPrompt },
           ...conversationHistory,
           { role: 'user', content: sanitizedMessage }
         ],
         stream: true,
+        keep_alive: '10m',
         options: {
-          num_predict: 256,
+          num_predict: 160,
           temperature: 0.3,
           top_p: 0.9
         }
@@ -528,7 +532,7 @@ For any information about our **AI and Tech courses**, our **certification progr
       console.error(`[${requestId}] ❌ Ollama gateway error: ${ollamaResponse.status} - ${errorText}`);
       
       // Track error in analytics
-      await supabase.from('chatbot_analytics').insert({
+      const { error: analyticsError } = await supabase.from('chatbot_analytics').insert({
         conversation_id: currentConversationId,
         event_type: 'error',
         event_data: { 
@@ -536,7 +540,8 @@ For any information about our **AI and Tech courses**, our **certification progr
           status: ollamaResponse.status,
           message: errorText.substring(0, 200)
         }
-      }).catch(err => console.error(`[${requestId}] Failed to log error:`, err));
+      });
+      if (analyticsError) console.error(`[${requestId}] Failed to log error:`, analyticsError);
       
       if (ollamaResponse.status === 429) {
         return new Response(
@@ -567,6 +572,7 @@ For any information about our **AI and Tech courses**, our **certification progr
     const encoder = new TextEncoder();
     let buffer = '';
     let fullResponse = '';
+    let firstChunkAt: number | null = null;
     
     const stream = new ReadableStream({
       async start(controller) {
@@ -601,6 +607,10 @@ For any information about our **AI and Tech courses**, our **certification progr
                 // Extract content from Ollama's format: {message: {content: "..."}}
                 const chunk = json.message?.content || '';
                 if (chunk) {
+                  if (!firstChunkAt) {
+                    firstChunkAt = Date.now();
+                    console.log(`[${requestId}] ⚡ First token in ${firstChunkAt - requestStartTime}ms`);
+                  }
                   fullResponse += chunk;
                   // Convert to OpenAI SSE format
                   const payload = { choices: [{ delta: { content: chunk } }] };
@@ -616,25 +626,32 @@ For any information about our **AI and Tech courses**, our **certification progr
           
           // Save assistant message
           if (fullResponse && currentConversationId) {
-            await supabase.from('chatbot_messages').insert({
-              conversation_id: currentConversationId,
-              role: 'assistant',
-              content: fullResponse
-            });
+            try {
+              await supabase.from('chatbot_messages').insert({
+                conversation_id: currentConversationId,
+                role: 'assistant',
+                content: fullResponse
+              });
+            } catch (msgError) {
+              console.error(`[${requestId}] Failed to save message:`, msgError);
+            }
             
             // Track performance metrics
             const totalTime = Date.now() - requestStartTime;
+            const firstTokenTime = firstChunkAt ? firstChunkAt - requestStartTime : null;
             console.log(`[${requestId}] ✅ Complete response in ${totalTime}ms (${fullResponse.length} chars)`);
             
-            await supabase.from('chatbot_analytics').insert({
+            const { error: analyticsError } = await supabase.from('chatbot_analytics').insert({
               conversation_id: currentConversationId,
               event_type: 'response_completed',
               event_data: {
                 response_time_ms: totalTime,
+                first_token_ms: firstTokenTime,
                 response_length: fullResponse.length,
                 user_role: userRole
               }
-            }).catch(err => console.error(`[${requestId}] Failed to log analytics:`, err));
+            });
+            if (analyticsError) console.error(`[${requestId}] Failed to log analytics:`, analyticsError);
           }
           
           controller.close();
