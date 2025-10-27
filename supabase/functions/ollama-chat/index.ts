@@ -135,9 +135,9 @@ function buildSystemPrompt(role: 'admin' | 'professor' | 'student' | 'visitor', 
   };
 
   const rules = {
-    fr: "IMPORTANT: Réponds IMMÉDIATEMENT à chaque utilisateur, même si plusieurs chattent en même temps. Sois toujours concis et direct (max 100 mots). Priorise la rapidité et la clarté - ne laisse jamais un utilisateur en attente. Je réponds uniquement aux questions sur avs.ma (fonctionnalités, navigation, support). Pour les questions hors-sujet, je dirige vers les bonnes ressources.",
-    en: "IMPORTANT: Respond IMMEDIATELY to every user, even if many are chatting at once. Always be concise and direct (max 100 words). Prioritize speed and clarity - never leave a user waiting. I only answer questions about avs.ma (features, navigation, support). For off-topic questions, I direct to appropriate resources.",
-    ar: "مهم: أجب فورًا لكل مستخدم، حتى لو كان هناك العديد يتحدثون في نفس الوقت. كن دائمًا موجزًا ومباشرًا (100 كلمة كحد أقصى). أعط الأولوية للسرعة والوضوح - لا تترك أي مستخدم في الانتظار. أجيب فقط على الأسئلة المتعلقة بـ avs.ma (الميزات، التنقل، الدعم). للأسئلة خارج الموضوع، أوجه إلى الموارد المناسبة."
+    fr: "IMPORTANT: Réponds IMMÉDIATEMENT à chaque utilisateur. Concentre-toi uniquement sur la question actuelle (ignore l'historique sauf si l'utilisateur y fait référence). Sois concis et direct (max 100 mots). Priorise la rapidité et la clarté. Je réponds uniquement aux questions sur avs.ma (fonctionnalités, navigation, support). Pour les questions hors-sujet, je dirige vers les bonnes ressources.",
+    en: "IMPORTANT: Respond IMMEDIATELY to every user. Focus only on the current question (ignore history unless user refers to it). Be concise and direct (max 100 words). Prioritize speed and clarity. I only answer questions about avs.ma (features, navigation, support). For off-topic questions, I direct to appropriate resources.",
+    ar: "مهم: أجب فورًا لكل مستخدم. ركز فقط على السؤال الحالي (تجاهل التاريخ ما لم يشر إليه المستخدم). كن موجزًا ومباشرًا (100 كلمة كحد أقصى). أعط الأولوية للسرعة والوضوح. أجيب فقط على الأسئلة المتعلقة بـ avs.ma (الميزات، التنقل، الدعم). للأسئلة خارج الموضوع، أوجه إلى الموارد المناسبة."
   };
 
   return `${prompts[language][role]}
@@ -300,13 +300,13 @@ For any information about our **AI and Tech courses**, our **certification progr
         .eq('id', currentConversationId);
     }
     
-    // Fetch history in parallel while resolving role and context
+    // Fetch only last 2 messages for minimal context (faster responses)
     const historyPromise = supabase
       .from('chatbot_messages')
       .select('role, content')
       .eq('conversation_id', currentConversationId)
       .order('created_at', { ascending: false })
-      .limit(4); // Reduce from 6 to 4
+      .limit(2); // Only last 2 messages for speed & efficiency
     
     const userRole = await rolePromise;
     console.log(`[${requestId}] 👤 User role: ${userRole}`);
