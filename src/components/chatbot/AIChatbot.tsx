@@ -224,8 +224,8 @@ const AIChatbot = () => {
         headers['Authorization'] = `Bearer ${session.access_token}`;
       }
       
-      // Send last 2 messages (1 exchange) for context
-      const historyForContext = messages.slice(-2).map(m => ({
+      // Send last 1 message only for maximum speed
+      const historyForContext = messages.slice(-1).map(m => ({
         role: m.role,
         content: m.content
       }));

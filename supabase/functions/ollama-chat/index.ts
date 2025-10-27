@@ -330,8 +330,8 @@ For any information about our **AI and Tech courses**, our **certification progr
         .eq('id', currentConversationId);
     }
     
-    // Use history from frontend (already in memory) - limit to last 2 messages (1 exchange)
-    const conversationHistory = history.slice(-2).map((msg: any) => ({
+    // Use history from frontend (already in memory) - limit to last 1 message for speed
+    const conversationHistory = history.slice(-1).map((msg: any) => ({
       role: msg.role,
       content: msg.content
     }));
@@ -360,7 +360,7 @@ For any information about our **AI and Tech courses**, our **certification progr
     });
     
     console.log(`[${requestId}] 🤖 Calling Ollama API...`);
-    const numPredict = sanitizedMessage.length <= 40 ? 40 : 60; // Shorter responses for speed
+    const numPredict = 25; // Aggressive speed optimization: 1-2 sentences max
     console.log(`[${requestId}] 🔧 num_predict: ${numPredict}`);
     const selectedModel = model || 'qwen2.5:1.5b'; // CPU-optimized model
     const ollamaStartTime = Date.now();
@@ -383,11 +383,12 @@ For any information about our **AI and Tech courses**, our **certification progr
         stop: ["</s>", "\n\n\n", "Contact:", "support@avs.ma"], // Smart stops
         options: {
           num_predict: numPredict,
-          temperature: 0.2, // More deterministic = faster
+          temperature: 0.1, // Very deterministic for maximum speed
           top_p: 0.85, // Slightly lower = faster sampling
-          top_k: 40, // Add for speed
+          top_k: 20, // Reduced for faster sampling
+          mirostat: 2, // Faster convergence
           repeat_penalty: 1.1, // Prevent loops
-          num_ctx: 2048, // Reduce context window from default 4096
+          num_ctx: 1024, // Aggressive context reduction for speed
           f16_kv: true, // Use FP16 for key/value cache (faster)
           num_thread: 4 // CPU-safe for typical VPS (2-4 cores)
         }
