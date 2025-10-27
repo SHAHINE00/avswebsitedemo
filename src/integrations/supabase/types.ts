@@ -3272,6 +3272,7 @@ export type Database = {
         Returns: boolean
       }
       check_admin_role: { Args: never; Returns: boolean }
+      cleanup_old_chatbot_conversations: { Args: never; Returns: undefined }
       cleanup_security_logs: { Args: never; Returns: undefined }
       close_inactive_sessions: { Args: never; Returns: undefined }
       create_bulk_announcements: {
