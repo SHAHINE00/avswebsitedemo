@@ -45,34 +45,53 @@ function extractKeywords(text: string): string[] {
 }
 
 function isOffTopicQuery(message: string): boolean {
+  const lowerMessage = message.toLowerCase();
+  
+  // Expanded keywords for common off-topic queries
   const offTopicKeywords = [
-    // Travel & Tourism
-    'hôtel', 'hotel', 'restaurant', 'voyage', 'tourisme', 'marrakech', 'casablanca', 'rabat',
-    'réservation', 'booking', 'vol', 'avion', 'train', 'taxi',
+    'météo', 'weather', 'temps qu\'il fait',
+    'sport', 'football', 'match', 'basketball', 'tennis',
+    'recette', 'cuisine', 'recipe', 'cooking', 'restaurant',
+    'voyage', 'travel', 'vacances', 'holiday', 'tourisme', 'hotel',
+    'actualité', 'news', 'politique', 'politics', 'gouvernement',
+    'santé', 'health', 'médecin', 'doctor', 'maladie', 'symptôme',
+    'shopping', 'acheter', 'buy', 'produit', 'vendre',
     
-    // Weather & News
-    'météo', 'weather', 'actualité', 'news', 'sport', 'football', 'match',
-    
-    // Food & Health
-    'recette', 'cuisine', 'santé', 'médecin', 'maladie', 'pharmacie',
-    
-    // Entertainment
+    // Entertainment (expanded)
     'film', 'série', 'musique', 'jeu', 'game', 'concert',
+    'movie', 'movies', 'action', 'comedy', 'thriller', 'drama',
+    'netflix', 'youtube', 'streaming', 'cinéma', 'cinema',
     
-    // Shopping & Services
-    'shopping', 'magasin', 'boutique', 'prix', 'acheter',
+    // Literature & Books
+    'livre', 'book', 'roman', 'poésie', 'poetry', 'auteur', 'writer',
     
-    // General knowledge unrelated to education
-    'capitale', 'président', 'roi'
+    // General Education (not AVS-specific)
+    'histoire', 'history', 'géographie', 'geography', 'biologie', 'biology',
+    'chimie', 'chemistry', 'physique', 'physics', 'mathématique', 'math',
+    'littérature', 'literature', 'philosophie', 'philosophy',
+    
+    // Technology (non-educational context)
+    'iphone', 'samsung', 'android', 'windows', 'gaming', 'fortnite',
+    
+    // Social & Personal
+    'amour', 'love', 'famille', 'family', 'ami', 'friend', 'relation'
   ];
   
-  const lowerMessage = message.toLowerCase();
-  const hasOffTopicKeyword = offTopicKeywords.some(kw => lowerMessage.includes(kw));
+  // Check for explicit off-topic indicators
+  const hasOffTopicKeyword = offTopicKeywords.some(keyword => 
+    lowerMessage.includes(keyword)
+  );
   
-  // Check if message mentions AVS, education, or platform terms
-  const hasEducationContext = /\b(avs|cours|formation|étudiant|professeur|certificat|inscription|plateforme|éducation|apprendre|enseigner|leçon|module|quiz|examen)\b/i.test(message);
+  // Stricter AVS.ma education context detection
+  const hasEducationContext = /\b(avs\.ma|avs|cours AVS|formation AVS|inscription AVS|plateforme AVS|certificat AVS|mon compte|ma progression|mes notes|prof|professeur|étudiant AVS|examen AVS)\b/i.test(message);
   
-  // If has off-topic keyword AND no education context, likely off-topic
+  // Length-based heuristic: very short queries (1-2 words) with off-topic keywords should be blocked
+  const wordCount = lowerMessage.split(/\s+/).length;
+  if (hasOffTopicKeyword && wordCount <= 2) {
+    return true; // Block short off-topic queries like "action", "movies", "love"
+  }
+  
+  // If it has off-topic keywords and NO education context, it's off-topic
   return hasOffTopicKeyword && !hasEducationContext;
 }
 
@@ -166,13 +185,19 @@ function buildSystemPrompt(role: 'admin' | 'professor' | 'student' | 'visitor', 
     }
   };
 
+  const strictRules = {
+    fr: `\n\nRÈGLES STRICTES:\n- UNIQUEMENT répondre aux questions sur AVS.ma (plateforme, cours, inscriptions, fonctionnalités)\n- Si la question n'est PAS liée à AVS.ma → Refuser poliment: "Désolé, je ne peux répondre qu'aux questions concernant la plateforme AVS.ma. Comment puis-je vous aider avec AVS.ma ?"\n- Exemples de questions hors-sujet à REFUSER: films, météo, sports, cuisine, voyages, culture générale, histoire générale, littérature générale\n- Ne JAMAIS répondre aux questions de culture générale ou divertissement\n- Réponds en 1-2 phrases maximum (50 mots)`,
+    en: `\n\nSTRICT RULES:\n- ONLY answer questions about AVS.ma (platform, courses, enrollment, features)\n- If question is NOT related to AVS.ma → Politely refuse: "Sorry, I can only answer questions about the AVS.ma platform. How can I help you with AVS.ma?"\n- Examples of off-topic questions to REFUSE: movies, weather, sports, cooking, travel, general knowledge, general history, general literature\n- NEVER answer general knowledge or entertainment questions\n- Answer in 1-2 sentences max (50 words)`,
+    ar: `\n\nقواعد صارمة:\n- أجب فقط على الأسئلة حول AVS.ma (المنصة، الدورات، التسجيل، الميزات)\n- إذا كان السؤال غير متعلق بـ AVS.ma → ارفض بأدب: "عذرًا، يمكنني فقط الإجابة على الأسئلة المتعلقة بمنصة AVS.ma. كيف يمكنني مساعدتك مع AVS.ma؟"\n- أمثلة على الأسئلة خارج الموضوع التي يجب رفضها: أفلام، طقس، رياضة، طبخ، سفر، معرفة عامة، تاريخ عام، أدب عام\n- لا ترد أبدًا على أسئلة المعرفة العامة أو الترفيه\n- أجب في 1-2 جمل كحد أقصى (50 كلمة)`
+  };
+
   const rules = {
     fr: "Réponds en 1-2 phrases simples et directes. Concentre-toi sur la question actuelle (ignore l'historique sauf mention). Pas d'explications inutiles. Maximum 50 mots. Résous le problème rapidement. Questions avs.ma uniquement (fonctionnalités, navigation, support).",
     en: "Answer in 1-2 simple, direct sentences. Focus on current question (ignore history unless mentioned). No unnecessary explanations. Max 50 words. Solve the issue quickly. Only avs.ma questions (features, navigation, support).",
     ar: "أجب في 1-2 جمل بسيطة ومباشرة. ركز على السؤال الحالي (تجاهل التاريخ ما لم يُذكر). لا توضيحات غير ضرورية. 50 كلمة كحد أقصى. حل المشكلة بسرعة. أسئلة avs.ma فقط (الميزات، التنقل، الدعم)."
   };
 
-  return `${prompts[language][role]}
+  return `${prompts[language][role]}${strictRules[language]}
 
 ${rules[language]}
 
