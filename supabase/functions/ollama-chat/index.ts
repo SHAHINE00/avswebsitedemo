@@ -135,9 +135,9 @@ function buildSystemPrompt(role: 'admin' | 'professor' | 'student' | 'visitor', 
   };
 
   const rules = {
-    fr: "Réponds en français, de manière concise et amicale (max 100 mots). Je réponds uniquement aux questions sur avs.ma (fonctionnalités, navigation, support). Pour les questions hors-sujet, je dirige vers les bonnes ressources sur avs.ma.",
-    en: "Respond in English, concisely and friendly (max 100 words). I only answer questions about avs.ma (features, navigation, support). For off-topic questions, I direct to appropriate resources on avs.ma.",
-    ar: "أجب بالعربية، بإيجاز وود (100 كلمة كحد أقصى). أجيب فقط على الأسئلة المتعلقة بـ avs.ma (الميزات، التنقل، الدعم). للأسئلة خارج الموضوع، أوجه إلى الموارد المناسبة على avs.ma."
+    fr: "IMPORTANT: Réponds IMMÉDIATEMENT à chaque utilisateur, même si plusieurs chattent en même temps. Sois toujours concis et direct (max 100 mots). Priorise la rapidité et la clarté - ne laisse jamais un utilisateur en attente. Je réponds uniquement aux questions sur avs.ma (fonctionnalités, navigation, support). Pour les questions hors-sujet, je dirige vers les bonnes ressources.",
+    en: "IMPORTANT: Respond IMMEDIATELY to every user, even if many are chatting at once. Always be concise and direct (max 100 words). Prioritize speed and clarity - never leave a user waiting. I only answer questions about avs.ma (features, navigation, support). For off-topic questions, I direct to appropriate resources.",
+    ar: "مهم: أجب فورًا لكل مستخدم، حتى لو كان هناك العديد يتحدثون في نفس الوقت. كن دائمًا موجزًا ومباشرًا (100 كلمة كحد أقصى). أعط الأولوية للسرعة والوضوح - لا تترك أي مستخدم في الانتظار. أجيب فقط على الأسئلة المتعلقة بـ avs.ma (الميزات، التنقل، الدعم). للأسئلة خارج الموضوع، أوجه إلى الموارد المناسبة."
   };
 
   return `${prompts[language][role]}
