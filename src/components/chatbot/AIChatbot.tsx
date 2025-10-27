@@ -45,7 +45,8 @@ const AIChatbot = () => {
     createConversation,
     saveMessage,
     loadMessages,
-    deleteConversation
+    deleteConversation,
+    deleteAllConversations
   } = useChatbotPersistence();
   const { language, changeLanguage, t } = useChatbotLanguage();
   const { uploadFile, uploading } = useChatbotFileUpload();
@@ -561,6 +562,24 @@ const AIChatbot = () => {
       });
     }
   };
+
+  // Cleanup conversations when user closes chatbot or navigates away
+  useEffect(() => {
+    const handleCleanup = () => {
+      deleteAllConversations();
+    };
+
+    // Cleanup on browser close/refresh
+    window.addEventListener('beforeunload', handleCleanup);
+
+    // Cleanup when component unmounts (chatbot closed)
+    return () => {
+      window.removeEventListener('beforeunload', handleCleanup);
+      // Only cleanup on actual page unload, not just chatbot close
+      // handleCleanup();
+    };
+  }, [deleteAllConversations]);
+
   return (
     <div className="fixed bottom-0 right-0 z-[9999]">
       {/* Floating Button */}

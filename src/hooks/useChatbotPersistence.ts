@@ -38,14 +38,30 @@ export const useChatbotPersistence = () => {
         const visitorId = localStorage.getItem('visitor_id') || crypto.randomUUID();
         localStorage.setItem('visitor_id', visitorId);
         
-        const { data, error } = await supabase
+      const { data, error } = await supabase
+        .from('chatbot_conversations')
+        .select('*')
+        .eq('visitor_id', visitorId)
+        .order('updated_at', { ascending: false });
+        
+      if (error) throw error;
+      
+      // Keep only 5 most recent conversations
+      if (data && data.length > 5) {
+        const toKeep = data.slice(0, 5);
+        const toDelete = data.slice(5).map(c => c.id);
+        
+        // Delete old conversations in background
+        supabase
           .from('chatbot_conversations')
-          .select('*')
-          .eq('visitor_id', visitorId)
-          .order('updated_at', { ascending: false });
-          
-        if (error) throw error;
+          .delete()
+          .in('id', toDelete)
+          .then(() => console.log(`Cleaned up ${toDelete.length} old conversations`));
+        
+        setConversations(toKeep);
+      } else {
         setConversations(data || []);
+      }
         return;
       }
 
@@ -56,7 +72,23 @@ export const useChatbotPersistence = () => {
         .order('updated_at', { ascending: false });
         
       if (error) throw error;
-      setConversations(data || []);
+      
+      // Keep only 5 most recent conversations
+      if (data && data.length > 5) {
+        const toKeep = data.slice(0, 5);
+        const toDelete = data.slice(5).map(c => c.id);
+        
+        // Delete old conversations in background
+        supabase
+          .from('chatbot_conversations')
+          .delete()
+          .in('id', toDelete)
+          .then(() => console.log(`Cleaned up ${toDelete.length} old conversations`));
+        
+        setConversations(toKeep);
+      } else {
+        setConversations(data || []);
+      }
     } catch (error) {
       console.error('Error loading conversations:', error);
     } finally {
@@ -192,6 +224,27 @@ export const useChatbotPersistence = () => {
     }
   };
 
+  // Delete all conversations for current user/visitor
+  const deleteAllConversations = async () => {
+    try {
+      const { data: session } = await supabase.auth.getSession();
+      const userId = session?.session?.user?.id;
+      const visitorId = !userId ? localStorage.getItem('visitor_id') : null;
+      
+      if (userId) {
+        await supabase.from('chatbot_conversations').delete().eq('user_id', userId);
+      } else if (visitorId) {
+        await supabase.from('chatbot_conversations').delete().eq('visitor_id', visitorId);
+        localStorage.removeItem('visitor_id');
+      }
+      
+      setConversations([]);
+      setCurrentConversationId(null);
+    } catch (error) {
+      console.error('Error cleaning up conversations:', error);
+    }
+  };
+
   useEffect(() => {
     loadConversations();
   }, []);
@@ -206,6 +259,7 @@ export const useChatbotPersistence = () => {
     loadMessages,
     updateConversationTitle,
     deleteConversation,
+    deleteAllConversations,
     loadConversations
   };
 };
