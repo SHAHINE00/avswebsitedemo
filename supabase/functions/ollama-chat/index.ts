@@ -115,7 +115,7 @@ async function loadKnowledgeBaseCache(supabaseClient: any): Promise<void> {
   }
 }
 
-async function getRoleSpecificData(supabaseClient: any, userId: string | null, userRole: string): Promise<string> {
+async function getRoleSpecificData(supabaseClient: any, userId: string | null, userRole: string, language: 'fr' | 'ar' | 'en' = 'fr'): Promise<string> {
   try {
     const dataContext: string[] = [];
     
@@ -130,10 +130,21 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
         .limit(10);
       
       if (!error && courses && courses.length > 0) {
-        const coursesList = courses.map((c: any) => 
-          `- ${c.title}${c.subtitle ? ` (${c.subtitle})` : ''}${c.duration ? ` - Durée: ${c.duration}` : ''}${c.modules ? ` - Modules: ${c.modules}` : ''}`
-        ).join('\n');
-        dataContext.push(`COURS DISPONIBLES (${courses.length}):\n${coursesList}`);
+        const labels = {
+          fr: { header: 'COURS DISPONIBLES', duration: 'Durée', modules: 'Modules' },
+          en: { header: 'AVAILABLE COURSES', duration: 'Duration', modules: 'Modules' },
+          ar: { header: 'الدورات المتاحة', duration: 'المدة', modules: 'الوحدات' }
+        };
+        const l = labels[language];
+        
+        const coursesList = courses.map((c: any) => {
+          const parts = [`• ${c.title}`];
+          if (c.subtitle) parts.push(c.subtitle);
+          if (c.duration) parts.push(`${l.duration}: ${c.duration}`);
+          if (c.modules) parts.push(`${l.modules}: ${c.modules}`);
+          return parts.join(' - ');
+        }).join('\n');
+        dataContext.push(`${l.header} (${courses.length}):\n${coursesList}`);
       }
     }
     
@@ -152,10 +163,17 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
         .limit(5);
       
       if (enrollments && enrollments.length > 0) {
+        const labels = {
+          fr: { header: 'VOS COURS INSCRITS', progress: 'Progrès' },
+          en: { header: 'YOUR ENROLLED COURSES', progress: 'Progress' },
+          ar: { header: 'دوراتك المسجلة', progress: 'التقدم' }
+        };
+        const l = labels[language];
+        
         const enrollmentsList = enrollments.map((e: any) => 
-          `- ${e.courses?.title || 'Cours'} (Progrès: ${e.progress_percentage || 0}%)`
+          `• ${e.courses?.title || 'Cours'} (${l.progress}: ${e.progress_percentage || 0}%)`
         ).join('\n');
-        dataContext.push(`VOS COURS INSCRITS (${enrollments.length}):\n${enrollmentsList}`);
+        dataContext.push(`${l.header} (${enrollments.length}):\n${enrollmentsList}`);
       }
       
       // Get recent grades
@@ -173,10 +191,16 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
         .limit(3);
       
       if (grades && grades.length > 0) {
+        const labels = {
+          fr: 'VOS NOTES RÉCENTES',
+          en: 'YOUR RECENT GRADES',
+          ar: 'درجاتك الأخيرة'
+        };
+        
         const gradesList = grades.map((g: any) => 
-          `- ${g.assignment_name}: ${g.grade}/${g.max_grade} (${g.courses?.title || 'Cours'})`
+          `• ${g.assignment_name}: ${g.grade}/${g.max_grade} (${g.courses?.title || 'Cours'})`
         ).join('\n');
-        dataContext.push(`VOS NOTES RÉCENTES:\n${gradesList}`);
+        dataContext.push(`${labels[language]}:\n${gradesList}`);
       }
     }
     
@@ -195,10 +219,21 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
           .limit(5);
         
         if (teachingAssignments && teachingAssignments.length > 0) {
-          const coursesList = teachingAssignments.map((ta: any) => 
-            `- ${ta.courses?.title || 'Cours'}${ta.course_classes ? ` (Classe: ${ta.course_classes.class_name}, ${ta.course_classes.current_students}/${ta.course_classes.max_students} étudiants)` : ''}`
-          ).join('\n');
-          dataContext.push(`VOS COURS ENSEIGNÉS (${teachingAssignments.length}):\n${coursesList}`);
+          const labels = {
+            fr: { header: 'VOS COURS ENSEIGNÉS', class: 'Classe', students: 'étudiants' },
+            en: { header: 'YOUR TEACHING COURSES', class: 'Class', students: 'students' },
+            ar: { header: 'دوراتك التدريسية', class: 'الصف', students: 'طلاب' }
+          };
+          const l = labels[language];
+          
+          const coursesList = teachingAssignments.map((ta: any) => {
+            const parts = [`• ${ta.courses?.title || 'Cours'}`];
+            if (ta.course_classes) {
+              parts.push(`(${l.class}: ${ta.course_classes.class_name}, ${ta.course_classes.current_students}/${ta.course_classes.max_students} ${l.students})`);
+            }
+            return parts.join(' ');
+          }).join('\n');
+          dataContext.push(`${l.header} (${teachingAssignments.length}):\n${coursesList}`);
         }
       }
     }
@@ -211,12 +246,19 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
         supabaseClient.from('professors').select('id', { count: 'exact', head: true })
       ]);
       
+      const labels = {
+        fr: { header: 'STATISTIQUES PLATEFORME', courses: 'Cours', students: 'Étudiants', professors: 'Professeurs', allCourses: 'TOUS LES COURS' },
+        en: { header: 'PLATFORM STATISTICS', courses: 'Courses', students: 'Students', professors: 'Professors', allCourses: 'ALL COURSES' },
+        ar: { header: 'إحصائيات المنصة', courses: 'الدورات', students: 'الطلاب', professors: 'الأساتذة', allCourses: 'جميع الدورات' }
+      };
+      const l = labels[language];
+      
       const stats = [
-        `- Cours: ${coursesCount.count || 0}`,
-        `- Étudiants: ${studentsCount.count || 0}`,
-        `- Professeurs: ${professorsCount.count || 0}`
+        `• ${l.courses}: ${coursesCount.count || 0}`,
+        `• ${l.students}: ${studentsCount.count || 0}`,
+        `• ${l.professors}: ${professorsCount.count || 0}`
       ].join('\n');
-      dataContext.push(`STATISTIQUES PLATEFORME:\n${stats}`);
+      dataContext.push(`${l.header}:\n${stats}`);
       
       // Get all courses for admin
       const { data: allCourses } = await supabaseClient
@@ -227,9 +269,9 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
       
       if (allCourses && allCourses.length > 0) {
         const coursesList = allCourses.map((c: any) => 
-          `- ${c.title}${c.subtitle ? ` (${c.subtitle})` : ''} [${c.status}]`
+          `• ${c.title}${c.subtitle ? ` (${c.subtitle})` : ''} [${c.status}]`
         ).join('\n');
-        dataContext.push(`TOUS LES COURS (${allCourses.length}):\n${coursesList}`);
+        dataContext.push(`${l.allCourses} (${allCourses.length}):\n${coursesList}`);
       }
     }
     
@@ -498,7 +540,7 @@ For any information about our **AI and Tech courses**, our **certification progr
     }
     
     // Fetch role-specific data (courses, enrollments, grades, etc.)
-    const roleData = await getRoleSpecificData(supabase, userId, userRole);
+    const roleData = await getRoleSpecificData(supabase, userId, userRole, language as 'fr' | 'ar' | 'en');
     console.log(`[${requestId}] 📊 Role-specific data length: ${roleData.length} chars`);
     
     // Get knowledge base context
@@ -617,9 +659,9 @@ For any information about our **AI and Tech courses**, our **certification progr
       
       // Fallback: Provide helpful info even when AI is down
       const fallbackResponses = {
-        fr: `Je rencontre actuellement des difficultés techniques. 🔧\n\nEn attendant, voici ce que je peux vous proposer:\n${roleData ? '\n' + roleData.substring(0, 500) : ''}\n\n📧 Pour une aide immédiate, contactez-nous à support@avs.ma`,
-        en: `I'm currently experiencing technical difficulties. 🔧\n\nIn the meantime, here's what I can offer:\n${roleData ? '\n' + roleData.substring(0, 500) : ''}\n\n📧 For immediate help, contact us at support@avs.ma`,
-        ar: `أواجه حاليًا صعوبات تقنية. 🔧\n\nفي الوقت نفسه، إليك ما يمكنني تقديمه:\n${roleData ? '\n' + roleData.substring(0, 500) : ''}\n\n📧 للحصول على مساعدة فورية، اتصل بنا على support@avs.ma`
+        fr: `Je rencontre actuellement des difficultés techniques. 🔧\n\nEn attendant, voici les informations que je peux vous fournir:\n\n${roleData || 'Aucune donnée disponible pour le moment.'}\n\n📧 Pour une assistance immédiate, contactez support@avs.ma`,
+        en: `I'm currently experiencing technical difficulties. 🔧\n\nIn the meantime, here's the information I can provide:\n\n${roleData || 'No data available at the moment.'}\n\n📧 For immediate assistance, contact support@avs.ma`,
+        ar: `أواجه حاليًا صعوبات تقنية. 🔧\n\nفي الوقت الحالي، إليك المعلومات التي يمكنني تقديمها:\n\n${roleData || 'لا توجد بيانات متاحة في الوقت الحالي.'}\n\n📧 للحصول على مساعدة فورية، اتصل بـ support@avs.ma`
       };
       
       const fallbackMessage = fallbackResponses[language as 'fr' | 'ar' | 'en'] || fallbackResponses.fr;
