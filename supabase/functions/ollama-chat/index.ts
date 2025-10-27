@@ -523,68 +523,115 @@ For any information about our **AI and Tech courses**, our **certification progr
     const selectedModel = model || 'qwen2.5:1.5b'; // CPU-optimized model
     const ollamaStartTime = Date.now();
     console.log(`[${requestId}] ⏱️ Pre-AI overhead: ${ollamaStartTime - requestStartTime}ms`);
-    const ollamaResponse = await fetch('https://ai.avs.ma/api/chat', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'text/event-stream'
-      },
-      body: JSON.stringify({
-        model: selectedModel,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          ...conversationHistory,
-          { role: 'user', content: sanitizedMessage }
-        ],
-        stream: true,
-        keep_alive: -1, // Never unload model
-        stop: ["</s>", "\n\n\n", "Contact:", "support@avs.ma"], // Smart stops
-        options: {
-          num_predict: numPredict,
-          temperature: 0.1, // Very deterministic for maximum speed
-          top_p: 0.85, // Slightly lower = faster sampling
-          top_k: 20, // Reduced for faster sampling
-          mirostat: 2, // Faster convergence
-          repeat_penalty: 1.1, // Prevent loops
-          num_ctx: 1024, // Aggressive context reduction for speed
-          f16_kv: true, // Use FP16 for key/value cache (faster)
-          num_thread: 4 // CPU-safe for typical VPS (2-4 cores)
+    
+    // Retry logic for transient errors (502, 503)
+    let ollamaResponse: Response | null = null;
+    let lastError: string = '';
+    const maxRetries = 2;
+    
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        if (attempt > 0) {
+          const backoffMs = Math.min(1000 * Math.pow(2, attempt - 1), 3000); // 1s, 2s max
+          console.log(`[${requestId}] 🔄 Retry attempt ${attempt}/${maxRetries} after ${backoffMs}ms`);
+          await new Promise(resolve => setTimeout(resolve, backoffMs));
         }
-      })
-    });
+        
+        ollamaResponse = await fetch('https://ai.avs.ma/api/chat', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'text/event-stream'
+          },
+          body: JSON.stringify({
+            model: selectedModel,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              ...conversationHistory,
+              { role: 'user', content: sanitizedMessage }
+            ],
+            stream: true,
+            keep_alive: -1,
+            stop: ["</s>", "\n\n\n", "Contact:", "support@avs.ma"],
+            options: {
+              num_predict: numPredict,
+              temperature: 0.1,
+              top_p: 0.85,
+              top_k: 20,
+              mirostat: 2,
+              repeat_penalty: 1.1,
+              num_ctx: 1024,
+              f16_kv: true,
+              num_thread: 4
+            }
+          })
+        });
+        
+        // Retry on 502/503, break on other responses
+        if (ollamaResponse.ok || (ollamaResponse.status !== 502 && ollamaResponse.status !== 503)) {
+          break;
+        }
+        
+        lastError = await ollamaResponse.text().catch(() => 'Unknown error');
+        console.warn(`[${requestId}] ⚠️ Attempt ${attempt + 1} failed with ${ollamaResponse.status}`);
+        
+      } catch (fetchError) {
+        lastError = fetchError instanceof Error ? fetchError.message : 'Network error';
+        console.error(`[${requestId}] ❌ Fetch error on attempt ${attempt + 1}:`, fetchError);
+        if (attempt === maxRetries) {
+          ollamaResponse = null;
+        }
+      }
+    }
 
-    if (!ollamaResponse.ok) {
-      const errorText = await ollamaResponse.text().catch(() => 'Unknown error');
-      console.error(`[${requestId}] ❌ Ollama gateway error: ${ollamaResponse.status} - ${errorText}`);
+    if (!ollamaResponse || !ollamaResponse.ok) {
+      const errorStatus = ollamaResponse?.status || 503;
+      const errorText = lastError || 'Service unavailable';
+      console.error(`[${requestId}] ❌ Ollama gateway error after retries: ${errorStatus} - ${errorText}`);
       
       // Track error in analytics
-      const { error: analyticsError } = await supabase.from('chatbot_analytics').insert({
+      await supabase.from('chatbot_analytics').insert({
         conversation_id: currentConversationId,
         event_type: 'error',
         event_data: { 
           error: 'OLLAMA_ERROR',
-          status: ollamaResponse.status,
-          message: errorText.substring(0, 200)
+          status: errorStatus,
+          message: errorText.substring(0, 200),
+          retries: maxRetries
         }
       });
-      if (analyticsError) console.error(`[${requestId}] Failed to log error:`, analyticsError);
       
-      if (ollamaResponse.status === 429) {
+      if (errorStatus === 429) {
         return new Response(
           JSON.stringify({ error: 'RATE_LIMIT', message: 'Trop de requêtes. Veuillez réessayer dans quelques instants.' }),
           { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
       
-      if (ollamaResponse.status === 402) {
+      if (errorStatus === 402) {
         return new Response(
           JSON.stringify({ error: 'PAYMENT_REQUIRED', message: 'Crédits insuffisants. Contactez l\'administrateur.' }),
           { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
       
+      // Fallback: Provide helpful info even when AI is down
+      const fallbackResponses = {
+        fr: `Je rencontre actuellement des difficultés techniques. 🔧\n\nEn attendant, voici ce que je peux vous proposer:\n${roleData ? '\n' + roleData.substring(0, 500) : ''}\n\n📧 Pour une aide immédiate, contactez-nous à support@avs.ma`,
+        en: `I'm currently experiencing technical difficulties. 🔧\n\nIn the meantime, here's what I can offer:\n${roleData ? '\n' + roleData.substring(0, 500) : ''}\n\n📧 For immediate help, contact us at support@avs.ma`,
+        ar: `أواجه حاليًا صعوبات تقنية. 🔧\n\nفي الوقت نفسه، إليك ما يمكنني تقديمه:\n${roleData ? '\n' + roleData.substring(0, 500) : ''}\n\n📧 للحصول على مساعدة فورية، اتصل بنا على support@avs.ma`
+      };
+      
+      const fallbackMessage = fallbackResponses[language as 'fr' | 'ar' | 'en'] || fallbackResponses.fr;
+      
+      // Save messages
+      await supabase.from('chatbot_messages').insert([
+        { conversation_id: currentConversationId, role: 'user', content: sanitizedMessage },
+        { conversation_id: currentConversationId, role: 'assistant', content: fallbackMessage }
+      ]);
+      
       return new Response(
-        JSON.stringify({ error: 'GATEWAY_ERROR', message: 'Service AI temporairement indisponible.' }),
+        JSON.stringify({ error: 'GATEWAY_ERROR', message: fallbackMessage, sessionId: currentConversationId }),
         { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }

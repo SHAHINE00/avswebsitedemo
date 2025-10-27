@@ -291,11 +291,28 @@ const AIChatbot = () => {
         });
       } else {
         const msg = getErrorMessage('general');
-        toast({
-          title: msg.title,
-          description: errorData.message || msg.desc,
-          variant: "destructive"
-        });
+        
+        // Show more helpful error with fallback info
+        const fallbackMessage = errorData.message || msg.desc;
+        const showFallback = resp.status === 503 && errorData.message && errorData.message.length > 50;
+        
+        // If we have a detailed fallback message from the server, show it as assistant response
+        if (showFallback) {
+          const assistantId = crypto.randomUUID();
+          setMessages((prev) => [...prev, {
+            id: assistantId,
+            role: 'assistant' as const,
+            content: errorData.message,
+            timestamp: new Date(),
+          }]);
+        } else {
+          // Show toast for simple errors
+          toast({
+            title: msg.title,
+            description: fallbackMessage,
+            variant: "destructive"
+          });
+        }
       }
         setIsLoading(false);
         return;
