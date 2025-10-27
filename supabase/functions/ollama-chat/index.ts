@@ -115,6 +115,131 @@ async function loadKnowledgeBaseCache(supabaseClient: any): Promise<void> {
   }
 }
 
+async function getRoleSpecificData(supabaseClient: any, userId: string | null, userRole: string): Promise<string> {
+  try {
+    const dataContext: string[] = [];
+    
+    // Fetch courses data based on role
+    if (userRole === 'visitor' || userRole === 'student') {
+      // Get all published courses
+      const { data: courses, error } = await supabaseClient
+        .from('courses')
+        .select('title, subtitle, modules, duration, status')
+        .eq('status', 'published')
+        .order('display_order')
+        .limit(10);
+      
+      if (!error && courses && courses.length > 0) {
+        const coursesList = courses.map((c: any) => 
+          `- ${c.title}${c.subtitle ? ` (${c.subtitle})` : ''}${c.duration ? ` - Durée: ${c.duration}` : ''}${c.modules ? ` - Modules: ${c.modules}` : ''}`
+        ).join('\n');
+        dataContext.push(`COURS DISPONIBLES (${courses.length}):\n${coursesList}`);
+      }
+    }
+    
+    // If student, get their enrollments
+    if (userRole === 'student' && userId) {
+      const { data: enrollments } = await supabaseClient
+        .from('course_enrollments')
+        .select(`
+          progress_percentage,
+          status,
+          enrolled_at,
+          courses:course_id (title, subtitle)
+        `)
+        .eq('user_id', userId)
+        .eq('status', 'active')
+        .limit(5);
+      
+      if (enrollments && enrollments.length > 0) {
+        const enrollmentsList = enrollments.map((e: any) => 
+          `- ${e.courses?.title || 'Cours'} (Progrès: ${e.progress_percentage || 0}%)`
+        ).join('\n');
+        dataContext.push(`VOS COURS INSCRITS (${enrollments.length}):\n${enrollmentsList}`);
+      }
+      
+      // Get recent grades
+      const { data: grades } = await supabaseClient
+        .from('grades')
+        .select(`
+          grade,
+          max_grade,
+          assignment_name,
+          graded_at,
+          courses:course_id (title)
+        `)
+        .eq('student_id', userId)
+        .order('graded_at', { ascending: false })
+        .limit(3);
+      
+      if (grades && grades.length > 0) {
+        const gradesList = grades.map((g: any) => 
+          `- ${g.assignment_name}: ${g.grade}/${g.max_grade} (${g.courses?.title || 'Cours'})`
+        ).join('\n');
+        dataContext.push(`VOS NOTES RÉCENTES:\n${gradesList}`);
+      }
+    }
+    
+    // If professor, get their courses
+    if (userRole === 'professor' && userId) {
+      const { data: profId } = await supabaseClient.rpc('get_professor_id', { _user_id: userId });
+      
+      if (profId) {
+        const { data: teachingAssignments } = await supabaseClient
+          .from('teaching_assignments')
+          .select(`
+            courses:course_id (title, subtitle),
+            course_classes (class_name, current_students, max_students)
+          `)
+          .eq('professor_id', profId)
+          .limit(5);
+        
+        if (teachingAssignments && teachingAssignments.length > 0) {
+          const coursesList = teachingAssignments.map((ta: any) => 
+            `- ${ta.courses?.title || 'Cours'}${ta.course_classes ? ` (Classe: ${ta.course_classes.class_name}, ${ta.course_classes.current_students}/${ta.course_classes.max_students} étudiants)` : ''}`
+          ).join('\n');
+          dataContext.push(`VOS COURS ENSEIGNÉS (${teachingAssignments.length}):\n${coursesList}`);
+        }
+      }
+    }
+    
+    // If admin, get platform statistics
+    if (userRole === 'admin') {
+      const [coursesCount, studentsCount, professorsCount] = await Promise.all([
+        supabaseClient.from('courses').select('id', { count: 'exact', head: true }),
+        supabaseClient.from('user_roles').select('id', { count: 'exact', head: true }).eq('role', 'student'),
+        supabaseClient.from('professors').select('id', { count: 'exact', head: true })
+      ]);
+      
+      const stats = [
+        `- Cours: ${coursesCount.count || 0}`,
+        `- Étudiants: ${studentsCount.count || 0}`,
+        `- Professeurs: ${professorsCount.count || 0}`
+      ].join('\n');
+      dataContext.push(`STATISTIQUES PLATEFORME:\n${stats}`);
+      
+      // Get all courses for admin
+      const { data: allCourses } = await supabaseClient
+        .from('courses')
+        .select('title, subtitle, status')
+        .order('display_order')
+        .limit(10);
+      
+      if (allCourses && allCourses.length > 0) {
+        const coursesList = allCourses.map((c: any) => 
+          `- ${c.title}${c.subtitle ? ` (${c.subtitle})` : ''} [${c.status}]`
+        ).join('\n');
+        dataContext.push(`TOUS LES COURS (${allCourses.length}):\n${coursesList}`);
+      }
+    }
+    
+    return dataContext.join('\n\n').substring(0, 1500);
+  } catch (error) {
+    console.error('Error fetching role-specific data:', error);
+    return "";
+  }
+}
+
 async function getRelevantContext(supabaseClient: any, userMessage: string, userRole: string): Promise<string> {
   try {
     // Refresh cache if needed
@@ -372,10 +497,18 @@ For any information about our **AI and Tech courses**, our **certification progr
       console.log(`[${requestId}] 👤 User role from DB: ${userRole}`);
     }
     
-    const context = await getRelevantContext(supabase, sanitizedMessage, userRole);
-    console.log(`[${requestId}] 🔍 Context length: ${context.length} chars`);
+    // Fetch role-specific data (courses, enrollments, grades, etc.)
+    const roleData = await getRoleSpecificData(supabase, userId, userRole);
+    console.log(`[${requestId}] 📊 Role-specific data length: ${roleData.length} chars`);
     
-    const systemPrompt = buildSystemPrompt(userRole, context, conversationHistory.length, language as 'fr' | 'ar' | 'en');
+    // Get knowledge base context
+    const context = await getRelevantContext(supabase, sanitizedMessage, userRole);
+    console.log(`[${requestId}] 🔍 Knowledge context length: ${context.length} chars`);
+    
+    // Combine both contexts
+    const fullContext = [roleData, context].filter(Boolean).join('\n\n');
+    
+    const systemPrompt = buildSystemPrompt(userRole, fullContext, conversationHistory.length, language as 'fr' | 'ar' | 'en');
     console.log(`[${requestId}] 📝 System prompt length: ${systemPrompt.length} chars`);
 
     const persistUserPromise = supabase.from('chatbot_messages').insert({
