@@ -135,9 +135,9 @@ function buildSystemPrompt(role: 'admin' | 'professor' | 'student' | 'visitor', 
   };
 
   const rules = {
-    fr: "IMPORTANT: Réponds IMMÉDIATEMENT à chaque utilisateur. Concentre-toi uniquement sur la question actuelle (ignore l'historique sauf si l'utilisateur y fait référence). Sois concis et direct (max 100 mots). Priorise la rapidité et la clarté. Je réponds uniquement aux questions sur avs.ma (fonctionnalités, navigation, support). Pour les questions hors-sujet, je dirige vers les bonnes ressources.",
-    en: "IMPORTANT: Respond IMMEDIATELY to every user. Focus only on the current question (ignore history unless user refers to it). Be concise and direct (max 100 words). Prioritize speed and clarity. I only answer questions about avs.ma (features, navigation, support). For off-topic questions, I direct to appropriate resources.",
-    ar: "مهم: أجب فورًا لكل مستخدم. ركز فقط على السؤال الحالي (تجاهل التاريخ ما لم يشر إليه المستخدم). كن موجزًا ومباشرًا (100 كلمة كحد أقصى). أعط الأولوية للسرعة والوضوح. أجيب فقط على الأسئلة المتعلقة بـ avs.ma (الميزات، التنقل، الدعم). للأسئلة خارج الموضوع، أوجه إلى الموارد المناسبة."
+    fr: "Réponds en 1-2 phrases simples et directes. Concentre-toi sur la question actuelle (ignore l'historique sauf mention). Pas d'explications inutiles. Maximum 50 mots. Résous le problème rapidement. Questions avs.ma uniquement (fonctionnalités, navigation, support).",
+    en: "Answer in 1-2 simple, direct sentences. Focus on current question (ignore history unless mentioned). No unnecessary explanations. Max 50 words. Solve the issue quickly. Only avs.ma questions (features, navigation, support).",
+    ar: "أجب في 1-2 جمل بسيطة ومباشرة. ركز على السؤال الحالي (تجاهل التاريخ ما لم يُذكر). لا توضيحات غير ضرورية. 50 كلمة كحد أقصى. حل المشكلة بسرعة. أسئلة avs.ma فقط (الميزات، التنقل، الدعم)."
   };
 
   return `${prompts[language][role]}
@@ -328,7 +328,7 @@ For any information about our **AI and Tech courses**, our **certification progr
     });
     
     console.log(`[${requestId}] 🤖 Calling Ollama API...`);
-    const numPredict = sanitizedMessage.length <= 40 ? 64 : 100; // Optimized for Qwen 2.5 1.5B
+    const numPredict = sanitizedMessage.length <= 40 ? 40 : 60; // Shorter responses for speed
     console.log(`[${requestId}] 🔧 num_predict: ${numPredict}`);
     const selectedModel = model || 'qwen2.5:1.5b'; // CPU-optimized model
     const ollamaStartTime = Date.now();
