@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { MessageSquare, X, Send, Loader2, Upload, History, Globe, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -126,9 +126,10 @@ const AIChatbot = () => {
     return 'Nous sommes en ligne !';
   };
 
-  const scrollToBottom = () => {
+  // Debounced scroll for better performance
+  const scrollToBottom = React.useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, []);
 
   // Track chatbot open/close
   useEffect(() => {
@@ -223,6 +224,12 @@ const AIChatbot = () => {
         headers['Authorization'] = `Bearer ${session.access_token}`;
       }
       
+      // Send last 2 messages (1 exchange) for context
+      const historyForContext = messages.slice(-2).map(m => ({
+        role: m.role,
+        content: m.content
+      }));
+      
       const resp = await fetch(CHAT_URL, {
         method: 'POST',
         headers,
@@ -230,7 +237,9 @@ const AIChatbot = () => {
           message: userMsg.content,
           sessionId: currentConversationId,
           visitorId: visitorId,
-          language: language
+          language: language,
+          history: historyForContext,
+          userRole: getDisplayRole()
         }),
       });
 
@@ -300,6 +309,8 @@ const AIChatbot = () => {
       let streamDone = false;
       const assistantId = crypto.randomUUID();
       let assistantContent = "";
+      let tokenCount = 0;
+      const TOKEN_BATCH_SIZE = 5; // Update UI every 5 tokens for better performance
 
       while (!streamDone) {
         const { done, value } = await reader.read();
@@ -326,20 +337,25 @@ const AIChatbot = () => {
             const content = parsed.choices?.[0]?.delta?.content as string | undefined;
             if (content) {
               assistantContent += content;
-              setMessages((prev) => {
-                const last = prev[prev.length - 1];
-                if (last?.role === 'assistant' && last.id === assistantId) {
-                  return prev.map((m) => 
-                    m.id === assistantId ? { ...m, content: assistantContent } : m
-                  );
-                }
-                return [...prev, {
-                  id: assistantId,
-                  role: 'assistant' as const,
-                  content: assistantContent,
-                  timestamp: new Date(),
-                }];
-              });
+              tokenCount++;
+              
+              // Batch UI updates every N tokens for better performance
+              if (tokenCount % TOKEN_BATCH_SIZE === 0 || streamDone) {
+                setMessages((prev) => {
+                  const last = prev[prev.length - 1];
+                  if (last?.role === 'assistant' && last.id === assistantId) {
+                    return prev.map((m) => 
+                      m.id === assistantId ? { ...m, content: assistantContent } : m
+                    );
+                  }
+                  return [...prev, {
+                    id: assistantId,
+                    role: 'assistant' as const,
+                    content: assistantContent,
+                    timestamp: new Date(),
+                  }];
+                });
+              }
             }
           } catch {
             textBuffer = line + "\n" + textBuffer;
@@ -347,6 +363,22 @@ const AIChatbot = () => {
           }
         }
       }
+      
+      // Final update to ensure all content is displayed
+      setMessages((prev) => {
+        const last = prev[prev.length - 1];
+        if (last?.role === 'assistant' && last.id === assistantId) {
+          return prev.map((m) => 
+            m.id === assistantId ? { ...m, content: assistantContent } : m
+          );
+        }
+        return [...prev, {
+          id: assistantId,
+          role: 'assistant' as const,
+          content: assistantContent,
+          timestamp: new Date(),
+        }];
+      });
 
       // Parse navigation actions from assistant response
       const navigationActions = parseNavigationActions(assistantContent);

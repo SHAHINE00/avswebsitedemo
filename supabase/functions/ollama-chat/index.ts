@@ -25,6 +25,11 @@ function checkRateLimit(userId: string): boolean {
 
 let lastWarmAt = 0;
 
+// Cache knowledge base in memory (refresh every 5 minutes)
+let knowledgeBaseCache: any[] = [];
+let lastKnowledgeCacheTime = 0;
+const KNOWLEDGE_CACHE_INTERVAL = 300000; // 5 minutes
+
 function sanitizeInput(text: string): string {
   return text
     .replace(/<[^>]*>/g, '')
@@ -71,24 +76,51 @@ function isOffTopicQuery(message: string): boolean {
   return hasOffTopicKeyword && !hasEducationContext;
 }
 
+async function loadKnowledgeBaseCache(supabaseClient: any): Promise<void> {
+  try {
+    const { data, error } = await supabaseClient
+      .from('knowledge_base')
+      .select('content, category')
+      .limit(100);
+
+    if (error) {
+      console.error('Error loading knowledge base cache:', error);
+      return;
+    }
+
+    knowledgeBaseCache = data || [];
+    lastKnowledgeCacheTime = Date.now();
+    console.log(`📚 Knowledge base cached: ${knowledgeBaseCache.length} entries`);
+  } catch (error) {
+    console.error('Error loading knowledge base:', error);
+  }
+}
+
 async function getRelevantContext(supabaseClient: any, userMessage: string, userRole: string): Promise<string> {
   try {
-    const keywords = extractKeywords(userMessage).slice(0, 5); // Reduce from 10 to 5
-    
-    const { data: doc } = await supabaseClient
-      .from('knowledge_base')
-      .select('content') // Only content, not title
-      .or(`keywords.cs.{${keywords.join(',')}}${userRole !== 'visitor' ? `,role_access.is.null,role_access.cs.{${userRole}}` : ',role_access.is.null'}`)
-      .order('priority', { ascending: false })
-      .limit(1) // Reduce from 2 to 1
-      .maybeSingle();
-    
-    if (!doc) return '';
-    
-    return doc.content?.substring(0, 400) || ''; // Max 400 chars
+    // Refresh cache if needed
+    if (Date.now() - lastKnowledgeCacheTime > KNOWLEDGE_CACHE_INTERVAL || knowledgeBaseCache.length === 0) {
+      await loadKnowledgeBaseCache(supabaseClient);
+    }
+
+    const keywords = extractKeywords(userMessage).slice(0, 5);
+    if (keywords.length === 0) return "";
+
+    // Search in cached data
+    const relevantItems = knowledgeBaseCache
+      .filter((item: any) => 
+        keywords.some(k => item.content.toLowerCase().includes(k.toLowerCase()))
+      )
+      .slice(0, 1);
+
+    if (relevantItems.length === 0) return "";
+
+    return relevantItems.map((item: any) => 
+      `[${item.category}] ${item.content}`
+    ).join('\n\n').substring(0, 400);
   } catch (error) {
-    console.error('Error fetching context:', error);
-    return '';
+    console.error('Error in getRelevantContext:', error);
+    return "";
   }
 }
 
@@ -159,8 +191,8 @@ serve(async (req) => {
   try {
     console.log(`[${requestId}] 🚀 Chat request started`);
 
-    // Background prewarm if idle >8m
-    if (Date.now() - lastWarmAt > 8 * 60 * 1000) {
+    // Background prewarm if idle >5m
+    if (Date.now() - lastWarmAt > 5 * 60 * 1000) {
       lastWarmAt = Date.now();
       console.log(`[${requestId}] 🔥 Prewarming model in background`);
       (async () => {
@@ -205,7 +237,7 @@ serve(async (req) => {
       );
     }
 
-    const { message, sessionId, visitorId, language = 'fr', model } = await req.json();
+    const { message, sessionId, visitorId, language = 'fr', model, history = [], userRole: clientRole } = await req.json();
     const sanitizedMessage = sanitizeInput(message);
     console.log(`[${requestId}] 📝 Message length: ${sanitizedMessage.length}, User: ${userId || 'anonymous'}, Language: ${language}`);
 
@@ -278,8 +310,6 @@ For any information about our **AI and Tech courses**, our **certification progr
       });
     }
 
-    const t0 = Date.now();
-    const rolePromise = determineUserRole(supabase, userId);
     console.log(`[${requestId}] 🌍 Using language: ${language}`);
     
     let updateActivityPromise: Promise<any> | undefined;
@@ -300,22 +330,24 @@ For any information about our **AI and Tech courses**, our **certification progr
         .eq('id', currentConversationId);
     }
     
-    // Fetch only last 2 messages for minimal context (faster responses)
-    const historyPromise = supabase
-      .from('chatbot_messages')
-      .select('role, content')
-      .eq('conversation_id', currentConversationId)
-      .order('created_at', { ascending: false })
-      .limit(2); // Only last 2 messages for speed & efficiency
+    // Use history from frontend (already in memory) - limit to last 2 messages (1 exchange)
+    const conversationHistory = history.slice(-2).map((msg: any) => ({
+      role: msg.role,
+      content: msg.content
+    }));
+    console.log(`[${requestId}] 📚 History from frontend: ${conversationHistory.length} messages`);
+
+    // Use role from frontend if provided, otherwise determine it
+    let userRole: 'admin' | 'professor' | 'student' | 'visitor';
+    if (clientRole && ['admin', 'professor', 'student', 'visitor'].includes(clientRole)) {
+      userRole = clientRole;
+      console.log(`[${requestId}] 👤 User role from frontend: ${userRole}`);
+    } else {
+      userRole = await determineUserRole(supabase, userId);
+      console.log(`[${requestId}] 👤 User role from DB: ${userRole}`);
+    }
     
-    const userRole = await rolePromise;
-    console.log(`[${requestId}] 👤 User role: ${userRole}`);
-    
-    const contextPromise = getRelevantContext(supabase, sanitizedMessage, userRole);
-    const [{ data: history }, context] = await Promise.all([historyPromise, contextPromise]);
-    
-    const conversationHistory = (history || []).reverse();
-    console.log(`[${requestId}] 📚 History loaded: ${conversationHistory.length} messages`);
+    const context = await getRelevantContext(supabase, sanitizedMessage, userRole);
     console.log(`[${requestId}] 🔍 Context length: ${context.length} chars`);
     
     const systemPrompt = buildSystemPrompt(userRole, context, conversationHistory.length, language as 'fr' | 'ar' | 'en');
