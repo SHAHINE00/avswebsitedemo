@@ -225,8 +225,8 @@ const AIChatbot = () => {
         headers['Authorization'] = `Bearer ${session.access_token}`;
       }
       
-      // Send last 5 messages for context
-      const messagesForAI = messages.slice(-5).map(m => ({
+      // Send last 5 messages for context (include current user message)
+      const messagesForAI = [...messages, userMsg].slice(-5).map(m => ({
         role: m.role,
         content: m.content
       }));
