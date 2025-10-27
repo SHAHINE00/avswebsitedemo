@@ -60,10 +60,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, conversationId }) =>
                 <ol className="list-decimal ml-4 space-y-1 my-2">{children}</ol>
               ),
               li: ({ children }) => (
-                <li className="text-sm leading-relaxed">{children}</li>
+                <li className="text-sm leading-relaxed mb-1">{children}</li>
               ),
               p: ({ children }) => (
-                <p className="text-sm leading-loose mb-2 last:mb-0">{children}</p>
+                <p className="text-sm leading-loose mb-3 last:mb-0 whitespace-pre-wrap">{children}</p>
               ),
               code: ({ children }) => (
                 <code className="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">

@@ -353,9 +353,9 @@ function buildSystemPrompt(role: 'admin' | 'professor' | 'student' | 'visitor', 
   };
 
   const strictRules = {
-    fr: `\n\nRÈGLES STRICTES:\n- UNIQUEMENT répondre aux questions sur AVS.ma (plateforme, cours, inscriptions, fonctionnalités)\n- Si la question n'est PAS liée à AVS.ma → Refuser poliment: "Désolé, je ne peux répondre qu'aux questions concernant la plateforme AVS.ma. Comment puis-je vous aider avec AVS.ma ?"\n- Exemples de questions hors-sujet à REFUSER: films, météo, sports, cuisine, voyages, culture générale, histoire générale, littérature générale\n- Ne JAMAIS répondre aux questions de culture générale ou divertissement\n- Réponds en 1-2 phrases maximum (50 mots)`,
-    en: `\n\nSTRICT RULES:\n- ONLY answer questions about AVS.ma (platform, courses, enrollment, features)\n- If question is NOT related to AVS.ma → Politely refuse: "Sorry, I can only answer questions about the AVS.ma platform. How can I help you with AVS.ma?"\n- Examples of off-topic questions to REFUSE: movies, weather, sports, cooking, travel, general knowledge, general history, general literature\n- NEVER answer general knowledge or entertainment questions\n- Answer in 1-2 sentences max (50 words)`,
-    ar: `\n\nقواعد صارمة:\n- أجب فقط على الأسئلة حول AVS.ma (المنصة، الدورات، التسجيل، الميزات)\n- إذا كان السؤال غير متعلق بـ AVS.ma → ارفض بأدب: "عذرًا، يمكنني فقط الإجابة على الأسئلة المتعلقة بمنصة AVS.ma. كيف يمكنني مساعدتك مع AVS.ma؟"\n- أمثلة على الأسئلة خارج الموضوع التي يجب رفضها: أفلام، طقس، رياضة، طبخ، سفر، معرفة عامة، تاريخ عام، أدب عام\n- لا ترد أبدًا على أسئلة المعرفة العامة أو الترفيه\n- أجب في 1-2 جمل كحد أقصى (50 كلمة)`
+    fr: `\n\nRÈGLES STRICTES:\n- UNIQUEMENT répondre aux questions sur AVS.ma (plateforme, cours, inscriptions, fonctionnalités)\n- Si la question n'est PAS liée à AVS.ma → Refuser poliment: "Désolé, je ne peux répondre qu'aux questions concernant la plateforme AVS.ma. Comment puis-je vous aider avec AVS.ma ?"\n- Exemples de questions hors-sujet à REFUSER: films, météo, sports, cuisine, voyages, culture générale, histoire générale, littérature générale\n- Ne JAMAIS répondre aux questions de culture générale ou divertissement\n- Réponds en 1-2 phrases maximum (50 mots)\n- FORMATAGE: Utilise des bullet points (•) pour les listes, des lignes vides entre sections, et du gras (**texte**) pour les titres`,
+    en: `\n\nSTRICT RULES:\n- ONLY answer questions about AVS.ma (platform, courses, enrollment, features)\n- If question is NOT related to AVS.ma → Politely refuse: "Sorry, I can only answer questions about the AVS.ma platform. How can I help you with AVS.ma?"\n- Examples of off-topic questions to REFUSE: movies, weather, sports, cooking, travel, general knowledge, general history, general literature\n- NEVER answer general knowledge or entertainment questions\n- Answer in 1-2 sentences max (50 words)\n- FORMATTING: Use bullet points (•) for lists, blank lines between sections, and bold (**text**) for headers`,
+    ar: `\n\nقواعد صارمة:\n- أجب فقط على الأسئلة حول AVS.ma (المنصة، الدورات، التسجيل، الميزات)\n- إذا كان السؤال غير متعلق بـ AVS.ma → ارفض بأدب: "عذرًا، يمكنني فقط الإجابة على الأسئلة المتعلقة بمنصة AVS.ma. كيف يمكنني مساعدتك مع AVS.ma؟"\n- أمثلة على الأسئلة خارج الموضوع التي يجب رفضها: أفلام، طقس، رياضة، طبخ، سفر، معرفة عامة، تاريخ عام، أدب عام\n- لا ترد أبدًا على أسئلة المعرفة العامة أو الترفيه\n- أجب في 1-2 جمل كحد أقصى (50 كلمة)\n- التنسيق: استخدم النقاط (•) للقوائم، أسطر فارغة بين الأقسام، والنص الغامق (**نص**) للعناوين`
   };
 
   const rules = {
@@ -560,7 +560,7 @@ For any information about our **AI and Tech courses**, our **certification progr
     });
     
     console.log(`[${requestId}] 🤖 Calling Ollama API...`);
-    const numPredict = 25; // Aggressive speed optimization: 1-2 sentences max
+    const numPredict = 150; // Increased for complete responses
     console.log(`[${requestId}] 🔧 num_predict: ${numPredict}`);
     const selectedModel = model || 'qwen2.5:1.5b'; // CPU-optimized model
     const ollamaStartTime = Date.now();
@@ -658,10 +658,57 @@ For any information about our **AI and Tech courses**, our **certification progr
       }
       
       // Fallback: Provide helpful info even when AI is down
+      const formatFallbackData = (data: string, lang: 'fr' | 'ar' | 'en'): string => {
+        if (!data) return '';
+        
+        // Clean up and format the data
+        const lines = data.split('\n').map(line => line.trim()).filter(Boolean);
+        const formatted: string[] = [];
+        
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          
+          // Headers (all caps or contains ':' at end)
+          if (line.match(/^[A-Z\u0600-\u06FF\s]+\(\d+\):?$/)) {
+            if (formatted.length > 0) formatted.push(''); // Add spacing before new section
+            formatted.push(`**${line}**`);
+          } else if (line.startsWith('•')) {
+            // Bullet points - ensure proper spacing
+            formatted.push(`  ${line}`);
+          } else {
+            formatted.push(line);
+          }
+        }
+        
+        return formatted.join('\n');
+      };
+      
+      const formattedRoleData = formatFallbackData(roleData, language as 'fr' | 'ar' | 'en');
+      
       const fallbackResponses = {
-        fr: `Je rencontre actuellement des difficultés techniques. 🔧\n\nEn attendant, voici les informations que je peux vous fournir:\n\n${roleData || 'Aucune donnée disponible pour le moment.'}\n\n📧 Pour une assistance immédiate, contactez support@avs.ma`,
-        en: `I'm currently experiencing technical difficulties. 🔧\n\nIn the meantime, here's the information I can provide:\n\n${roleData || 'No data available at the moment.'}\n\n📧 For immediate assistance, contact support@avs.ma`,
-        ar: `أواجه حاليًا صعوبات تقنية. 🔧\n\nفي الوقت الحالي، إليك المعلومات التي يمكنني تقديمها:\n\n${roleData || 'لا توجد بيانات متاحة في الوقت الحالي.'}\n\n📧 للحصول على مساعدة فورية، اتصل بـ support@avs.ma`
+        fr: `🔧 **Service temporairement indisponible**
+
+En attendant le retour du service, voici les informations disponibles:
+
+${formattedRoleData || '• Aucune donnée disponible pour le moment'}
+
+📧 **Besoin d'aide?** Contactez support@avs.ma`,
+        
+        en: `🔧 **Service Temporarily Unavailable**
+
+While we restore service, here's the available information:
+
+${formattedRoleData || '• No data available at the moment'}
+
+📧 **Need help?** Contact support@avs.ma`,
+        
+        ar: `🔧 **الخدمة غير متاحة مؤقتاً**
+
+في انتظار استعادة الخدمة، إليك المعلومات المتاحة:
+
+${formattedRoleData || '• لا توجد بيانات متاحة حالياً'}
+
+📧 **تحتاج مساعدة؟** اتصل بـ support@avs.ma`
       };
       
       const fallbackMessage = fallbackResponses[language as 'fr' | 'ar' | 'en'] || fallbackResponses.fr;
