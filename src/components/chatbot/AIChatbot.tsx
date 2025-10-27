@@ -301,6 +301,50 @@ const AIChatbot = () => {
         return;
       }
 
+      // Check if response is JSON (off-topic) or stream (normal chat)
+      const contentType = resp.headers.get('Content-Type');
+      const isJsonResponse = contentType?.includes('application/json');
+
+      if (isJsonResponse) {
+        // Handle off-topic JSON response
+        const data = await resp.json();
+        const offTopicMessage = data.message;
+        
+        const assistantId = crypto.randomUUID();
+        
+        // Add assistant message immediately
+        setMessages((prev) => [...prev, {
+          id: assistantId,
+          role: 'assistant' as const,
+          content: offTopicMessage,
+          timestamp: new Date(),
+        }]);
+        
+        // Save to database
+        if (data.sessionId) {
+          setCurrentConversationId(data.sessionId);
+          await saveMessage(data.sessionId, {
+            id: assistantId,
+            role: 'assistant',
+            content: offTopicMessage,
+            timestamp: new Date(),
+          });
+        }
+        
+        // Track analytics
+        trackChatbotEvent({
+          event_type: 'response_received',
+          conversation_id: data.sessionId || undefined,
+          event_data: { 
+            message_length: offTopicMessage.length,
+            off_topic: true
+          }
+        });
+        
+        setIsLoading(false);
+        return;
+      }
+
       if (!resp.body) throw new Error('No response body');
 
       const reader = resp.body.getReader();
