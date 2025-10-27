@@ -476,6 +476,29 @@ For any information about our **AI and Tech courses**, our **certification progr
             const firstTokenTime = firstChunkAt ? firstChunkAt - requestStartTime : null;
             console.log(`[${requestId}] ✅ Complete response in ${totalTime}ms (${fullResponse.length} chars)`);
             
+            // Alert admin if response is too slow (>8s total or >6s for first token)
+            const isSlowResponse = totalTime > 8000 || (firstTokenTime && firstTokenTime > 6000);
+            
+            if (isSlowResponse) {
+              console.warn(`[${requestId}] ⚠️ SLOW RESPONSE DETECTED: ${totalTime}ms total, ${firstTokenTime}ms first token`);
+              
+              // Create admin notification for slow performance
+              await supabase.from('chatbot_analytics').insert({
+                conversation_id: currentConversationId,
+                event_type: 'performance_alert',
+                event_data: {
+                  alert_type: 'slow_response',
+                  response_time_ms: totalTime,
+                  first_token_ms: firstTokenTime,
+                  threshold_exceeded: totalTime > 8000 ? 'total_time' : 'first_token',
+                  message: `Chatbot response took ${totalTime}ms. Consider increasing server resources.`,
+                  user_role: userRole
+                }
+              }).then(({ error }) => {
+                if (error) console.error(`[${requestId}] Failed to create performance alert:`, error);
+              });
+            }
+            
             const { error: analyticsError } = await supabase.from('chatbot_analytics').insert({
               conversation_id: currentConversationId,
               event_type: 'response_completed',
@@ -483,7 +506,8 @@ For any information about our **AI and Tech courses**, our **certification progr
                 response_time_ms: totalTime,
                 first_token_ms: firstTokenTime,
                 response_length: fullResponse.length,
-                user_role: userRole
+                user_role: userRole,
+                is_slow: isSlowResponse
               }
             });
             if (analyticsError) console.error(`[${requestId}] Failed to log analytics:`, analyticsError);
