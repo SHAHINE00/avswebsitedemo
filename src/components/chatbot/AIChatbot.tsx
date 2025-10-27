@@ -201,7 +201,8 @@ const AIChatbot = () => {
   };
 
   const streamChat = async (userMsg: Message) => {
-    const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ollama-chat`;
+    const CHAT_URL_PRIMARY = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+    const CHAT_URL_FALLBACK = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ollama-chat`;
     const startTime = Date.now();
     
     try {
@@ -224,24 +225,47 @@ const AIChatbot = () => {
         headers['Authorization'] = `Bearer ${session.access_token}`;
       }
       
-      // Send last 1 message only for maximum speed
-      const historyForContext = messages.slice(-1).map(m => ({
+      // Send last 5 messages for context
+      const messagesForAI = messages.slice(-5).map(m => ({
         role: m.role,
         content: m.content
       }));
       
-      const resp = await fetch(CHAT_URL, {
+      // Try primary endpoint (Lovable AI) first
+      let resp = await fetch(CHAT_URL_PRIMARY, {
         method: 'POST',
         headers,
         body: JSON.stringify({ 
-          message: userMsg.content,
-          sessionId: currentConversationId,
-          visitorId: visitorId,
+          messages: messagesForAI,
+          conversationId: currentConversationId,
           language: language,
-          history: historyForContext,
           userRole: getDisplayRole()
         }),
       });
+
+      // If 5xx error, fallback to Ollama
+      if (!resp.ok && resp.status >= 500 && resp.status < 600) {
+        console.log('Primary AI unavailable, falling back to Ollama...');
+        
+        // Fallback to Ollama
+        const historyForContext = messages.slice(-1).map(m => ({
+          role: m.role,
+          content: m.content
+        }));
+        
+        resp = await fetch(CHAT_URL_FALLBACK, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ 
+            message: userMsg.content,
+            sessionId: currentConversationId,
+            visitorId: visitorId,
+            language: language,
+            history: historyForContext,
+            userRole: getDisplayRole()
+          }),
+        });
+      }
 
       if (!resp.ok) {
         const errorData = await resp.json().catch(() => ({ error: 'Unknown error' }));
