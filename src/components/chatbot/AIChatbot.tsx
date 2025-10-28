@@ -201,8 +201,8 @@ const AIChatbot = () => {
   };
 
   const streamChat = async (userMsg: Message) => {
-    const CHAT_URL_PRIMARY = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
-    const CHAT_URL_FALLBACK = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ollama-chat`;
+    // 100% FREE: Use Ollama as primary (no Lovable AI credits)
+    const CHAT_URL_PRIMARY = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ollama-chat`;
     const startTime = Date.now();
     
     try {
@@ -225,70 +225,73 @@ const AIChatbot = () => {
         headers['Authorization'] = `Bearer ${session.access_token}`;
       }
       
-      // Send last 5 messages for context (include current user message)
-      const messagesForAI = [...messages, userMsg].slice(-5).map(m => ({
+      // Send last message for context (Ollama format)
+      const historyForContext = messages.slice(-1).map(m => ({
         role: m.role,
         content: m.content
       }));
       
-      // Try primary endpoint (Lovable AI) first
-      let resp = await fetch(CHAT_URL_PRIMARY, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ 
-          messages: messagesForAI,
-          conversationId: currentConversationId,
-          language: language,
-          userRole: getDisplayRole()
-        }),
-      });
-
-      // If 5xx error, fallback to Ollama
-      if (!resp.ok && resp.status >= 500 && resp.status < 600) {
-        console.log('Primary AI unavailable, falling back to Ollama...');
-        
-        // Fallback to Ollama
-        const historyForContext = messages.slice(-1).map(m => ({
-          role: m.role,
-          content: m.content
-        }));
-        
-        resp = await fetch(CHAT_URL_FALLBACK, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({ 
-            message: userMsg.content,
-            sessionId: currentConversationId,
-            visitorId: visitorId,
-            language: language,
-            history: historyForContext,
-            userRole: getDisplayRole()
-          }),
-        });
-      }
+      // Fetch with automatic retry on 502/503
+      const fetchWithRetry = async (attempt = 0): Promise<Response> => {
+        try {
+          const resp = await fetch(CHAT_URL_PRIMARY, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ 
+              message: userMsg.content,
+              sessionId: currentConversationId,
+              visitorId: visitorId,
+              language: language,
+              history: historyForContext,
+              userRole: getDisplayRole()
+            }),
+          });
+          
+          // Retry on 502/503 errors (server temporarily down)
+          if ((resp.status === 502 || resp.status === 503) && attempt < 2) {
+            const waitTime = (attempt + 1) * 2000; // 2s, 4s
+            console.log(`🔄 Retry ${attempt + 1}/2 after ${waitTime}ms...`);
+            await new Promise(resolve => setTimeout(resolve, waitTime));
+            return fetchWithRetry(attempt + 1);
+          }
+          
+          return resp;
+        } catch (error) {
+          if (attempt < 2) {
+            const waitTime = (attempt + 1) * 2000;
+            console.log(`🔄 Network error, retry ${attempt + 1}/2 after ${waitTime}ms...`);
+            await new Promise(resolve => setTimeout(resolve, waitTime));
+            return fetchWithRetry(attempt + 1);
+          }
+          throw error;
+        }
+      };
+      
+      let resp = await fetchWithRetry();
 
       if (!resp.ok) {
         const errorData = await resp.json().catch(() => ({ error: 'Unknown error' }));
-      const getErrorMessage = (type: 'rate_limit' | 'payment' | 'general') => {
-        const errors = {
-          rate_limit: {
-            fr: { title: "Trop de requêtes", desc: "Veuillez patienter quelques instants" },
-            en: { title: "Too many requests", desc: "Please wait a few moments" },
-            ar: { title: "طلبات كثيرة جدًا", desc: "يرجى الانتظار لحظات قليلة" }
-          },
-          payment: {
-            fr: { title: "Crédits insuffisants", desc: "Contactez l'administrateur" },
-            en: { title: "Insufficient credits", desc: "Contact the administrator" },
-            ar: { title: "رصيد غير كافٍ", desc: "اتصل بالمسؤول" }
-          },
-          general: {
-            fr: { title: "Erreur", desc: "Service AI temporairement indisponible" },
-            en: { title: "Error", desc: "AI service temporarily unavailable" },
-            ar: { title: "خطأ", desc: "خدمة الذكاء الاصطناعي غير متاحة مؤقتًا" }
-          }
+        
+        const getErrorMessage = (type: 'rate_limit' | 'server_busy' | 'general') => {
+          const errors = {
+            rate_limit: {
+              fr: { title: "Trop de requêtes", desc: "Veuillez patienter quelques instants" },
+              en: { title: "Too many requests", desc: "Please wait a few moments" },
+              ar: { title: "طلبات كثيرة جدًا", desc: "يرجى الانتظار لحظات قليلة" }
+            },
+            server_busy: {
+              fr: { title: "Service occupé", desc: "Le service est temporairement occupé. Réessayez dans 30 secondes." },
+              en: { title: "Service busy", desc: "Service temporarily busy. Retry in 30 seconds." },
+              ar: { title: "الخدمة مشغولة", desc: "الخدمة مشغولة مؤقتًا. حاول مرة أخرى خلال 30 ثانية." }
+            },
+            general: {
+              fr: { title: "Erreur", desc: "Service AI temporairement indisponible" },
+              en: { title: "Error", desc: "AI service temporarily unavailable" },
+              ar: { title: "خطأ", desc: "خدمة الذكاء الاصطناعي غير متاحة مؤقتًا" }
+            }
+          };
+          return errors[type][language];
         };
-        return errors[type][language];
-      };
       
       trackChatbotEvent({
         event_type: 'error',
@@ -299,15 +302,26 @@ const AIChatbot = () => {
         }
       });
       
+      // Handle 502/503 (server down/busy) - Show as assistant message
+      if (resp.status === 502 || resp.status === 503) {
+        const msg = getErrorMessage('server_busy');
+        const errorMsg: Message = {
+          role: 'assistant',
+          content: language === 'fr' 
+            ? "⚠️ Le service est temporairement occupé. Nous travaillons à résoudre le problème. Veuillez réessayer dans 30 secondes."
+            : language === 'ar'
+            ? "⚠️ الخدمة مشغولة مؤقتًا. نحن نعمل على حل المشكلة. يرجى المحاولة مرة أخرى خلال 30 ثانية."
+            : "⚠️ Service temporarily busy. We're working to resolve the issue. Please retry in 30 seconds.",
+          id: crypto.randomUUID(),
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, errorMsg]);
+        setIsLoading(false);
+        return;
+      }
+      
       if (resp.status === 429) {
         const msg = getErrorMessage('rate_limit');
-        toast({
-          title: msg.title,
-          description: errorData.message || msg.desc,
-          variant: "destructive"
-        });
-      } else if (resp.status === 402) {
-        const msg = getErrorMessage('payment');
         toast({
           title: msg.title,
           description: errorData.message || msg.desc,

@@ -9,6 +9,14 @@ const corsHeaders = {
 // Rate limiting: 10 requests per minute per user
 const rateLimitMap = new Map<string, number[]>();
 
+// Request queue to prevent overload (100% free Ollama stability)
+let activeRequests = 0;
+const MAX_CONCURRENT = 3; // Adjust based on VPS capacity
+
+function canProcessRequest(): boolean {
+  return activeRequests < MAX_CONCURRENT;
+}
+
 function checkRateLimit(userId: string): boolean {
   const now = Date.now();
   const userRequests = rateLimitMap.get(userId) || [];
@@ -428,6 +436,50 @@ serve(async (req) => {
         { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+    
+    // Pre-request health check (prevent wasted requests)
+    console.log(`[${requestId}] 🏥 Checking Ollama health...`);
+    try {
+      const healthResp = await fetch('https://ai.avs.ma/api/version', {
+        signal: AbortSignal.timeout(5000)
+      });
+      
+      if (!healthResp.ok) {
+        console.warn(`[${requestId}] ⚠️ Ollama health check failed (${healthResp.status})`);
+        return new Response(
+          JSON.stringify({ 
+            error: 'SERVICE_UNAVAILABLE',
+            message: 'Service temporairement indisponible. Réessayez dans quelques instants.'
+          }),
+          { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      console.log(`[${requestId}] ✓ Ollama healthy`);
+    } catch (healthError) {
+      console.error(`[${requestId}] ❌ Health check failed:`, healthError);
+      return new Response(
+        JSON.stringify({ 
+          error: 'SERVICE_CHECK_FAILED',
+          message: 'Impossible de vérifier la disponibilité du service.'
+        }),
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    // Check server capacity (prevent overload)
+    if (!canProcessRequest()) {
+      console.warn(`[${requestId}] ⏳ Server at capacity (${activeRequests}/${MAX_CONCURRENT})`);
+      return new Response(
+        JSON.stringify({ 
+          error: 'SERVER_BUSY',
+          message: 'Serveur occupé. Veuillez réessayer dans 10 secondes.'
+        }),
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    activeRequests++;
+    console.log(`[${requestId}] 📊 Active requests: ${activeRequests}/${MAX_CONCURRENT}`);
 
     const { message, sessionId, visitorId, language = 'fr', model, history = [], userRole: clientRole } = await req.json();
     const sanitizedMessage = sanitizeInput(message);
@@ -602,9 +654,9 @@ For any information about our **AI and Tech courses**, our **certification progr
               top_k: 20,
               mirostat: 2,
               repeat_penalty: 1.1,
-              num_ctx: 1024,
+              num_ctx: 512,         // Reduced from 1024 (saves 50% RAM)
               f16_kv: true,
-              num_thread: 4
+              num_thread: 2         // Optimized for VPS (adjust based on CPU cores)
             }
           })
         });
@@ -890,5 +942,10 @@ ${formattedRoleData || '• لا توجد بيانات متاحة حالياً'}
       }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
+  } finally {
+    // Always cleanup active request counter
+    activeRequests--;
+    const totalTime = Date.now() - requestStartTime;
+    console.log(`[${requestId}] ✓ Request completed in ${totalTime}ms (${activeRequests} active)`);
   }
 });
