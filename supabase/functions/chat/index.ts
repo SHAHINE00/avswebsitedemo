@@ -26,11 +26,11 @@ function checkRateLimit(userId: string): boolean {
 // Cache knowledge base in memory (refresh every 5 minutes)
 let knowledgeBaseCache: any[] = [];
 let lastKnowledgeCacheTime = 0;
-const KNOWLEDGE_CACHE_INTERVAL = 300000; // 5 minutes
+const KNOWLEDGE_CACHE_INTERVAL = 600000; // 10 minutes - longer cache for better performance
 
-// Cache role-specific data (refresh every 60 seconds)
+// Cache role-specific data (refresh every 5 minutes for better performance)
 let roleDataCache = new Map<string, { data: string; timestamp: number }>();
-const ROLE_CACHE_INTERVAL = 60000; // 60 seconds
+const ROLE_CACHE_INTERVAL = 300000; // 5 minutes
 
 function sanitizeInput(text: string): string {
   return text
@@ -113,10 +113,10 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
     if (userRole === 'visitor' || userRole === 'student') {
       const { data: courses, error } = await supabaseClient
         .from('courses')
-        .select('title, subtitle, modules, duration, status')
+        .select('title, subtitle, duration')
         .eq('status', 'published')
         .order('display_order')
-        .limit(5);
+        .limit(3);
       
       if (!error && courses && courses.length > 0) {
         const labels = {
@@ -130,7 +130,6 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
           const parts = [`• ${c.title}`];
           if (c.subtitle) parts.push(c.subtitle);
           if (c.duration) parts.push(`${l.duration}: ${c.duration}`);
-          if (c.modules) parts.push(`${l.modules}: ${c.modules}`);
           return parts.join(' - ');
         }).join('\n');
         dataContext.push(`${l.header} (${courses.length}):\n${coursesList}`);
@@ -142,13 +141,11 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
         .from('course_enrollments')
         .select(`
           progress_percentage,
-          status,
-          enrolled_at,
-          courses:course_id (title, subtitle)
+          courses:course_id (title)
         `)
         .eq('user_id', userId)
         .eq('status', 'active')
-        .limit(5);
+        .limit(3);
       
       if (enrollments && enrollments.length > 0) {
         const labels = {
@@ -169,13 +166,11 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
         .select(`
           grade,
           max_grade,
-          assignment_name,
-          graded_at,
-          courses:course_id (title)
+          assignment_name
         `)
         .eq('student_id', userId)
         .order('graded_at', { ascending: false })
-        .limit(3);
+        .limit(2);
       
       if (grades && grades.length > 0) {
         const labels = {
@@ -185,7 +180,7 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
         };
         
         const gradesList = grades.map((g: any) => 
-          `• ${g.assignment_name}: ${g.grade}/${g.max_grade} (${g.courses?.title || 'Cours'})`
+          `• ${g.assignment_name}: ${g.grade}/${g.max_grade}`
         ).join('\n');
         dataContext.push(`${labels[language]}:\n${gradesList}`);
       }
@@ -198,11 +193,10 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
         const { data: teachingAssignments } = await supabaseClient
           .from('teaching_assignments')
           .select(`
-            courses:course_id (title, subtitle),
-            course_classes (class_name, current_students, max_students)
+            courses:course_id (title)
           `)
           .eq('professor_id', profId)
-          .limit(5);
+          .limit(3);
         
         if (teachingAssignments && teachingAssignments.length > 0) {
           const labels = {
@@ -212,13 +206,9 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
           };
           const l = labels[language];
           
-          const coursesList = teachingAssignments.map((ta: any) => {
-            const parts = [`• ${ta.courses?.title || 'Cours'}`];
-            if (ta.course_classes) {
-              parts.push(`(${l.class}: ${ta.course_classes.class_name}, ${ta.course_classes.current_students}/${ta.course_classes.max_students} ${l.students})`);
-            }
-            return parts.join(' ');
-          }).join('\n');
+          const coursesList = teachingAssignments.map((ta: any) => 
+            `• ${ta.courses?.title || 'Cours'}`
+          ).join('\n');
           dataContext.push(`${l.header} (${teachingAssignments.length}):\n${coursesList}`);
         }
       }
@@ -226,9 +216,9 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
     
     if (userRole === 'admin') {
       const [coursesCount, studentsCount, professorsCount] = await Promise.all([
-        supabaseClient.from('courses').select('*', { count: 'exact', head: true }),
-        supabaseClient.from('user_roles').select('*', { count: 'exact', head: true }).eq('role', 'student'),
-        supabaseClient.from('professors').select('*', { count: 'exact', head: true })
+        supabaseClient.from('courses').select('id', { count: 'exact', head: true }),
+        supabaseClient.from('user_roles').select('user_id', { count: 'exact', head: true }).eq('role', 'student'),
+        supabaseClient.from('professors').select('id', { count: 'exact', head: true })
       ]);
       
       const labels = {
@@ -247,19 +237,19 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
       
       const { data: allCourses } = await supabaseClient
         .from('courses')
-        .select('title, subtitle, status')
+        .select('title, status')
         .order('display_order')
-        .limit(5);
+        .limit(3);
       
       if (allCourses && allCourses.length > 0) {
         const coursesList = allCourses.map((c: any) => 
-          `• ${c.title}${c.subtitle ? ` (${c.subtitle})` : ''} [${c.status}]`
+          `• ${c.title} [${c.status}]`
         ).join('\n');
         dataContext.push(`${l.allCourses} (${allCourses.length}):\n${coursesList}`);
       }
     }
     
-    const result = dataContext.join('\n\n').substring(0, 1200);
+    const result = dataContext.join('\n\n').substring(0, 800);
     
     // Cache the result
     roleDataCache.set(cacheKey, { data: result, timestamp: Date.now() });
@@ -279,11 +269,15 @@ function isSimpleQuery(message: string): boolean {
     /^(merci|thanks|thank you|شكرا)/,
     /^(au revoir|bye|goodbye|مع السلامة)/,
     /^(oui|non|yes|no|نعم|لا)$/,
-    /^(ok|okay|d'accord)$/
+    /^(ok|okay|d'accord)$/,
+    /(cours disponible|available course|الدورات المتاحة)/i,
+    /(inscription|enroll|تسجيل)/i,
+    /(contact|contactez|اتصال)/i,
+    /(prix|price|tarif|السعر)/i
   ];
   
   return simplePatterns.some(pattern => pattern.test(lowerMessage)) || 
-         message.split(/\s+/).length <= 3;
+         message.split(/\s+/).length <= 4;
 }
 
 async function getRelevantContext(supabaseClient: any, userMessage: string): Promise<string> {
@@ -297,7 +291,7 @@ async function getRelevantContext(supabaseClient: any, userMessage: string): Pro
       await loadKnowledgeBaseCache(supabaseClient);
     }
 
-    const keywords = extractKeywords(userMessage).slice(0, 3);
+    const keywords = extractKeywords(userMessage).slice(0, 2);
     if (keywords.length === 0) return "";
 
     const relevantItems = knowledgeBaseCache
@@ -310,7 +304,7 @@ async function getRelevantContext(supabaseClient: any, userMessage: string): Pro
 
     return relevantItems.map((item: any) => 
       `[${item.category}] ${item.content}`
-    ).join('\n\n').substring(0, 300);
+    ).join('\n\n').substring(0, 200);
   } catch (error) {
     console.error('Error in getRelevantContext:', error);
     return "";
