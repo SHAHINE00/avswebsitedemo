@@ -28,6 +28,10 @@ let knowledgeBaseCache: any[] = [];
 let lastKnowledgeCacheTime = 0;
 const KNOWLEDGE_CACHE_INTERVAL = 300000; // 5 minutes
 
+// Cache role-specific data (refresh every 60 seconds)
+let roleDataCache = new Map<string, { data: string; timestamp: number }>();
+const ROLE_CACHE_INTERVAL = 60000; // 60 seconds
+
 function sanitizeInput(text: string): string {
   return text
     .replace(/<[^>]*>/g, '')
@@ -97,6 +101,13 @@ async function loadKnowledgeBaseCache(supabaseClient: any): Promise<void> {
 
 async function getRoleSpecificData(supabaseClient: any, userId: string | null, userRole: string, language: 'fr' | 'ar' | 'en' = 'fr'): Promise<string> {
   try {
+    // Check cache first
+    const cacheKey = `${userId || 'visitor'}_${userRole}_${language}`;
+    const cached = roleDataCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < ROLE_CACHE_INTERVAL) {
+      return cached.data;
+    }
+    
     const dataContext: string[] = [];
     
     if (userRole === 'visitor' || userRole === 'student') {
@@ -105,7 +116,7 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
         .select('title, subtitle, modules, duration, status')
         .eq('status', 'published')
         .order('display_order')
-        .limit(10);
+        .limit(5);
       
       if (!error && courses && courses.length > 0) {
         const labels = {
@@ -215,9 +226,9 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
     
     if (userRole === 'admin') {
       const [coursesCount, studentsCount, professorsCount] = await Promise.all([
-        supabaseClient.from('courses').select('id', { count: 'exact', head: true }),
-        supabaseClient.from('user_roles').select('id', { count: 'exact', head: true }).eq('role', 'student'),
-        supabaseClient.from('professors').select('id', { count: 'exact', head: true })
+        supabaseClient.from('courses').select('*', { count: 'exact', head: true }),
+        supabaseClient.from('user_roles').select('*', { count: 'exact', head: true }).eq('role', 'student'),
+        supabaseClient.from('professors').select('*', { count: 'exact', head: true })
       ]);
       
       const labels = {
@@ -238,7 +249,7 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
         .from('courses')
         .select('title, subtitle, status')
         .order('display_order')
-        .limit(10);
+        .limit(5);
       
       if (allCourses && allCourses.length > 0) {
         const coursesList = allCourses.map((c: any) => 
@@ -248,20 +259,45 @@ async function getRoleSpecificData(supabaseClient: any, userId: string | null, u
       }
     }
     
-    return dataContext.join('\n\n').substring(0, 1500);
+    const result = dataContext.join('\n\n').substring(0, 1200);
+    
+    // Cache the result
+    roleDataCache.set(cacheKey, { data: result, timestamp: Date.now() });
+    
+    return result;
   } catch (error) {
     console.error('Error fetching role-specific data:', error);
     return "";
   }
 }
 
+function isSimpleQuery(message: string): boolean {
+  const lowerMessage = message.toLowerCase();
+  const simplePatterns = [
+    /^(bonjour|salut|hello|hi|hey|مرحبا)/,
+    /^(comment ça va|ça va|how are you)/,
+    /^(merci|thanks|thank you|شكرا)/,
+    /^(au revoir|bye|goodbye|مع السلامة)/,
+    /^(oui|non|yes|no|نعم|لا)$/,
+    /^(ok|okay|d'accord)$/
+  ];
+  
+  return simplePatterns.some(pattern => pattern.test(lowerMessage)) || 
+         message.split(/\s+/).length <= 3;
+}
+
 async function getRelevantContext(supabaseClient: any, userMessage: string): Promise<string> {
   try {
+    // Skip knowledge base for simple queries
+    if (isSimpleQuery(userMessage)) {
+      return "";
+    }
+    
     if (Date.now() - lastKnowledgeCacheTime > KNOWLEDGE_CACHE_INTERVAL || knowledgeBaseCache.length === 0) {
       await loadKnowledgeBaseCache(supabaseClient);
     }
 
-    const keywords = extractKeywords(userMessage).slice(0, 5);
+    const keywords = extractKeywords(userMessage).slice(0, 3);
     if (keywords.length === 0) return "";
 
     const relevantItems = knowledgeBaseCache
@@ -274,7 +310,7 @@ async function getRelevantContext(supabaseClient: any, userMessage: string): Pro
 
     return relevantItems.map((item: any) => 
       `[${item.category}] ${item.content}`
-    ).join('\n\n').substring(0, 400);
+    ).join('\n\n').substring(0, 300);
   } catch (error) {
     console.error('Error in getRelevantContext:', error);
     return "";
