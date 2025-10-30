@@ -12,6 +12,66 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # =======================
+# PART 0: Fix Ollama Systemd (Optional)
+# =======================
+echo -e "${YELLOW}PART 0: Check Ollama Service${NC}"
+echo "------------------------------"
+echo ""
+echo "Would you like to fix Ollama systemd service first?"
+echo "This will ensure Ollama runs reliably under systemd."
+echo ""
+echo "Options:"
+echo "  1) Install native binary (recommended - /usr/local/bin/ollama)"
+echo "  2) Use existing snap installation (/snap/bin/ollama)"
+echo "  3) Skip Ollama fix (proceed to Nginx config only)"
+echo ""
+read -p "Enter choice [1-3]: " OLLAMA_CHOICE
+
+case $OLLAMA_CHOICE in
+  1)
+    echo ""
+    echo "Running Ollama systemd fix (native binary)..."
+    if [ -f "./fix-ollama-systemd.sh" ]; then
+      bash ./fix-ollama-systemd.sh
+    elif [ -f "/root/fix-ollama-systemd.sh" ]; then
+      bash /root/fix-ollama-systemd.sh
+    else
+      echo -e "${RED}❌ fix-ollama-systemd.sh not found!${NC}"
+      echo "Please run it separately or continue with Nginx fix only."
+      read -p "Continue anyway? [y/N]: " CONTINUE
+      if [[ ! "$CONTINUE" =~ ^[Yy]$ ]]; then
+        exit 1
+      fi
+    fi
+    ;;
+  2)
+    echo ""
+    echo "Running Ollama systemd fix (using snap)..."
+    if [ -f "./fix-ollama-systemd.sh" ]; then
+      bash ./fix-ollama-systemd.sh --use-snap
+    elif [ -f "/root/fix-ollama-systemd.sh" ]; then
+      bash /root/fix-ollama-systemd.sh --use-snap
+    else
+      echo -e "${RED}❌ fix-ollama-systemd.sh not found!${NC}"
+      echo "Please run it separately or continue with Nginx fix only."
+      read -p "Continue anyway? [y/N]: " CONTINUE
+      if [[ ! "$CONTINUE" =~ ^[Yy]$ ]]; then
+        exit 1
+      fi
+    fi
+    ;;
+  3)
+    echo "Skipping Ollama systemd fix..."
+    ;;
+  *)
+    echo -e "${RED}Invalid choice. Exiting.${NC}"
+    exit 1
+    ;;
+esac
+
+echo ""
+
+# =======================
 # PART A: Fix ai.avs.ma
 # =======================
 echo -e "${YELLOW}PART A: Fixing ai.avs.ma Nginx Configuration${NC}"
