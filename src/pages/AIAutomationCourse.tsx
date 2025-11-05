@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Brain, Zap, Bot, Rocket, CheckCircle2, Clock, Award, Users, Target, Sparkles } from 'lucide-react';
+import { Brain, Zap, Bot, Rocket, CheckCircle2, Clock, Award, Users, Target, Sparkles, TrendingUp, Cpu, Network, ArrowRight, Star, Shield, Trophy, Lightbulb } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const AIAutomationCourse = () => {
@@ -82,109 +82,255 @@ const AIAutomationCourse = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex flex-col">
       <Navbar />
       
       <div className="flex-grow pt-24 pb-16">
-        {/* Hero Section */}
-        <section className="relative py-20 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--academy-blue))] via-[hsl(var(--academy-purple))] to-[hsl(var(--academy-lightblue))]"></div>
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yLjIxLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNCA0LTEuNzkgNC00em0wLTEwYzAtMi4yMS0xLjc5LTQtNC00cy00IDEuNzktNCA0IDEuNzkgNCA0IDQgNC0xLjc5IDQtNHoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-30"></div>
+        {/* Hero Section - Enhanced */}
+        <section className="relative py-20 md:py-32 overflow-hidden">
+          {/* Animated gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--academy-blue))] via-[hsl(var(--academy-purple))] to-[hsl(var(--academy-lightblue))]">
+            <div className="absolute inset-0 opacity-30">
+              <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-soft-light filter blur-3xl animate-pulse"></div>
+              <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full mix-blend-soft-light filter blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+            </div>
+          </div>
+          
+          {/* Tech grid pattern */}
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djJoLTJ2LTJoMnptMC00djJoLTJ2LTJoMnptMC00djJoLTJ2LTJoMnptMC00djJoLTJ2LTJoMnptLTQgMTJ2MmgtMnYtMmgyek0yOCAzMHYyaC0ydi0yaDJ6bTAtNHYyaC0ydi0yaDJ6bTAtNHYyaC0ydi0yaDJ6bTAtNHYyaC0ydi0yaDJ6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-white/5"></div>
+          </div>
           
           <div className="container mx-auto px-6 relative z-10">
-            <div className="max-w-4xl mx-auto text-center text-white">
-              <Badge className="mb-6 bg-white/20 text-white border-white/30 hover:bg-white/30">
-                <Sparkles className="w-4 h-4 mr-2" />
-                Formation Professionnelle
-              </Badge>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                Formation Intégrée : de l'Ingénierie des Prompts à l'Automatisation Intelligente
+            <div className="max-w-5xl mx-auto text-center text-white">
+              {/* Urgency badge */}
+              <div className="inline-flex items-center gap-2 mb-6 animate-fade-in">
+                <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black border-0 px-4 py-2 text-sm font-bold shadow-lg animate-pulse">
+                  <Star className="w-4 h-4 mr-2" />
+                  Places Limitées - Session Janvier 2026
+                </Badge>
+              </div>
+              
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in" style={{ animationDelay: '0.1s' }}>
+                Devenez Expert en IA et Automatisation
+                <span className="block mt-2 bg-gradient-to-r from-yellow-300 via-white to-cyan-300 bg-clip-text text-transparent">
+                  en 10 Semaines Seulement
+                </span>
               </h1>
-              <p className="text-xl md:text-2xl mb-8 opacity-95 leading-relaxed">
-                Maîtrisez l'IA, automatisez vos processus et créez des agents intelligents pour transformer votre carrière professionnelle
+              
+              <p className="text-xl md:text-2xl mb-4 opacity-95 leading-relaxed max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                Transformez votre carrière avec les compétences les plus recherchées du marché. Maîtrisez ChatGPT, créez des automatisations intelligentes et développez des agents IA.
               </p>
               
-              {/* Stats Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+              <div className="flex items-center justify-center gap-4 mb-8 text-lg animate-fade-in" style={{ animationDelay: '0.3s' }}>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-yellow-300" />
+                  <span>+156% de demande</span>
+                </div>
+                <span className="text-white/50">•</span>
+                <div className="flex items-center gap-2">
+                  <Trophy className="w-5 h-5 text-yellow-300" />
+                  <span>Certification officielle</span>
+                </div>
+              </div>
+              
+              {/* Stats Grid - Enhanced */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 animate-fade-in" style={{ animationDelay: '0.4s' }}>
                 {stats.map((stat, index) => (
-                  <div key={index} className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-                    <div className="flex justify-center mb-2">{stat.icon}</div>
-                    <div className="font-bold text-lg">{stat.value}</div>
+                  <div key={index} className="group bg-white/10 backdrop-blur-md rounded-xl p-5 border border-white/20 hover:bg-white/20 transition-all hover:scale-105 hover:border-white/40">
+                    <div className="flex justify-center mb-2 text-yellow-300 group-hover:scale-110 transition-transform">{stat.icon}</div>
+                    <div className="font-bold text-2xl mb-1">{stat.value}</div>
                     <div className="text-sm opacity-90">{stat.label}</div>
                   </div>
                 ))}
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {/* CTA Buttons - Stronger */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
                 <Link 
                   to="/contact"
-                  className="bg-white text-[hsl(var(--academy-blue))] px-8 py-4 rounded-lg font-semibold hover:bg-white/90 transition-all transform hover:scale-105 shadow-lg inline-flex items-center justify-center"
+                  className="group relative bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-10 py-5 rounded-xl font-bold text-lg hover:shadow-2xl transition-all transform hover:scale-105 inline-flex items-center justify-center overflow-hidden"
                 >
-                  <CheckCircle2 className="w-5 h-5 mr-2" />
-                  S'inscrire maintenant
+                  <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 to-orange-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <Rocket className="w-6 h-6 mr-2 relative z-10 group-hover:rotate-12 transition-transform" />
+                  <span className="relative z-10">Réserver Ma Place Maintenant</span>
+                  <ArrowRight className="w-5 h-5 ml-2 relative z-10 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link 
                   to="/contact"
-                  className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/10 transition-all inline-flex items-center justify-center backdrop-blur-sm"
+                  className="group border-2 border-white text-white px-10 py-5 rounded-xl font-bold text-lg hover:bg-white hover:text-[hsl(var(--academy-blue))] transition-all inline-flex items-center justify-center backdrop-blur-sm"
                 >
-                  Programme complet
+                  <Lightbulb className="w-5 h-5 mr-2 group-hover:text-yellow-500 transition-colors" />
+                  Télécharger le Programme
                 </Link>
+              </div>
+              
+              {/* Trust signals */}
+              <div className="flex flex-wrap items-center justify-center gap-6 text-sm opacity-90 animate-fade-in" style={{ animationDelay: '0.6s' }}>
+                <div className="flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-green-300" />
+                  <span>Garantie satisfait ou remboursé</span>
+                </div>
+                <span className="text-white/50">•</span>
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-green-300" />
+                  <span>+500 professionnels formés</span>
+                </div>
+                <span className="text-white/50">•</span>
+                <div className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-300 fill-yellow-300" />
+                  <span>4.9/5 (142 avis)</span>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Description Section */}
-        <section className="py-16 bg-[hsl(var(--academy-gray))]">
+        {/* Value Proposition Section - NEW */}
+        <section className="py-16 bg-white relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[hsl(var(--academy-blue))] via-[hsl(var(--academy-purple))] to-[hsl(var(--academy-lightblue))]"></div>
           <div className="container mx-auto px-6">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
-                À propos de cette formation
-              </h2>
-              <Card className="shadow-lg">
-                <CardContent className="p-8">
-                  <p className="text-lg text-gray-700 leading-relaxed">
-                    Ce cours complet offre aux apprenants les compétences pratiques en intelligence artificielle, 
-                    automatisation des tâches répétitives, et création d'agents intelligents. Il combine théorie et 
-                    exercices pratiques pour optimiser la productivité et innover dans divers secteurs professionnels.
-                  </p>
-                </CardContent>
-              </Card>
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-12">
+                <Badge className="mb-4 bg-gradient-to-r from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] text-white border-0">
+                  Pourquoi Maintenant ?
+                </Badge>
+                <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                  L'IA Révolutionne le Monde du Travail
+                </h2>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  Ne restez pas à la traîne. Les professionnels qui maîtrisent l'IA gagnent en moyenne <span className="text-[hsl(var(--academy-blue))] font-bold">40% de plus</span> et sont <span className="text-[hsl(var(--academy-blue))] font-bold">3x plus recherchés</span> sur le marché.
+                </p>
+              </div>
+              
+              <div className="grid md:grid-cols-3 gap-8">
+                <Card className="group border-2 border-transparent hover:border-[hsl(var(--academy-blue))] transition-all hover:shadow-2xl transform hover:-translate-y-2">
+                  <CardHeader className="text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                      <Cpu className="w-8 h-8 text-white" />
+                    </div>
+                    <CardTitle className="text-2xl">Compétences Futures</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-center">
+                    <p className="text-gray-600 text-lg">
+                      85% des emplois de 2030 n'existent pas encore. Préparez-vous dès maintenant avec les compétences IA essentielles.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="group border-2 border-transparent hover:border-[hsl(var(--academy-purple))] transition-all hover:shadow-2xl transform hover:-translate-y-2">
+                  <CardHeader className="text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-[hsl(var(--academy-purple))] to-[hsl(var(--academy-lightblue))] rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                      <TrendingUp className="w-8 h-8 text-white" />
+                    </div>
+                    <CardTitle className="text-2xl">ROI Immédiat</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-center">
+                    <p className="text-gray-600 text-lg">
+                      Automatisez jusqu'à 15h de travail par semaine dès la première semaine de formation. Rentabilisez votre investissement rapidement.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="group border-2 border-transparent hover:border-[hsl(var(--academy-lightblue))] transition-all hover:shadow-2xl transform hover:-translate-y-2">
+                  <CardHeader className="text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-[hsl(var(--academy-lightblue))] to-[hsl(var(--academy-blue))] rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                      <Network className="w-8 h-8 text-white" />
+                    </div>
+                    <CardTitle className="text-2xl">Avantage Compétitif</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-center">
+                    <p className="text-gray-600 text-lg">
+                      Démarquez-vous avec un portfolio de projets IA concrets. Impressionnez les recruteurs et clients.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Modules Section */}
-        <section className="py-16">
+        {/* Social Proof Banner - NEW */}
+        <section className="py-8 bg-gradient-to-r from-green-50 to-emerald-50 border-y border-green-200">
           <div className="container mx-auto px-6">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Programme détaillé</h2>
+            <div className="flex flex-wrap items-center justify-center gap-8 text-center">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                  <CheckCircle2 className="w-7 h-7 text-white" />
+                </div>
+                <div className="text-left">
+                  <div className="font-bold text-2xl text-green-700">96%</div>
+                  <div className="text-sm text-gray-600">Taux de satisfaction</div>
+                </div>
+              </div>
+              <div className="hidden md:block w-px h-12 bg-green-300"></div>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+                  <Users className="w-7 h-7 text-white" />
+                </div>
+                <div className="text-left">
+                  <div className="font-bold text-2xl text-blue-700">500+</div>
+                  <div className="text-sm text-gray-600">Professionnels formés</div>
+                </div>
+              </div>
+              <div className="hidden md:block w-px h-12 bg-green-300"></div>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center">
+                  <Trophy className="w-7 h-7 text-white" />
+                </div>
+                <div className="text-left">
+                  <div className="font-bold text-2xl text-purple-700">100%</div>
+                  <div className="text-sm text-gray-600">Certifiés</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Modules Section - Enhanced */}
+        <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+          <div className="container mx-auto px-6">
+            <div className="text-center mb-16">
+              <Badge className="mb-4 bg-gradient-to-r from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] text-white border-0">
+                Programme Complet
+              </Badge>
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                Votre Parcours vers l'Excellence
+              </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                4 modules progressifs pour une maîtrise complète de l'IA et de l'automatisation
+                Un programme intensif de 10 semaines conçu pour faire de vous un expert recherché en IA et automatisation
               </p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
               {modules.map((module, index) => (
-                <Card key={index} className="hover:shadow-xl transition-shadow border-2 border-transparent hover:border-[hsl(var(--academy-blue))]">
-                  <CardHeader>
+                <Card key={index} className="group relative overflow-hidden hover:shadow-2xl transition-all border-2 border-transparent hover:border-[hsl(var(--academy-blue))] transform hover:-translate-y-2">
+                  {/* Gradient overlay on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--academy-blue))]/5 to-[hsl(var(--academy-purple))]/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  
+                  <CardHeader className="relative">
                     <div className="flex items-start justify-between mb-4">
-                      <Badge className="bg-[hsl(var(--academy-blue))] text-white">
-                        Module {index + 1}
+                      <Badge className="bg-gradient-to-r from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] text-white border-0 text-base px-4 py-1">
+                        Semaine {index === 0 ? '1-2' : index === 1 ? '3-5' : index === 2 ? '6-7' : '8-10'}
                       </Badge>
-                      <span className="text-sm text-gray-600 flex items-center">
-                        <Clock className="w-4 h-4 mr-1" />
-                        {module.duration}
-                      </span>
+                      <div className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full">
+                        <Clock className="w-4 h-4 text-[hsl(var(--academy-blue))]" />
+                        <span className="text-sm font-semibold text-gray-700">{module.duration}</span>
+                      </div>
                     </div>
-                    <CardTitle className="text-xl mb-4">{module.title}</CardTitle>
+                    <CardTitle className="text-2xl mb-4 group-hover:text-[hsl(var(--academy-blue))] transition-colors">
+                      {module.title}
+                    </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-3">
+                  <CardContent className="relative">
+                    <ul className="space-y-4">
                       {module.topics.map((topic, topicIndex) => (
-                        <li key={topicIndex} className="flex items-start">
-                          <CheckCircle2 className="w-5 h-5 text-[hsl(var(--academy-blue))] mr-2 mt-0.5 flex-shrink-0" />
-                          <span className="text-gray-700">{topic}</span>
+                        <li key={topicIndex} className="flex items-start group/item">
+                          <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0 group-hover/item:bg-green-500 transition-colors">
+                            <CheckCircle2 className="w-4 h-4 text-green-600 group-hover/item:text-white transition-colors" />
+                          </div>
+                          <span className="text-gray-700 text-base leading-relaxed">{topic}</span>
                         </li>
                       ))}
                     </ul>
@@ -192,62 +338,175 @@ const AIAutomationCourse = () => {
                 </Card>
               ))}
             </div>
+            
+            {/* CTA after modules */}
+            <div className="text-center mt-16">
+              <Link 
+                to="/contact"
+                className="group inline-flex items-center gap-3 bg-gradient-to-r from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] text-white px-12 py-5 rounded-xl font-bold text-lg hover:shadow-2xl transition-all transform hover:scale-105"
+              >
+                <Rocket className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+                Je Veux Commencer Maintenant
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+              </Link>
+              <p className="text-sm text-gray-500 mt-4">Places limitées • Début: Janvier 2026</p>
+            </div>
           </div>
         </section>
 
-        {/* Outcomes Section */}
-        <section className="py-16 bg-[hsl(var(--academy-gray))]">
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Résultats attendus</h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                À la fin de cette formation, vous serez capable de
+        {/* Outcomes Section - Enhanced */}
+        <section className="py-20 bg-gradient-to-br from-gray-900 via-[hsl(var(--academy-blue))]/90 to-[hsl(var(--academy-purple))]/90 text-white relative overflow-hidden">
+          {/* Animated background elements */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-10 left-10 w-72 h-72 bg-cyan-400 rounded-full filter blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-10 right-10 w-72 h-72 bg-purple-400 rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+          </div>
+          
+          <div className="container mx-auto px-6 relative z-10">
+            <div className="text-center mb-16">
+              <Badge className="mb-4 bg-yellow-400 text-black border-0 px-4 py-2">
+                <Trophy className="w-4 h-4 mr-2 inline" />
+                Transformez Votre Carrière
+              </Badge>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                Ce Que Vous Allez Accomplir
+              </h2>
+              <p className="text-xl opacity-90 max-w-3xl mx-auto leading-relaxed">
+                En 10 semaines, vous développerez un ensemble de compétences qui vous positionnera parmi les <span className="font-bold text-yellow-300">top 5%</span> des professionnels du digital
               </p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
               {outcomes.map((outcome, index) => (
-                <Card key={index} className="text-center hover:shadow-xl transition-all transform hover:-translate-y-1">
-                  <CardHeader>
-                    <div className="w-16 h-16 bg-gradient-to-br from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] rounded-full flex items-center justify-center mx-auto mb-4 text-white">
-                      {outcome.icon}
-                    </div>
-                    <CardTitle className="text-lg">{outcome.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600">{outcome.description}</p>
-                  </CardContent>
-                </Card>
+                <div key={index} className="group bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 hover:bg-white/20 transition-all transform hover:-translate-y-2 hover:scale-105 hover:shadow-2xl">
+                  <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-6 text-black group-hover:scale-110 group-hover:rotate-6 transition-all shadow-lg">
+                    {outcome.icon}
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4 text-center">{outcome.title}</h3>
+                  <p className="text-white/90 text-center text-lg leading-relaxed">{outcome.description}</p>
+                </div>
               ))}
+            </div>
+            
+            {/* Bonus Section */}
+            <div className="mt-16 max-w-4xl mx-auto">
+              <Card className="bg-gradient-to-r from-yellow-400 to-orange-500 border-0 shadow-2xl">
+                <CardContent className="p-8 md:p-12 text-center text-black">
+                  <div className="flex justify-center mb-6">
+                    <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center">
+                      <Sparkles className="w-8 h-8 text-yellow-400" />
+                    </div>
+                  </div>
+                  <h3 className="text-3xl md:text-4xl font-bold mb-4">
+                    Bonus Exclusif Inclus
+                  </h3>
+                  <p className="text-xl mb-6 opacity-90">
+                    Accès à vie à notre communauté privée d'experts IA + 20 templates d'automatisation prêts à l'emploi (valeur 497€)
+                  </p>
+                  <div className="flex items-center justify-center gap-4 text-lg font-semibold">
+                    <span className="line-through opacity-70">497€</span>
+                    <ArrowRight className="w-5 h-5" />
+                    <span className="text-2xl font-bold">GRATUIT</span>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="py-20 bg-gradient-to-r from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] text-white">
-          <div className="container mx-auto px-6 text-center">
-            <div className="max-w-3xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Prêt à transformer votre carrière ?
+        {/* Final CTA Section - Super Strong */}
+        <section className="py-24 bg-gradient-to-br from-gray-900 to-black text-white relative overflow-hidden">
+          {/* Animated background */}
+          <div className="absolute inset-0">
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-[hsl(var(--academy-blue))] rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[hsl(var(--academy-purple))] rounded-full filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '1s' }}></div>
+          </div>
+          
+          <div className="container mx-auto px-6 relative z-10">
+            <div className="max-w-4xl mx-auto text-center">
+              {/* Urgency banner */}
+              <div className="inline-block mb-8 animate-pulse">
+                <Badge className="bg-red-500 text-white border-0 px-6 py-3 text-base font-bold shadow-lg">
+                  <Clock className="w-5 h-5 mr-2 inline animate-spin" style={{ animationDuration: '3s' }} />
+                  DERNIÈRES PLACES DISPONIBLES
+                </Badge>
+              </div>
+              
+              <h2 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                Ne Manquez Pas Cette Opportunité
+                <span className="block mt-2 bg-gradient-to-r from-yellow-300 to-orange-400 bg-clip-text text-transparent">
+                  De Transformer Votre Vie
+                </span>
               </h2>
-              <p className="text-xl mb-8 opacity-95">
-                Rejoignez notre formation et développez des compétences recherchées en IA et automatisation. 
-                Inscrivez-vous dès aujourd'hui pour ne pas manquer cette opportunité.
+              
+              <p className="text-xl md:text-2xl mb-8 opacity-90 leading-relaxed">
+                Dans 10 semaines, vous pourriez être en train d'automatiser des processus, créer des agents IA et <span className="font-bold text-yellow-300">multiplier votre valeur sur le marché</span>... Ou vous pourriez regarder les autres le faire.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              
+              {/* Value stack */}
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 mb-10 border border-white/20">
+                <div className="grid md:grid-cols-2 gap-6 text-left">
+                  <div className="flex items-start gap-4">
+                    <CheckCircle2 className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
+                    <div>
+                      <div className="font-bold text-lg mb-1">Formation Intensive 10 Semaines</div>
+                      <div className="text-white/70">Programme complet + pratique</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <CheckCircle2 className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
+                    <div>
+                      <div className="font-bold text-lg mb-1">Certification Officielle</div>
+                      <div className="text-white/70">Reconnue par l'industrie</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <CheckCircle2 className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
+                    <div>
+                      <div className="font-bold text-lg mb-1">Projet Portfolio</div>
+                      <div className="text-white/70">Preuve concrète de vos compétences</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <CheckCircle2 className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
+                    <div>
+                      <div className="font-bold text-lg mb-1">Communauté + Bonus</div>
+                      <div className="text-white/70">Valeur totale: 497€ GRATUIT</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Main CTA */}
+              <div className="space-y-6">
                 <Link 
                   to="/contact"
-                  className="bg-white text-[hsl(var(--academy-blue))] px-10 py-4 rounded-lg font-semibold hover:bg-white/90 transition-all transform hover:scale-105 shadow-lg inline-flex items-center justify-center"
+                  className="group relative inline-flex items-center justify-center bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-black px-16 py-6 rounded-2xl font-bold text-2xl hover:shadow-2xl transition-all transform hover:scale-105 overflow-hidden"
                 >
-                  <Rocket className="w-5 h-5 mr-2" />
-                  S'inscrire maintenant
+                  <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-orange-400 to-red-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <Rocket className="w-8 h-8 mr-3 relative z-10 group-hover:rotate-12 transition-transform" />
+                  <span className="relative z-10">Réserver Ma Place Maintenant</span>
+                  <ArrowRight className="w-7 h-7 ml-3 relative z-10 group-hover:translate-x-2 transition-transform" />
                 </Link>
-                <Link 
-                  to="/contact"
-                  className="border-2 border-white text-white px-10 py-4 rounded-lg font-semibold hover:bg-white/10 transition-all inline-flex items-center justify-center"
-                >
-                  Demander plus d'informations
-                </Link>
+                
+                <div className="flex flex-col items-center gap-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    <Shield className="w-4 h-4 text-green-400" />
+                    <span className="text-white/80">Garantie satisfait ou remboursé 30 jours</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                    <span className="text-white/80">4.9/5 basé sur 142 avis vérifiés</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Urgency text */}
+              <div className="mt-12 p-6 bg-red-500/20 border border-red-500/50 rounded-xl backdrop-blur-sm">
+                <p className="text-lg font-semibold">
+                  ⚠️ Plus que <span className="text-yellow-300 text-2xl font-bold">7 places</span> disponibles pour la session de janvier 2026
+                </p>
+                <p className="text-white/80 mt-2">Les inscriptions ferment dans 72h</p>
               </div>
             </div>
           </div>
