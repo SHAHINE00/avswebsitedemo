@@ -85,9 +85,9 @@ const AIAutomationCourse = () => {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex flex-col">
       <Navbar />
       
-      <div className="flex-grow pt-16 pb-12">
+      <div className="flex-grow pt-0 pb-12">
         {/* Hero Section - Enhanced */}
-        <section className="relative py-8 md:py-16 overflow-hidden">
+        <section className="relative py-4 md:py-8 overflow-hidden">
           {/* Animated gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--academy-blue))] via-[hsl(var(--academy-purple))] to-[hsl(var(--academy-lightblue))]">
             <div className="absolute inset-0 opacity-30">
