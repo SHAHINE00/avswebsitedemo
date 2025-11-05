@@ -42,6 +42,11 @@ if (!rootElement) {
   throw new Error('Root element not found');
 }
 
+// Ensure React is properly initialized
+if (!React || !React.createElement) {
+  throw new Error('React is not properly initialized');
+}
+
 // Initialize navigation state management
 navigationStateManager;
 
@@ -49,4 +54,8 @@ navigationStateManager;
 monitorBundleSize();
 initializePerformanceMonitoring();
 
-createRoot(rootElement).render(<App />);
+createRoot(rootElement).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
