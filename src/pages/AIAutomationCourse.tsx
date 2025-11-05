@@ -7,13 +7,24 @@ import { Brain, Zap, Bot, Rocket, CheckCircle2, Clock, Award, Users, Target, Spa
 import { Badge } from '@/components/ui/badge';
 
 const AIAutomationCourse = () => {
-  const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = '/documents/programme-cpae.pdf';
-    link.download = 'Programme-CPAE.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async () => {
+    try {
+      const url = `${window.location.origin}/documents/programme-cpae.pdf`;
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error('File not found');
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = 'Programme-CPAE.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch (e) {
+      // Fallback: open in new tab (viewer) if direct download fails
+      window.open('/documents/programme-cpae.pdf', '_blank');
+    }
   };
 
   const modules = [
