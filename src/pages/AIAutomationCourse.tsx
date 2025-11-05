@@ -85,9 +85,9 @@ const AIAutomationCourse = () => {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex flex-col">
       <Navbar />
       
-      <div className="flex-grow pt-24 pb-16">
+      <div className="flex-grow pt-20 pb-12">
         {/* Hero Section - Enhanced */}
-        <section className="relative py-20 md:py-32 overflow-hidden">
+        <section className="relative py-12 md:py-20 overflow-hidden">
           {/* Animated gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--academy-blue))] via-[hsl(var(--academy-purple))] to-[hsl(var(--academy-lightblue))]">
             <div className="absolute inset-0 opacity-30">
@@ -183,7 +183,7 @@ const AIAutomationCourse = () => {
         </section>
 
         {/* Value Proposition Section - Enhanced */}
-        <section className="py-20 bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
+        <section className="py-12 bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[hsl(var(--academy-blue))] via-[hsl(var(--academy-purple))] to-[hsl(var(--academy-lightblue))]"></div>
           
           {/* Background decorative elements */}
@@ -192,7 +192,7 @@ const AIAutomationCourse = () => {
           
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-16">
+              <div className="text-center mb-12">
                 <Badge className="mb-6 bg-gradient-to-r from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] text-white border-0 px-4 py-2 text-base">
                   Pourquoi Maintenant ?
                 </Badge>
@@ -282,7 +282,7 @@ const AIAutomationCourse = () => {
         </section>
 
         {/* Social Proof Banner - NEW */}
-        <section className="py-8 bg-gradient-to-r from-green-50 to-emerald-50 border-y border-green-200">
+        <section className="py-6 bg-gradient-to-r from-green-50 to-emerald-50 border-y border-green-200">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="flex flex-wrap items-center justify-center gap-8 text-center">
               <div className="flex items-center gap-3">
@@ -319,9 +319,9 @@ const AIAutomationCourse = () => {
         </section>
 
         {/* Modules Section - Enhanced */}
-        <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+        <section className="py-12 bg-gradient-to-b from-gray-50 to-white">
           <div className="container mx-auto px-4 sm:px-6">
-            <div className="text-center mb-16">
+            <div className="text-center mb-12">
               <Badge className="mb-4 bg-gradient-to-r from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] text-white border-0">
                 Programme Complet
               </Badge>
@@ -370,7 +370,7 @@ const AIAutomationCourse = () => {
             </div>
             
             {/* CTA after modules */}
-            <div className="text-center mt-16">
+            <div className="text-center mt-12">
               <Link 
                 to="/contact"
                 className="group inline-flex items-center gap-3 bg-gradient-to-r from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] text-white px-12 py-5 rounded-xl font-bold text-lg hover:shadow-2xl transition-all transform hover:scale-105"
@@ -385,7 +385,7 @@ const AIAutomationCourse = () => {
         </section>
 
         {/* Outcomes Section - Enhanced */}
-        <section className="py-20 bg-gradient-to-br from-gray-900 via-[hsl(var(--academy-blue))]/90 to-[hsl(var(--academy-purple))]/90 text-white relative overflow-hidden">
+        <section className="py-12 bg-gradient-to-br from-gray-900 via-[hsl(var(--academy-blue))]/90 to-[hsl(var(--academy-purple))]/90 text-white relative overflow-hidden">
           {/* Animated background elements */}
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-10 left-10 w-72 h-72 bg-cyan-400 rounded-full filter blur-3xl animate-pulse"></div>
@@ -393,7 +393,7 @@ const AIAutomationCourse = () => {
           </div>
           
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
-            <div className="text-center mb-16">
+            <div className="text-center mb-12">
               <Badge className="mb-4 bg-yellow-400 text-black border-0 px-4 py-2">
                 <Trophy className="w-4 h-4 mr-2 inline" />
                 Transformez Votre Carrière
@@ -419,7 +419,7 @@ const AIAutomationCourse = () => {
             </div>
             
             {/* Bonus Section */}
-            <div className="mt-16 max-w-4xl mx-auto">
+            <div className="mt-12 max-w-4xl mx-auto">
               <Card className="bg-gradient-to-r from-yellow-400 to-orange-500 border-0 shadow-2xl">
                 <CardContent className="p-8 md:p-12 text-center text-black">
                   <div className="flex justify-center mb-6">
@@ -445,7 +445,7 @@ const AIAutomationCourse = () => {
         </section>
 
         {/* Final CTA Section - Super Strong */}
-        <section className="py-24 bg-gradient-to-br from-gray-900 to-black text-white relative overflow-hidden">
+        <section className="py-16 bg-gradient-to-br from-gray-900 to-black text-white relative overflow-hidden">
           {/* Animated background */}
           <div className="absolute inset-0">
             <div className="absolute top-0 left-1/4 w-96 h-96 bg-[hsl(var(--academy-blue))] rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
@@ -455,7 +455,7 @@ const AIAutomationCourse = () => {
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
               {/* Urgency banner */}
-              <div className="inline-block mb-8 animate-pulse">
+              <div className="inline-block mb-6 animate-pulse">
                 <Badge className="bg-red-500 text-white border-0 px-6 py-3 text-base font-bold shadow-lg">
                   <Clock className="w-5 h-5 mr-2 inline animate-spin" style={{ animationDuration: '3s' }} />
                   DERNIÈRES PLACES DISPONIBLES
@@ -469,12 +469,12 @@ const AIAutomationCourse = () => {
                 </span>
               </h2>
               
-              <p className="text-lg sm:text-xl md:text-2xl mb-8 opacity-90 leading-relaxed">
+              <p className="text-lg sm:text-xl md:text-2xl mb-6 opacity-90 leading-relaxed">
                 Dans 10 semaines, vous pourriez être en train d'automatiser des processus, créer des agents IA et <span className="font-bold text-yellow-300">multiplier votre valeur sur le marché</span>... Ou vous pourriez regarder les autres le faire.
               </p>
               
               {/* Value stack */}
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 sm:p-8 mb-10 border border-white/20">
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 sm:p-8 mb-8 border border-white/20">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
                   <div className="flex items-start gap-4">
                     <CheckCircle2 className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
@@ -532,7 +532,7 @@ const AIAutomationCourse = () => {
               </div>
               
               {/* Urgency text */}
-              <div className="mt-12 p-6 bg-red-500/20 border border-red-500/50 rounded-xl backdrop-blur-sm">
+              <div className="mt-8 p-6 bg-red-500/20 border border-red-500/50 rounded-xl backdrop-blur-sm">
                 <p className="text-lg font-semibold">
                   ⚠️ Plus que <span className="text-yellow-300 text-2xl font-bold">7 places</span> disponibles pour la session de janvier 2026
                 </p>
