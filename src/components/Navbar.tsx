@@ -50,6 +50,7 @@ const NavbarCore = () => {
     { name: 'Accueil', href: '/' },
     { name: 'Formations', href: '/curriculum' },
     { name: 'TSIA - TSDI', href: '/tsia-tsdi' },
+    { name: 'Formation IA & Automatisation', href: '/formation-ia-automatisation' },
     { name: 'Formateurs', href: '/instructors' },
     { name: 'À propos', href: '/about' },
     { name: 'Carrières', href: '/careers' },

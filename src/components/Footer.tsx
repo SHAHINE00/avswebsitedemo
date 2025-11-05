@@ -74,6 +74,7 @@ const Footer: React.FC = () => {
               <li><Link to="/features" className="hover:text-academy-blue transition-colors">Atouts</Link></li>
               <li><Link to="/curriculum" className="hover:text-academy-blue transition-colors">Programme</Link></li>
               <li><Link to="/tsia-tsdi" className="hover:text-academy-blue transition-colors">TSIA - TSDI</Link></li>
+              <li><Link to="/formation-ia-automatisation" className="hover:text-academy-blue transition-colors">Formation IA & Automatisation</Link></li>
               <li><Link to="/ai-course" className="hover:text-academy-blue transition-colors">Technicien Spécialisé IA</Link></li>
               <li><Link to="/programming-course" className="hover:text-academy-blue transition-colors">Technicien Spécialisé Programmation</Link></li>
               <li><Link to="/instructors" className="hover:text-academy-blue transition-colors">Formateurs</Link></li>
