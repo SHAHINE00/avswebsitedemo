@@ -39,6 +39,7 @@ const Curriculum = lazyWithRetry(() => import("./pages/Curriculum"));
 const AICourse = lazyWithRetry(() => import("./pages/AICourse"));
 const ProgrammingCourse = lazyWithRetry(() => import("./pages/ProgrammingCourse"));
 const CybersecurityCourse = lazyWithRetry(() => import("./pages/CybersecurityCourse"));
+const AIAutomationCourse = lazyWithRetry(() => import("./pages/AIAutomationCourse"));
 const GenericCourse = lazyWithRetry(() => import("./pages/GenericCourse"));
 const CourseDetailPage = lazyWithRetry(() => import("./components/course-detail/CourseDetailPage"));
 const CoursePlayer = lazyWithRetry(() => import("./pages/CoursePlayer"));
@@ -157,6 +158,7 @@ const App = () => {
                       <Route path="/ai-course" element={<LazyWrapper><AICourse /></LazyWrapper>} />
                       <Route path="/programming-course" element={<LazyWrapper><ProgrammingCourse /></LazyWrapper>} />
                       <Route path="/cybersecurity-course" element={<LazyWrapper><CybersecurityCourse /></LazyWrapper>} />
+                      <Route path="/formation-ia-automatisation" element={<LazyWrapper><AIAutomationCourse /></LazyWrapper>} />
                       <Route path="/course/:slug" element={<LazyWrapper><GenericCourse /></LazyWrapper>} />
                       <Route path="/learn/:slug" element={<LazyWrapper><CoursePlayer /></LazyWrapper>} />
                       <Route path="/instructors" element={<LazyWrapper><Instructors /></LazyWrapper>} />
