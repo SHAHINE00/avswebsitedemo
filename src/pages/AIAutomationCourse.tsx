@@ -102,7 +102,7 @@ const AIAutomationCourse = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-white/5"></div>
           </div>
           
-          <div className="container mx-auto px-6 relative z-10">
+          <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <div className="max-w-5xl mx-auto text-center text-white">
               {/* Urgency badge */}
               <div className="inline-flex items-center gap-2 mb-6 animate-fade-in">
@@ -112,18 +112,18 @@ const AIAutomationCourse = () => {
                 </Badge>
               </div>
               
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in" style={{ animationDelay: '0.1s' }}>
                 Formation CPAE
                 <span className="block mt-2 bg-gradient-to-r from-yellow-300 via-white to-cyan-300 bg-clip-text text-transparent">
                   Certificat en Prompt Engineering et Automatisation
                 </span>
               </h1>
               
-              <p className="text-xl md:text-2xl mb-4 opacity-95 leading-relaxed max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <p className="text-lg sm:text-xl md:text-2xl mb-4 opacity-95 leading-relaxed max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
                 Transformez votre carrière avec les compétences les plus recherchées du marché. Maîtrisez ChatGPT, créez des automatisations intelligentes et développez des agents IA.
               </p>
               
-              <div className="flex items-center justify-center gap-4 mb-8 text-lg animate-fade-in" style={{ animationDelay: '0.3s' }}>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8 text-base sm:text-lg animate-fade-in" style={{ animationDelay: '0.3s' }}>
                 <div className="flex items-center gap-2">
                   <TrendingUp className="w-5 h-5 text-yellow-300" />
                   <span>+156% de demande</span>
@@ -136,12 +136,12 @@ const AIAutomationCourse = () => {
               </div>
               
               {/* Stats Grid - Enhanced */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-10 animate-fade-in" style={{ animationDelay: '0.4s' }}>
                 {stats.map((stat, index) => (
-                  <div key={index} className="group bg-white/10 backdrop-blur-md rounded-xl p-5 border border-white/20 hover:bg-white/20 transition-all hover:scale-105 hover:border-white/40">
+                  <div key={index} className="group bg-white/10 backdrop-blur-md rounded-xl p-3 sm:p-5 border border-white/20 hover:bg-white/20 transition-all hover:scale-105 hover:border-white/40">
                     <div className="flex justify-center mb-2 text-yellow-300 group-hover:scale-110 transition-transform">{stat.icon}</div>
-                    <div className="font-bold text-2xl mb-1">{stat.value}</div>
-                    <div className="text-sm opacity-90">{stat.label}</div>
+                    <div className="font-bold text-lg sm:text-2xl mb-1">{stat.value}</div>
+                    <div className="text-xs sm:text-sm opacity-90">{stat.label}</div>
                   </div>
                 ))}
               </div>
@@ -150,18 +150,18 @@ const AIAutomationCourse = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
                 <Link 
                   to="/contact"
-                  className="group relative bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-10 py-5 rounded-xl font-bold text-lg hover:shadow-2xl transition-all transform hover:scale-105 inline-flex items-center justify-center overflow-hidden"
+                  className="group relative bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-6 sm:px-10 py-4 sm:py-5 rounded-xl font-bold text-base sm:text-lg hover:shadow-2xl transition-all transform hover:scale-105 inline-flex items-center justify-center overflow-hidden w-full sm:w-auto"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 to-orange-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <Rocket className="w-6 h-6 mr-2 relative z-10 group-hover:rotate-12 transition-transform" />
+                  <Rocket className="w-5 h-5 sm:w-6 sm:h-6 mr-2 relative z-10 group-hover:rotate-12 transition-transform" />
                   <span className="relative z-10">Réserver Ma Place Maintenant</span>
-                  <ArrowRight className="w-5 h-5 ml-2 relative z-10 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 relative z-10 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link 
                   to="/contact"
-                  className="group border-2 border-white text-white px-10 py-5 rounded-xl font-bold text-lg hover:bg-white hover:text-[hsl(var(--academy-blue))] transition-all inline-flex items-center justify-center backdrop-blur-sm"
+                  className="group border-2 border-white text-white px-6 sm:px-10 py-4 sm:py-5 rounded-xl font-bold text-base sm:text-lg hover:bg-white hover:text-[hsl(var(--academy-blue))] transition-all inline-flex items-center justify-center backdrop-blur-sm w-full sm:w-auto"
                 >
-                  <Lightbulb className="w-5 h-5 mr-2 group-hover:text-yellow-500 transition-colors" />
+                  <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 mr-2 group-hover:text-yellow-500 transition-colors" />
                   Télécharger le Programme
                 </Link>
               </div>
@@ -190,7 +190,7 @@ const AIAutomationCourse = () => {
           <div className="absolute top-20 left-10 w-72 h-72 bg-[hsl(var(--academy-blue))]/5 rounded-full filter blur-3xl"></div>
           <div className="absolute bottom-20 right-10 w-72 h-72 bg-[hsl(var(--academy-purple))]/5 rounded-full filter blur-3xl"></div>
           
-          <div className="container mx-auto px-6 relative z-10">
+          <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
                 <Badge className="mb-6 bg-gradient-to-r from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] text-white border-0 px-4 py-2 text-base">
@@ -204,7 +204,7 @@ const AIAutomationCourse = () => {
                 </p>
               </div>
               
-              <div className="grid md:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* Card 1 - Compétences Futures */}
                 <div className="group relative">
                   <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity blur-xl"></div>
@@ -283,7 +283,7 @@ const AIAutomationCourse = () => {
 
         {/* Social Proof Banner - NEW */}
         <section className="py-8 bg-gradient-to-r from-green-50 to-emerald-50 border-y border-green-200">
-          <div className="container mx-auto px-6">
+          <div className="container mx-auto px-4 sm:px-6">
             <div className="flex flex-wrap items-center justify-center gap-8 text-center">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
@@ -320,7 +320,7 @@ const AIAutomationCourse = () => {
 
         {/* Modules Section - Enhanced */}
         <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
-          <div className="container mx-auto px-6">
+          <div className="container mx-auto px-4 sm:px-6">
             <div className="text-center mb-16">
               <Badge className="mb-4 bg-gradient-to-r from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] text-white border-0">
                 Programme Complet
@@ -392,7 +392,7 @@ const AIAutomationCourse = () => {
             <div className="absolute bottom-10 right-10 w-72 h-72 bg-purple-400 rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
           </div>
           
-          <div className="container mx-auto px-6 relative z-10">
+          <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <div className="text-center mb-16">
               <Badge className="mb-4 bg-yellow-400 text-black border-0 px-4 py-2">
                 <Trophy className="w-4 h-4 mr-2 inline" />
@@ -452,7 +452,7 @@ const AIAutomationCourse = () => {
             <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[hsl(var(--academy-purple))] rounded-full filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '1s' }}></div>
           </div>
           
-          <div className="container mx-auto px-6 relative z-10">
+          <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
               {/* Urgency banner */}
               <div className="inline-block mb-8 animate-pulse">
@@ -462,20 +462,20 @@ const AIAutomationCourse = () => {
                 </Badge>
               </div>
               
-              <h2 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+              <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 leading-tight">
                 Ne Manquez Pas Cette Opportunité
                 <span className="block mt-2 bg-gradient-to-r from-yellow-300 to-orange-400 bg-clip-text text-transparent">
                   De Transformer Votre Vie
                 </span>
               </h2>
               
-              <p className="text-xl md:text-2xl mb-8 opacity-90 leading-relaxed">
+              <p className="text-lg sm:text-xl md:text-2xl mb-8 opacity-90 leading-relaxed">
                 Dans 10 semaines, vous pourriez être en train d'automatiser des processus, créer des agents IA et <span className="font-bold text-yellow-300">multiplier votre valeur sur le marché</span>... Ou vous pourriez regarder les autres le faire.
               </p>
               
               {/* Value stack */}
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 mb-10 border border-white/20">
-                <div className="grid md:grid-cols-2 gap-6 text-left">
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 sm:p-8 mb-10 border border-white/20">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
                   <div className="flex items-start gap-4">
                     <CheckCircle2 className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
                     <div>
@@ -511,12 +511,12 @@ const AIAutomationCourse = () => {
               <div className="space-y-6">
                 <Link 
                   to="/contact"
-                  className="group relative inline-flex items-center justify-center bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-black px-16 py-6 rounded-2xl font-bold text-2xl hover:shadow-2xl transition-all transform hover:scale-105 overflow-hidden"
+                  className="group relative inline-flex items-center justify-center bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-black px-8 sm:px-16 py-5 sm:py-6 rounded-2xl font-bold text-lg sm:text-xl md:text-2xl hover:shadow-2xl transition-all transform hover:scale-105 overflow-hidden w-full sm:w-auto"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-orange-400 to-red-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <Rocket className="w-8 h-8 mr-3 relative z-10 group-hover:rotate-12 transition-transform" />
+                  <Rocket className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3 relative z-10 group-hover:rotate-12 transition-transform" />
                   <span className="relative z-10">Réserver Ma Place Maintenant</span>
-                  <ArrowRight className="w-7 h-7 ml-3 relative z-10 group-hover:translate-x-2 transition-transform" />
+                  <ArrowRight className="w-5 h-5 sm:w-7 sm:h-7 ml-2 sm:ml-3 relative z-10 group-hover:translate-x-2 transition-transform" />
                 </Link>
                 
                 <div className="flex flex-col items-center gap-3">
