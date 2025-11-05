@@ -115,7 +115,7 @@ const AIAutomationCourse = () => {
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in" style={{ animationDelay: '0.1s' }}>
                 Formation CPAE
                 <span className="block mt-2 bg-gradient-to-r from-yellow-300 via-white to-cyan-300 bg-clip-text text-transparent">
-                  Certificat Professionnel en Automatisation et IA
+                  Certificat en Prompt Engineering et Automatisation
                 </span>
               </h1>
               
