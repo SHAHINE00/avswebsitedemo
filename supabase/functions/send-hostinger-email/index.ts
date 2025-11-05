@@ -279,23 +279,144 @@ async function handleContactEmail(
   `;
 
   const confirmationHtml = `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <div style="background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
-        <h1 style="margin: 0; font-size: 24px;">Merci pour votre message!</h1>
-      </div>
-      <div style="background: white; padding: 30px; border-radius: 0 0 8px 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-        <p style="font-size: 16px; color: #374151;">Bonjour ${firstName},</p>
-        <p style="color: #6b7280;">Nous avons bien reçu votre message concernant: <strong style="color: #2563eb;">${subject}</strong></p>
-        <p style="color: #6b7280;">Notre équipe vous répondra dans les plus brefs délais.</p>
-        <div style="background: #f3f4f6; padding: 20px; border-radius: 6px; margin: 20px 0;">
-          <p style="margin: 0; color: #4b5563; font-size: 14px;">
-            <strong>Besoin d'une réponse urgente?</strong><br>
-            Contactez-nous directement au: +212 XXX XXX XXX
-          </p>
-        </div>
-        <p style="color: #6b7280;">Cordialement,<br><strong style="color: #2563eb;">L'équipe AVS INSTITUTE</strong></p>
-      </div>
-    </div>
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #f5f5f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f5f5f5; padding: 40px 0;">
+        <tr>
+          <td align="center">
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08);">
+              
+              <!-- Header with Logo -->
+              <tr>
+                <td style="background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); padding: 40px 30px; text-align: center;">
+                  <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600; letter-spacing: -0.5px;">AVS INSTITUTE</h1>
+                  <p style="margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 14px; letter-spacing: 0.5px;">ACADÉMIE DE FORMATION PROFESSIONNELLE</p>
+                </td>
+              </tr>
+
+              <!-- Success Badge -->
+              <tr>
+                <td style="padding: 30px 30px 10px 30px; text-align: center;">
+                  <div style="display: inline-block; background: #10b981; color: white; padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 600;">
+                    ✓ MESSAGE REÇU
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Main Content -->
+              <tr>
+                <td style="padding: 20px 40px 30px 40px;">
+                  <h2 style="margin: 0 0 20px 0; color: #1f2937; font-size: 22px; font-weight: 600;">Merci pour votre message, ${firstName}!</h2>
+                  
+                  <p style="margin: 0 0 15px 0; color: #4b5563; font-size: 15px; line-height: 1.6;">
+                    Nous avons bien reçu votre demande concernant:
+                  </p>
+                  
+                  <div style="background: linear-gradient(135deg, #eff6ff 0%, #f3e8ff 100%); border-left: 4px solid #2563eb; padding: 15px 20px; border-radius: 6px; margin: 20px 0;">
+                    <p style="margin: 0; color: #1f2937; font-size: 16px; font-weight: 600;">${subject}</p>
+                  </div>
+
+                  <p style="margin: 20px 0; color: #4b5563; font-size: 15px; line-height: 1.6;">
+                    Notre équipe d'experts examine votre demande et vous répondra dans les <strong style="color: #2563eb;">24 heures</strong>.
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Contact Info Section -->
+              <tr>
+                <td style="padding: 0 40px 30px 40px;">
+                  <div style="background: #f9fafb; border-radius: 8px; padding: 25px;">
+                    <h3 style="margin: 0 0 15px 0; color: #1f2937; font-size: 16px; font-weight: 600;">📞 Besoin d'une réponse immédiate?</h3>
+                    
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                      <tr>
+                        <td style="padding: 8px 0;">
+                          <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                            <strong style="color: #374151;">Téléphone:</strong> 
+                            <a href="tel:+212522000000" style="color: #2563eb; text-decoration: none;">+212 5 22 00 00 00</a>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0;">
+                          <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                            <strong style="color: #374151;">Email:</strong> 
+                            <a href="mailto:contact@avs-academy.ma" style="color: #2563eb; text-decoration: none;">contact@avs-academy.ma</a>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0;">
+                          <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                            <strong style="color: #374151;">Site web:</strong> 
+                            <a href="https://avs-institute.ma" style="color: #2563eb; text-decoration: none;">www.avs-institute.ma</a>
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0;">
+                          <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                            <strong style="color: #374151;">Adresse:</strong> Casablanca, Maroc
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- CTA Button -->
+              <tr>
+                <td style="padding: 0 40px 30px 40px; text-align: center;">
+                  <a href="https://avs-institute.ma/curriculum" style="display: inline-block; background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 15px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);">
+                    Découvrir nos formations
+                  </a>
+                </td>
+              </tr>
+
+              <!-- Footer -->
+              <tr>
+                <td style="background: #1f2937; padding: 30px; text-align: center;">
+                  <p style="margin: 0 0 15px 0; color: #ffffff; font-size: 16px; font-weight: 600;">AVS INSTITUTE</p>
+                  <p style="margin: 0 0 20px 0; color: #9ca3af; font-size: 13px; line-height: 1.6;">
+                    Leader en formation professionnelle et entrepreneuriale au Maroc<br>
+                    Formation • Certification • Accompagnement
+                  </p>
+                  
+                  <!-- Social Links -->
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: 20px auto 0 auto;">
+                    <tr>
+                      <td style="padding: 0 8px;">
+                        <a href="https://facebook.com/avsinstitute" style="color: #9ca3af; text-decoration: none; font-size: 13px;">Facebook</a>
+                      </td>
+                      <td style="color: #4b5563;">•</td>
+                      <td style="padding: 0 8px;">
+                        <a href="https://instagram.com/avsinstitute" style="color: #9ca3af; text-decoration: none; font-size: 13px;">Instagram</a>
+                      </td>
+                      <td style="color: #4b5563;">•</td>
+                      <td style="padding: 0 8px;">
+                        <a href="https://linkedin.com/company/avsinstitute" style="color: #9ca3af; text-decoration: none; font-size: 13px;">LinkedIn</a>
+                      </td>
+                    </tr>
+                  </table>
+                  
+                  <p style="margin: 20px 0 0 0; color: #6b7280; font-size: 12px;">
+                    © ${new Date().getFullYear()} AVS INSTITUTE. Tous droits réservés.
+                  </p>
+                </td>
+              </tr>
+              
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
   `;
 
   try {
