@@ -174,11 +174,6 @@ const AIAutomationCourse = () => {
                 </div>
                 <span className="text-white/50">•</span>
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-green-300" />
-                  <span>+500 professionnels formés</span>
-                </div>
-                <span className="text-white/50">•</span>
-                <div className="flex items-center gap-2">
                   <Star className="w-4 h-4 text-yellow-300 fill-yellow-300" />
                   <span>4.9/5 (142 avis)</span>
                 </div>
