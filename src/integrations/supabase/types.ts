@@ -889,6 +889,60 @@ export type Database = {
           },
         ]
       }
+      contact_submissions: {
+        Row: {
+          admin_notes: string | null
+          email: string
+          first_name: string
+          id: string
+          ip_address: unknown
+          last_name: string
+          message: string
+          metadata: Json | null
+          phone: string | null
+          read_at: string | null
+          replied_at: string | null
+          status: string
+          subject: string
+          submitted_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          email: string
+          first_name: string
+          id?: string
+          ip_address?: unknown
+          last_name: string
+          message: string
+          metadata?: Json | null
+          phone?: string | null
+          read_at?: string | null
+          replied_at?: string | null
+          status?: string
+          subject: string
+          submitted_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          email?: string
+          first_name?: string
+          id?: string
+          ip_address?: unknown
+          last_name?: string
+          message?: string
+          metadata?: Json | null
+          phone?: string | null
+          read_at?: string | null
+          replied_at?: string | null
+          status?: string
+          subject?: string
+          submitted_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       course_announcements: {
         Row: {
           content: string

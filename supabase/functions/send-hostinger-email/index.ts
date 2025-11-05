@@ -239,6 +239,29 @@ async function handleContactEmail(
   { FROM_EMAIL, ADMIN_EMAIL, sendMethod }: any
 ): Promise<Response> {
   
+  // Save to database first
+  try {
+    if (supabase) {
+      await supabase.from('contact_submissions').insert({
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        phone: phone || null,
+        subject: subject,
+        message: message,
+        status: 'new',
+        metadata: {
+          source: 'contact_form',
+          sent_at: new Date().toISOString()
+        }
+      });
+      console.log('Contact submission saved to database');
+    }
+  } catch (dbError) {
+    console.error('Error saving to database (continuing with email):', dbError);
+    // Continue with email even if DB insert fails
+  }
+  
   const emailHtml = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <h2 style="color: #2563eb;">Nouveau message de contact</h2>

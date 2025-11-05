@@ -14,6 +14,7 @@ import { SecurityTestSuite } from './SecurityTestSuite';
 import ProfessorManagement from './ProfessorManagement';
 import { CourseClassManagement } from './CourseClassManagement';
 import { DocumentActivityTracker } from '@/components/admin/dashboard/DocumentActivityTracker';
+import { ContactSubmissions } from '@/components/admin/dashboard/ContactSubmissions';
 import type { Course } from '@/hooks/useCourses';
 import { lazyWithRetry } from '@/utils/lazyWithRetry';
 
@@ -66,6 +67,7 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
         <TabsTrigger value="users" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Utilisateurs</TabsTrigger>
         <TabsTrigger value="documents" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Documents</TabsTrigger>
         <TabsTrigger value="subscribers" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Abonnements</TabsTrigger>
+        <TabsTrigger value="contact" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Contact</TabsTrigger>
         <TabsTrigger value="appointments" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Rendez-vous</TabsTrigger>
         <TabsTrigger value="sections" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Visibilité</TabsTrigger>
         <TabsTrigger value="security" className="flex-shrink-0 px-2 sm:px-4 py-2 text-xs sm:text-sm">Sécurité</TabsTrigger>
@@ -112,6 +114,10 @@ const AdminTabsEnhanced: React.FC<AdminTabsEnhancedProps> = ({
 
       <TabsContent value="subscribers">
         <SubscriberManagement />
+      </TabsContent>
+
+      <TabsContent value="contact">
+        <ContactSubmissions />
       </TabsContent>
 
       <TabsContent value="appointments">
