@@ -187,65 +187,100 @@ const AIAutomationCourse = () => {
           </div>
         </section>
 
-        {/* Value Proposition Section - NEW */}
-        <section className="py-16 bg-white relative overflow-hidden">
+        {/* Value Proposition Section - Enhanced */}
+        <section className="py-20 bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[hsl(var(--academy-blue))] via-[hsl(var(--academy-purple))] to-[hsl(var(--academy-lightblue))]"></div>
-          <div className="container mx-auto px-6">
+          
+          {/* Background decorative elements */}
+          <div className="absolute top-20 left-10 w-72 h-72 bg-[hsl(var(--academy-blue))]/5 rounded-full filter blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-72 h-72 bg-[hsl(var(--academy-purple))]/5 rounded-full filter blur-3xl"></div>
+          
+          <div className="container mx-auto px-6 relative z-10">
             <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-12">
-                <Badge className="mb-4 bg-gradient-to-r from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] text-white border-0">
+              <div className="text-center mb-16">
+                <Badge className="mb-6 bg-gradient-to-r from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] text-white border-0 px-4 py-2 text-base">
                   Pourquoi Maintenant ?
                 </Badge>
-                <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
                   L'IA Révolutionne le Monde du Travail
                 </h2>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                   Ne restez pas à la traîne. Les professionnels qui maîtrisent l'IA gagnent en moyenne <span className="text-[hsl(var(--academy-blue))] font-bold">40% de plus</span> et sont <span className="text-[hsl(var(--academy-blue))] font-bold">3x plus recherchés</span> sur le marché.
                 </p>
               </div>
               
               <div className="grid md:grid-cols-3 gap-8">
-                <Card className="group border-2 border-transparent hover:border-[hsl(var(--academy-blue))] transition-all hover:shadow-2xl transform hover:-translate-y-2">
-                  <CardHeader className="text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                      <Cpu className="w-8 h-8 text-white" />
-                    </div>
-                    <CardTitle className="text-2xl">Compétences Futures</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center">
-                    <p className="text-gray-600 text-lg">
-                      85% des emplois de 2030 n'existent pas encore. Préparez-vous dès maintenant avec les compétences IA essentielles.
-                    </p>
-                  </CardContent>
-                </Card>
+                {/* Card 1 - Compétences Futures */}
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity blur-xl"></div>
+                  <Card className="relative bg-white border-0 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-3 rounded-3xl overflow-hidden h-full">
+                    {/* Gradient top bar */}
+                    <div className="h-2 bg-gradient-to-r from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))]"></div>
+                    
+                    <CardContent className="p-8 text-center">
+                      {/* Icon with animated background */}
+                      <div className="relative mb-6 inline-block">
+                        <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--academy-blue))]/20 to-[hsl(var(--academy-purple))]/20 rounded-3xl blur-xl animate-pulse"></div>
+                        <div className="relative w-24 h-24 bg-gradient-to-br from-[hsl(var(--academy-blue))] to-[hsl(var(--academy-purple))] rounded-3xl flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-6 transition-all">
+                          <Cpu className="w-12 h-12 text-white" />
+                        </div>
+                      </div>
+                      
+                      <h3 className="text-2xl font-bold mb-4 text-gray-900">Compétences Futures</h3>
+                      <p className="text-gray-600 text-lg leading-relaxed">
+                        <span className="font-bold text-[hsl(var(--academy-blue))] text-xl">85%</span> des emplois de 2030 n'existent pas encore. Préparez-vous dès maintenant avec les compétences IA essentielles.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
 
-                <Card className="group border-2 border-transparent hover:border-[hsl(var(--academy-purple))] transition-all hover:shadow-2xl transform hover:-translate-y-2">
-                  <CardHeader className="text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-[hsl(var(--academy-purple))] to-[hsl(var(--academy-lightblue))] rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                      <TrendingUp className="w-8 h-8 text-white" />
-                    </div>
-                    <CardTitle className="text-2xl">ROI Immédiat</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center">
-                    <p className="text-gray-600 text-lg">
-                      Automatisez jusqu'à 15h de travail par semaine dès la première semaine de formation. Rentabilisez votre investissement rapidement.
-                    </p>
-                  </CardContent>
-                </Card>
+                {/* Card 2 - ROI Immédiat */}
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--academy-purple))] to-[hsl(var(--academy-lightblue))] rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity blur-xl"></div>
+                  <Card className="relative bg-white border-0 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-3 rounded-3xl overflow-hidden h-full">
+                    {/* Gradient top bar */}
+                    <div className="h-2 bg-gradient-to-r from-[hsl(var(--academy-purple))] to-[hsl(var(--academy-lightblue))]"></div>
+                    
+                    <CardContent className="p-8 text-center">
+                      {/* Icon with animated background */}
+                      <div className="relative mb-6 inline-block">
+                        <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--academy-purple))]/20 to-[hsl(var(--academy-lightblue))]/20 rounded-3xl blur-xl animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                        <div className="relative w-24 h-24 bg-gradient-to-br from-[hsl(var(--academy-purple))] to-[hsl(var(--academy-lightblue))] rounded-3xl flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-6 transition-all">
+                          <TrendingUp className="w-12 h-12 text-white" />
+                        </div>
+                      </div>
+                      
+                      <h3 className="text-2xl font-bold mb-4 text-gray-900">ROI Immédiat</h3>
+                      <p className="text-gray-600 text-lg leading-relaxed">
+                        Automatisez jusqu'à <span className="font-bold text-[hsl(var(--academy-purple))] text-xl">15h</span> de travail par semaine dès la première semaine de formation. Rentabilisez votre investissement rapidement.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
 
-                <Card className="group border-2 border-transparent hover:border-[hsl(var(--academy-lightblue))] transition-all hover:shadow-2xl transform hover:-translate-y-2">
-                  <CardHeader className="text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-[hsl(var(--academy-lightblue))] to-[hsl(var(--academy-blue))] rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                      <Network className="w-8 h-8 text-white" />
-                    </div>
-                    <CardTitle className="text-2xl">Avantage Compétitif</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center">
-                    <p className="text-gray-600 text-lg">
-                      Démarquez-vous avec un portfolio de projets IA concrets. Impressionnez les recruteurs et clients.
-                    </p>
-                  </CardContent>
-                </Card>
+                {/* Card 3 - Avantage Compétitif */}
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--academy-lightblue))] to-[hsl(var(--academy-blue))] rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity blur-xl"></div>
+                  <Card className="relative bg-white border-0 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-3 rounded-3xl overflow-hidden h-full">
+                    {/* Gradient top bar */}
+                    <div className="h-2 bg-gradient-to-r from-[hsl(var(--academy-lightblue))] to-[hsl(var(--academy-blue))]"></div>
+                    
+                    <CardContent className="p-8 text-center">
+                      {/* Icon with animated background */}
+                      <div className="relative mb-6 inline-block">
+                        <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--academy-lightblue))]/20 to-[hsl(var(--academy-blue))]/20 rounded-3xl blur-xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+                        <div className="relative w-24 h-24 bg-gradient-to-br from-[hsl(var(--academy-lightblue))] to-[hsl(var(--academy-blue))] rounded-3xl flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-6 transition-all">
+                          <Network className="w-12 h-12 text-white" />
+                        </div>
+                      </div>
+                      
+                      <h3 className="text-2xl font-bold mb-4 text-gray-900">Avantage Compétitif</h3>
+                      <p className="text-gray-600 text-lg leading-relaxed">
+                        Démarquez-vous avec un portfolio de projets IA concrets. Impressionnez les recruteurs et clients.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             </div>
           </div>
