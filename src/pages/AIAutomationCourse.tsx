@@ -7,6 +7,15 @@ import { Brain, Zap, Bot, Rocket, CheckCircle2, Clock, Award, Users, Target, Spa
 import { Badge } from '@/components/ui/badge';
 
 const AIAutomationCourse = () => {
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = '/documents/programme-cpae.pdf';
+    link.download = 'Programme-CPAE.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const modules = [
     {
       title: "Introduction à l'IA et ingénierie des prompts",
@@ -157,14 +166,13 @@ const AIAutomationCourse = () => {
                   <span className="relative z-10">Réserver Ma Place Maintenant</span>
                   <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 relative z-10 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <a 
-                  href="/documents/programme-cpae.pdf"
-                  download="Programme-CPAE.pdf"
+                <button 
+                  onClick={handleDownload}
                   className="group border-2 border-white text-white px-6 sm:px-10 py-4 sm:py-5 rounded-xl font-bold text-base sm:text-lg hover:bg-white hover:text-[hsl(var(--academy-blue))] transition-all inline-flex items-center justify-center backdrop-blur-sm w-full sm:w-auto"
                 >
                   <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 mr-2 group-hover:text-yellow-500 transition-colors" />
                   Télécharger le Programme
-                </a>
+                </button>
               </div>
               
               {/* Trust signals */}
