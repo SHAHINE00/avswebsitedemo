@@ -128,7 +128,7 @@ const AIAutomationCourse = () => {
               <div className="inline-flex items-center gap-2 mb-6 animate-fade-in">
                 <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black border-0 px-4 py-2 text-sm font-bold shadow-lg animate-pulse">
                   <Star className="w-4 h-4 mr-2" />
-                  Places Limitées - Session Janvier 2026
+                  Places Limitées - Session Décembre 2025
                 </Badge>
               </div>
               
@@ -401,7 +401,7 @@ const AIAutomationCourse = () => {
                 Je Veux Commencer Maintenant
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
               </Link>
-              <p className="text-sm text-gray-500 mt-4">Places limitées • Début: Janvier 2026</p>
+              <p className="text-sm text-gray-500 mt-4">Places limitées • Début: Décembre 2025</p>
             </div>
           </div>
         </section>
