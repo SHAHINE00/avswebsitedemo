@@ -556,7 +556,7 @@ const AIAutomationCourse = () => {
               {/* Urgency text */}
               <div className="mt-8 p-6 bg-red-500/20 border border-red-500/50 rounded-xl backdrop-blur-sm">
                 <p className="text-lg font-semibold">
-                  ⚠️ Plus que <span className="text-yellow-300 text-2xl font-bold">7 places</span> disponibles pour la session de janvier 2026
+                  ⚠️ Plus que <span className="text-yellow-300 text-2xl font-bold">7 places</span> disponibles pour la session de décembre 2025
                 </p>
                 <p className="text-white/80 mt-2">Les inscriptions ferment dans 72h</p>
               </div>
