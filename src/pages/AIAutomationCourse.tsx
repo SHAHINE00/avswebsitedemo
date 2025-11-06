@@ -434,7 +434,7 @@ const AIAutomationCourse = () => {
                   <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-6 text-black group-hover:scale-110 group-hover:rotate-6 transition-all shadow-lg">
                     {outcome.icon}
                   </div>
-                  <h3 className="text-2xl font-bold mb-4 text-center">{outcome.title}</h3>
+                  <h3 className="text-2xl font-bold mb-4 text-center mx-auto">{outcome.title}</h3>
                   <p className="text-white/90 text-center text-lg leading-relaxed">{outcome.description}</p>
                 </div>
               ))}
