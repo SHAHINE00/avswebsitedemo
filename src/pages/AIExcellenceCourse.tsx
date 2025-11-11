@@ -223,7 +223,8 @@ const AIExcellenceCourse = () => {
               </div>
               
               <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in" style={{ animationDelay: '0.1s' }}>
-                <span className="block bg-gradient-to-r from-yellow-300 via-white to-cyan-300 bg-clip-text text-transparent">
+                <span className="block bg-gradient-to-r from-yellow-300 via-white to-cyan-300 bg-clip-text text-transparent flex items-center justify-center gap-3">
+                  <Sparkles className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16" />
                   L'Intelligence Artificielle pour l'Excellence au Travail
                 </span>
               </h1>
