@@ -286,7 +286,7 @@ const AIExcellenceCourse = () => {
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 to-orange-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 mr-2 relative z-10" />
-                  <span className="relative z-10">Télécharger le Programme Complet</span>
+                  <span className="relative z-10">Télécharger la Brochure Gratuite</span>
                   <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 relative z-10 group-hover:translate-x-1 transition-transform" />
                 </button>
                 <Link 
