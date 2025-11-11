@@ -189,7 +189,8 @@ const AIExcellenceCourse = () => {
     {
       icon: <Rocket className="w-6 h-6" />,
       title: "Innover et Expérimenter Sans Limites",
-      impact: "Générer des idées créatives, tester de nouveaux concepts, et prendre des décisions éclairées grâce à des analyses instantanées."
+      impact: "Générer des idées créatives, tester de nouveaux concepts, et prendre des décisions éclairées grâce à des analyses instantanées.",
+      centered: true
     }
   ];
 
@@ -402,21 +403,39 @@ const AIExcellenceCourse = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
               {benefits.map((benefit, index) => (
-                <Card key={index} className="group bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl hover:bg-white/20 transition-all transform hover:-translate-y-2 hover:scale-105">
-                  <CardHeader>
-                    <div className="flex items-start gap-4">
-                      <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center text-black flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all">
-                        {benefit.icon}
+                benefit.centered ? (
+                  <Card key={index} className="md:col-span-2 mx-auto max-w-2xl group bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl hover:bg-white/20 transition-all transform hover:-translate-y-2 hover:scale-105">
+                    <CardHeader>
+                      <div className="flex flex-col items-center text-center gap-4">
+                        <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center text-black group-hover:scale-110 group-hover:rotate-6 transition-all">
+                          {benefit.icon}
+                        </div>
+                        <div>
+                          <CardTitle className="text-xl mb-3 text-white">{benefit.title}</CardTitle>
+                          <p className="text-white/90 leading-relaxed">
+                            <strong className="text-yellow-300">→ Impact :</strong> {benefit.impact}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <CardTitle className="text-xl mb-3 text-white">{benefit.title}</CardTitle>
-                        <p className="text-white/90 leading-relaxed">
-                          <strong className="text-yellow-300">→ Impact :</strong> {benefit.impact}
-                        </p>
+                    </CardHeader>
+                  </Card>
+                ) : (
+                  <Card key={index} className="group bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl hover:bg-white/20 transition-all transform hover:-translate-y-2 hover:scale-105">
+                    <CardHeader>
+                      <div className="flex items-start gap-4">
+                        <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center text-black flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all">
+                          {benefit.icon}
+                        </div>
+                        <div>
+                          <CardTitle className="text-xl mb-3 text-white">{benefit.title}</CardTitle>
+                          <p className="text-white/90 leading-relaxed">
+                            <strong className="text-yellow-300">→ Impact :</strong> {benefit.impact}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </CardHeader>
-                </Card>
+                    </CardHeader>
+                  </Card>
+                )
               ))}
             </div>
 
