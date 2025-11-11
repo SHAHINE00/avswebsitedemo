@@ -30,6 +30,26 @@ import {
 import { Badge } from '@/components/ui/badge';
 
 const AIExcellenceCourse = () => {
+  const handleDownload = async () => {
+    try {
+      const url = `${window.location.origin}/Syllabus_Complet.pdf`;
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error('File not found');
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = 'Syllabus_Complet.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch (e) {
+      // Fallback: open in new tab (viewer) if direct download fails
+      window.open('/Syllabus_Complet.pdf', '_blank');
+    }
+  };
+
   const modules = [
     {
       title: "Fondations de l'IA Générative",
@@ -260,17 +280,15 @@ const AIExcellenceCourse = () => {
               
               {/* CTA Buttons - Stronger */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
-                <a 
-                  href="https://wa.me/212662632953?text=Bonjour,%20je%20souhaite%20plus%20d'informations%20sur%20la%20formation%20Intelligence%20Artificielle%20pour%20l'Excellence%20au%20Travail"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button 
+                  onClick={handleDownload}
                   className="group relative bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-6 sm:px-10 py-4 sm:py-5 rounded-xl font-bold text-base sm:text-lg hover:shadow-2xl transition-all transform hover:scale-105 inline-flex items-center justify-center overflow-hidden w-full sm:w-auto"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 to-orange-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <Phone className="w-5 h-5 sm:w-6 sm:h-6 mr-2 relative z-10" />
-                  <span className="relative z-10">Planifier une Démo Gratuite</span>
+                  <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 mr-2 relative z-10" />
+                  <span className="relative z-10">Télécharger le Programme Complet</span>
                   <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 relative z-10 group-hover:translate-x-1 transition-transform" />
-                </a>
+                </button>
                 <Link 
                   to="/contact"
                   className="group border-2 border-white text-white px-6 sm:px-10 py-4 sm:py-5 rounded-xl font-bold text-base sm:text-lg hover:bg-white hover:text-[hsl(var(--academy-blue))] transition-all inline-flex items-center justify-center backdrop-blur-sm w-full sm:w-auto"
