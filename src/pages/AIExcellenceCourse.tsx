@@ -224,15 +224,12 @@ const AIExcellenceCourse = () => {
               
               <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in" style={{ animationDelay: '0.1s' }}>
                 <span className="block bg-gradient-to-r from-yellow-300 via-white to-cyan-300 bg-clip-text text-transparent">
-                  Vos Équipes Perdent du Temps ?
-                </span>
-                <span className="block mt-2 bg-gradient-to-r from-yellow-300 via-white to-cyan-300 bg-clip-text text-transparent">
-                  Transformez-les en Experts de la Productivité
+                  L'Intelligence Artificielle pour l'Excellence au Travail
                 </span>
               </h1>
               
               <p className="text-lg sm:text-xl md:text-2xl mb-4 opacity-95 leading-relaxed max-w-3xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s' }}>
-                La formation stratégique qui transforme vos collaborateurs en maîtres de l'IA générative. Décuplez leur efficacité, stimulez leur innovation.
+                Vos Équipes Perdent du Temps ? Transformez-les en Experts de la Productivité
               </p>
               
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8 text-base sm:text-lg animate-fade-in" style={{ animationDelay: '0.3s' }}>
