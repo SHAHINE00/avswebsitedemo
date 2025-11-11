@@ -214,18 +214,19 @@ const AIExcellenceCourse = () => {
           
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <div className="max-w-5xl mx-auto text-center text-white">
-              {/* Urgency badge */}
+              {/* Icon badge */}
               <div className="inline-flex items-center gap-2 mb-6 animate-fade-in">
-                <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black border-0 px-4 py-2 text-sm font-bold shadow-lg animate-pulse">
-                  <Star className="w-4 h-4 mr-2" />
-                  Formation Premium - Places Limitées
-                </Badge>
+                <div className="bg-white/20 p-3 rounded-2xl">
+                  <Sparkles className="w-10 h-10" />
+                </div>
               </div>
               
               <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in" style={{ animationDelay: '0.1s' }}>
-                <span className="block bg-gradient-to-r from-yellow-300 via-white to-cyan-300 bg-clip-text text-transparent flex items-center justify-center gap-3">
-                  <Sparkles className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16" />
-                  L'Intelligence Artificielle pour l'Excellence au Travail
+                <span className="block bg-gradient-to-r from-yellow-300 via-white to-cyan-300 bg-clip-text text-transparent">
+                  L'Intelligence Artificielle
+                </span>
+                <span className="block mt-2 bg-gradient-to-r from-yellow-300 via-white to-cyan-300 bg-clip-text text-transparent">
+                  pour l'Excellence au Travail
                 </span>
               </h1>
               
