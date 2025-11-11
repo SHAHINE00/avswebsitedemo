@@ -333,7 +333,7 @@ const BlogGuideIA2024 = () => {
                       <li>• Cours en ligne (Coursera, edX)</li>
                       <li>• Flexibilité totale</li>
                       <li>• Moins d'encadrement</li>
-                      <li>• Pas de certification reconnue</li>
+                      <li>• Pas d'attestation de compétences</li>
                     </ul>
                   </CardContent>
                 </Card>

@@ -38,7 +38,7 @@ const CTASection: React.FC = () => {
             <Card className="bg-white/10 backdrop-blur-sm border-white/20">
               <CardContent className="p-6 text-center">
                 <Award className="w-8 h-8 text-white mx-auto mb-3" />
-                <h3 className="text-lg font-bold text-white mb-2">Certification Reconnue</h3>
+                <h3 className="text-lg font-bold text-white mb-2">Attestation de Compétences</h3>
                 <p className="text-white/80 text-sm">Diplôme valorisé par les entreprises du secteur</p>
               </CardContent>
             </Card>
