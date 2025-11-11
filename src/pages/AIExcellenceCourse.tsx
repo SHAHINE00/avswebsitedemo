@@ -82,7 +82,7 @@ const AIExcellenceCourse = () => {
       topics: [
         "Création de votre guide personnel de productivité",
         "Consolidation des compétences acquises",
-        "Obtention de la certification reconnue"
+        "Obtention de l'attestation de compétences"
       ]
     }
   ];
@@ -111,7 +111,7 @@ const AIExcellenceCourse = () => {
     {
       icon: <Award className="w-6 h-6" />,
       title: "Certification Professionnelle",
-      description: "Validez vos compétences avec une certification reconnue par les entreprises"
+      description: "Validez vos compétences avec une attestation de compétences reconnue par les entreprises"
     }
   ];
 
@@ -243,7 +243,7 @@ const AIExcellenceCourse = () => {
                 <span className="text-white/50">•</span>
                 <div className="flex items-center gap-2">
                   <Trophy className="w-5 h-5 text-yellow-300" />
-                  <span>Certification reconnue</span>
+                  <span>Attestation de compétences</span>
                 </div>
               </div>
               
@@ -633,7 +633,7 @@ const AIExcellenceCourse = () => {
                   <div className="flex items-start gap-4">
                     <CheckCircle2 className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
                     <div>
-                      <div className="font-bold text-lg mb-1">Certification Reconnue</div>
+                      <div className="font-bold text-lg mb-1">Attestation de Compétences</div>
                       <div className="text-white/70">Validée par l'industrie</div>
                     </div>
                   </div>

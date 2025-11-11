@@ -89,7 +89,7 @@ const AIAutomationCourse = () => {
     },
     {
       icon: <Award className="w-6 h-6" />,
-      title: "Certification reconnue",
+      title: "Attestation de compétences",
       description: "Obtenez une certification valorisant vos nouvelles compétences"
     }
   ];
@@ -430,7 +430,7 @@ const AIAutomationCourse = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto justify-items-center">
               {outcomes.map((outcome, index) => (
-                <div key={index} className={"group bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 hover:bg-white/20 transition-all transform hover:-translate-y-2 hover:scale-105 hover:shadow-2xl w-full max-w-sm" + (outcome.title === "Certification reconnue" ? " md:col-span-2 justify-self-center" : "")}>
+                <div key={index} className={"group bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 hover:bg-white/20 transition-all transform hover:-translate-y-2 hover:scale-105 hover:shadow-2xl w-full max-w-sm" + (outcome.title === "Attestation de compétences" ? " md:col-span-2 justify-self-center" : "")}>
                   <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-6 text-black group-hover:scale-110 group-hover:rotate-6 transition-all shadow-lg">
                     {outcome.icon}
                   </div>
