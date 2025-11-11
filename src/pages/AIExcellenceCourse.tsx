@@ -119,7 +119,7 @@ const AIExcellenceCourse = () => {
     { icon: <Clock className="w-8 h-8" />, value: "6 semaines", label: "Formation intensive" },
     { icon: <Users className="w-8 h-8" />, value: "6 modules", label: "Parcours complet" },
     { icon: <Target className="w-8 h-8" />, value: "1 projet", label: "Guide personnalisé" },
-    { icon: <Award className="w-8 h-8" />, value: "Certification", label: "Reconnue industrie" }
+    { icon: <Award className="w-8 h-8" />, value: "Attestation", label: "De compétences" }
   ];
 
   const problemPoints = [
