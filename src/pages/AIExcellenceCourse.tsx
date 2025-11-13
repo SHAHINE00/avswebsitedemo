@@ -30,17 +30,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 
 const AIExcellenceCourse = () => {
-  const handleDownload = () => {
-    // Create a simple anchor element for maximum compatibility across all devices
-    const link = document.createElement('a');
-    link.href = '/Syllabus_Complet.pdf';
-    link.download = 'Brochure_Formation_IA_Excellence.pdf';
-    link.target = '_blank'; // Fallback for iOS Safari
-    link.rel = 'noopener noreferrer';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  // Download handled by native anchor link in JSX for maximum compatibility across devices
+
 
   const modules = [
     {
@@ -273,15 +264,19 @@ const AIExcellenceCourse = () => {
               
               {/* CTA Buttons - Stronger */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 animate-fade-in" style={{ animationDelay: '0.5s' }}>
-                <button 
-                  onClick={handleDownload}
+                <a
+                  href="/Syllabus_Complet.pdf"
+                  download="Brochure_Formation_IA_Excellence.pdf"
+                  target="_self"
+                  rel="noopener noreferrer"
+                  aria-label="Télécharger la brochure du cours IA Excellence (PDF)"
                   className="group relative bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-6 sm:px-10 py-4 sm:py-5 rounded-xl font-bold text-base sm:text-lg hover:shadow-2xl transition-all transform hover:scale-105 inline-flex items-center justify-center overflow-hidden w-full sm:w-auto"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 to-orange-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 mr-2 relative z-10" />
                   <span className="relative z-10">Télécharger la Brochure Gratuite</span>
                   <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 relative z-10 group-hover:translate-x-1 transition-transform" />
-                </button>
+                </a>
                 <Link 
                   to="/contact"
                   className="group border-2 border-white text-white px-6 sm:px-10 py-4 sm:py-5 rounded-xl font-bold text-base sm:text-lg hover:bg-white hover:text-[hsl(var(--academy-blue))] transition-all inline-flex items-center justify-center backdrop-blur-sm w-full sm:w-auto"
