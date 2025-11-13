@@ -28,38 +28,9 @@ import {
   MessageCircle
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/hooks/use-toast';
-
 const AIExcellenceCourse = () => {
-  const { toast } = useToast();
-  const handleDownload = async () => {
-    try {
-      console.log('Starting brochure download...');
-      const response = await fetch('https://nkkalmyhxtuisjdjmdew.supabase.co/functions/v1/download-brochure?file=Syllabus_Complet.pdf');
-      
-      if (!response.ok) {
-        throw new Error(`Download failed: ${response.status}`);
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'Brochure_Formation_IA_Excellence.pdf';
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-      
-      console.log('Brochure download successful');
-    } catch (error) {
-      console.error('Download error:', error);
-      toast({
-        title: "Erreur de téléchargement",
-        description: "La brochure est temporairement indisponible. Veuillez réessayer plus tard.",
-        variant: "destructive",
-      });
-    }
+  const handleDownload = () => {
+    window.location.href = '/download/brochure.pdf';
   };
 
 
