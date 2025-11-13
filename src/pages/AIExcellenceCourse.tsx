@@ -30,24 +30,16 @@ import {
 import { Badge } from '@/components/ui/badge';
 
 const AIExcellenceCourse = () => {
-  const handleDownload = async () => {
-    try {
-      const url = `${window.location.origin}/Syllabus_Complet.pdf`;
-      const res = await fetch(url, { cache: 'no-store' });
-      if (!res.ok) throw new Error('File not found');
-      const blob = await res.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.download = 'Syllabus_Complet.pdf';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(blobUrl);
-    } catch (e) {
-      // Fallback: open in new tab (viewer) if direct download fails
-      window.open('/Syllabus_Complet.pdf', '_blank');
-    }
+  const handleDownload = () => {
+    // Create a simple anchor element for maximum compatibility across all devices
+    const link = document.createElement('a');
+    link.href = '/Syllabus_Complet.pdf';
+    link.download = 'Brochure_Formation_IA_Excellence.pdf';
+    link.target = '_blank'; // Fallback for iOS Safari
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const modules = [
