@@ -7,8 +7,20 @@ import { Brain, Zap, Bot, Rocket, CheckCircle2, Clock, Award, Users, Target, Spa
 import { Badge } from '@/components/ui/badge';
 
 const AIAutomationCourse = () => {
-  const handleDownload = () => {
-    window.location.href = '/download/programme-cpae.pdf';
+  const handleDownload = async () => {
+    const downloadUrl = '/download/programme-cpae.pdf';
+    const fallbackUrl = '/documents/programme-cpae.pdf';
+    try {
+      const res = await fetch(downloadUrl, { method: 'HEAD' });
+      const ct = res.headers.get('content-type') || '';
+      if (res.ok && !ct.includes('text/html')) {
+        window.location.href = downloadUrl;
+        return;
+      }
+    } catch (e) {
+      // ignore
+    }
+    window.location.href = fallbackUrl;
   };
 
   const modules = [
